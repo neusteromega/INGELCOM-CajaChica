@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.ingelcom.cajachica">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.INGELCOM_CajaChica"
+        tools:targetApi="31">
+        <activity
+            android:name=".ListadoEmpleados"
+            android:exported="false" />
+        <activity
+            android:name=".ListadoIngresos"
+            android:exported="false" />
+        <activity
+            android:name=".AdmDatosCuadrilla"
+            android:exported="false" />
+        <activity
+            android:name=".RegistrarEditarIngreso"
+            android:exported="false" />
+        <activity
+            android:name=".AdmPantallas"
+            android:exported="false" />
+        <activity
+            android:name=".AgregarEditarPerfil"
+            android:exported="false" />
+        <activity
+            android:name=".Perfil"
+            android:exported="false" />
+        <activity
+            android:name=".DetalleGasto"
+            android:exported="false" />
+        <activity
+            android:name=".ListadoGastos"
+            android:exported="false" />
+        <activity
+            android:name=".RegistrarEditarGasto"
+            android:exported="false" />
+        <activity
+            android:name=".GastoIngresoRegistrado"
+            android:exported="false" />
+        <activity
+            android:name=".EmpMenuPrincipal"
+            android:exported="false" />
+        <activity
+            android:name=".CompletarUsuario"
+            android:exported="false" />
+        <activity
+            android:name=".IniciarSesion"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

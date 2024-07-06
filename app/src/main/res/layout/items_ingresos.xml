@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="15dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginRight="15dp"
+    android:layout_marginBottom="10dp"
+    android:animateLayoutChanges="true"
+    app:cardCornerRadius="7dp"
+    app:cardElevation="5dp"
+    app:cardUseCompatPadding="false">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/lblTransferenciaTituloIng"
+                        android:layout_width="wrap_content"
+                        android:layout_height="25dp"
+                        android:layout_marginRight="3dp"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center|left"
+                        android:maxLines="1"
+                        android:text="# de Transferencia:"
+                        android:textColor="@color/clr_fuente_primario"
+                        android:textSize="14dp" />
+
+                    <TextView
+                        android:id="@+id/lblTransferenciaIng"
+                        android:layout_width="wrap_content"
+                        android:layout_height="25dp"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center|left"
+                        android:maxLines="1"
+                        android:text="000000000"
+                        android:textColor="@color/clr_fuente_primario"
+                        android:textSize="14dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/lblFechaTituloing"
+                        android:layout_width="wrap_content"
+                        android:layout_height="25dp"
+                        android:layout_marginRight="3dp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center|left"
+                        android:text="Fecha:"
+                        android:textColor="@color/clr_fuente_secundario"
+                        android:textSize="14dp" />
+
+                    <TextView
+                        android:id="@+id/lblFechaIng"
+                        android:layout_width="wrap_content"
+                        android:layout_height="25dp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center|left"
+                        android:text="00/00/0000"
+                        android:textColor="@color/clr_fuente_secundario"
+                        android:textSize="14dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/lblTotalTituloIng"
+                        android:layout_width="wrap_content"
+                        android:layout_height="28dp"
+                        android:layout_marginRight="3dp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center|left"
+                        android:text="Total:"
+                        android:textColor="@color/clr_fuente_primario"
+                        android:textSize="18dp" />
+
+                    <TextView
+                        android:id="@+id/lblTotalIng"
+                        android:layout_width="wrap_content"
+                        android:layout_height="28dp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center|left"
+                        android:text="L.00.00"
+                        android:textColor="@color/clr_fuente_primario"
+                        android:textSize="18dp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/btnEditarIng"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    app:srcCompat="@mipmap/ico_azul_editar" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

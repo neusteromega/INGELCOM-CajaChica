@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/clr_fondo_primario"
+    tools:context=".AdmPantallas">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragAdmPantallas"
+        android:name="com.ingelcom.cajachica.Fragmentos.FragAdmInicio"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/CLOpciones"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_adm_usuarios" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/CLOpciones"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_gravity="bottom"
+            android:background="@color/clr_casilla_blanca">
+
+            <LinearLayout
+                android:id="@+id/LLInicio"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:onClick="verInicio"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imgInicio"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    app:srcCompat="@mipmap/ico_azul_iniciolleno" />
+
+                <TextView
+                    android:id="@+id/lblInicio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="Inicio"
+                    android:textAlignment="center"
+                    android:textColor="@color/clr_fuente_primario"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/LLRegistrar"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:onClick="verRegistrar"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imgRegistrar"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    app:srcCompat="@mipmap/ico_azul_registrarvacio" />
+
+                <TextView
+                    android:id="@+id/lblRegistrar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="Registrar"
+                    android:textAlignment="center"
+                    android:textColor="@color/clr_fuente_primario"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/LLCuadrillas"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:onClick="verCuadrillas"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imgCuadrillas"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    app:srcCompat="@mipmap/ico_azul_cuadrillasvacio" />
+
+                <TextView
+                    android:id="@+id/lblCuadrillas"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="Cuadrillas"
+                    android:textAlignment="center"
+                    android:textColor="@color/clr_fuente_primario"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/LLUsuarios"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:onClick="verUsuarios"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imgUsuarios"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    app:srcCompat="@mipmap/ico_azul_usuariovacio" />
+
+                <TextView
+                    android:id="@+id/lblUsuarios"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="Usuarios"
+                    android:textAlignment="center"
+                    android:textColor="@color/clr_fuente_primario"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "10650199500",
+    "project_id": "ingelcom-controlcajachica",
+    "storage_bucket": "ingelcom-controlcajachica.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:10650199500:android:e880d100a8f875f8be6969",
+        "android_client_info": {
+          "package_name": "com.ingelcom.cajachica"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAW5T6QLL61ZJH0nkHF0BkOAu26gNqqSD0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

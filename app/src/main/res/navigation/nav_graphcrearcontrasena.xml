@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graphcrearcontrasena"
+    app:startDestination="@id/fragBuscarUsuario">
+
+    <fragment
+        android:id="@+id/fragBuscarUsuario"
+        android:name="com.ingelcom.cajachica.Fragmentos.FragBuscarUsuario"
+        android:label="fragment_buscar_usuario"
+        tools:layout="@layout/fragment_buscar_usuario" >
+        <action
+            android:id="@+id/actionBuscarUsuario_CrearContrasena"
+            app:destination="@id/fragCrearContrasena" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragCrearContrasena"
+        android:name="com.ingelcom.cajachica.Fragmentos.FragCrearCorreoContrasena"
+        android:label="fragment_crear_contrasena"
+        tools:layout="@layout/fragment_crear_correocontrasena" />
+</navigation>

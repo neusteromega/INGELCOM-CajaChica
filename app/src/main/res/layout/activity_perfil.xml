@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/clr_fondo_primario"
+    tools:context=".Perfil">
+
+    <LinearLayout
+        android:id="@+id/LLEncabezadoPerfil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center|left"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:paddingRight="45dp">
+
+            <ImageView
+                android:id="@+id/imgRegresarPerfil"
+                android:layout_width="25dp"
+                android:layout_height="match_parent"
+                app:srcCompat="@mipmap/ico_azul_regresar" />
+
+            <TextView
+                android:id="@+id/lblTituloPerfil"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:text="Perfil"
+                android:textColor="@color/clr_fuente_primario"
+                android:textSize="25dp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/lblSeparadorPerfil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/clr_casillaazul_separador"
+            android:fontFamily="@font/montserrat_bold"
+            android:gravity="center"
+            android:textSize="2dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LLContenidoPerfil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/btnEditarPerfil"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/LLEncabezadoPerfil">
+
+        <ImageView
+            android:id="@+id/imgUsuarioPerfil"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            app:srcCompat="@mipmap/ico_azul_perfilusuario" />
+
+        <TextView
+            android:id="@+id/lblNombrePerfil"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="30dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:gravity="center"
+            android:text="Nombre Apellido"
+            android:textColor="@color/clr_fuente_primario"
+            android:textSize="25dp" />
+
+        <LinearLayout
+            android:id="@+id/LLDatosPerfil"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/clr_casillablanca_cuadrada"
+            android:elevation="5dp"
+            android:orientation="vertical"
+            android:paddingLeft="12dp"
+            android:paddingTop="15dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="15dp">
+
+            <LinearLayout
+                android:id="@+id/LLCorreoPerfil"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/lblTituloCorreoPerfil"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="Correo:"
+                    android:textColor="@color/clr_fuente_primario"
+                    android:textSize="17dp" />
+
+                <TextView
+                    android:id="@+id/lblCorreoPerfil"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="right"
+                    android:text="correo@correo.com"
+                    android:textColor="@color/clr_fuente_secundario"
+                    android:textSize="17dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/lblSepCorreoIdentidadPerfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/clr_casillagris_separador"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:textSize="1dp" />
+
+            <LinearLayout
+                android:id="@+id/LLIdentidadPerfil"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/lblTituloIdentidadPerfil"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="Identidad:"
+                    android:textColor="@color/clr_fuente_primario"
+                    android:textSize="17dp" />
+
+                <TextView
+                    android:id="@+id/lblIdentidadPerfil"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="right"
+                    android:text="0000-0000-00000"
+                    android:textColor="@color/clr_fuente_secundario"
+                    android:textSize="17dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/lblSepIdentidadTelefonoPerfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/clr_casillagris_separador"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:textSize="1dp" />
+
+            <LinearLayout
+                android:id="@+id/LLTelefonoPerfil"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/lblTituloTelefonoPerfil"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="Teléfono:"
+                    android:textColor="@color/clr_fuente_primario"
+                    android:textSize="17dp" />
+
+                <TextView
+                    android:id="@+id/lblTelefonoPerfil"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="right"
+                    android:text="00000000"
+                    android:textColor="@color/clr_fuente_secundario"
+                    android:textSize="17dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/lblSepTelefonoCuadrillaPerfil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/clr_casillagris_separador"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:textSize="1dp" />
+
+            <LinearLayout
+                android:id="@+id/LLCuadrillaPerfil"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/lblTituloCuadrillaPerfil"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="Cuadrilla:"
+                    android:textColor="@color/clr_fuente_primario"
+                    android:textSize="17dp" />
+
+                <TextView
+                    android:id="@+id/lblCuadrillaPerfil"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="right"
+                    android:text="Nombre Cuadrilla"
+                    android:textColor="@color/clr_fuente_secundario"
+                    android:textSize="17dp" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/btnEditarPerfil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="60dp"
+        android:background="@drawable/clr_casilladegradadoazul_redonda"
+        android:elevation="5dp"
+        android:fontFamily="@font/montserrat_bold"
+        android:gravity="center"
+        android:onClick="editarPerfil"
+        android:paddingLeft="25dp"
+        android:paddingTop="10dp"
+        android:paddingRight="25dp"
+        android:paddingBottom="10dp"
+        android:text="Editar Perfil"
+        android:textColor="@color/clr_fuente_terciario"
+        android:textSize="22dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

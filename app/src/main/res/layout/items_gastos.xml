@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="15dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginRight="15dp"
+    android:layout_marginBottom="10dp"
+    android:animateLayoutChanges="true"
+    app:cardCornerRadius="7dp"
+    app:cardElevation="5dp"
+    app:cardUseCompatPadding="false">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:orientation="vertical"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:id="@+id/lblTipoCompraGst"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center|left"
+                android:maxLines="1"
+                android:text="Tipo de Compra"
+                android:textColor="@color/clr_fuente_primario"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/lblFechaGst"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center|left"
+                android:text="00/00/0000"
+                android:textColor="@color/clr_fuente_secundario"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/lblEmpleadoGst"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center|left"
+                android:text="Nombre Empleado"
+                android:textColor="@color/clr_fuente_primario"
+                android:textSize="14dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="7dp"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/lblTotalGst"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="right"
+                android:text="L.000.00"
+                android:textColor="@color/clr_fuente_primario"
+                android:textSize="16dp" />
+
+            <ImageView
+                android:id="@+id/btnExpandirGst"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                app:srcCompat="@mipmap/ico_azul_expandir" />
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

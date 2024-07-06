@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/clr_fondo_primario"
+    tools:context=".AgregarEditarPerfil">
+
+    <LinearLayout
+        android:id="@+id/LLEncabezadoAEP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:gravity="center|left"
+        android:orientation="horizontal"
+        android:paddingLeft="20dp"
+        android:paddingRight="45dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imgRegresarAEP"
+            android:layout_width="25dp"
+            android:layout_height="match_parent"
+            app:srcCompat="@mipmap/ico_azul_regresar" />
+
+        <TextView
+            android:id="@+id/lblTituloAEP"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:gravity="center"
+            android:text="Editar Perfil"
+            android:textColor="@color/clr_fuente_primario"
+            android:textSize="25dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LLContenidoAEP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/LLEncabezadoAEP">
+
+        <LinearLayout
+            android:id="@+id/LLNombreApellidoAEP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/clr_casillablanca_cuadrada"
+            android:elevation="5dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="12dp"
+            android:paddingRight="15dp">
+
+            <ImageView
+                android:id="@+id/imgNombreApellidoAEP"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:srcCompat="@mipmap/ico_azul_nombreapellido" />
+
+            <EditText
+                android:id="@+id/txtNombreApellidoAEP"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@android:color/transparent"
+                android:ems="10"
+                android:fontFamily="@font/montserrat_bold"
+                android:hint="Nombre y Apellido"
+                android:inputType="text"
+                android:paddingLeft="15dp"
+                android:paddingRight="10dp"
+                android:textColor="@color/clr_fuente_secundario"
+                android:textSize="17dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LLIdentidadAEP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/clr_casillablanca_cuadrada"
+            android:elevation="5dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="12dp"
+            android:paddingRight="15dp">
+
+            <ImageView
+                android:id="@+id/imgIdentidadAEP"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:srcCompat="@mipmap/ico_azul_identidad" />
+
+            <EditText
+                android:id="@+id/txtIdentidadAEP"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@android:color/transparent"
+                android:digits="0123456789-"
+                android:ems="10"
+                android:fontFamily="@font/montserrat_bold"
+                android:hint="Identidad"
+                android:inputType="number"
+                android:paddingLeft="15dp"
+                android:paddingRight="10dp"
+                android:textColor="@color/clr_fuente_secundario"
+                android:textSize="17dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LLTelefonoAEP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/clr_casillablanca_cuadrada"
+            android:elevation="5dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="12dp"
+            android:paddingRight="15dp">
+
+            <ImageView
+                android:id="@+id/imgTelefonoAEP"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:srcCompat="@mipmap/ico_azul_telefono" />
+
+            <EditText
+                android:id="@+id/txtTelefonoAEP"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@android:color/transparent"
+                android:ems="10"
+                android:fontFamily="@font/montserrat_bold"
+                android:hint="Teléfono"
+                android:inputType="number"
+                android:paddingLeft="15dp"
+                android:paddingRight="10dp"
+                android:textColor="@color/clr_fuente_secundario"
+                android:textSize="17dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LLCorreoAEP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/clr_casillablanca_cuadrada"
+            android:elevation="5dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="12dp"
+            android:paddingRight="15dp">
+
+            <ImageView
+                android:id="@+id/imgCorreoAEP"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:srcCompat="@mipmap/ico_azul_correo" />
+
+            <EditText
+                android:id="@+id/txtCorreoAEP"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@android:color/transparent"
+                android:ems="10"
+                android:fontFamily="@font/montserrat_bold"
+                android:hint="Correo Electrónico"
+                android:inputType="textEmailAddress"
+                android:paddingLeft="15dp"
+                android:paddingRight="10dp"
+                android:textColor="@color/clr_fuente_secundario"
+                android:textSize="17dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LLContrasenaAEP"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/clr_casillablanca_cuadrada"
+            android:elevation="5dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="12dp"
+            android:paddingRight="15dp">
+
+            <ImageView
+                android:id="@+id/imgContrasenaAEP"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:srcCompat="@mipmap/ico_azul_contrasena" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center|right"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/txtContrasenaAEP"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:ems="10"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:hint="Contraseña"
+                    android:inputType="textPassword"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="10dp"
+                    android:textColor="@color/clr_fuente_secundario"
+                    android:textSize="17dp" />
+
+                <ImageView
+                    android:id="@+id/imgVerContrasenaAEP"
+                    android:layout_width="35dp"
+                    android:layout_height="30dp"
+                    android:contentDescription="@string/descripcion"
+                    app:srcCompat="@mipmap/ico_azul_mostrarcontrasena" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LLConfContrasenaAEP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/clr_casillablanca_cuadrada"
+            android:elevation="5dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="12dp"
+            android:paddingRight="15dp">
+
+            <ImageView
+                android:id="@+id/imgConfContrasenaAEP"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:srcCompat="@mipmap/ico_azul_contrasena" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center|right"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/txtConfContrasenaAEP"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:ems="10"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:hint="Confirmar Contraseña"
+                    android:inputType="textPassword"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="10dp"
+                    android:textColor="@color/clr_fuente_secundario"
+                    android:textSize="17dp" />
+
+                <ImageView
+                    android:id="@+id/imgVerConfContrasenaAEP"
+                    android:layout_width="35dp"
+                    android:layout_height="30dp"
+                    android:contentDescription="@string/descripcion"
+                    app:srcCompat="@mipmap/ico_azul_mostrarcontrasena" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LLRolAEP"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/clr_casillablanca_cuadrada"
+            android:elevation="5dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="12dp"
+            android:paddingRight="5dp">
+
+            <ImageView
+                android:id="@+id/imgRolAEP"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:srcCompat="@mipmap/ico_azul_rol" />
+
+            <Spinner
+                android:id="@+id/spRolAEP"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:contentDescription="@string/descripcion"
+                android:paddingLeft="15dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LLCuadrillaAEP"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/clr_casillablanca_cuadrada"
+            android:elevation="5dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="12dp"
+            android:paddingRight="5dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/imgCuadrillaAEP"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:srcCompat="@mipmap/ico_azul_cuadrilla" />
+
+            <Spinner
+                android:id="@+id/spCuadrillaAEP"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:contentDescription="@string/descripcion"
+                android:paddingLeft="15dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LLEstadoAEP"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/clr_casillablanca_cuadrada"
+            android:elevation="5dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="12dp"
+            android:paddingRight="5dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/imgEstadoAEP"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:srcCompat="@mipmap/ico_azul_estado" />
+
+            <Spinner
+                android:id="@+id/spEstadoAEP"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:contentDescription="@string/descripcion"
+                android:paddingLeft="15dp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/btnConfirmarAEP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/clr_casilladegradadoazul_redonda"
+            android:elevation="5dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:paddingLeft="25dp"
+            android:paddingTop="10dp"
+            android:paddingRight="25dp"
+            android:paddingBottom="10dp"
+            android:text="Confirmar"
+            android:textColor="@color/clr_fuente_terciario"
+            android:textSize="22dp" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

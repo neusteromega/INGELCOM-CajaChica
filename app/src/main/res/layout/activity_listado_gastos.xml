@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/clr_fondo_primario"
+    tools:context=".ListadoGastos">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/LLEncabezadoLG"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="35dp"
+            android:gravity="center|left"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:paddingRight="40dp">
+
+            <ImageView
+                android:id="@+id/imgRegresarLG"
+                android:layout_width="25dp"
+                android:layout_height="match_parent"
+                app:srcCompat="@mipmap/ico_azul_regresar" />
+
+            <TextView
+                android:id="@+id/lblTituloLG"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:text="Listado de Gastos"
+                android:textColor="@color/clr_fuente_primario"
+                android:textSize="25dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LLFechaLG"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="35dp"
+            android:background="@drawable/clr_casillablanca_cuadrada"
+            android:elevation="5dp"
+            android:gravity="center"
+            android:onClick="DetalleGasto"
+            android:orientation="horizontal"
+            android:paddingLeft="12dp"
+            android:paddingRight="22dp">
+
+            <ImageView
+                android:id="@+id/imgFechaLG"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:srcCompat="@mipmap/ico_azul_fecha" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center|right"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/lblFechaLG"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center|left"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="10dp"
+                    android:text="Mes - Año"
+                    android:textColor="@color/clr_fuente_secundario"
+                    android:textSize="17dp" />
+
+                <ImageView
+                    android:id="@+id/imgAbrirFechaLG"
+                    android:layout_width="11dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="@string/descripcion"
+                    app:srcCompat="@mipmap/ico_gris_expandirabajo" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LLListados"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/LLCuadrillaLG"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/lblCuadrilla"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:text="Cuadrilla"
+                    android:textColor="@color/clr_fuente_primario"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:id="@+id/lblCuadrillaLineaLG"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/clr_casillaazul_separador"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:text="Buscar Usuario"
+                    android:textSize="1dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/LLSupervisoresLG"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/lblSupervisores"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:text="Supervisores"
+                    android:textColor="@color/clr_fuente_primario"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:id="@+id/lblSupervisoresLineaLG"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/clr_casillaazul_separador"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:text="Buscar Usuario"
+                    android:textSize="1dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!--<androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragListadoGastos"
+            android:name="com.ingelcom.cajachica.Fragmentos.FragGastosCuadrilla"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:defaultNavHost="true"
+            tools:layout="@layout/fragment_gastos_cuadrilla" />-->
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vpListadoGastos"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
