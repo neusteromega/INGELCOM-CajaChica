@@ -11,30 +11,49 @@
         android:id="@+id/LLEncabezadoAEP"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:gravity="center|left"
-        android:orientation="horizontal"
-        android:paddingLeft="20dp"
-        android:paddingRight="45dp"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/imgRegresarAEP"
-            android:layout_width="25dp"
-            android:layout_height="match_parent"
-            app:srcCompat="@mipmap/ico_azul_regresar" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:gravity="center|left"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:paddingRight="40dp">
+
+            <ImageView
+                android:id="@+id/imgRegresarAEP"
+                android:layout_width="25dp"
+                android:layout_height="match_parent"
+                app:srcCompat="@mipmap/ico_azul_regresar" />
+
+            <TextView
+                android:id="@+id/lblTituloAEP"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:text="Editar Perfil"
+                android:textColor="@color/clr_fuente_primario"
+                android:textSize="25dp" />
+
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/lblTituloAEP"
+            android:id="@+id/lblSeparadorAEP"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/clr_casillaazul_separador"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center"
-            android:text="Editar Perfil"
-            android:textColor="@color/clr_fuente_primario"
-            android:textSize="25dp" />
+            android:textSize="2dp" />
 
     </LinearLayout>
 
@@ -42,7 +61,7 @@
         android:id="@+id/LLContenidoAEP"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="20dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -333,8 +352,7 @@
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingLeft="12dp"
-            android:paddingRight="5dp"
-            android:visibility="gone">
+            android:paddingRight="5dp">
 
             <ImageView
                 android:id="@+id/imgCuadrillaAEP"
@@ -363,8 +381,7 @@
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingLeft="12dp"
-            android:paddingRight="5dp"
-            android:visibility="gone">
+            android:paddingRight="5dp">
 
             <ImageView
                 android:id="@+id/imgEstadoAEP"

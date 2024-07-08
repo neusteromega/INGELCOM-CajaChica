@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.ingelcom.cajachica.AgregarEditarPerfil;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.ListadoEmpleados;
@@ -35,7 +37,10 @@ public class FragAdmUsuarios extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private LinearLayout btnMiPerfil, btnAgregarUsuario, btnListadoEmpleados;
+    private LinearLayout btnMiPerfil, btnAgregarUsuario, btnListadoEmpleados, btnCerrarSesión;
+
+    private FirebaseAuth auth; //Objeto que verifica la autenticación del usuario con Firebase
+    private FirebaseUser user; //Objeto que obtiene el usuario actual
 
     public FragAdmUsuarios() {
         // Required empty public constructor
@@ -74,9 +79,14 @@ public class FragAdmUsuarios extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_adm_usuarios, container, false);
 
+        //Inicializamos la autenticación con Firebase
+        auth = FirebaseAuth.getInstance();
+
+        //Enlazamos las variables globales con los elementos gráficos
         btnMiPerfil = view.findViewById(R.id.LLMiPerfilUsu);
         btnAgregarUsuario = view.findViewById(R.id.LLAgregarUsuarioUsu);
         btnListadoEmpleados = view.findViewById(R.id.LLListadoEmpleadosUsu);
+        btnCerrarSesión = view.findViewById(R.id.LLCerrarSesionUsu);
 
         //Eventos Clic de botones
         btnMiPerfil.setOnClickListener(v -> {
@@ -85,8 +95,9 @@ public class FragAdmUsuarios extends Fragment {
         });
 
         btnAgregarUsuario.setOnClickListener(v -> {
-            //Redireccionamos al usuario al activity de "AgregarEditarPerfil"
-            Utilidades.iniciarActivity(getActivity(), AgregarEditarPerfil.class, false);
+            //Redireccionamos al usuario al activity de "AgregarEditarPerfil" y le indicamos que deberá reflejar el contenido de "AgregarUsuario"
+            //Utilidades.iniciarActivity(getActivity(), AgregarEditarPerfil.class, false);
+            Utilidades.iniciarActivityConDatos(getActivity(), AgregarEditarPerfil.class, "Activity", "AgregarUsuario");
         });
 
         btnListadoEmpleados.setOnClickListener(v -> {

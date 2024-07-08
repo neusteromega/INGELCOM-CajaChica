@@ -21,6 +21,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ingelcom.cajachica.AdmPantallas;
+import com.ingelcom.cajachica.EmpMenuPrincipal;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.IniciarSesion;
 import com.ingelcom.cajachica.Perfil;
@@ -108,9 +109,22 @@ public class FragCrearCorreoContrasena extends Fragment {
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser(); // Obtiene el usuario actual
+
+        //CAMBIAR CUANDO SE ESTABLEZCAN LOS ROLES. Verificamos que el usuario no sea null, si no lo es, que mande a la pantalla inicial
+        if (currentUser != null) {
+            Utilidades.iniciarActivity(getActivity(), EmpMenuPrincipal.class, false);
+        }
+    }
+
     //Función en la que se creará el usuario con Firebase Auth
     private void registrarUsuario() {
         pbConfirmar.setVisibility(View.VISIBLE); //Ponemos visible la ProgressBar cuando se esté haciendo el registro del usuario al dar clic en "Confirmar"
+
+        //Guardamos el contenido de los EditText en las siguientes variables
         String correo = txtCorreo.getText().toString();
         String contra = txtContra.getText().toString();
         String confContra = txtConfContra.getText().toString();
@@ -125,10 +139,11 @@ public class FragCrearCorreoContrasena extends Fragment {
                                 pbConfirmar.setVisibility(View.GONE); //Cuando el registro se haga, que se oculte la ProgressBar
                                 if (task.isSuccessful()) { //Si el registro fue exitoso, entrará aquí
                                     //FirebaseUser user = mAuth.getCurrentUser();
-                                    Toast.makeText(getActivity(), "Usuario Registrado", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), "USUARIO REGISTRADO", Toast.LENGTH_SHORT).show();
                                     Utilidades.iniciarActivity(getActivity(), IniciarSesion.class, true);
                                 }
                                 else { //Si el registro falló, entrará aquí
+                                    //CAMBIAR EL MENSAJE DE ERROR
                                     String errorMessage = task.getException() != null ? task.getException().getMessage() : "Error desconocido";
                                     Log.e("FragCrearCorreoContrasena", "Error al registrarse: " + errorMessage);
                                     Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_LONG).show();
@@ -138,12 +153,12 @@ public class FragCrearCorreoContrasena extends Fragment {
             }
             else { //Si las contraseñas son distintas, que entre aquí
                 pbConfirmar.setVisibility(View.GONE);
-                Toast.makeText(getActivity(), "Las Contraseñas no Coinciden", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "LAS CONTRASEÑAS NO COINCIDEN", Toast.LENGTH_SHORT).show();
             }
         }
         else { //Si alguna caja de texto está vacía, que entre aquí y muestre un mensaje emergente de advertencia
             pbConfirmar.setVisibility(View.GONE);
-            Toast.makeText(getActivity(), "Todos los Campos deben Llenarse", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "TODOS LOS CAMPOS DEBEN LLENARSE", Toast.LENGTH_SHORT).show();
         }
     }
 }
