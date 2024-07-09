@@ -2,7 +2,6 @@ package com.ingelcom.cajachica;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,12 +9,10 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.ingelcom.cajachica.DAO.Cuadrilla;
+import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AgregarEditarPerfil extends AppCompatActivity {
@@ -73,15 +70,31 @@ public class AgregarEditarPerfil extends AppCompatActivity {
     }
 
     private void inicializarSpinners() {
-        Cuadrilla cuad = new Cuadrilla(); //Objeto que instancia la clase "Cuadrilla"
+        FirestoreOperaciones oper = new FirestoreOperaciones();
 
-        //Llamamos el método "obtenerCuadrillas" de la clase "Cuadrilla" e invocamos los métodos "onCallback" y "onFailure" de la interface FirestoreCallback
-        cuad.obtenerCuadrillas(new Cuadrilla.FirestoreCallback() {
+        //Para inicializar los spinners, llamamos al método "obtenerRegistros" de la clase "FirestoreOperaciones" a la cual le mandamos el nombre de la colección y el nombre del campo de Firestore de los cuales queremos obtener los registros. También invocamos los métodos "onCallback" y "onFailure" de la interfaz FirestoreCallback
+        //ROLES
+        oper.obtenerRegistros("roles", "Nombre", new FirestoreOperaciones.FirestoreCallback() {
             @Override
             public void onCallback(List<String> lista) {
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(AgregarEditarPerfil.this, android.R.layout.simple_spinner_item, lista);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(AgregarEditarPerfil.this, R.layout.spinner_items, lista);
+                spRoles.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.w("Activity", "Error al obtener los roles.", e);
+            }
+        });
+
+        //CUADRILLAS
+        oper.obtenerRegistros("cuadrillas", "Nombre", new FirestoreOperaciones.FirestoreCallback() {
+            @Override
+            public void onCallback(List<String> lista) {
+                //Creamos el adapter para el spinner y le establecemos la vista de los items que es "R.layout.spinner_items" y la lista de elementos que es la variable "lista"
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(AgregarEditarPerfil.this, R.layout.spinner_items, lista);
                 spCuadrillas.setAdapter(adapter); //Asignamos el adapter a "spCuadrillas"
+                //Utilidades.spinnerConHint(AgregarEditarPerfil.this, spCuadrillas, lista, "Cuadrillas");
             }
 
             @Override
