@@ -336,7 +336,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:contentDescription="@string/descripcion"
-                android:paddingLeft="15dp" />
+                android:paddingLeft="10dp"
+                tools:listitem="@layout/spinner_items" />
 
         </LinearLayout>
 
@@ -365,7 +366,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:contentDescription="@string/descripcion"
-                android:paddingLeft="15dp" />
+                android:paddingLeft="10dp"
+                tools:listitem="@layout/spinner_items" />
 
         </LinearLayout>
 
@@ -394,7 +396,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:contentDescription="@string/descripcion"
-                android:paddingLeft="15dp" />
+                android:paddingLeft="10dp"
+                tools:listitem="@layout/spinner_items" />
 
         </LinearLayout>
 
@@ -409,6 +412,7 @@
             android:background="@drawable/clr_casilladegradadoazul_redonda"
             android:elevation="5dp"
             android:fontFamily="@font/montserrat_bold"
+            android:onClick="confirmar"
             android:paddingLeft="25dp"
             android:paddingTop="10dp"
             android:paddingRight="25dp"

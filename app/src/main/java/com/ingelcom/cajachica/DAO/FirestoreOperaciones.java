@@ -5,6 +5,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class FirestoreOperaciones {
 
@@ -40,9 +41,25 @@ public class FirestoreOperaciones {
                 });
     }
 
+    public void insertarRegistros(String nombreColeccion, Map<String,Object> registros, final FirestoreInsertCallback callback) {
+        db.collection(nombreColeccion)
+                .add(registros)
+                .addOnSuccessListener(documentReference -> {
+                    callback.onSuccess(documentReference.getId());
+                })
+                .addOnFailureListener(e -> {
+                    callback.onFailure(e);
+                });
+    }
+
     //Interfaz "callback" que nos ayuda a realizar operaciones que puedan tomar un tiempo en completarse, como las operaciones que requieren internet y pueden tardar un poco en realizarse debido a la conexión a internet
     public interface FirestoreCallback {
         void onCallback(List<String> lista); //Se invoca cuando la operación de extracción de datos de Firestore ha sido exitosa, y recibe como parámetro el listado de registros obtenido de la colección de Firestore cuyo nombre se recibe como parámetro en el método "obtenerRegistros" de arriba
         void onFailure(Exception e); //Se invoca cuando se produce un error durante la operación de extracción de datos, y recibe como parámetro una excepción que describe el error presentado
+    }
+
+    public interface FirestoreInsertCallback {
+        void onSuccess(String idDocumento);
+        void onFailure(Exception e);
     }
 }
