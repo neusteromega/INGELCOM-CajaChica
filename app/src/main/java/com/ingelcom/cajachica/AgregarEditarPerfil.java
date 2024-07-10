@@ -173,6 +173,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         datos.put("Identidad", identidad);
         datos.put("Telefono", telefono);
         datos.put("Rol", rol);
+        datos.put("Correo", ""); //El correo estará vacío hasta que el usuario lo cree más adelante
         datos.put("Estado", true);
 
         //Si la selección hecha en el spinner "Cuadrillas" fue "No Pertenece", que inserte un valor vacío ("") en el campo "Cuadrilla" de Firestore

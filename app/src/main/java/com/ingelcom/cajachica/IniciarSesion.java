@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,9 +23,11 @@ public class IniciarSesion extends AppCompatActivity {
 
     //Variables para los componentes gráficos
     private EditText txtCorreo, txtContra;
+    private ImageView imgContra;
     private TextView btnAcceder;
     private ProgressBar pbAcceder;
 
+    private int clicks = 0; //Se utilizará en la parte de mostrar y ocultar la contraseña
     private FirebaseAuth mAuth; //Objeto que verifica la autenticación del usuario con Firebase
 
     @Override
@@ -49,6 +52,7 @@ public class IniciarSesion extends AppCompatActivity {
         //Enlazamos las variables globales con los elementos gráficos
         txtCorreo = findViewById(R.id.txtCorreoLogin);
         txtContra = findViewById(R.id.txtContrasenaLogin);
+        imgContra = findViewById(R.id.imgVerContrasenaLogin);
         btnAcceder = findViewById(R.id.btnAccederLogin);
         pbAcceder = findViewById(R.id.pbAccederLogin);
     }
@@ -58,8 +62,6 @@ public class IniciarSesion extends AppCompatActivity {
     }
 
     public void acceder(View view) {
-        //Utilidades.iniciarActivity(this, EmpMenuPrincipal.class, false);
-
         pbAcceder.setVisibility(View.VISIBLE); //Ponemos visible la ProgressBar cuando se esté iniciando sesión
 
         //Guardamos el contenido de los EditText en las siguientes variables
@@ -73,6 +75,7 @@ public class IniciarSesion extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             pbAcceder.setVisibility(View.GONE); //Cuando se inicie sesión, que se oculte la ProgressBar
                             if (task.isSuccessful()) {
+                                //AQUÍ VAMOS A VERIFICAR EL ROL DEL USUARIO Y EL CORREO SERVIRÁ COMO SENTENCIA WHERE
                                 //FirebaseUser user = mAuth.getCurrentUser();
                                 Toast.makeText(IniciarSesion.this, "BIENVENIDO", Toast.LENGTH_SHORT).show();
                                 Utilidades.iniciarActivity(IniciarSesion.this, EmpMenuPrincipal.class, true);
@@ -90,5 +93,9 @@ public class IniciarSesion extends AppCompatActivity {
 
     public void accederAdmin(View view) {
         Utilidades.iniciarActivity(this, AdmPantallas.class, false);
+    }
+
+    public void mostrarOcultarContra(View view) {
+        clicks = Utilidades.mostrarOcultarContrasena(clicks, txtContra, imgContra); //Llamamos el método "mostrarOcultarContrasena" de la clase Utilidades que nos ayudará a mostrar y ocultar la contraseña
     }
 }

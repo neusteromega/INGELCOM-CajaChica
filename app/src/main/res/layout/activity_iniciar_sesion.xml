@@ -123,6 +123,7 @@
                     android:layout_width="35dp"
                     android:layout_height="30dp"
                     android:contentDescription="@string/descripcion"
+                    android:onClick="mostrarOcultarContra"
                     app:srcCompat="@mipmap/ico_azul_mostrarcontrasena" />
             </LinearLayout>
 

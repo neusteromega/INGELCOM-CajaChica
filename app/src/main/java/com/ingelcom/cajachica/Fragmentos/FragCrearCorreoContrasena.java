@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,10 +53,12 @@ public class FragCrearCorreoContrasena extends Fragment {
     //Variables para los componentes gráficos
     private EditText txtCorreo, txtContra, txtConfContra;
     private TextView btnConfirmar;
+    private ImageView btnContra, btnConfContra;
     private ProgressBar pbConfirmar;
 
     private FirebaseAuth mAuth; //Objeto que verifica la autenticación del usuario con Firebase
     private FirestoreOperaciones oper;
+    private int clicksContra = 0, clicksConfContra = 0; //Se utilizarán en la parte de mostrar y ocultar la contraseña
     public static String identidadUsuario;
 
     public FragCrearCorreoContrasena() {
@@ -104,7 +107,25 @@ public class FragCrearCorreoContrasena extends Fragment {
         txtContra = view.findViewById(R.id.txtContrasenaCCC);
         txtConfContra = view.findViewById(R.id.txtConfContrasenaCCC);
         btnConfirmar = view.findViewById(R.id.btnConfirmarCCC);
+        btnContra = view.findViewById(R.id.imgVerContrasenaCCC);
+        btnConfContra = view.findViewById(R.id.imgVerConfContrasenaCCC);
         pbConfirmar = view.findViewById(R.id.pbConfirmarCCC);
+
+        //Evento clic del botón de ocultar/mostrar Contraseña
+        btnContra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clicksContra = Utilidades.mostrarOcultarContrasena(clicksContra, txtContra, btnContra); //Llamamos el método "mostrarOcultarContrasena" de la clase Utilidades que nos ayudará a mostrar y ocultar la contraseña
+            }
+        });
+
+        //Evento clic del botón de ocultar/mostrar Confirmar Contraseña
+        btnConfContra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clicksConfContra = Utilidades.mostrarOcultarContrasena(clicksConfContra, txtConfContra, btnConfContra); //Llamamos el método "mostrarOcultarContrasena" de la clase Utilidades que nos ayudará a mostrar y ocultar el confirmar contraseña
+            }
+        });
 
         //Evento clic del botón Confirmar
         btnConfirmar.setOnClickListener(new View.OnClickListener() {
@@ -148,8 +169,8 @@ public class FragCrearCorreoContrasena extends Fragment {
                                 if (task.isSuccessful()) { //Si el registro fue exitoso, entrará aquí
                                     //FirebaseUser user = mAuth.getCurrentUser();
                                     Toast.makeText(getActivity(), "USUARIO REGISTRADO", Toast.LENGTH_SHORT).show();
-                                    agregarCorreoUsuario(correo);
-                                    Utilidades.iniciarActivity(getActivity(), IniciarSesion.class, true);
+                                    agregarCorreoUsuario(correo); //Llamamos la función "agregarCorreoUsuario" de abajo y le mandamos el correo como parámetro
+                                    Utilidades.iniciarActivity(getActivity(), IniciarSesion.class, true); //Redireccionamos al usuario a la pantalla de Login y finalizamos esta actividad
                                 }
                                 else { //Si el registro falló, entrará aquí
                                     //CAMBIAR EL MENSAJE DE ERROR

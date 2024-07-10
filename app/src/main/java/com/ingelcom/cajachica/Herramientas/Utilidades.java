@@ -3,8 +3,11 @@ package com.ingelcom.cajachica.Herramientas;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -43,6 +46,25 @@ public class Utilidades {
         }
 
         return null; //Si no entra al if, que retorne un null
+    }
+
+    //Método que permite mostrar y ocultar una contraseña
+    public static int mostrarOcultarContrasena(int clicks, EditText txtContra, ImageView imgContra) { //Recibe como parámetros la cantidad de clicks, el EditText de la contraseña, y el ImageView de ver y ocultar la contraseña
+        //En este if verificamos si la variable "clicks" es divisible entre 2 y si al realizar la división su residuo es 1
+        if (clicks % 2 == 1) { //La cantidad de clicks al principio es 0 (Lo inicializamos en 0 en la clase que llama a este método)
+            //Si el residuo del número de "cantidadClicks" al dividirlo entre 2 es 1, se ocultará la contraseña y se mostrará el icono del ojo normal
+            txtContra.setTransformationMethod(PasswordTransformationMethod.getInstance()); //El EditText ofrece diferentes formas de transformar el texto que se muestra. La clase "PasswordTransformationMethod" es una implementación de "TransformationMethod" diseñada específicamente para ocultar contraseñas al reemplazar el texto visible con caracteres ocultos, como puntos o asteriscos
+            imgContra.setImageResource(R.mipmap.ico_azul_mostrarcontrasena); //Cambiamos el icono del ojo
+        }
+        else {
+            //Si el residuo del número de "clicks" al dividirlo entre 2 no es 0, se mostrará la contraseña y también el icono cambiará al ojo tachado
+            txtContra.setTransformationMethod(null);
+            imgContra.setImageResource(R.mipmap.ico_azul_ocultarcontrasena); //Cambiamos el icono del ojo
+        }
+
+        clicks++; //Aquí vamos aumentando la cantidad de clicks cada vez que se entre al método
+        txtContra.setSelection(txtContra.getText().length()); //Mover el cursor al final del texto
+        return clicks; //Retornamos la cantidad de Clicks
     }
 
     /*public static void spinnerConHint(Context contexto, Spinner spinner, List<String> lista, String nombreHint) {

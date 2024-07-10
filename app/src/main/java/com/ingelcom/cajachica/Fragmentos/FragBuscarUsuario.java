@@ -101,8 +101,15 @@ public class FragBuscarUsuario extends Fragment {
                 @Override
                 public void onCallback(Map<String, Object> documento) {
                     if (documento != null) { //Si el HashMap "documento" no es nulo, quiere decir que si se encontró el registro en la colección, por lo tanto, entrará al if
-                        FragCrearCorreoContrasena.identidadUsuario = identidad; //Mandamos la identidad a la variable global estática "identidadUsuario" en el FragCrearCorreoContrasena
-                        Navigation.findNavController(vista).navigate(R.id.actionBuscarUsuario_CrearContrasena); //Indicamos que al dar clic en el botón Buscar, que redireccione al usuario usando la acción "actionBuscarUsuario_CrearContrasena" que establecimos en el fragment_buscar_usuario en el "nav_graphcrearcontrasena
+                        String correo = (String) documento.get("Correo"); //Extraemos el correo del HashMap "documento"
+
+                        if (correo.isEmpty()) { //Si "correo está vacío, quiere decir que el usuario aún no ha registrado un correo y una contraseña, entonces que entre al if
+                            FragCrearCorreoContrasena.identidadUsuario = identidad; //Mandamos la identidad a la variable global estática "identidadUsuario" en el FragCrearCorreoContrasena
+                            Navigation.findNavController(vista).navigate(R.id.actionBuscarUsuario_CrearContrasena); //Indicamos que al dar clic en el botón Buscar, que redireccione al usuario usando la acción "actionBuscarUsuario_CrearContrasena" que establecimos en el fragment_buscar_usuario en el "nav_graphcrearcontrasena
+                        }
+                        else { //En cambio, si "correo" no está vacío, significa que el usuario ya creó un correo y una contraseña, entonces se le muestra un mensaje indicando eso
+                            Toast.makeText(getActivity(), "EL USUARIO YA CUENTA CON CORREO Y CONTRASEÑA", Toast.LENGTH_SHORT).show();
+                        }
                     }
                     else { //Si "documento" es nulo, no se encontró el registro en la colección, y entrará en este else
                         Toast.makeText(getActivity(), "NO SE ENCONTRÓ EL USUARIO", Toast.LENGTH_SHORT).show();
