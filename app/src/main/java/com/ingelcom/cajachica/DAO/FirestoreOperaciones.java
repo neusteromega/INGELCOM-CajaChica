@@ -1,5 +1,8 @@
 package com.ingelcom.cajachica.DAO;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,25 +44,33 @@ public class FirestoreOperaciones {
 
                     }
                     else {
-                        callback.onFailure(task.getException()); //Invocamos la interfaz "FirestoreCallback" con el objeto "callback" y con su método "onFailure", a este le mandamos la excepción obtenido en la variable "task"
+                        callback.onFailure(task.getException()); //Invocamos la interfaz "FirestoreCallback" con el objeto "callback" y con su método "onFailure", a este le mandamos la excepción obtenida en la variable "task"
                     }
                 });
     }
 
-    public void obtenerUnRegistro(String nombreColeccion, String campo, String dato, final FirestoreDocumentCallback callback) {
+    //Método para obtener un registro (un document con todos los campos y datos) de Firestore, utilizando una sentencia WHERE
+    public void obtenerUnRegistro(String nombreColeccion, String campo, String dato, final FirestoreDocumentCallback callback) { //Recibe como parámetros el nombre de la colección, el nombre del campo, el dato (estos dos sirven para la sentencia WHERE) y el "callback"
+        //Asignamos el nombre de la colección guardado en "nombreColeccion". En el ".whereEqualTo" asignamos el campo y el dato que servirán para la sentencia WHERE
         db.collection(nombreColeccion)
             .whereEqualTo(campo, dato)
             .get()
             .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        QuerySnapshot querySnapshot = task.getResult();
+                    if (task.isSuccessful()) { //Si la extracción de datos fue exitosa, entrará a este if
+                        QuerySnapshot querySnapshot = task.getResult(); //Guardamos el resultado obtenido con "task.getResult()" (todos los documents de Firestore obtenidos tras la búsqueda) en la variable "QuerySnapshot" que es un objeto que contiene los resultados de una consulta a Firestore
 
-                        if (!querySnapshot.isEmpty()) {
-                            QueryDocumentSnapshot documentSnapshot = (QueryDocumentSnapshot) querySnapshot.getDocuments().get(0);
-                            callback.onCallback(documentSnapshot.getData());
+                        if (!querySnapshot.isEmpty()) { //Si el querySnapshot no está vacío, quiere decir que la sentencia WHERE si encontró el dato en la colección, y entrará a este if
+                            QueryDocumentSnapshot documentSnapshot = (QueryDocumentSnapshot) querySnapshot.getDocuments().get(0); //En una variable de tipo "QueryDocumentSnapshot" guardamos los datos del document en la posición 0 (la posición inicial) del "querySnapshot", sólo la posición inicial ya que sólo debería encontrar un document porque los números de identidad no deben repetirse
+                            callback.onCallback(documentSnapshot.getData()); //Llamamos la interface "callback" y le mandamos los datos del "documentSnapshot" y estos datos están óptimos para ser guardados en un HashMap
                         }
+                        else { //Entrará a este else si el querySnapshot está vacío, y eso quiere decir que la sentencia WHERE no encontró el dato en la colección
+                            callback.onCallback(null); //Mandamos un "null" al HashMap de "onCallback". Esto nos servirá para darnos cuenta que no se encontró el dato en la colección
+                        }
+                    }
+                    else {
+                        callback.onFailure(task.getException()); //Invocamos la interfaz "FirestoreDocumentCallback" con el objeto "callback" y con su método "onFailure", a este le mandamos la excepción obtenido en la variable "task"
                     }
                 }
             });

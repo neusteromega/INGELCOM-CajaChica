@@ -5,12 +5,18 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.R;
+
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,6 +33,10 @@ public class FragBuscarUsuario extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private FirestoreOperaciones oper;
+    private EditText txtIdentidad;
+    private TextView btnBuscar;
 
     public FragBuscarUsuario() {
         // Required empty public constructor
@@ -57,23 +67,54 @@ public class FragBuscarUsuario extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        oper = new FirestoreOperaciones(); //Creamos la instancia de la clase "FirestoreOperaciones"
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_buscar_usuario, container, false); //Guardar la vista inflada del fragment en una variable tipo "view"
-        TextView btnBuscar = view.findViewById(R.id.btnBuscarBC); //Enlazamos el botón de Buscar (que en sí es un textview) a la variable de tipo "Button"
+
+        //Enlazamos los componentes gráficos a la variable global
+        btnBuscar = view.findViewById(R.id.btnBuscarBC);
+        txtIdentidad = view.findViewById(R.id.txtIdentidadBC);
 
         //Evento OnClick del botón de buscar
         btnBuscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.actionBuscarUsuario_CrearContrasena); //Indicamos que al dar clic en el botón Buscar, que redireccione al usuario usando la acción "actionBuscarUsuario_CrearContrasena" que establecimos en el fragment_buscar_usuario en el "nav_graphcrearcontrasena
+                buscarUsuario(v);
             }
         });
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+    //Método que permite buscar un usuario en Firestore mediante su identidad. Recibe un "View" que será necesario en la parte de "Navigation" entre fragments
+    private void buscarUsuario(View vista) {
+        String identidad = txtIdentidad.getText().toString(); //Extraemos el contenido de "txtIdentidad" y lo guardamos en la variable "identidad"
+
+        if (!identidad.isEmpty()) {
+            oper.obtenerUnRegistro("usuarios", "Identidad", identidad, new FirestoreOperaciones.FirestoreDocumentCallback() {
+                @Override
+                public void onCallback(Map<String, Object> documento) {
+                    if (documento != null) {
+                        Navigation.findNavController(vista).navigate(R.id.actionBuscarUsuario_CrearContrasena); //Indicamos que al dar clic en el botón Buscar, que redireccione al usuario usando la acción "actionBuscarUsuario_CrearContrasena" que establecimos en el fragment_buscar_usuario en el "nav_graphcrearcontrasena
+                    }
+                    else {
+                        Toast.makeText(getActivity(), "NO SE ENCONTRÓ EL USUARIO", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Log.w("AgregarEditarPerfil", "Error al obtener el documento", e);
+                }
+            });
+        }
+        else {
+            Toast.makeText(getActivity(), "INGRESE UN NÚMERO DE IDENTIDAD SIN GUIONES", Toast.LENGTH_SHORT).show();
+        }
     }
 }
