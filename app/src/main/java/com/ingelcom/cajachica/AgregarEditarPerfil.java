@@ -77,7 +77,8 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         if (nombreActivity != null) {
             //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
             switch (nombreActivity) {
-                case "AgregarUsuario": //Establecemos los elementos gráficos si la pantalla es "AgregarUsuario"
+                //Establecemos los elementos gráficos si la pantalla es "AgregarUsuario"
+                case "AgregarUsuario":
                     //Asignamos el título
                     lblTitulo.setText("Agregar Usuario");
 
@@ -138,14 +139,16 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         if (nombreActivity != null) {
             //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
             switch (nombreActivity) {
-                case "AgregarUsuario": //Si estamos en la pantalla de "Agregar Usuario", al dar clic en el botón "Confirmar" que realice las operaciones de este case
+                //Si estamos en la pantalla de "Agregar Usuario", al dar clic en el botón "Confirmar" que realice las operaciones de este case
+                case "AgregarUsuario":
+                    //Creamos un alertDialog que pregunte si se desea agregar el usuario
                     new AlertDialog.Builder(this).setTitle("AGREGAR USUARIO").setMessage("¿Está seguro que desea agregar el usuario?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "insertarUsuario()"
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 insertarUsuario(); //Llamamos el método "insertarUsuario" donde se hará el proceso de inserción a Firestore
                             }
-                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
