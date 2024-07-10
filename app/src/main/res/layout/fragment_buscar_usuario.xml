@@ -43,7 +43,7 @@
             android:paddingTop="10dp"
             android:paddingRight="12dp"
             android:paddingBottom="10dp"
-            android:text="Para crear tu correo y contraseña, primero busca tu usuario en el sistema. Ingresa tu número de identidad sin guiones para buscarlo."
+            android:text="Para completar tu usuario y crear tu correo y contraseña, primero busca tu usuario en el sistema. Ingresa tu número de identidad sin guiones para buscarlo."
             android:textColor="@color/clr_fuente_secundario"
             android:textSize="18dp" />
 

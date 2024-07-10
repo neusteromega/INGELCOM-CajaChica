@@ -1,9 +1,12 @@
 package com.ingelcom.cajachica;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -49,7 +52,19 @@ public class EmpMenuPrincipal extends AppCompatActivity {
     }
 
     public void cerrarSesion(View view) {
-        FirebaseAuth.getInstance().signOut(); //Método de firebase que permite cerrar sesión
-        Utilidades.iniciarActivity(this, IniciarSesion.class, true); //Mandamos al usuario a la pantalla de Login y finalizamos el activity actual
+        //Creamos un nuevo "AlertDialog" que nos pregunte si deseamos cerrar sesión
+        new AlertDialog.Builder(this).setTitle("CERRAR SESIÓN").setMessage("¿Está seguro que desea cerrar sesión?")
+            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Aquí se ejecutará una acción si el usuario seleccionó la opción de "Confirmar"
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    FirebaseAuth.getInstance().signOut(); //Método de firebase que permite cerrar sesión
+                    Utilidades.iniciarActivity(EmpMenuPrincipal.this, IniciarSesion.class, true); //Al confirmar el cierre de la sesión, mandamos al usuario a la pantalla de Login y finalizamos el activity actual
+                }
+            }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Aquí se ejecutará una acción si el usuario seleccionó la opción de "Cancelar"
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.d("Mensaje", "Se canceló la acción"); //Como se canceló el cierre de la sesión, se muestra un mensaje en el Logcat indicando que se canceló la acción
+                    }
+            }).show();
     }
 }

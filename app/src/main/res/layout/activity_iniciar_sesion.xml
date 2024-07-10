@@ -191,7 +191,7 @@
             android:paddingTop="10dp"
             android:paddingRight="15dp"
             android:paddingBottom="10dp"
-            android:text="Crea una Contraseña"
+            android:text="Completa tu Usuario"
             android:textColor="@color/clr_fuente_terciario"
             android:textSize="16dp"
             tools:ignore="TouchTargetSizeCheck" />

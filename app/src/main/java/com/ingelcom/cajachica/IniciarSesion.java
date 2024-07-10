@@ -77,7 +77,7 @@ public class IniciarSesion extends AppCompatActivity {
                                 Toast.makeText(IniciarSesion.this, "BIENVENIDO", Toast.LENGTH_SHORT).show();
                                 Utilidades.iniciarActivity(IniciarSesion.this, EmpMenuPrincipal.class, true);
                             } else {
-                                Toast.makeText(IniciarSesion.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(IniciarSesion.this, "CORREO O CONTRASEÑA INCORRECTA", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

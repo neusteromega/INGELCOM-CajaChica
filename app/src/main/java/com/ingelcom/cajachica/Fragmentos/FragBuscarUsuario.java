@@ -95,21 +95,23 @@ public class FragBuscarUsuario extends Fragment {
     private void buscarUsuario(View vista) {
         String identidad = txtIdentidad.getText().toString(); //Extraemos el contenido de "txtIdentidad" y lo guardamos en la variable "identidad"
 
-        if (!identidad.isEmpty()) {
+        if (!identidad.isEmpty()) { //Entrará al if si la identidad no está vacía
+            //Llamamos al método "obtenerUnRegistro" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo, el dato a buscar e invocamos la interfaz "FirestoreDocumentCallback"
             oper.obtenerUnRegistro("usuarios", "Identidad", identidad, new FirestoreOperaciones.FirestoreDocumentCallback() {
                 @Override
                 public void onCallback(Map<String, Object> documento) {
-                    if (documento != null) {
+                    if (documento != null) { //Si el HashMap "documento" no es nulo, quiere decir que si se encontró el registro en la colección, por lo tanto, entrará al if
+                        FragCrearCorreoContrasena.identidadUsuario = identidad; //Mandamos la identidad a la variable global estática "identidadUsuario" en el FragCrearCorreoContrasena
                         Navigation.findNavController(vista).navigate(R.id.actionBuscarUsuario_CrearContrasena); //Indicamos que al dar clic en el botón Buscar, que redireccione al usuario usando la acción "actionBuscarUsuario_CrearContrasena" que establecimos en el fragment_buscar_usuario en el "nav_graphcrearcontrasena
                     }
-                    else {
+                    else { //Si "documento" es nulo, no se encontró el registro en la colección, y entrará en este else
                         Toast.makeText(getActivity(), "NO SE ENCONTRÓ EL USUARIO", Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Exception e) {
-                    Log.w("AgregarEditarPerfil", "Error al obtener el documento", e);
+                    Log.w("Buscar Documento", "Error al obtener el documento", e);
                 }
             });
         }

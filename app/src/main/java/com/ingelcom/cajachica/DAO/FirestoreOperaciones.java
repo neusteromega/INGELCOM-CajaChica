@@ -80,12 +80,44 @@ public class FirestoreOperaciones {
     public void insertarRegistros(String nombreColeccion, Map<String,Object> registros, final FirestoreInsertCallback callback) { //Recibe como parámetros el nombre de la colección, el HashMap con el nombre de los campos y datos a insertar, y el "callback"
         //Asignamos el nombre de la colección guardado en "nombreColeccion", y el HashMap "registros"
         db.collection(nombreColeccion)
-                .add(registros)
-                .addOnSuccessListener(documentReference -> { //Entrará aquí si la inserción fue exitosa
-                    callback.onSuccess(documentReference.getId()); //Invocamos la interfaz "FirestoreInsertCallback" con el objeto "callback" y con su método "onSuccess" y le mandamos el id del documento que se crea tras la inserción
-                })
-                .addOnFailureListener(e -> {
-                    callback.onFailure(e); //Invocamos la interfaz "FirestoreInsertCallback" con el objeto "callback" y con su método "onFailure", a este le mandamos la excepción obtenida
+            .add(registros)
+            .addOnSuccessListener(documentReference -> { //Entrará aquí si la inserción fue exitosa
+                callback.onSuccess(documentReference.getId()); //Invocamos la interfaz "FirestoreInsertCallback" con el objeto "callback" y con su método "onSuccess" y le mandamos el id del documento que se crea tras la inserción
+            })
+            .addOnFailureListener(e -> {
+                callback.onFailure(e); //Invocamos la interfaz "FirestoreInsertCallback" con el objeto "callback" y con su método "onFailure", a este le mandamos la excepción obtenida
+            });
+    }
+
+    public void agregarRegistrosColeccion(String nombreColeccion, String campoBuscar, String datoBuscar, Map<String,Object> nuevosCampos, final FirestoreCallback callback) {
+        db.collection(nombreColeccion)
+                .whereEqualTo(campoBuscar, datoBuscar)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot querySnapshot = task.getResult();
+
+                            if (!querySnapshot.isEmpty()) {
+                                for (QueryDocumentSnapshot document : querySnapshot) {
+                                    String docId = document.getId();
+
+                                    db.collection(nombreColeccion).document(docId)
+                                        .update(nuevosCampos)
+                                        .addOnSuccessListener(aVoid -> callback.onCallback(null))
+                                        .addOnFailureListener(e -> callback.onFailure(e));
+                                    return;
+                                }
+                            }
+                            else {
+                                callback.onCallback(null);
+                            }
+                        }
+                        else {
+                            callback.onFailure(task.getException());
+                        }
+                    }
                 });
     }
 

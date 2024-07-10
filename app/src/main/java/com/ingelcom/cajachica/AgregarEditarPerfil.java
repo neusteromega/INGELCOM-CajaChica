@@ -186,6 +186,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
             @Override
             public void onSuccess(String idDocumento) {
                 Toast.makeText(AgregarEditarPerfil.this, "USUARIO AGREGADO EXITOSAMENTE", Toast.LENGTH_SHORT).show();
+                Utilidades.iniciarActivity(AgregarEditarPerfil.this, AdmPantallas.class, true);
             }
 
             @Override

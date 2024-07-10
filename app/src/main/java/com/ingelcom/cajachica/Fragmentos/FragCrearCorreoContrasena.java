@@ -21,12 +21,17 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ingelcom.cajachica.AdmPantallas;
+import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.EmpMenuPrincipal;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.IniciarSesion;
 import com.ingelcom.cajachica.Perfil;
 import com.ingelcom.cajachica.R;
 import com.ingelcom.cajachica.RegistrarEditarIngreso;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,6 +55,8 @@ public class FragCrearCorreoContrasena extends Fragment {
     private ProgressBar pbConfirmar;
 
     private FirebaseAuth mAuth; //Objeto que verifica la autenticación del usuario con Firebase
+    private FirestoreOperaciones oper;
+    public static String identidadUsuario;
 
     public FragCrearCorreoContrasena() {
         // Required empty public constructor
@@ -80,6 +87,7 @@ public class FragCrearCorreoContrasena extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        oper = new FirestoreOperaciones(); //Creamos la instancia de la clase "FirestoreOperaciones"
     }
 
     @Override
@@ -140,6 +148,7 @@ public class FragCrearCorreoContrasena extends Fragment {
                                 if (task.isSuccessful()) { //Si el registro fue exitoso, entrará aquí
                                     //FirebaseUser user = mAuth.getCurrentUser();
                                     Toast.makeText(getActivity(), "USUARIO REGISTRADO", Toast.LENGTH_SHORT).show();
+                                    agregarCorreoUsuario(correo);
                                     Utilidades.iniciarActivity(getActivity(), IniciarSesion.class, true);
                                 }
                                 else { //Si el registro falló, entrará aquí
@@ -160,5 +169,29 @@ public class FragCrearCorreoContrasena extends Fragment {
             pbConfirmar.setVisibility(View.GONE);
             Toast.makeText(getActivity(), "TODOS LOS CAMPOS DEBEN LLENARSE", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    //Método para agregar el correo recién registrado al usuario correspondiente
+    private void agregarCorreoUsuario(String correo) { //Recibe como parámetro el correo
+        Map<String,Object> nuevosCampos = new HashMap<>(); //Creamos un HashMap
+        nuevosCampos.put("Correo", correo); //Asignamos el nombre del campo "Correo" y el dato a guardar que está en la variable "correo"
+
+        //Llamamos al método "agregarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar e invocamos la interfaz "FirestoreCallback"
+        oper.agregarRegistrosColeccion("usuarios", "Identidad", identidadUsuario, nuevosCampos, new FirestoreOperaciones.FirestoreCallback() {
+            @Override
+            public void onCallback(List<String> lista) {
+                //Si "lista" es null (porque así lo definimos en el método "agregarRegistrosColeccion), quiere decir que si agregó el correo al usuario, además, si entró a este "onCallback" también quiere decir que lo encontró
+                if (lista == null)
+                    //Toast.makeText(getActivity(), "CORREO AGREGADO", Toast.LENGTH_SHORT).show();
+                    Log.w("Agregar Correo", "Correo agregado al usuario");
+                else
+                    Log.w("Agregar Correo", "No se encontró el usuario para agregarle el correo");
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.w("Agregar Correo", "Error al agregar el correo: ", e);
+            }
+        });
     }
 }
