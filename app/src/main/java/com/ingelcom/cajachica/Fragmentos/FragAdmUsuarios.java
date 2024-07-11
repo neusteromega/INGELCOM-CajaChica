@@ -1,10 +1,13 @@
 package com.ingelcom.cajachica.Fragmentos;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +16,9 @@ import android.widget.LinearLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ingelcom.cajachica.AgregarEditarPerfil;
+import com.ingelcom.cajachica.EmpMenuPrincipal;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
+import com.ingelcom.cajachica.IniciarSesion;
 import com.ingelcom.cajachica.ListadoEmpleados;
 import com.ingelcom.cajachica.ListadoIngresos;
 import com.ingelcom.cajachica.Perfil;
@@ -103,6 +108,23 @@ public class FragAdmUsuarios extends Fragment {
         btnListadoEmpleados.setOnClickListener(v -> {
             //Redireccionamos al usuario al activity de "ListadoEmpleados"
             Utilidades.iniciarActivity(getActivity(), ListadoEmpleados.class, false);
+        });
+
+        btnCerrarSesión.setOnClickListener(v -> {
+            //Creamos un nuevo "AlertDialog" que nos pregunte si deseamos cerrar sesión
+            new AlertDialog.Builder(getActivity()).setTitle("CERRAR SESIÓN").setMessage("¿Está seguro que desea cerrar sesión?")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Aquí se ejecutará una acción si el usuario seleccionó la opción de "Confirmar"
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            FirebaseAuth.getInstance().signOut(); //Método de firebase que permite cerrar sesión
+                            Utilidades.iniciarActivity(getActivity(), IniciarSesion.class, true); //Al confirmar el cierre de la sesión, mandamos al usuario a la pantalla de Login y finalizamos el activity actual
+                        }
+                    }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Aquí se ejecutará una acción si el usuario seleccionó la opción de "Cancelar"
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Log.d("Mensaje", "Se canceló la acción"); //Como se canceló el cierre de la sesión, se muestra un mensaje en el Logcat indicando que se canceló la acción
+                        }
+                    }).show();
         });
 
         return view;
