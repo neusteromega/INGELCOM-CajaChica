@@ -5,27 +5,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ingelcom.cajachica.AdmPantallas;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.EmpMenuPrincipal;
-import com.ingelcom.cajachica.IniciarSesion;
 import com.ingelcom.cajachica.R;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class Utilidades {
 
-    private FirestoreOperaciones oper = new FirestoreOperaciones();
+    private static FirestoreOperaciones oper = new FirestoreOperaciones(); //Instancia de la clase "FirestoreOperaciones"
 
     //Método que permita abrir un nuevo Activity, y si es necesario, finalizar el activity actual
     public static void iniciarActivity(Context contexto, Class<?> activityClase, boolean finalizarActivity) {
@@ -76,33 +69,35 @@ public class Utilidades {
         return clicks; //Retornamos la cantidad de Clicks
     }
 
-    public void redireccionarUsuario(Context contexto, String correoInicial) {
+    //Método que permite redireccionar al Usuario a una pantalla específica dependiendo de su rol. Se usa al iniciar sesión y al comprobar si el usuario tiene una sesión iniciada
+    public static void redireccionarUsuario(Context contexto, String correoInicial) { //Recibe un contexto y el correo del usuario
+        //Llamamos al método "obtenerUnRegistro" el cual buscará el user correspondiente en la colección "usuarios" mediante su correo
         oper.obtenerUnRegistro("usuarios", "Correo", correoInicial, new FirestoreOperaciones.FirestoreDocumentCallback() {
             @Override
-            public void onCallback(Map<String, Object> documento) {
+            public boolean onCallback(Map<String, Object> documento) {
                 if (documento != null) { //Si el HashMap "documento" no es nulo, quiere decir que si se encontró el registro en la colección, por lo tanto, entrará al if
                     String rol = (String) documento.get("Rol"); //Extraemos el rol del HashMap "documento"
 
+                    //Verificamos el rol, si es "Administrador" que mande al usuario al Activity "AdmPantallas" y cierre el Activity actual
                     if (rol.contentEquals("Administrador")) {
                         Utilidades.iniciarActivity(contexto, AdmPantallas.class, true);
-                        //Toast.makeText(IniciarSesion.this, "BIENVENIDO", Toast.LENGTH_SHORT).show();
                     }
-                    else if (rol.contentEquals("Empleado")) {
+                    else if (rol.contentEquals("Empleado")) { //Si el rol es "Empleado" que mande al usuario al Activity "EmpMenuPrincipal" y cierre el Activity actual
                         Utilidades.iniciarActivity(contexto, EmpMenuPrincipal.class, true);
-                        //Toast.makeText(IniciarSesion.this, "BIENVENIDO", Toast.LENGTH_SHORT).show();
                     }
-                    else {
+                    else { //Si de casualidad, el rol no es "Administrador" ni "Empleado", que muestre un mensaje de error
                         Toast.makeText(contexto, "ERROR AL OBTENER EL ROL DEL USUARIO", Toast.LENGTH_SHORT).show();
                     }
                 }
                 else { //Si "documento" es nulo, no se encontró el registro en la colección, y entrará en este else
                     Toast.makeText(contexto, "NO SE ENCONTRÓ EL USUARIO", Toast.LENGTH_SHORT).show();
                 }
+                return false;
             }
 
             @Override
             public void onFailure(Exception e) {
-                Log.w("Activity", "Error al obtener los roles.", e);
+                Log.w("Activity", "Error al obtener los roles.", e); //Por cualquier error, que muestre la excepción en el Logcat
             }
         });
     }

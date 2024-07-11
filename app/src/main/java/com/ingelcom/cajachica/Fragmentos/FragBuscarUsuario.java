@@ -99,7 +99,7 @@ public class FragBuscarUsuario extends Fragment {
             //Llamamos al método "obtenerUnRegistro" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo, el dato a buscar e invocamos la interfaz "FirestoreDocumentCallback"
             oper.obtenerUnRegistro("usuarios", "Identidad", identidad, new FirestoreOperaciones.FirestoreDocumentCallback() {
                 @Override
-                public void onCallback(Map<String, Object> documento) {
+                public boolean onCallback(Map<String, Object> documento) {
                     if (documento != null) { //Si el HashMap "documento" no es nulo, quiere decir que si se encontró el registro en la colección, por lo tanto, entrará al if
                         String correo = (String) documento.get("Correo"); //Extraemos el correo del HashMap "documento"
 
@@ -114,6 +114,7 @@ public class FragBuscarUsuario extends Fragment {
                     else { //Si "documento" es nulo, no se encontró el registro en la colección, y entrará en este else
                         Toast.makeText(getActivity(), "NO SE ENCONTRÓ EL USUARIO", Toast.LENGTH_SHORT).show();
                     }
+                    return false;
                 }
 
                 @Override

@@ -1,8 +1,5 @@
 package com.ingelcom.cajachica.DAO;
 
-import android.content.Context;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -128,7 +125,7 @@ public class FirestoreOperaciones {
     }
 
     public interface FirestoreDocumentCallback {
-        void onCallback(Map<String, Object> documento);
+        boolean onCallback(Map<String, Object> documento);
         void onFailure(Exception e);
     }
 

@@ -157,16 +157,24 @@ public class AgregarEditarPerfil extends AppCompatActivity {
     }
 
     private void insertarUsuario() {
+        Map<String,Object> datos = new HashMap<>(); //HashMap que nos ayudará a almacenar los nombres de los campos de la colección y los datos a ser insertados en cada campo
+
         //Enlazamos los EditText con las siguientes variables String
         String nombreApellido = txtNombreApellido.getText().toString();
         String identidad = txtIdentidad.getText().toString();
         String telefono = txtTelefono.getText().toString();
 
+        boolean identidadDisponible = validarIdentidadOriginal(identidad);
+        //Toast.makeText(this, "Identidad: " + identidadDisponible, Toast.LENGTH_SHORT).show();
+
+        if (identidadDisponible == false) {
+            Toast.makeText(this, "LA IDENTIDAD YA PERTENECE A OTRO USUARIO", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         //Obtenemos la selección hecha en los Spinners de Roles y Cuadrillas
         String rol = spRoles.getSelectedItem().toString();
         String cuadrilla = spCuadrillas.getSelectedItem().toString();
-
-        Map<String,Object> datos = new HashMap<>(); //HashMap que nos ayudará a almacenar los nombres de los campos de la colección y los datos a ser insertados en cada campo
 
         //Insertamos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el valor a insertar
         datos.put("NombreApellido", nombreApellido);
@@ -195,5 +203,28 @@ public class AgregarEditarPerfil extends AppCompatActivity {
                 Toast.makeText(AgregarEditarPerfil.this, "ERROR AL AGREGAR EL USUARIO", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private boolean validarIdentidadOriginal(String identidad) {
+        oper.obtenerUnRegistro("usuarios", "Identidad", identidad, new FirestoreOperaciones.FirestoreDocumentCallback() {
+            @Override
+            public boolean onCallback(Map<String, Object> documento) {
+                if (documento == null) {
+                    //Toast.makeText(AgregarEditarPerfil.this, "HOLA", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                else {
+                    //Toast.makeText(AgregarEditarPerfil.this, "IDENTIDAD: " + documento.get("Identidad"), Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.w("Verificar Identidad", "Error al obtener la identidad: ", e);
+            }
+        });
+
+        return false;
     }
 }
