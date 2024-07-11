@@ -95,7 +95,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
     private void inicializarSpinners() {
         //Para inicializar los spinners, llamamos al método "obtenerRegistros" de la clase "FirestoreOperaciones" a la cual le mandamos el nombre de la colección y el nombre del campo de Firestore de los cuales queremos obtener los registros. También invocamos los métodos "onCallback" y "onFailure" de la interfaz FirestoreCallback
         //ROLES
-        oper.obtenerRegistros("roles", "Nombre", new FirestoreOperaciones.FirestoreCallback() {
+        oper.obtenerRegistrosCampo("roles", "Nombre", new FirestoreOperaciones.FirestoreCallback() {
             @Override
             public void onCallback(List<String> lista) {
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(AgregarEditarPerfil.this, R.layout.spinner_items, lista);
@@ -109,7 +109,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         });
 
         //CUADRILLAS
-        oper.obtenerRegistros("cuadrillas", "Nombre", new FirestoreOperaciones.FirestoreCallback() {
+        oper.obtenerRegistrosCampo("cuadrillas", "Nombre", new FirestoreOperaciones.FirestoreCallback() {
             @Override
             public void onCallback(List<String> lista) {
                 List<String> listaCuadrillas = new ArrayList<>(); //Lista que tendrá todas las cuadrillas, más la opción de "No Pertenece"
@@ -157,74 +157,78 @@ public class AgregarEditarPerfil extends AppCompatActivity {
     }
 
     private void insertarUsuario() {
-        Map<String,Object> datos = new HashMap<>(); //HashMap que nos ayudará a almacenar los nombres de los campos de la colección y los datos a ser insertados en cada campo
-
         //Enlazamos los EditText con las siguientes variables String
         String nombreApellido = txtNombreApellido.getText().toString();
         String identidad = txtIdentidad.getText().toString();
         String telefono = txtTelefono.getText().toString();
 
-        boolean identidadDisponible = validarIdentidadOriginal(identidad);
-        //Toast.makeText(this, "Identidad: " + identidadDisponible, Toast.LENGTH_SHORT).show();
-
-        if (identidadDisponible == false) {
-            Toast.makeText(this, "LA IDENTIDAD YA PERTENECE A OTRO USUARIO", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        //Obtenemos la selección hecha en los Spinners de Roles y Cuadrillas
-        String rol = spRoles.getSelectedItem().toString();
-        String cuadrilla = spCuadrillas.getSelectedItem().toString();
-
-        //Insertamos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el valor a insertar
-        datos.put("NombreApellido", nombreApellido);
-        datos.put("Identidad", identidad);
-        datos.put("Telefono", telefono);
-        datos.put("Rol", rol);
-        datos.put("Correo", ""); //El correo estará vacío hasta que el usuario lo cree más adelante
-        datos.put("Estado", true);
-
-        //Si la selección hecha en el spinner "Cuadrillas" fue "No Pertenece", que inserte un valor vacío ("") en el campo "Cuadrilla" de Firestore
-        if (cuadrilla.contentEquals("No Pertenece"))
-            datos.put("Cuadrilla", "");
-        else //Pero si la selección hecha en el spinner "Cuadrillas" fue otra diferente a "No Pertenece", que inserte esa selección en el campo "Cuadrilla" de Firestore
-            datos.put("Cuadrilla", cuadrilla);
-
-        //Llamamos el método "insertarRegistros" de la clase "FirestoreOperaciones" y le mandamos el nombre de la colección, el HashMap con los datos a insertar. También invocamos los métodos "onSuccess" y "onFailure" de la interfaz FirestoreInsertCallback
-        oper.insertarRegistros("usuarios", datos, new FirestoreOperaciones.FirestoreInsertCallback() {
+        validarIdentidadOriginal(identidad, new ValidacionCallback() {
             @Override
-            public void onSuccess(String idDocumento) {
-                Toast.makeText(AgregarEditarPerfil.this, "USUARIO AGREGADO EXITOSAMENTE", Toast.LENGTH_SHORT).show();
-                Utilidades.iniciarActivity(AgregarEditarPerfil.this, AdmPantallas.class, true);
-            }
+            public void onResultado(boolean esValido) {
+                if (!esValido) {
+                    Toast.makeText(AgregarEditarPerfil.this, "LA IDENTIDAD YA PERTENECE A OTRO USUARIO", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-            @Override
-            public void onFailure(Exception e) {
-                Toast.makeText(AgregarEditarPerfil.this, "ERROR AL AGREGAR EL USUARIO", Toast.LENGTH_SHORT).show();
+                Map<String,Object> datos = new HashMap<>(); //HashMap que nos ayudará a almacenar los nombres de los campos de la colección y los datos a ser insertados en cada campo
+
+                //Obtenemos la selección hecha en los Spinners de Roles y Cuadrillas
+                String rol = spRoles.getSelectedItem().toString();
+                String cuadrilla = spCuadrillas.getSelectedItem().toString();
+
+                //Insertamos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el valor a insertar
+                datos.put("NombreApellido", nombreApellido);
+                datos.put("Identidad", identidad);
+                datos.put("Telefono", telefono);
+                datos.put("Rol", rol);
+                datos.put("Correo", ""); //El correo estará vacío hasta que el usuario lo cree más adelante
+                datos.put("Estado", true);
+
+                //Si la selección hecha en el spinner "Cuadrillas" fue "No Pertenece", que inserte un valor vacío ("") en el campo "Cuadrilla" de Firestore
+                if (cuadrilla.contentEquals("No Pertenece"))
+                    datos.put("Cuadrilla", "");
+                else //Pero si la selección hecha en el spinner "Cuadrillas" fue otra diferente a "No Pertenece", que inserte esa selección en el campo "Cuadrilla" de Firestore
+                    datos.put("Cuadrilla", cuadrilla);
+
+                //Llamamos el método "insertarRegistros" de la clase "FirestoreOperaciones" y le mandamos el nombre de la colección, el HashMap con los datos a insertar. También invocamos los métodos "onSuccess" y "onFailure" de la interfaz FirestoreInsertCallback
+                oper.insertarRegistros("usuarios", datos, new FirestoreOperaciones.FirestoreInsertCallback() {
+                    @Override
+                    public void onSuccess(String idDocumento) {
+                        Toast.makeText(AgregarEditarPerfil.this, "USUARIO AGREGADO EXITOSAMENTE", Toast.LENGTH_SHORT).show();
+                        Utilidades.iniciarActivity(AgregarEditarPerfil.this, AdmPantallas.class, true);
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Toast.makeText(AgregarEditarPerfil.this, "ERROR AL AGREGAR EL USUARIO", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }
 
-    private boolean validarIdentidadOriginal(String identidad) {
+    private void validarIdentidadOriginal(String identidad, ValidacionCallback callback) {
         oper.obtenerUnRegistro("usuarios", "Identidad", identidad, new FirestoreOperaciones.FirestoreDocumentCallback() {
             @Override
-            public boolean onCallback(Map<String, Object> documento) {
-                if (documento == null) {
-                    //Toast.makeText(AgregarEditarPerfil.this, "HOLA", Toast.LENGTH_SHORT).show();
-                    return true;
+            public void onCallback(Map<String, Object> documento) {
+                if (documento == null) { //Si "documento" es nulo, quiere decir que no encontró la identidad entre los usuarios
+                    callback.onResultado(true); //Llamamos a la interfaz "callBack" y le mandamos "true" para indicar que la identidad ingresada está disponible
                 }
-                else {
-                    //Toast.makeText(AgregarEditarPerfil.this, "IDENTIDAD: " + documento.get("Identidad"), Toast.LENGTH_SHORT).show();
-                    return false;
+                else { //Pero si "documento" no es nulo, quiere decir que si encontró la identidad
+                    callback.onResultado(false); //Llamamos a la interfaz "callBack" y le mandamos "false" para indicar que la identidad ingresada está ocupada
                 }
             }
 
             @Override
             public void onFailure(Exception e) {
                 Log.w("Verificar Identidad", "Error al obtener la identidad: ", e);
+                callback.onResultado(false); //Devolvemos false por cualquier error
             }
         });
+    }
 
-        return false;
+    //Interfaz "callback" que nos ayuda a realizar operaciones que puedan tomar un tiempo en completarse, como las operaciones que requieren internet y pueden tardar un poco en realizarse debido a la conexión a internet
+    public interface ValidacionCallback {
+        void onResultado(boolean esValido); //Recibe un valor booleano que determina si la identidad está disponible
     }
 }

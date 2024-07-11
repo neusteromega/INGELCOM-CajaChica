@@ -80,7 +80,7 @@ public class AdmPantallas extends AppCompatActivity {
         Fragment fragmentActual = getSupportFragmentManager().findFragmentById(R.id.fragAdmPantallas); //Obtenemos el fragment actual y lo guardamos en la variable "fragmentActual"
 
         if (fragmentActual instanceof FragAdmInicio) { //Si el fragmentActual es "FragAdmInicio" que entre al if
-            super.onBackPressed(); //Esto permite regresar al activity anterior (IniciarSesion)
+            finishAffinity(); //Cierra toda la pila de retroceso para que al dar clic en el botón de retroceso, ya no hayan activities y salga de la app
         }
         else { //Si el fragmentActual no es "FragAdmInicio", al dar clic en el botón de retroceso, que dirija a este fragment
             replaceFragment(new FragAdmInicio()); //Llamamos al método "replaceFragment" y le mandamos el "FragAdmInicio"

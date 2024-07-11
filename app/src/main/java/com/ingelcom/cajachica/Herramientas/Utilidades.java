@@ -74,7 +74,7 @@ public class Utilidades {
         //Llamamos al método "obtenerUnRegistro" el cual buscará el user correspondiente en la colección "usuarios" mediante su correo
         oper.obtenerUnRegistro("usuarios", "Correo", correoInicial, new FirestoreOperaciones.FirestoreDocumentCallback() {
             @Override
-            public boolean onCallback(Map<String, Object> documento) {
+            public void onCallback(Map<String, Object> documento) {
                 if (documento != null) { //Si el HashMap "documento" no es nulo, quiere decir que si se encontró el registro en la colección, por lo tanto, entrará al if
                     String rol = (String) documento.get("Rol"); //Extraemos el rol del HashMap "documento"
 
@@ -92,7 +92,6 @@ public class Utilidades {
                 else { //Si "documento" es nulo, no se encontró el registro en la colección, y entrará en este else
                     Toast.makeText(contexto, "NO SE ENCONTRÓ EL USUARIO", Toast.LENGTH_SHORT).show();
                 }
-                return false;
             }
 
             @Override

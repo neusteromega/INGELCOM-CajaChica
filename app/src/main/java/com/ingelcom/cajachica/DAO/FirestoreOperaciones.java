@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -21,7 +22,7 @@ public class FirestoreOperaciones {
     }
 
     //Método para obtener los registros de un campo específico de todos los documentos de una colección de Firestore
-    public void obtenerRegistros(String nombreColeccion, String campo, final FirestoreCallback callback) { //Recibe como parámetros el nombre de la colección, el nombre del campo y el "callback"
+    public void obtenerRegistrosCampo(String nombreColeccion, String campo, final FirestoreCallback callback) { //Recibe como parámetros el nombre de la colección, el nombre del campo y el "callback"
         //Asignamos el nombre de la colección guardado en "nombreColeccion"
         db.collection(nombreColeccion)
                 .get()
@@ -71,6 +72,27 @@ public class FirestoreOperaciones {
                     }
                 }
             });
+    }
+
+    public void obtenerRegistros(String nombreColeccion, FirestoreAllDocumentsCallback callback) {
+        CollectionReference coleccion = db.collection(nombreColeccion);
+        coleccion.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    List<Map<String,Object>> listaDocumentos = new ArrayList<>();
+
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        listaDocumentos.add(document.getData());
+                    }
+
+                    callback.onCallback(listaDocumentos);
+                }
+                else {
+                    callback.onFailure(task.getException());
+                }
+            }
+        });
     }
 
     //Método que permite insertar registros (y crear un document) a una colección de Firestore
@@ -125,7 +147,12 @@ public class FirestoreOperaciones {
     }
 
     public interface FirestoreDocumentCallback {
-        boolean onCallback(Map<String, Object> documento);
+        void onCallback(Map<String, Object> documento);
+        void onFailure(Exception e);
+    }
+
+    public interface FirestoreAllDocumentsCallback {
+        void onCallback(List<Map<String, Object>> documentos);
         void onFailure(Exception e);
     }
 

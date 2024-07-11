@@ -51,6 +51,11 @@ public class IniciarSesion extends AppCompatActivity {
         pbAcceder = findViewById(R.id.pbAccederLogin);
     }
 
+    @Override
+    public void onBackPressed() { //Permite salir de la app al presionar el botón de retroceso
+        finishAffinity(); //Cierra toda la pila de retroceso para que al dar clic en el botón de retroceso, ya no hayan activities y salga de la app
+    }
+
     public void crearContrasena(View view) {
         Utilidades.iniciarActivity(this, CompletarUsuario.class, false);
     }
