@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
+import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -95,7 +96,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
     private void inicializarSpinners() {
         //Para inicializar los spinners, llamamos al método "obtenerRegistros" de la clase "FirestoreOperaciones" a la cual le mandamos el nombre de la colección y el nombre del campo de Firestore de los cuales queremos obtener los registros. También invocamos los métodos "onCallback" y "onFailure" de la interfaz FirestoreCallback
         //ROLES
-        oper.obtenerRegistrosCampo("roles", "Nombre", new FirestoreOperaciones.FirestoreCallback() {
+        oper.obtenerRegistrosCampo("roles", "Nombre", new FirestoreCallbacks.FirestoreCallback() {
             @Override
             public void onCallback(List<String> lista) {
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(AgregarEditarPerfil.this, R.layout.spinner_items, lista);
@@ -109,7 +110,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         });
 
         //CUADRILLAS
-        oper.obtenerRegistrosCampo("cuadrillas", "Nombre", new FirestoreOperaciones.FirestoreCallback() {
+        oper.obtenerRegistrosCampo("cuadrillas", "Nombre", new FirestoreCallbacks.FirestoreCallback() {
             @Override
             public void onCallback(List<String> lista) {
                 List<String> listaCuadrillas = new ArrayList<>(); //Lista que tendrá todas las cuadrillas, más la opción de "No Pertenece"
@@ -158,7 +159,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
 
     private void insertarUsuario() {
         //Enlazamos los EditText con las siguientes variables String
-        String nombreApellido = txtNombreApellido.getText().toString();
+        String nombre = txtNombreApellido.getText().toString();
         String identidad = txtIdentidad.getText().toString();
         String telefono = txtTelefono.getText().toString();
 
@@ -177,7 +178,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
                 String cuadrilla = spCuadrillas.getSelectedItem().toString();
 
                 //Insertamos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el valor a insertar
-                datos.put("NombreApellido", nombreApellido);
+                datos.put("Nombre", nombre);
                 datos.put("Identidad", identidad);
                 datos.put("Telefono", telefono);
                 datos.put("Rol", rol);
@@ -191,7 +192,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
                     datos.put("Cuadrilla", cuadrilla);
 
                 //Llamamos el método "insertarRegistros" de la clase "FirestoreOperaciones" y le mandamos el nombre de la colección, el HashMap con los datos a insertar. También invocamos los métodos "onSuccess" y "onFailure" de la interfaz FirestoreInsertCallback
-                oper.insertarRegistros("usuarios", datos, new FirestoreOperaciones.FirestoreInsertCallback() {
+                oper.insertarRegistros("usuarios", datos, new FirestoreCallbacks.FirestoreInsertCallback() {
                     @Override
                     public void onSuccess(String idDocumento) {
                         Toast.makeText(AgregarEditarPerfil.this, "USUARIO AGREGADO EXITOSAMENTE", Toast.LENGTH_SHORT).show();
@@ -208,7 +209,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
     }
 
     private void validarIdentidadOriginal(String identidad, ValidacionCallback callback) {
-        oper.obtenerUnRegistro("usuarios", "Identidad", identidad, new FirestoreOperaciones.FirestoreDocumentCallback() {
+        oper.obtenerUnRegistro("usuarios", "Identidad", identidad, new FirestoreCallbacks.FirestoreDocumentCallback() {
             @Override
             public void onCallback(Map<String, Object> documento) {
                 if (documento == null) { //Si "documento" es nulo, quiere decir que no encontró la identidad entre los usuarios

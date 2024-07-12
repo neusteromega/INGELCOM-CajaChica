@@ -15,7 +15,7 @@ public class Cuadrilla {
         db = FirebaseFirestore.getInstance(); //Obtenemos la instancia de Firestore y la almacenamos en "db"
     }
 
-    //Método para obtener los nombres de las cuadrillas almacenados en Firestore
+    /*//Método para obtener los nombres de las cuadrillas almacenados en Firestore
     public void obtenerCuadrillas(final FirestoreCallback callback) {
         //El dato "cuadrillas" dentro de "db.collection" es el nombre de la colección de Firestore
         db.collection("cuadrillas")
@@ -45,5 +45,5 @@ public class Cuadrilla {
     public interface FirestoreCallback {
         void onCallback(List<String> lista); //Se invoca cuando la operación de extracción de datos de Firestore ha sido exitosa, y recibe como parámetro el listado de cuadrillas obtenido de la colección "cuadrillas" de Firestore
         void onFailure(Exception e); //Se invoca cuando se produce un error durante la operación de extracción de datos, y recibe como parámetro una excepción que describe el error presentado
-    }
+    }*/
 }

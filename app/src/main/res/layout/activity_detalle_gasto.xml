@@ -142,7 +142,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_bold"
-                    android:text="Usuario: Nombre Apellido"
+                    android:text="Usuario: Nombre Completo"
                     android:textColor="@color/clr_fuente_secundario"
                     android:textSize="17dp" />
 

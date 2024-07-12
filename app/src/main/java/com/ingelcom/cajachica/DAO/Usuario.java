@@ -3,6 +3,7 @@ package com.ingelcom.cajachica.DAO;
 import android.util.Log;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Modelos.EmpleadosItems;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class Usuario {
         oper = new FirestoreOperaciones();
     }
 
-    public List<EmpleadosItems> obtenerEmpleados() {
+    /*public List<EmpleadosItems> obtenerEmpleados() {
         List<EmpleadosItems> listaEmpleados = new ArrayList<>();
 
         oper.obtenerRegistros("usuarios", new FirestoreOperaciones.FirestoreAllDocumentsCallback() {
@@ -44,5 +45,40 @@ public class Usuario {
         });
 
         return listaEmpleados;
+    }*/
+
+    public void obtenerEmpleados(FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<EmpleadosItems> callback) {
+        oper.obtenerRegistros("usuarios", new FirestoreCallbacks.FirestoreAllDocumentsCallback() {
+            @Override
+            public void onCallback(List<Map<String, Object>> documentos) {
+                List<EmpleadosItems> listaEmpleados = new ArrayList<>();
+
+                for (Map<String, Object> documento : documentos) {
+                    // Extraer los campos del documento y crear un nuevo objeto EmpleadosItems
+                    String nombre = (String) documento.get("Nombre");
+                    String correo = (String) documento.get("Correo");
+                    String cuadrilla = (String) documento.get("Cuadrilla");
+                    String rol = (String) documento.get("Rol");
+
+                    // Filtrar solo los empleados con rol "Empleado"
+                    if (rol.contentEquals("Empleado")) {
+                        EmpleadosItems empleado = new EmpleadosItems(nombre, correo, cuadrilla);
+                        listaEmpleados.add(empleado);
+                    }
+                }
+                callback.onCallback(listaEmpleados);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e("FirestoreError", "Error al obtener los documentos", e);
+                callback.onFailure(e);
+            }
+        });
     }
+
+    /*public interface FirestoreAllDocumentsCallback<T> {
+        void onCallback(List<T> items);
+        void onFailure(Exception e);
+    }*/
 }

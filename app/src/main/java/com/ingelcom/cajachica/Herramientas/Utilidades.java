@@ -72,7 +72,7 @@ public class Utilidades {
     //Método que permite redireccionar al Usuario a una pantalla específica dependiendo de su rol. Se usa al iniciar sesión y al comprobar si el usuario tiene una sesión iniciada
     public static void redireccionarUsuario(Context contexto, String correoInicial) { //Recibe un contexto y el correo del usuario
         //Llamamos al método "obtenerUnRegistro" el cual buscará el user correspondiente en la colección "usuarios" mediante su correo
-        oper.obtenerUnRegistro("usuarios", "Correo", correoInicial, new FirestoreOperaciones.FirestoreDocumentCallback() {
+        oper.obtenerUnRegistro("usuarios", "Correo", correoInicial, new FirestoreCallbacks.FirestoreDocumentCallback() {
             @Override
             public void onCallback(Map<String, Object> documento) {
                 if (documento != null) { //Si el HashMap "documento" no es nulo, quiere decir que si se encontró el registro en la colección, por lo tanto, entrará al if

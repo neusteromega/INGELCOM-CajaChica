@@ -7,10 +7,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.ingelcom.cajachica.Adaptadores.EmpleadosAdapter;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.DAO.Usuario;
+import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.Modelos.EmpleadosItems;
 
@@ -38,9 +40,18 @@ public class ListadoEmpleados extends AppCompatActivity {
         LinearLayoutManager managerEmp = new LinearLayoutManager(this);
         rvEmpleados.setLayoutManager(managerEmp);
 
-        items = usuario.obtenerEmpleados();
-        adapter = new EmpleadosAdapter(items);
-        rvEmpleados.setAdapter(adapter);
+        usuario.obtenerEmpleados(new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<EmpleadosItems>() {
+            @Override
+            public void onCallback(List<EmpleadosItems> items) {
+                adapter = new EmpleadosAdapter(items);
+                rvEmpleados.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Toast.makeText(ListadoEmpleados.this, "ERROR AL CARGAR LOS EMPLEADOS", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void perfil(View view) {

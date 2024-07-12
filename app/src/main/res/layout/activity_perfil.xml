@@ -80,7 +80,7 @@
             android:layout_marginBottom="30dp"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center"
-            android:text="Nombre Apellido"
+            android:text="Nombre Completo"
             android:textColor="@color/clr_fuente_primario"
             android:textSize="25dp" />
 

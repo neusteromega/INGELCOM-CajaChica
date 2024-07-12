@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.ingelcom.cajachica.AdmPantallas;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.EmpMenuPrincipal;
+import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.IniciarSesion;
 import com.ingelcom.cajachica.Perfil;
@@ -198,7 +199,7 @@ public class FragCrearCorreoContrasena extends Fragment {
         nuevosCampos.put("Correo", correo); //Asignamos el nombre del campo "Correo" y el dato a guardar que está en la variable "correo"
 
         //Llamamos al método "agregarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar e invocamos la interfaz "FirestoreCallback"
-        oper.agregarRegistrosColeccion("usuarios", "Identidad", identidadUsuario, nuevosCampos, new FirestoreOperaciones.FirestoreCallback() {
+        oper.agregarRegistrosColeccion("usuarios", "Identidad", identidadUsuario, nuevosCampos, new FirestoreCallbacks.FirestoreCallback() {
             @Override
             public void onCallback(List<String> lista) {
                 //Si "lista" es null (porque así lo definimos en el método "agregarRegistrosColeccion), quiere decir que si agregó el correo al usuario, además, si entró a este "onCallback" también quiere decir que lo encontró
