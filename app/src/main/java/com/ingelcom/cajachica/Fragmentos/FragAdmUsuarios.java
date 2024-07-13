@@ -1,7 +1,6 @@
 package com.ingelcom.cajachica.Fragmentos;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -16,15 +15,11 @@ import android.widget.LinearLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ingelcom.cajachica.AgregarEditarPerfil;
-import com.ingelcom.cajachica.EmpMenuPrincipal;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.IniciarSesion;
 import com.ingelcom.cajachica.ListadoEmpleados;
-import com.ingelcom.cajachica.ListadoIngresos;
 import com.ingelcom.cajachica.Perfil;
 import com.ingelcom.cajachica.R;
-import com.ingelcom.cajachica.RegistrarEditarGasto;
-import com.ingelcom.cajachica.RegistrarEditarIngreso;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -96,13 +91,14 @@ public class FragAdmUsuarios extends Fragment {
         //Eventos Clic de botones
         btnMiPerfil.setOnClickListener(v -> {
             //Redireccionamos al usuario al activity de "Perfil"
-            Utilidades.iniciarActivity(getActivity(), Perfil.class, false);
+            //Utilidades.iniciarActivity(getActivity(), Perfil.class, false);
+            Utilidades.iniciarActivityConString(getActivity(), Perfil.class, "ActivityPerfil", "PerfilAdmin");
         });
 
         btnAgregarUsuario.setOnClickListener(v -> {
             //Redireccionamos al usuario al activity de "AgregarEditarPerfil" y le indicamos que deberá reflejar el contenido de "AgregarUsuario"
             //Utilidades.iniciarActivity(getActivity(), AgregarEditarPerfil.class, false);
-            Utilidades.iniciarActivityConDatos(getActivity(), AgregarEditarPerfil.class, "Activity", "AgregarUsuario");
+            Utilidades.iniciarActivityConString(getActivity(), AgregarEditarPerfil.class, "ActivityAEP", "AgregarUsuario");
         });
 
         btnListadoEmpleados.setOnClickListener(v -> {

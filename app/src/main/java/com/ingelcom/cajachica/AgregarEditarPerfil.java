@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -30,6 +31,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
     private EditText txtNombreApellido, txtIdentidad, txtTelefono, txtCorreo, txtContra, txtConfContra;
     private TextView lblTitulo, btnConfirmar;
     private Spinner spRoles, spCuadrillas, spEstado;
+    private ImageView btnRegresar;
     private String nombreActivity;
 
     private FirestoreOperaciones oper = new FirestoreOperaciones();
@@ -40,7 +42,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         setContentView(R.layout.activity_agregar_editar_perfil);
 
         //Obtenemos el nombre del activity que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y le mandamos "this" para referenciar esta actividad y "Activity" como clave del putExtra
-        nombreActivity = Utilidades.obtenerStringExtra(this, "Activity");
+        nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityAEP");
 
         inicializarElementos();
         establecerElementos();
@@ -66,6 +68,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         txtConfContra = findViewById(R.id.txtConfContrasenaAEP);
 
         lblTitulo = findViewById(R.id.lblTituloAEP);
+        btnRegresar = findViewById(R.id.imgRegresarAEP);
         btnConfirmar = findViewById(R.id.btnConfirmarAEP);
 
         spRoles = findViewById(R.id.spRolAEP);
@@ -163,10 +166,10 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         String identidad = txtIdentidad.getText().toString();
         String telefono = txtTelefono.getText().toString();
 
-        validarIdentidadOriginal(identidad, new ValidacionCallback() {
+        validarIdentidadOriginal(identidad, new FirestoreCallbacks.FirestoreValidationCallback() {
             @Override
             public void onResultado(boolean esValido) {
-                if (!esValido) {
+                if (!esValido) { //Si "esValido" es true, quiere decir que se encontró la identidad y ya pertenece a otro usuario
                     Toast.makeText(AgregarEditarPerfil.this, "LA IDENTIDAD YA PERTENECE A OTRO USUARIO", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -208,7 +211,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         });
     }
 
-    private void validarIdentidadOriginal(String identidad, ValidacionCallback callback) {
+    private void validarIdentidadOriginal(String identidad, FirestoreCallbacks.FirestoreValidationCallback callback) {
         oper.obtenerUnRegistro("usuarios", "Identidad", identidad, new FirestoreCallbacks.FirestoreDocumentCallback() {
             @Override
             public void onCallback(Map<String, Object> documento) {
@@ -229,7 +232,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
     }
 
     //Interfaz "callback" que nos ayuda a realizar operaciones que puedan tomar un tiempo en completarse, como las operaciones que requieren internet y pueden tardar un poco en realizarse debido a la conexión a internet
-    public interface ValidacionCallback {
+    /*public interface ValidacionCallback {
         void onResultado(boolean esValido); //Recibe un valor booleano que determina si la identidad está disponible
-    }
+    }*/
 }

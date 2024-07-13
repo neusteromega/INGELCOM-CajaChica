@@ -27,7 +27,11 @@ public class FirestoreCallbacks {
     }
 
     public interface FirestoreInsertCallback {
-        void onSuccess(String idDocumento);
+        void onSuccess(String texto);
         void onFailure(Exception e);
+    }
+
+    public interface FirestoreValidationCallback {
+        void onResultado(boolean esValido); //Recibe un valor booleano
     }
 }

@@ -16,6 +16,7 @@ import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.Modelos.EmpleadosItems;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class ListadoEmpleados extends AppCompatActivity {
@@ -33,18 +34,18 @@ public class ListadoEmpleados extends AppCompatActivity {
 
         rvEmpleados = findViewById(R.id.rvListadoEmpleados);
 
-        inicializarValores();
+        obtenerValores();
     }
 
-    private void inicializarValores() {
-        LinearLayoutManager managerEmp = new LinearLayoutManager(this);
-        rvEmpleados.setLayoutManager(managerEmp);
+    private void obtenerValores() {
+        LinearLayoutManager managerEmp = new LinearLayoutManager(this); //Creamos un manager para que el RecyclerView se vea en forma de tarjetas
+        rvEmpleados.setLayoutManager(managerEmp); //Asignamos el manager al RecyclerView
 
+        //Llamamos el método "obtenerEmpleados" de la clase "Usuario" donde invocamos la interfaz "FirestoreAllSpecialDocumentsCallback" y le indicamos que debe ser de tipo "EmpleadosItems"
         usuario.obtenerEmpleados(new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<EmpleadosItems>() {
             @Override
-            public void onCallback(List<EmpleadosItems> items) {
-                adapter = new EmpleadosAdapter(items);
-                rvEmpleados.setAdapter(adapter);
+            public void onCallback(List<EmpleadosItems> items) { //Esto nos devuelve la lista de tipo "EmpleadosItems" ya con los empleados extraídos de Firestore
+                inicializarRecyclerView(items);
             }
 
             @Override
@@ -54,7 +55,27 @@ public class ListadoEmpleados extends AppCompatActivity {
         });
     }
 
-    public void perfil(View view) {
-        Utilidades.iniciarActivity(this, Perfil.class, false);
+    private void inicializarRecyclerView(List<EmpleadosItems> items) {
+        adapter = new EmpleadosAdapter(items); //Creamos un objeto de tipo EmpleadosAdapter en el cual enviamos la lista "items", y dicho objeto lo igualamos al otro objeto de tipo EmpleadosAdapter llamado "adapter" (este fue inicializado arriba de forma global)
+        rvEmpleados.setAdapter(adapter); //Asignamos el adapter al recyclerView de Empleados
+
+        adapter.setOnClickListener(new View.OnClickListener() { //Usando el objeto de "adapter" llamamos al método "setOnClickListener" de la clase EmpleadosAdapter
+            @Override
+            public void onClick(View view) { //Al dar clic en una tarjeta del RecyclerView, se realizará lo siguiente
+                HashMap<String,Object> datosPerfil = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
+
+                //Agregamos las claves y datos al HashMap
+                datosPerfil.put("ActivityPerfil", "PerfilEmpleadoAdmin");
+                datosPerfil.put("Nombre", items.get(rvEmpleados.getChildAdapterPosition(view)).getNombre());
+                datosPerfil.put("Correo", items.get(rvEmpleados.getChildAdapterPosition(view)).getCorreo());
+                datosPerfil.put("Cuadrilla", items.get(rvEmpleados.getChildAdapterPosition(view)).getCuadrilla());
+                datosPerfil.put("Identidad", items.get(rvEmpleados.getChildAdapterPosition(view)).getIdentidad());
+                datosPerfil.put("Telefono", items.get(rvEmpleados.getChildAdapterPosition(view)).getTelefono());
+                datosPerfil.put("Rol", items.get(rvEmpleados.getChildAdapterPosition(view)).getRol());
+                datosPerfil.put("Estado", items.get(rvEmpleados.getChildAdapterPosition(view)).getEstado());
+
+                Utilidades.iniciarActivityConDatos(ListadoEmpleados.this, Perfil.class, datosPerfil); //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
+            }
+        });
     }
 }

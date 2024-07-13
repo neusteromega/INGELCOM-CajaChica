@@ -44,6 +44,7 @@ public class EmpMenuPrincipal extends AppCompatActivity {
         finishAffinity(); //Cierra toda la pila de retroceso para que al dar clic en el botón de retroceso, ya no hayan activities y salga de la app
     }
 
+    //Eventos Click de los botones del menú
     public void registrarGasto(View view) {
         Utilidades.iniciarActivity(this, RegistrarEditarGasto.class, false);
     }
@@ -53,7 +54,7 @@ public class EmpMenuPrincipal extends AppCompatActivity {
     }
 
     public void miPerfil(View view) {
-        Utilidades.iniciarActivity(this, Perfil.class, false);
+        Utilidades.iniciarActivityConString(this, Perfil.class, "ActivityPerfil", "PerfilEmpleado"); //Enviamos el texto "PerfilEmpleado" que ayudará a saber que el Activity "Perfil" debe mostrar los datos del Empleado actual
     }
 
     public void cerrarSesion(View view) {

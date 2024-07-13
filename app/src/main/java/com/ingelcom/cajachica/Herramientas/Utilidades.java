@@ -14,6 +14,7 @@ import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.EmpMenuPrincipal;
 import com.ingelcom.cajachica.R;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Utilidades {
@@ -32,10 +33,26 @@ public class Utilidades {
     }
 
     //Método que permite enviar un dato String a un activity
-    public static void iniciarActivityConDatos(Context contexto, Class<?> activityClase, String clave, String valor) {
+    public static void iniciarActivityConString(Context contexto, Class<?> activityClase, String clave, String valor) {
         Intent intent = new Intent(contexto, activityClase); //Creamos el intent y le establecemos el contexto y el nombre del activity
         intent.putExtra(clave, valor); //Usando "putExtra" le establecemos una clave al envío de datos, y le mandamos el texto guardado en "valor"
         contexto.startActivity(intent); //Iniciamos el activity
+    }
+
+    public static void iniciarActivityConDatos(Context contexto, Class<?> activityClase, HashMap<String,Object> datos) {
+        Intent intent = new Intent(contexto, activityClase);
+
+        for (Map.Entry<String,Object> dato : datos.entrySet()) {
+            String clave = dato.getKey();
+            Object valor = dato.getValue();
+
+            if (valor instanceof String) {
+                String valorString = (String) valor;
+                intent.putExtra(clave, valorString);
+            }
+        }
+
+        contexto.startActivity(intent);
     }
 
     //Método para obtener el texto (String) de un putExtra

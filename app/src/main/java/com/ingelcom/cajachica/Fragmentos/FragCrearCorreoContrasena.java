@@ -199,12 +199,11 @@ public class FragCrearCorreoContrasena extends Fragment {
         nuevosCampos.put("Correo", correo); //Asignamos el nombre del campo "Correo" y el dato a guardar que está en la variable "correo"
 
         //Llamamos al método "agregarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar e invocamos la interfaz "FirestoreCallback"
-        oper.agregarRegistrosColeccion("usuarios", "Identidad", identidadUsuario, nuevosCampos, new FirestoreCallbacks.FirestoreCallback() {
+        oper.agregarRegistrosColeccion("usuarios", "Identidad", identidadUsuario, nuevosCampos, new FirestoreCallbacks.FirestoreInsertCallback() {
             @Override
-            public void onCallback(List<String> lista) {
-                //Si "lista" es null (porque así lo definimos en el método "agregarRegistrosColeccion), quiere decir que si agregó el correo al usuario, además, si entró a este "onCallback" también quiere decir que lo encontró
-                if (lista == null)
-                    //Toast.makeText(getActivity(), "CORREO AGREGADO", Toast.LENGTH_SHORT).show();
+            public void onSuccess(String texto) {
+                //Si "texto" no es null, quiere decir que si agregó el correo al usuario, además, si entró a este "onSuccess" también quiere decir que lo encontró
+                if (texto != null)
                     Log.w("Agregar Correo", "Correo agregado al usuario");
                 else
                     Log.w("Agregar Correo", "No se encontró el usuario para agregarle el correo");
