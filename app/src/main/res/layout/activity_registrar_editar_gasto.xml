@@ -39,7 +39,7 @@
                     app:srcCompat="@mipmap/ico_azul_regresar" />
 
                 <TextView
-                    android:id="@+id/lblRegistrarEditarGasto"
+                    android:id="@+id/lblTituloRG"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:fontFamily="@font/montserrat_bold"

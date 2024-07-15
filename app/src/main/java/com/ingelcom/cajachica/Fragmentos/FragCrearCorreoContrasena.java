@@ -202,7 +202,7 @@ public class FragCrearCorreoContrasena extends Fragment {
         oper.agregarRegistrosColeccion("usuarios", "Identidad", identidadUsuario, nuevosCampos, new FirestoreCallbacks.FirestoreInsertCallback() {
             @Override
             public void onSuccess(String texto) {
-                //Si "texto" no es null, quiere decir que si agregó el correo al usuario, además, si entró a este "onSuccess" también quiere decir que lo encontró
+                //Si "texto" no es null, quiere decir que si agregó el correo al usuario, además, si entró a este "onSuccess" también quiere decir que lo realizó
                 if (texto != null)
                     Log.w("Agregar Correo", "Correo agregado al usuario");
                 else

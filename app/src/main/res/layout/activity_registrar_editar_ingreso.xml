@@ -32,7 +32,7 @@
                 app:srcCompat="@mipmap/ico_azul_regresar" />
 
             <TextView
-                android:id="@+id/lblRegistrarEditarIngreso"
+                android:id="@+id/lblTituloRI"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:fontFamily="@font/montserrat_bold"
@@ -69,14 +69,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
+            android:layout_marginRight="16dp"
             android:layout_marginBottom="15dp"
             android:background="@drawable/clr_casillablanca_cuadrada"
             android:elevation="5dp"
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingLeft="12dp"
-            android:paddingRight="22dp">
+            android:paddingRight="22dp"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imgFechaRI"
@@ -135,11 +136,12 @@
                 app:srcCompat="@mipmap/ico_azul_cuadrilla" />
 
             <Spinner
-                android:id="@+id/spCuadrillaRG"
+                android:id="@+id/spCuadrillaRI"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:contentDescription="@string/descripcion"
-                android:paddingLeft="15dp" />
+                android:paddingLeft="10dp"
+                tools:listitem="@layout/spinner_items" />
 
         </LinearLayout>
 

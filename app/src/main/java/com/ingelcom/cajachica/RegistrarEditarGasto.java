@@ -22,7 +22,7 @@ import java.util.List;
 public class RegistrarEditarGasto extends AppCompatActivity {
 
     private LinearLayout llFecha, llCuadrilla;
-    private TextView lblFecha, btnSubirCambiarFoto, btnConfirmar;
+    private TextView lblTitulo, lblFecha, btnSubirCambiarFoto, btnConfirmar;
     private EditText txtLugar, txtDescripcion, txtFactura, txtTotal;
     private ImageView imgFoto, imgEliminar;
     private Spinner spCuadrillas, spTipoCompras;
@@ -41,11 +41,13 @@ public class RegistrarEditarGasto extends AppCompatActivity {
     }
 
     private void inicializarElementos() {
+        //Obtenemos el nombre del activity que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y le mandamos "this" para referenciar esta actividad y "Activity" como clave del putExtra
         nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityREG");
 
         llFecha = findViewById(R.id.LLFechaRG);
         llCuadrilla = findViewById(R.id.LLCuadrillaRG);
 
+        lblTitulo = findViewById(R.id.lblTituloRG);
         lblFecha = findViewById(R.id.lblFechaRG);
         txtLugar = findViewById(R.id.txtLugarCompraRG);
         txtDescripcion = findViewById(R.id.txtDescripcionRG);
@@ -68,6 +70,8 @@ public class RegistrarEditarGasto extends AppCompatActivity {
             switch (nombreActivity) {
                 //Establecemos los elementos gráficos si la pantalla es "RegistrarGastoEmpleado"
                 case "RegistrarGastoEmpleado":
+                    //Ocultamos estos dos elementos (Fecha y Cuadrilla) para que el empleado no pueda verlos
+                    llFecha.setVisibility(View.GONE);
                     llCuadrilla.setVisibility(View.GONE);
                     break;
             }

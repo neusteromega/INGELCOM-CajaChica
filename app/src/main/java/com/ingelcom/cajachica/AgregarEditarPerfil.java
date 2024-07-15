@@ -158,6 +158,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
             switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
                 case "AgregarUsuario": //Si estamos en la pantalla de "Agregar Usuario", al dar clic en el botón "Confirmar" que realice las operaciones de este case
+
                     //Creamos un alertDialog que pregunte si se desea agregar el usuario
                     new AlertDialog.Builder(this).setTitle("AGREGAR USUARIO").setMessage("¿Está seguro que desea agregar el usuario?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "insertarUsuario()"
@@ -182,49 +183,54 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         String identidad = txtIdentidad.getText().toString();
         String telefono = txtTelefono.getText().toString();
 
-        validarIdentidadOriginal(identidad, new FirestoreCallbacks.FirestoreValidationCallback() {
-            @Override
-            public void onResultado(boolean esValido) {
-                if (!esValido) { //Si "esValido" es true, quiere decir que se encontró la identidad y ya pertenece a otro usuario
-                    Toast.makeText(AgregarEditarPerfil.this, "LA IDENTIDAD YA PERTENECE A OTRO USUARIO", Toast.LENGTH_SHORT).show();
-                    return;
+        if (!nombre.isEmpty() && !identidad.isEmpty() && !telefono.isEmpty()) {
+            validarIdentidadOriginal(identidad, new FirestoreCallbacks.FirestoreValidationCallback() {
+                @Override
+                public void onResultado(boolean esValido) {
+                    if (!esValido) { //Si "esValido" es true, quiere decir que se encontró la identidad y ya pertenece a otro usuario
+                        Toast.makeText(AgregarEditarPerfil.this, "LA IDENTIDAD YA PERTENECE A OTRO USUARIO", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    Map<String, Object> datos = new HashMap<>(); //HashMap que nos ayudará a almacenar los nombres de los campos de la colección y los datos a ser insertados en cada campo
+
+                    //Obtenemos la selección hecha en los Spinners de Roles y Cuadrillas
+                    String rol = spRoles.getSelectedItem().toString();
+                    String cuadrilla = spCuadrillas.getSelectedItem().toString();
+
+                    //Insertamos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el valor a insertar
+                    datos.put("Nombre", nombre);
+                    datos.put("Identidad", identidad);
+                    datos.put("Telefono", telefono);
+                    datos.put("Rol", rol);
+                    datos.put("Correo", ""); //El correo estará vacío hasta que el usuario lo cree más adelante
+                    datos.put("Estado", true);
+
+                    //Si la selección hecha en el spinner "Cuadrillas" fue "No Pertenece", que inserte un valor vacío ("") en el campo "Cuadrilla" de Firestore
+                    if (cuadrilla.contentEquals("No Pertenece"))
+                        datos.put("Cuadrilla", "");
+                    else //Pero si la selección hecha en el spinner "Cuadrillas" fue otra diferente a "No Pertenece", que inserte esa selección en el campo "Cuadrilla" de Firestore
+                        datos.put("Cuadrilla", cuadrilla);
+
+                    //Llamamos el método "insertarRegistros" de la clase "FirestoreOperaciones" y le mandamos el nombre de la colección, el HashMap con los datos a insertar. También invocamos los métodos "onSuccess" y "onFailure" de la interfaz FirestoreInsertCallback
+                    oper.insertarRegistros("usuarios", datos, new FirestoreCallbacks.FirestoreInsertCallback() {
+                        @Override
+                        public void onSuccess(String idDocumento) {
+                            Toast.makeText(AgregarEditarPerfil.this, "USUARIO AGREGADO EXITOSAMENTE", Toast.LENGTH_SHORT).show();
+                            Utilidades.iniciarActivity(AgregarEditarPerfil.this, AdmPantallas.class, true);
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            Toast.makeText(AgregarEditarPerfil.this, "ERROR AL AGREGAR EL USUARIO", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
-
-                Map<String,Object> datos = new HashMap<>(); //HashMap que nos ayudará a almacenar los nombres de los campos de la colección y los datos a ser insertados en cada campo
-
-                //Obtenemos la selección hecha en los Spinners de Roles y Cuadrillas
-                String rol = spRoles.getSelectedItem().toString();
-                String cuadrilla = spCuadrillas.getSelectedItem().toString();
-
-                //Insertamos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el valor a insertar
-                datos.put("Nombre", nombre);
-                datos.put("Identidad", identidad);
-                datos.put("Telefono", telefono);
-                datos.put("Rol", rol);
-                datos.put("Correo", ""); //El correo estará vacío hasta que el usuario lo cree más adelante
-                datos.put("Estado", true);
-
-                //Si la selección hecha en el spinner "Cuadrillas" fue "No Pertenece", que inserte un valor vacío ("") en el campo "Cuadrilla" de Firestore
-                if (cuadrilla.contentEquals("No Pertenece"))
-                    datos.put("Cuadrilla", "");
-                else //Pero si la selección hecha en el spinner "Cuadrillas" fue otra diferente a "No Pertenece", que inserte esa selección en el campo "Cuadrilla" de Firestore
-                    datos.put("Cuadrilla", cuadrilla);
-
-                //Llamamos el método "insertarRegistros" de la clase "FirestoreOperaciones" y le mandamos el nombre de la colección, el HashMap con los datos a insertar. También invocamos los métodos "onSuccess" y "onFailure" de la interfaz FirestoreInsertCallback
-                oper.insertarRegistros("usuarios", datos, new FirestoreCallbacks.FirestoreInsertCallback() {
-                    @Override
-                    public void onSuccess(String idDocumento) {
-                        Toast.makeText(AgregarEditarPerfil.this, "USUARIO AGREGADO EXITOSAMENTE", Toast.LENGTH_SHORT).show();
-                        Utilidades.iniciarActivity(AgregarEditarPerfil.this, AdmPantallas.class, true);
-                    }
-
-                    @Override
-                    public void onFailure(Exception e) {
-                        Toast.makeText(AgregarEditarPerfil.this, "ERROR AL AGREGAR EL USUARIO", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
+            });
+        }
+        else {
+            Toast.makeText(this, "TODOS LOS CAMPOS DEBEN LLENARSE", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void validarIdentidadOriginal(String identidad, FirestoreCallbacks.FirestoreValidationCallback callback) {

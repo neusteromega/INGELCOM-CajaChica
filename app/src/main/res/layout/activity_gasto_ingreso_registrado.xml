@@ -8,7 +8,7 @@
     tools:context=".GastoIngresoRegistrado">
 
     <TextView
-        android:id="@+id/lblGastoIngresoRegistrado"
+        android:id="@+id/lblTituloGIR"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -34,8 +34,8 @@
         android:paddingTop="20dp"
         android:paddingRight="10dp"
         android:paddingBottom="20dp"
-        app:layout_constraintTop_toBottomOf="@id/lblGastoIngresoRegistrado"
-        app:layout_constraintBottom_toTopOf="@id/btnRegresarMenúREG"
+        app:layout_constraintTop_toBottomOf="@id/lblTituloGIR"
+        app:layout_constraintBottom_toTopOf="@id/btnRegresarMenúGIR"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintVertical_bias="0.5">
@@ -47,7 +47,7 @@
             app:srcCompat="@mipmap/ico_color_registrado" />
 
         <TextView
-            android:id="@+id/lblExitoREG"
+            android:id="@+id/lblExitoGIR"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="35dp"
@@ -58,7 +58,7 @@
             android:textSize="24dp" />
 
         <TextView
-            android:id="@+id/lblTextoREG"
+            android:id="@+id/lblTextoGIR"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
@@ -70,7 +70,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/btnRegresarMenúREG"
+        android:id="@+id/btnRegresarMenúGIR"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
