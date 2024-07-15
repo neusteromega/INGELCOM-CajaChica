@@ -46,7 +46,7 @@ public class EmpMenuPrincipal extends AppCompatActivity {
 
     //Eventos Click de los botones del menú
     public void registrarGasto(View view) {
-        Utilidades.iniciarActivity(this, RegistrarEditarGasto.class, false);
+        Utilidades.iniciarActivityConString(this, RegistrarEditarGasto.class, "ActivityREG", "RegistrarGastoEmpleado");
     }
 
     public void listadoGastos(View view) {

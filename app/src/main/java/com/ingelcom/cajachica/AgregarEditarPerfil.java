@@ -54,8 +54,8 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         llIdentidad = findViewById(R.id.LLIdentidadAEP);
         llTelefono = findViewById(R.id.LLTelefonoAEP);
         llCorreo = findViewById(R.id.LLCorreoAEP);
-        llContra = findViewById(R.id.LLContrasenaAEP);
-        llConfContra = findViewById(R.id.LLConfContrasenaAEP);
+        /*llContra = findViewById(R.id.LLContrasenaAEP);
+        llConfContra = findViewById(R.id.LLConfContrasenaAEP);*/
         llRol = findViewById(R.id.LLRolAEP);
         llCuadrilla = findViewById(R.id.LLCuadrillaAEP);
         llEstado = findViewById(R.id.LLEstadoAEP);
@@ -64,8 +64,8 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         txtIdentidad = findViewById(R.id.txtIdentidadAEP);
         txtTelefono = findViewById(R.id.txtTelefonoAEP);
         txtCorreo = findViewById(R.id.txtCorreoAEP);
-        txtContra = findViewById(R.id.txtContrasenaAEP);
-        txtConfContra = findViewById(R.id.txtConfContrasenaAEP);
+        /*txtContra = findViewById(R.id.txtContrasenaAEP);
+        txtConfContra = findViewById(R.id.txtConfContrasenaAEP);*/
 
         lblTitulo = findViewById(R.id.lblTituloAEP);
         btnRegresar = findViewById(R.id.imgRegresarAEP);
@@ -88,9 +88,24 @@ public class AgregarEditarPerfil extends AppCompatActivity {
 
                     //Ocultamos con "GONE" los elementos que no son necesarios
                     llCorreo.setVisibility(View.GONE);
-                    llContra.setVisibility(View.GONE);
-                    llConfContra.setVisibility(View.GONE);
+                    /*llContra.setVisibility(View.GONE);
+                    llConfContra.setVisibility(View.GONE);*/
                     llEstado.setVisibility(View.GONE);
+                    break;
+
+                //Establecemos los elementos gráficos si la pantalla es "EditarAdmin"
+                case "EditarAdmin":
+
+                //Establecemos los elementos gráficos si la pantalla es "EditarEmpleado"
+                case "EditarEmpleado":
+                    llCuadrilla.setVisibility(View.GONE);
+                    llRol.setVisibility(View.GONE);
+                    llEstado.setVisibility(View.GONE);
+                    break;
+
+                //Establecemos los elementos gráficos si la pantalla es "EditarEmpleadoAdmin"
+                case "EditarEmpleadoAdmin":
+                    //Aquí no ponemos nada ya que esta pantalla tiene todos los elementos gráficos
                     break;
             }
         }
@@ -102,8 +117,9 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         oper.obtenerRegistrosCampo("roles", "Nombre", new FirestoreCallbacks.FirestoreCallback() {
             @Override
             public void onCallback(List<String> lista) {
+                //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(AgregarEditarPerfil.this, R.layout.spinner_items, lista);
-                spRoles.setAdapter(adapter);
+                spRoles.setAdapter(adapter); //Asignamos el adapter al Spinner "spRoles"
             }
 
             @Override
@@ -120,7 +136,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
                 listaCuadrillas.add("No Pertenece"); //Agregamos la opción de "No Pertenece"
                 listaCuadrillas.addAll(lista); //Anexamos la lista de cuadrillas de Firestore que está en la variable "lista"
 
-                //Creamos el adapter para el spinner y le establecemos la vista de los items que es "R.layout.spinner_items" y la lista de elementos que es la variable "lista"
+                //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(AgregarEditarPerfil.this, R.layout.spinner_items, listaCuadrillas);
                 spCuadrillas.setAdapter(adapter); //Asignamos el adapter a "spCuadrillas"
                 //Utilidades.spinnerConHint(AgregarEditarPerfil.this, spCuadrillas, lista, "Cuadrillas");

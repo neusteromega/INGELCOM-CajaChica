@@ -158,6 +158,22 @@ public class Perfil extends AppCompatActivity {
     }
 
     public void editarPerfil(View view) {
-        Utilidades.iniciarActivity(this, AgregarEditarPerfil.class, false);
+        //Que entre al if si "nombreActivity" no es nulo
+        if (nombreActivity != null) {
+            //El "nombreActivity" nos sirve para saber la pantalla en la que estamos
+            switch (nombreActivity) { //Dependiendo la pantalla en que estemos, al dar clic en el botón "Editar Perfil", que mande un String al Activity "AgregarEditarPerfil" indicando qué tipo de usuario es quien está editando el perfil
+                case "PerfilAdmin":
+                    Utilidades.iniciarActivityConString(this, AgregarEditarPerfil.class, "ActivityAEP", "EditarAdmin");
+                    break;
+
+                case "PerfilEmpleadoAdmin":
+                    Utilidades.iniciarActivityConString(this, AgregarEditarPerfil.class, "ActivityAEP", "EditarEmpleadoAdmin");
+                    break;
+
+                case "PerfilEmpleado":
+                    Utilidades.iniciarActivityConString(this, AgregarEditarPerfil.class, "ActivityAEP", "EditarEmpleado");
+                    break;
+            }
+        }
     }
 }

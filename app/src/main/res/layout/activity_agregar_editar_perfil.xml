@@ -47,13 +47,14 @@
             android:id="@+id/lblSeparadorAEP"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="25dp"
             android:layout_marginBottom="10dp"
             android:layout_weight="1"
             android:background="@drawable/clr_casillaazul_separador"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center"
-            android:textSize="2dp" />
+            android:textSize="2dp"
+            android:visibility="gone" />
 
     </LinearLayout>
 
@@ -206,108 +207,6 @@
                 android:paddingRight="10dp"
                 android:textColor="@color/clr_fuente_secundario"
                 android:textSize="17dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/LLContrasenaAEP"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="15dp"
-            android:background="@drawable/clr_casillablanca_cuadrada"
-            android:elevation="5dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingLeft="12dp"
-            android:paddingRight="15dp">
-
-            <ImageView
-                android:id="@+id/imgContrasenaAEP"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                app:srcCompat="@mipmap/ico_azul_contrasena" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center|right"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/txtContrasenaAEP"
-                    android:layout_width="match_parent"
-                    android:layout_height="55dp"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:ems="10"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:hint="Contraseña"
-                    android:inputType="textPassword"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="10dp"
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="17dp" />
-
-                <ImageView
-                    android:id="@+id/imgVerContrasenaAEP"
-                    android:layout_width="35dp"
-                    android:layout_height="30dp"
-                    android:contentDescription="@string/descripcion"
-                    app:srcCompat="@mipmap/ico_azul_mostrarcontrasena" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/LLConfContrasenaAEP"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="15dp"
-            android:background="@drawable/clr_casillablanca_cuadrada"
-            android:elevation="5dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingLeft="12dp"
-            android:paddingRight="15dp">
-
-            <ImageView
-                android:id="@+id/imgConfContrasenaAEP"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                app:srcCompat="@mipmap/ico_azul_contrasena" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center|right"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/txtConfContrasenaAEP"
-                    android:layout_width="match_parent"
-                    android:layout_height="55dp"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:ems="10"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:hint="Confirmar Contraseña"
-                    android:inputType="textPassword"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="10dp"
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="17dp" />
-
-                <ImageView
-                    android:id="@+id/imgVerConfContrasenaAEP"
-                    android:layout_width="35dp"
-                    android:layout_height="30dp"
-                    android:contentDescription="@string/descripcion"
-                    app:srcCompat="@mipmap/ico_azul_mostrarcontrasena" />
-            </LinearLayout>
-
         </LinearLayout>
 
         <LinearLayout

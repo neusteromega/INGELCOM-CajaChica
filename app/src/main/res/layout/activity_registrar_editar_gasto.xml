@@ -113,7 +113,7 @@
                     <TextView
                         android:id="@+id/lblFechaRG"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="55dp"
                         android:layout_weight="1"
                         android:background="@android:color/transparent"
                         android:fontFamily="@font/montserrat_bold"
@@ -159,7 +159,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
                     android:contentDescription="@string/descripcion"
-                    android:paddingLeft="15dp" />
+                    android:paddingLeft="10dp"
+                    tools:listitem="@layout/spinner_items" />
 
             </LinearLayout>
 
@@ -223,7 +224,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
                     android:contentDescription="@string/descripcion"
-                    android:paddingLeft="15dp" />
+                    android:paddingLeft="10dp"
+                    tools:listitem="@layout/spinner_items" />
 
             </LinearLayout>
 
@@ -347,7 +349,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginRight="15dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:srcCompat="@mipmap/foto_evidencia" />
 
             <LinearLayout
@@ -363,7 +365,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="30dp"
                     android:layout_marginBottom="30dp"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     app:srcCompat="@mipmap/ico_degradado_eliminar" />
 
                 <TextView
