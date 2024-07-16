@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.ingelcom.cajachica.DAO.Cuadrilla;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.DAO.Gasto;
@@ -21,6 +22,7 @@ import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 
 import java.util.List;
+import java.util.Map;
 
 public class RegistrarEditarGasto extends AppCompatActivity {
 
@@ -132,17 +134,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "registrarGasto()"
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    //Enlazamos los EditText con las siguientes variables String
-                                    String lugarCompra = txtLugar.getText().toString();
-                                    String descripcion = txtDescripcion.getText().toString();
-                                    String factura = txtFactura.getText().toString();
-                                    String total = txtTotal.getText().toString();
-
-                                    //Obtenemos la selección hecha en los Spinners
-                                    String cuadrilla = spCuadrillas.getSelectedItem().toString();
-                                    String tipoCompra = spTipoCompras.getSelectedItem().toString();
-
-                                    gast.registrarGasto(cuadrilla, lugarCompra, tipoCompra, descripcion, factura, total, false); //Llamamos el método "registrarGasto" donde se hará el proceso de inserción a Firestore, le mandamos los textboxes y selecciones de los spinners de esta pantalla, y un false que indica que no se debe actualizar el dinero de la cuadrilla, ya que el gasto lo está efectuando un administrador con un dinero aparte
+                                    insertarGasto("GastoAdmin");
                                 }
                             }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
                                 @Override
@@ -159,33 +151,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "registrarGasto()"
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    //Enlazamos los EditText con las siguientes variables String
-                                    String lugarCompra = txtLugar.getText().toString();
-                                    String descripcion = txtDescripcion.getText().toString();
-                                    String factura = txtFactura.getText().toString();
-                                    String total = txtTotal.getText().toString();
-
-                                    //Obtenemos la selección hecha en el Spinner
-                                    String tipoCompra = spTipoCompras.getSelectedItem().toString();
-
-                                    try {
-                                        //Llamamos el método "obtenerCuadrillaUsuario" de la clase "Cuadrilla" en el cual podremos extraer de forma asíncrona el nombre de la cuadrilla a la que pertenece el usuario actual
-                                        cuad.obtenerCuadrillaUsuario(new FirestoreCallbacks.FirestoreTextCallback() {
-                                            @Override
-                                            public void onSuccess(String texto) {
-                                                //Llamamos el método "registrarGasto" donde se hará el proceso de inserción a Firestore, le mandamos los textboxes y selecciones de los spinners de esta pantalla, y un true que indica que se debe actualizar el dinero de la cuadrilla, ya que el gasto lo está efectuando un empleado
-                                                gast.registrarGasto(texto, lugarCompra, tipoCompra, descripcion, factura, total, true); //La variable "texto" tiene guardada la cuadrilla a la que pertenece el usuario
-                                            }
-
-                                            @Override
-                                            public void onFailure(Exception e) {
-                                                Log.e("CuadrillaUsuario", "Error al obtener la cuadrilla", e);
-                                            }
-                                        });
-                                    }
-                                    catch (Exception e) {
-                                        Log.w("ObtenerCuadrilla", e);
-                                    }
+                                    insertarGasto("GastoEmpleado");
                                 }
                             }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
                                 @Override
@@ -196,5 +162,59 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                     break;
             }
         }
+    }
+
+    private void insertarGasto(String tipoGasto) {
+        //Enlazamos los EditText con las siguientes variables String
+        String lugarCompra = txtLugar.getText().toString();
+        String descripcion = txtDescripcion.getText().toString();
+        String factura = txtFactura.getText().toString();
+        String total = txtTotal.getText().toString();
+
+        //Obtenemos la selección hecha en los Spinners
+        String cuadrillaTXT = spCuadrillas.getSelectedItem().toString();
+        String tipoCompra = spTipoCompras.getSelectedItem().toString();
+
+        try {
+            FirebaseUser user = Utilidades.obtenerUsuario(); //Obtenemos el usuario actual llamando el método utilitario "obtenerUsuario"
+            String correoActual = user.getEmail(); //Obtenemos el correo del usuario actual
+
+            oper.obtenerUnRegistro("usuarios", "Correo", correoActual, new FirestoreCallbacks.FirestoreDocumentCallback() {
+                @Override
+                public void onCallback(Map<String, Object> documento) {
+                    if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                        String nombre = (String) documento.get("Nombre");
+                        String cuadrillaBDD = (String) documento.get("Cuadrilla");
+
+                        //Dentro de ambas condiciones, llamamos el método "registrarGasto" donde se hará el proceso de inserción a Firestore, le mandamos los textboxes y selecciones de los spinners de esta pantalla
+                        if (tipoGasto.contentEquals("GastoAdmin"))
+                            gast.registrarGasto(nombre, cuadrillaTXT, lugarCompra, tipoCompra, descripcion, factura, total, false); //Si el gasto lo registra un admin, mandamos "cuadrillaTXT" que es la selección de la cuadrilla en el Spinner, y un "false" indicando que no debe restar el gasto del dinero disponible de la cuadrilla ya que el gasto lo está registrando un admin con un dinero aparte
+                        else if (tipoGasto.contentEquals("GastoEmpleado"))
+                            gast.registrarGasto(nombre, cuadrillaBDD, lugarCompra, tipoCompra, descripcion, factura, total, true); //Si el gasto lo registra un empleado, mandamos "cuadrillaBDD" que es la extracción de la cuadrilla a la que pertenece el usuario actual, y un true indicando que SI debe restar el gasto registrado del dinero disponible de la cuadrilla del usuario
+
+                    } else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
+                        Log.w("ObtenerUsuario", "Usuario no encontrado");
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Log.w("BuscarDocumento", "Error al obtener el documento", e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerUsuario", e);
+        }
+
+        /*switch (tipoGasto) {
+            case "GastoEmpleado":
+
+
+                break;
+
+            case "GastoAdmin":
+                break;
+        }*/
     }
 }

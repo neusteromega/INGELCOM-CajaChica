@@ -81,7 +81,7 @@ public class Cuadrilla {
     }
 
     //Método que permite obtener la cuadrilla a la que pertenece un usuario
-    public void obtenerCuadrillaUsuario(FirestoreCallbacks.FirestoreTextCallback callback) {
+    /*public void obtenerCuadrillaUsuario(FirestoreCallbacks.FirestoreTextCallback callback) {
         FirebaseUser user = Utilidades.obtenerUsuario(); //Obtenemos el usuario actual llamando el método utilitario "obtenerUsuario"
         String correoActual = user.getEmail();
 
@@ -103,7 +103,7 @@ public class Cuadrilla {
                 Log.w("BuscarDocumento", "Error al obtener el documento", e);
             }
         });
-    }
+    }*/
 
     /*//Método para obtener los nombres de las cuadrillas almacenados en Firestore
     public void obtenerCuadrillas(final FirestoreCallback callback) {

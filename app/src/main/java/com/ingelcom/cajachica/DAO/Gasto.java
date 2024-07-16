@@ -24,7 +24,7 @@ public class Gasto {
         this.contexto = contexto;
     }
 
-    public void registrarGasto(String cuadrilla, String lugar, String tipo, String descripcion, String factura, String total, boolean actualizarDinero) {
+    public void registrarGasto(String usuario, String cuadrilla, String lugar, String tipo, String descripcion, String factura, String total, boolean actualizarDinero) {
         if (!lugar.isEmpty() && !descripcion.isEmpty() && !factura.isEmpty() && !total.isEmpty()) { //Verificamos que las dos cajas de texto no estén vacías para que entre al if
             try {
                 Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
@@ -39,6 +39,7 @@ public class Gasto {
 
                 //Insertamos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el valor a insertar
                 datos.put("ID", idDocumento);
+                datos.put("Usuario", usuario);
                 datos.put("Fecha", timestamp);
                 datos.put("Cuadrilla", cuadrilla);
                 datos.put("Lugar", lugar);
