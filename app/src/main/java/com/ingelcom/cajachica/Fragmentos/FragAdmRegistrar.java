@@ -82,8 +82,8 @@ public class FragAdmRegistrar extends Fragment {
         });
 
         btnGasto.setOnClickListener(v -> {
-            //Redireccionamos al usuario al activity de "RegistrarEditarGasto" llamando el método utilitario "iniciarActivity"
-            Utilidades.iniciarActivity(getActivity(), RegistrarEditarGasto.class, false);
+            //Redireccionamos al usuario al activity de "RegistrarEditarGasto" llamando el método utilitario "iniciarActivityConString" donde indicamos que el activity a mostrar será "RegistrarGastoAdmin"
+            Utilidades.iniciarActivityConString(getActivity(), RegistrarEditarGasto.class, "ActivityREG", "RegistrarGastoAdmin", false);
         });
 
         return view;

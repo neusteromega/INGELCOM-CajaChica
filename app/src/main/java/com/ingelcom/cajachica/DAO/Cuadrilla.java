@@ -4,9 +4,11 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
+import com.ingelcom.cajachica.Herramientas.Utilidades;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,6 +82,30 @@ public class Cuadrilla {
         catch (Exception e) {
             Log.w("DineroCuadrilla", e);
         }
+    }
+
+    //Método que permite obtener la cuadrilla a la que pertenece un usuario
+    public void obtenerCuadrillaUsuario() {
+        FirebaseUser user = Utilidades.obtenerUsuario(); //Obtenemos el usuario actual llamando el método utilitario "obtenerUsuario"
+        String correoActual = user.getEmail();
+
+        //Llamamos el método "obtenerUnRegistro" de la clase "FirestoreOperaciones", este nos ayudará a buscar el usuario dependiendo su correo
+        oper.obtenerUnRegistro("usuarios", "Correo", correoActual, new FirestoreCallbacks.FirestoreDocumentCallback() {
+            @Override
+            public void onCallback(Map<String, Object> documento) {
+                if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                    String cuadrilla = (String) documento.get("Cuadrilla");
+                }
+                else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
+                    Log.w("CuadrillaUsuario", "No se encontró el usuario.");
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.w("BuscarDocumento", "Error al obtener el documento", e);
+            }
+        });
     }
 
     /*//Método para obtener los nombres de las cuadrillas almacenados en Firestore

@@ -78,6 +78,10 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                     llFecha.setVisibility(View.GONE);
                     llCuadrilla.setVisibility(View.GONE);
                     break;
+
+                case "RegistrarGastoAdmin":
+                    llFecha.setVisibility(View.GONE);
+                    break;
             }
         }
     }

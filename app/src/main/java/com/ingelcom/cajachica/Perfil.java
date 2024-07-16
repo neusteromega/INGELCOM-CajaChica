@@ -95,27 +95,32 @@ public class Perfil extends AppCompatActivity {
         lblSeparadorTelCua.setVisibility(View.GONE);
         llCuadrilla.setVisibility(View.GONE);
 
-        //Llamamos el método "obtenerUnRegistro" de la clase "FirestoreOperaciones", este nos ayudará a buscar el usuario dependiendo su correo
-        oper.obtenerUnRegistro("usuarios", "Correo", emailActual, new FirestoreCallbacks.FirestoreDocumentCallback() {
-            @Override
-            public void onCallback(Map<String, Object> documento) {
-                if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
-                    //Asignamos la información del usuario en los elementos gráficos de la pantalla. Esta información se extrae del hashMap "documento"
-                    lblNombre.setText((String) documento.get("Nombre"));
-                    lblCorreo.setText((String) documento.get("Correo"));
-                    lblIdentidad.setText((String) documento.get("Identidad"));
-                    lblTelefono.setText((String) documento.get("Telefono"));
+        try {
+            //Llamamos el método "obtenerUnRegistro" de la clase "FirestoreOperaciones", este nos ayudará a buscar el usuario dependiendo su correo
+            oper.obtenerUnRegistro("usuarios", "Correo", emailActual, new FirestoreCallbacks.FirestoreDocumentCallback() {
+                @Override
+                public void onCallback(Map<String, Object> documento) {
+                    if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                        //Asignamos la información del usuario en los elementos gráficos de la pantalla. Esta información se extrae del hashMap "documento"
+                        lblNombre.setText((String) documento.get("Nombre"));
+                        lblCorreo.setText((String) documento.get("Correo"));
+                        lblIdentidad.setText((String) documento.get("Identidad"));
+                        lblTelefono.setText((String) documento.get("Telefono"));
+                    }
+                    else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
+                        Toast.makeText(Perfil.this, "USUARIO NO ENCONTRADO", Toast.LENGTH_SHORT).show();
+                    }
                 }
-                else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
-                    Toast.makeText(Perfil.this, "USUARIO NO ENCONTRADO", Toast.LENGTH_SHORT).show();
-                }
-            }
 
-            @Override
-            public void onFailure(Exception e) {
-                Log.w("Buscar Documento", "Error al obtener el documento", e);
-            }
-        });
+                @Override
+                public void onFailure(Exception e) {
+                    Log.w("BuscarDocumento", "Error al obtener el documento", e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("PerfilAdmin", e);
+        }
     }
 
     private void perfilEmpleadoAdmin() {
