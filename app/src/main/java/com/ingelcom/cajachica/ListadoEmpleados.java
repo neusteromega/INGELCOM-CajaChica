@@ -22,7 +22,7 @@ import java.util.List;
 public class ListadoEmpleados extends AppCompatActivity {
 
     private FirestoreOperaciones oper = new FirestoreOperaciones();
-    private Usuario usuario = new Usuario();
+    private Usuario usuario = new Usuario(ListadoEmpleados.this);
     private EmpleadosAdapter adapter;
     private RecyclerView rvEmpleados;
     private List<EmpleadosItems> items;

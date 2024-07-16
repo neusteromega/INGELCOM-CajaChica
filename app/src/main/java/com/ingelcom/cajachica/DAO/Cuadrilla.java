@@ -23,36 +23,46 @@ public class Cuadrilla {
             @Override
             public void onCallback(Map<String, Object> documento) {
                 if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró la cuadrilla mediante su nombre
-                    //AQUÍ ESTÁ EL PROBLEMA
-                    /*String dinero = (String) documento.get("Dinero");*/ //Obtenemos el valor guardado en el campo "Dinero" de la colección "cuadrillas" y lo guardamos en la variable double "dinero"
+                    try {
+                        //Obtenemos el valor guardado en el campo "Dinero" de la colección "cuadrillas" y lo guardamos en la variable Object llamada "valor"
+                        Object valor = documento.get("Dinero"); //Lo obtenemos como Object ya que Firestore puede almacenar números en varios formatos (por ejemplo, Long y Double) y esto puede causar problemas con el casting del contenido del campo
+                        double dinero = 0.0; //Creamos una variable double donde se guardará la conversión de "valor"
 
-                    Toast.makeText(context, "CUADRILLA: " + (String) documento.get("Nombre"), Toast.LENGTH_SHORT).show();
-                    //Condición que determina qué operación se hará, si es un "Ingreso" se hará una suma, si es un "Gasto" se hará una resta
-                    /*if (operacion.contentEquals("Ingreso"))
-                        dinero += total; //Sumamemos el ingreso registrado por el administrador, y que está guardado en la variable "total"
-                    else if (operacion.contentEquals("Gasto"))
-                        dinero -= total;*/ //Restamos el gasto registrado, y que está guardado en la variable "total"
+                        if (valor instanceof Long) //Verificamos si "valor" es una instancia de Long
+                            dinero = ((Long) valor).doubleValue(); //Si lo es, lo convertimos a Double y que se guarde en "dinero"
+                        else if (valor instanceof Double) //También verificamos si "valor" es una instancia de Double
+                            dinero = (Double) valor; //Si lo es, los casteamos con Double y que lo guarde en "dinero"
 
-                    /*Map<String,Object> datosNuevos = new HashMap<>();
-                    datosNuevos.put("Dinero", dinero);
+                        //Condición que determina qué operación se hará, si es un "Ingreso" se hará una suma, si es un "Gasto" se hará una resta
+                        if (operacion.contentEquals("Ingreso"))
+                            dinero += total; //Sumamemos el ingreso registrado por el administrador, y que está guardado en la variable "total"
+                        else if (operacion.contentEquals("Gasto"))
+                            dinero -= total; //Restamos el gasto registrado, y que está guardado en la variable "total"
 
-                    Toast.makeText(context, "Dinero: " + dinero, Toast.LENGTH_SHORT).show();*/
+                        //Creamos el HashMap y le insertamos el nuevo valor de "dinero" para el campo "Dinero"
+                        Map<String,Object> datosNuevos = new HashMap<>();
+                        datosNuevos.put("Dinero", dinero);
 
-                    /*oper.agregarRegistrosColeccion("cuadrillas", "Nombre", cuadrilla, datosNuevos, new FirestoreCallbacks.FirestoreInsertCallback() {
-                        @Override
-                        public void onSuccess(String texto) {
-                            //Si "texto" no es null, quiere decir que si se actualizó el campo "Dinero" de la cuadrilla, además, si entró a este "onSuccess" también quiere decir que lo realizó
-                            if (texto != null)
-                                Log.w("Actualizar Dinero", "Dinero actualizado");
-                            else
-                                Log.w("Actualizar Dinero", "No se encontró la cuadrilla para actualizar su dinero");
-                        }
+                        //Llamamos al método "agregarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar, el HashMap con los nuevos campos y datos (o los campos existentes para actualizar su contenido) e invocamos la interfaz "FirestoreInsertCallback"
+                        oper.agregarRegistrosColeccion("cuadrillas", "Nombre", cuadrilla, datosNuevos, new FirestoreCallbacks.FirestoreInsertCallback() {
+                            @Override
+                            public void onSuccess(String texto) {
+                                //Si "texto" no es null, quiere decir que si se actualizó el campo "Dinero" de la cuadrilla, además, si entró a este "onSuccess" también quiere decir que lo realizó
+                                if (texto != null)
+                                    Log.w("ActualizarDinero", "Dinero actualizado");
+                                else
+                                    Log.w("ActualizarDinero", "No se encontró la cuadrilla para actualizar su dinero");
+                            }
 
-                        @Override
-                        public void onFailure(Exception e) {
-                            Log.w("Actualizar Dinero", "No se encontró la cuadrilla para actualizar su dinero");
-                        }
-                    });*/
+                            @Override
+                            public void onFailure(Exception e) {
+                                Log.w("ActualizarDinero", "No se encontró la cuadrilla para actualizar su dinero: " + e);
+                            }
+                        });
+                    }
+                    catch (Exception e) {
+                        Log.w("DineroCuadrilla", e);
+                    }
                 }
                 else {
                     Toast.makeText(context, "CUADRILLA NO ENCONTRADA", Toast.LENGTH_SHORT).show();
@@ -61,7 +71,7 @@ public class Cuadrilla {
 
             @Override
             public void onFailure(Exception e) {
-                Log.w("Obtener Cuadrilla", "Error al obtener la cuadrilla: ", e);
+                Log.w("ObtenerCuadrilla", "Error al obtener la cuadrilla: ", e);
             }
         });
     }
