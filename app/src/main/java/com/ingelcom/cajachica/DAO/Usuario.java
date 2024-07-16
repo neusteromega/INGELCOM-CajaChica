@@ -26,11 +26,11 @@ public class Usuario {
 
     //Método que nos permitirá obtener los empleados, pero sólo los que tengan el rol "Empleado"
     public void obtenerEmpleados(FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<EmpleadosItems> callback) { //Llamamos la interfaz "FirestoreAllSpecialDocumentsCallback" y le indicamos que debe ser de tipo "EmpleadosItems"
-        //Llamamos el método "obtenerRegistros" de "FirestoreOperaciones", le mandamos el nombre de la colección, e invocamos la interfaz "FirestoreAllDocumentsCallback"
-        oper.obtenerRegistros("usuarios", new FirestoreCallbacks.FirestoreAllDocumentsCallback() {
-            @Override
-            public void onCallback(List<Map<String, Object>> documentos) { //Al invocar la interfaz, nos devuelve una lista de tipo "Map<String,Object>" llamada "documentos" en la cual se almacenarán todos los campos de todos los documentos de la colección
-                try {
+        try {
+            //Llamamos el método "obtenerRegistros" de "FirestoreOperaciones", le mandamos el nombre de la colección, e invocamos la interfaz "FirestoreAllDocumentsCallback"
+            oper.obtenerRegistros("usuarios", new FirestoreCallbacks.FirestoreAllDocumentsCallback() {
+                @Override
+                public void onCallback(List<Map<String, Object>> documentos) { //Al invocar la interfaz, nos devuelve una lista de tipo "Map<String,Object>" llamada "documentos" en la cual se almacenarán todos los campos de todos los documentos de la colección
                     List<EmpleadosItems> listaEmpleados = new ArrayList<>(); //Creamos una lista de tipo "EmpleadosItems"
 
                     //Hacemos un for que recorra los documentos de la lista "documentos" y los vaya guardando uno por uno en la variable temporal "documento" de tipo "Map<String,Object>"
@@ -53,19 +53,20 @@ public class Usuario {
                     //Cuando salga del "for", ya tendremos todos los empleados con rol "Empleado" en la "listaEmpleados", y esta lista es la que mandamos al llamar el método "onCallback" de la interfaz
                     callback.onCallback(listaEmpleados);
                 }
-                catch (Exception e) {
-                    Log.w("ObtenerEmpleados", e);
-                }
-            }
 
-            @Override
-            public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
-                Log.e("FirestoreError", "Error al obtener los documentos", e);
-                callback.onFailure(e);
-            }
-        });
+                @Override
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("FirestoreError", "Error al obtener los documentos", e);
+                    callback.onFailure(e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerEmpleados", e);
+        }
     }
 
+    //Método que nos permite insertar un nuevo usuario
     public void insertarUsuario(String nombre, String identidad, String telefono, String rol, String cuadrilla) {
         try {
             //Si estas tres variables que contienen el contenido de las cajas de texto de "Agregar Usuario" no están vacías, que entre al if
