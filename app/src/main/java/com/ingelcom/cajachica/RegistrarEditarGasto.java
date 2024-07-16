@@ -1,7 +1,9 @@
 package com.ingelcom.cajachica;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,7 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.ingelcom.cajachica.DAO.Cuadrilla;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
+import com.ingelcom.cajachica.DAO.Gasto;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 
@@ -29,6 +33,8 @@ public class RegistrarEditarGasto extends AppCompatActivity {
     private String nombreActivity;
 
     private FirestoreOperaciones oper = new FirestoreOperaciones();
+    private Cuadrilla cuad = new Cuadrilla(RegistrarEditarGasto.this);
+    private Gasto gast = new Gasto(RegistrarEditarGasto.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,10 +70,8 @@ public class RegistrarEditarGasto extends AppCompatActivity {
     }
 
     private void establecerElementos() {
-        //Que entre al if si "nombreActivity" no es nulo
-        if (nombreActivity != null) {
-            //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
-            switch (nombreActivity) {
+        if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
+            switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
                 //Establecemos los elementos gráficos si la pantalla es "RegistrarGastoEmpleado"
                 case "RegistrarGastoEmpleado":
                     //Ocultamos estos dos elementos (Fecha y Cuadrilla) para que el empleado no pueda verlos
@@ -116,6 +120,36 @@ public class RegistrarEditarGasto extends AppCompatActivity {
     }
 
     public void confirmar(View view) {
-        Utilidades.iniciarActivity(this, GastoIngresoRegistrado.class, false);
+        if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
+            switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
+                case "RegistrarGastoAdmin": //Si estamos en la pantalla de "RegistrarGastoAdmin", al dar clic en el botón "Confirmar" que realice las operaciones de este case
+
+                    //Creamos un alertDialog que pregunte si se desea registrar el gasto de dinero a la cuadrilla seleccionada
+                    new AlertDialog.Builder(this).setTitle("REGISTRAR GASTO").setMessage("¿Está seguro que desea registrar el gasto de dinero a la cuadrilla seleccionada")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "registrarGasto()"
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    //Enlazamos los EditText con las siguientes variables String
+                                    String lugarCompra = txtLugar.getText().toString();
+                                    String descripcion = txtDescripcion.getText().toString();
+                                    String factura = txtFactura.getText().toString();
+                                    String total = txtTotal.getText().toString();
+
+                                    //Obtenemos la selección hecha en los Spinners
+                                    String cuadrilla = spCuadrillas.getSelectedItem().toString();
+                                    String tipoCompra = spTipoCompras.getSelectedItem().toString();
+
+                                    gast.registrarGasto(cuadrilla, lugarCompra, tipoCompra, descripcion, factura, total, false); //Llamamos el método "registrarGasto" donde se hará el proceso de inserción a Firestore, le mandamos los textboxes y selecciones de los spinners de esta pantalla, y un false que indica que no se debe actualizar el dinero de la cuadrilla, ya que el gasto lo está efectuando un administrador con un dinero aparte
+                                }
+                            }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                }
+                            }).show();
+                    break;
+            }
+        }
+        //Utilidades.iniciarActivity(this, GastoIngresoRegistrado.class, false);
     }
 }

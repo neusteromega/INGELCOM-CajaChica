@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class Ingreso {
 
@@ -29,8 +30,9 @@ public class Ingreso {
             try {
                 Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
 
+                String idDocumento = UUID.randomUUID().toString(); //Generamos un UUID que es un elemento único y lo guardamos en la variable "idDocumento". Esto nos servirá para que el documento que se cree al insertar los datos, tenga un identificador único
                 double totalIngreso = Double.parseDouble(total); //Convertimos la variable String "total" en double y su contenido lo guardamos en "totalIngreso"
-                Map<String, Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos a insertar
+                Map<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos a insertar
 
                 Calendar calendar = Calendar.getInstance(); //Obtenemos una instancia de la clase "Calendar"
                 //SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()); //Creamos un formato para la fecha y hora. "Locale.getDefault()" especifica que el formato debe seguir las convenciones predeterminadas del sistema
@@ -39,6 +41,7 @@ public class Ingreso {
                 Timestamp timestamp = new Timestamp(fechaHora); //Convertimos "fechaHora" en un objeto "Timestamp" para que sea compatible con Firestore
 
                 //Insertamos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el valor a insertar
+                datos.put("ID", idDocumento);
                 datos.put("Fecha", timestamp);
                 datos.put("Cuadrilla", cuadrilla);
                 datos.put("Transferencia", transferencia);

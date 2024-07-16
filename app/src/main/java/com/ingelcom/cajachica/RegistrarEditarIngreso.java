@@ -74,10 +74,8 @@ public class RegistrarEditarIngreso extends AppCompatActivity {
     }
 
     private void establecerElementos() {
-        //Que entre al if si "nombreActivity" no es nulo
-        if (nombreActivity != null) {
-            //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
-            switch (nombreActivity) {
+        if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
+            switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
                 case "RegistrarIngreso":
                     lblFecha.setText(String.format("%02d/%02d/%04d", day, month + 1, year)); //Asignamos la fecha seleccionada con el formato "00/00/0000" al TextView "lblFecha"
                     break;
@@ -145,7 +143,6 @@ public class RegistrarEditarIngreso extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
-
                                 }
                             }).show();
                     break;
@@ -154,6 +151,5 @@ public class RegistrarEditarIngreso extends AppCompatActivity {
                     break;
             }
         }
-        //Utilidades.iniciarActivity(this, GastoIngresoRegistrado.class, false);
     }
 }
