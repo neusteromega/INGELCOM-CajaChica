@@ -46,7 +46,7 @@ public class EmpMenuPrincipal extends AppCompatActivity {
 
     //Eventos Click de los botones del menú
     public void registrarGasto(View view) {
-        Utilidades.iniciarActivityConString(this, RegistrarEditarGasto.class, "ActivityREG", "RegistrarGastoEmpleado");
+        Utilidades.iniciarActivityConString(this, RegistrarEditarGasto.class, "ActivityREG", "RegistrarGastoEmpleado", false);
     }
 
     public void listadoGastos(View view) {
@@ -54,7 +54,7 @@ public class EmpMenuPrincipal extends AppCompatActivity {
     }
 
     public void miPerfil(View view) {
-        Utilidades.iniciarActivityConString(this, Perfil.class, "ActivityPerfil", "PerfilEmpleado"); //Enviamos el texto "PerfilEmpleado" que ayudará a saber que el Activity "Perfil" debe mostrar los datos del Empleado actual
+        Utilidades.iniciarActivityConString(this, Perfil.class, "ActivityPerfil", "PerfilEmpleado", false); //Enviamos el texto "PerfilEmpleado" que ayudará a saber que el Activity "Perfil" debe mostrar los datos del Empleado actual
     }
 
     public void cerrarSesion(View view) {

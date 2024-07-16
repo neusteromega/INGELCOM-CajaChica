@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.ingelcom.cajachica.AdmPantallas;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.EmpMenuPrincipal;
@@ -33,10 +35,15 @@ public class Utilidades {
     }
 
     //Método que permite enviar un dato String a un activity
-    public static void iniciarActivityConString(Context contexto, Class<?> activityClase, String clave, String valor) {
+    public static void iniciarActivityConString(Context contexto, Class<?> activityClase, String clave, String valor, boolean finalizarActivity) {
         Intent intent = new Intent(contexto, activityClase); //Creamos el intent y le establecemos el contexto y el nombre del activity
         intent.putExtra(clave, valor); //Usando "putExtra" le establecemos una clave al envío de datos, y le mandamos el texto guardado en "valor"
         contexto.startActivity(intent); //Iniciamos el activity
+
+        //Si el contexto es una instancia de un Activity y "finalizarActivity" es verdadero, cierra la actividad actual
+        if (finalizarActivity && contexto instanceof Activity) {
+            ((Activity) contexto).finish();
+        }
     }
 
     public static void iniciarActivityConDatos(Context contexto, Class<?> activityClase, HashMap<String,Object> datos) {
@@ -86,36 +93,47 @@ public class Utilidades {
         return clicks; //Retornamos la cantidad de Clicks
     }
 
+    //Método que nos ayuda a obtener el usuario actual
+    public static FirebaseUser obtenerUsuario() {
+        FirebaseAuth mAuth; //Objeto que verifica la autenticación del usuario con Firebase
+        mAuth = FirebaseAuth.getInstance(); //Instanciamos el "mAuth"
+        FirebaseUser currentUser = mAuth.getCurrentUser(); //Obtenemos el usuario actual
+
+        return currentUser; //Retornamos el usuario actual
+    }
+
     //Método que permite redireccionar al Usuario a una pantalla específica dependiendo de su rol. Se usa al iniciar sesión y al comprobar si el usuario tiene una sesión iniciada
     public static void redireccionarUsuario(Context contexto, String correoInicial) { //Recibe un contexto y el correo del usuario
-        //Llamamos al método "obtenerUnRegistro" el cual buscará el user correspondiente en la colección "usuarios" mediante su correo
-        oper.obtenerUnRegistro("usuarios", "Correo", correoInicial, new FirestoreCallbacks.FirestoreDocumentCallback() {
-            @Override
-            public void onCallback(Map<String, Object> documento) {
-                if (documento != null) { //Si el HashMap "documento" no es nulo, quiere decir que si se encontró el registro en la colección, por lo tanto, entrará al if
-                    String rol = (String) documento.get("Rol"); //Extraemos el rol del HashMap "documento"
+        try {
+            //Llamamos al método "obtenerUnRegistro" el cual buscará el user correspondiente en la colección "usuarios" mediante su correo
+            oper.obtenerUnRegistro("usuarios", "Correo", correoInicial, new FirestoreCallbacks.FirestoreDocumentCallback() {
+                @Override
+                public void onCallback(Map<String, Object> documento) {
+                    if (documento != null) { //Si el HashMap "documento" no es nulo, quiere decir que si se encontró el registro en la colección, por lo tanto, entrará al if
+                        String rol = (String) documento.get("Rol"); //Extraemos el rol del HashMap "documento"
 
-                    //Verificamos el rol, si es "Administrador" que mande al usuario al Activity "AdmPantallas" y cierre el Activity actual
-                    if (rol.contentEquals("Administrador")) {
-                        Utilidades.iniciarActivity(contexto, AdmPantallas.class, true);
-                    }
-                    else if (rol.contentEquals("Empleado")) { //Si el rol es "Empleado" que mande al usuario al Activity "EmpMenuPrincipal" y cierre el Activity actual
-                        Utilidades.iniciarActivity(contexto, EmpMenuPrincipal.class, true);
-                    }
-                    else { //Si de casualidad, el rol no es "Administrador" ni "Empleado", que muestre un mensaje de error
-                        Toast.makeText(contexto, "ERROR AL OBTENER EL ROL DEL USUARIO", Toast.LENGTH_SHORT).show();
+                        //Verificamos el rol, si es "Administrador" que mande al usuario al Activity "AdmPantallas" y cierre el Activity actual
+                        if (rol.contentEquals("Administrador")) {
+                            Utilidades.iniciarActivity(contexto, AdmPantallas.class, true);
+                        } else if (rol.contentEquals("Empleado")) { //Si el rol es "Empleado" que mande al usuario al Activity "EmpMenuPrincipal" y cierre el Activity actual
+                            Utilidades.iniciarActivity(contexto, EmpMenuPrincipal.class, true);
+                        } else { //Si de casualidad, el rol no es "Administrador" ni "Empleado", que muestre un mensaje de error
+                            Toast.makeText(contexto, "ERROR AL OBTENER EL ROL DEL USUARIO", Toast.LENGTH_SHORT).show();
+                        }
+                    } else { //Si "documento" es nulo, no se encontró el registro en la colección, y entrará en este else
+                        Toast.makeText(contexto, "NO SE ENCONTRÓ EL USUARIO", Toast.LENGTH_SHORT).show();
                     }
                 }
-                else { //Si "documento" es nulo, no se encontró el registro en la colección, y entrará en este else
-                    Toast.makeText(contexto, "NO SE ENCONTRÓ EL USUARIO", Toast.LENGTH_SHORT).show();
-                }
-            }
 
-            @Override
-            public void onFailure(Exception e) {
-                Log.w("Activity", "Error al obtener los roles.", e); //Por cualquier error, que muestre la excepción en el Logcat
-            }
-        });
+                @Override
+                public void onFailure(Exception e) {
+                    Log.w("Activity", "Error al obtener los roles.", e); //Por cualquier error, que muestre la excepción en el Logcat
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerRol", e);
+        }
     }
 
     /*public static void spinnerConHint(Context contexto, Spinner spinner, List<String> lista, String nombreHint) {

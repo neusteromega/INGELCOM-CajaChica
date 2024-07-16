@@ -12,15 +12,15 @@ import com.ingelcom.cajachica.Herramientas.Utilidades;
 
 public class MainActivity extends AppCompatActivity {
 
-    private FirebaseAuth mAuth; //Objeto que verifica la autenticación del usuario con Firebase
-    //private Utilidades util = new Utilidades();
+    //private FirebaseAuth mAuth; //Objeto que verifica la autenticación del usuario con Firebase
     private boolean splash = true; //Nos servirá para saber si redireccionamos al usuario a "IniciarSesion"
 
     @Override
     public void onStart() {
         super.onStart();
-        mAuth = FirebaseAuth.getInstance(); //Instanciamos el "mAuth"
-        FirebaseUser currentUser = mAuth.getCurrentUser(); //Obtenemos el usuario actual
+        //mAuth = FirebaseAuth.getInstance(); //Instanciamos el "mAuth"
+        //FirebaseUser currentUser = mAuth.getCurrentUser(); //Obtenemos el usuario actual
+        FirebaseUser currentUser = Utilidades.obtenerUsuario(); //Obtenemos el usuario actual llamando el método utilitario "obtenerUsuario"
 
         //Verificamos que el usuario no sea null
         if (currentUser != null){

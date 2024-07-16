@@ -78,7 +78,7 @@ public class FragAdmRegistrar extends Fragment {
         //Eventos Clic de botones
         btnIngreso.setOnClickListener(v -> {
             //Redireccionamos al usuario al activity de "RegistrarEditarIngreso" llamando el método utilitario "iniciarActivityConString" donde indicamos que el activity a mostrar será "RegistrarIngreso"
-            Utilidades.iniciarActivityConString(getActivity(), RegistrarEditarIngreso.class, "ActivityREI", "RegistrarIngreso");
+            Utilidades.iniciarActivityConString(getActivity(), RegistrarEditarIngreso.class, "ActivityREI", "RegistrarIngreso", false);
         });
 
         btnGasto.setOnClickListener(v -> {

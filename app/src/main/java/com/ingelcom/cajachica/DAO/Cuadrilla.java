@@ -15,15 +15,21 @@ import java.util.Map;
 
 public class Cuadrilla {
 
+    public Context contexto;
     private FirestoreOperaciones oper = new FirestoreOperaciones();
 
-    public void actualizarDineroCuadrilla(String cuadrilla, double total, String operacion, Context context) {
-        //Llamamos el método "obtenerUnRegistro" de la clase "FirestoreOperaciones", este nos ayudará a buscar la cuadrilla usando su nombre
-        oper.obtenerUnRegistro("cuadrillas", "Nombre", cuadrilla, new FirestoreCallbacks.FirestoreDocumentCallback() {
-            @Override
-            public void onCallback(Map<String, Object> documento) {
-                if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró la cuadrilla mediante su nombre
-                    try {
+    public Cuadrilla(Context contexto) {
+        this.contexto = contexto;
+    }
+
+    //Método que nos ayudará a actualizar el dinero de una cuadrilla, dependiendo su recibe un ingreso o si se realiza un gasto
+    public void actualizarDineroCuadrilla(String cuadrilla, double total, String operacion) {
+        try {
+            //Llamamos el método "obtenerUnRegistro" de la clase "FirestoreOperaciones", este nos ayudará a buscar la cuadrilla usando su nombre
+            oper.obtenerUnRegistro("cuadrillas", "Nombre", cuadrilla, new FirestoreCallbacks.FirestoreDocumentCallback() {
+                @Override
+                public void onCallback(Map<String, Object> documento) {
+                    if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró la cuadrilla mediante su nombre
                         //Obtenemos el valor guardado en el campo "Dinero" de la colección "cuadrillas" y lo guardamos en la variable Object llamada "valor"
                         Object valor = documento.get("Dinero"); //Lo obtenemos como Object ya que Firestore puede almacenar números en varios formatos (por ejemplo, Long y Double) y esto puede causar problemas con el casting del contenido del campo
                         double dinero = 0.0; //Creamos una variable double donde se guardará la conversión de "valor"
@@ -60,20 +66,20 @@ public class Cuadrilla {
                             }
                         });
                     }
-                    catch (Exception e) {
-                        Log.w("DineroCuadrilla", e);
+                    else {
+                        Toast.makeText(contexto, "CUADRILLA NO ENCONTRADA", Toast.LENGTH_SHORT).show();
                     }
                 }
-                else {
-                    Toast.makeText(context, "CUADRILLA NO ENCONTRADA", Toast.LENGTH_SHORT).show();
-                }
-            }
 
-            @Override
-            public void onFailure(Exception e) {
-                Log.w("ObtenerCuadrilla", "Error al obtener la cuadrilla: ", e);
-            }
-        });
+                @Override
+                public void onFailure(Exception e) {
+                    Log.w("ObtenerCuadrilla", "Error al obtener la cuadrilla: ", e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("DineroCuadrilla", e);
+        }
     }
 
     /*//Método para obtener los nombres de las cuadrillas almacenados en Firestore

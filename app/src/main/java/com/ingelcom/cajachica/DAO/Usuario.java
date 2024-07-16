@@ -18,10 +18,9 @@ import java.util.Map;
 
 public class Usuario {
     public Context contexto; //Nos ayuda a obtener el contexto del Activity donde se llame a esta clase, este contexto lo mandamos al crear un objeto de esta clase (Usuario usu = new Usuario(this)) y se inicializa en el método constructor
-    private FirestoreOperaciones oper; //Objeto de la clase "FirestoreOperaciones"
+    private FirestoreOperaciones oper = new FirestoreOperaciones();; //Objeto de la clase "FirestoreOperaciones"
 
     public Usuario(Context contexto) {
-        oper = new FirestoreOperaciones();
         this.contexto = contexto;
     }
 

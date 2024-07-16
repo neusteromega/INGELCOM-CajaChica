@@ -58,7 +58,7 @@
             android:textSize="24dp" />
 
         <TextView
-            android:id="@+id/lblTextoGIR"
+            android:id="@+id/lblMensajeGIR"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"

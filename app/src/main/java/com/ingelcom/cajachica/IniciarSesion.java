@@ -67,25 +67,29 @@ public class IniciarSesion extends AppCompatActivity {
         String correo = txtCorreo.getText().toString();
         String contra = txtContra.getText().toString();
 
-        if (!correo.isEmpty() && !contra.isEmpty()) { //Si las cajas de texto no están vacías, que entre al if
-            mAuth.signInWithEmailAndPassword(correo, contra) //Mandamos el correo y la contraseña y usamos este método de FirebaseAuth
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            pbAcceder.setVisibility(View.GONE); //Cuando se inicie sesión, que se oculte la ProgressBar
-                            if (task.isSuccessful()) { //Si el inicio de sesión fue exitoso, entrará en este if
-                                Utilidades.redireccionarUsuario(IniciarSesion.this, correo); //Llamamos al método "redireccionarUsuario" de la clase Utilidades y le mandamos un contexto y el correo
-
-                                //FirebaseUser user = mAuth.getCurrentUser();
-                            } else {
-                                Toast.makeText(IniciarSesion.this, "CORREO O CONTRASEÑA INCORRECTA", Toast.LENGTH_SHORT).show();
+        try {
+            if (!correo.isEmpty() && !contra.isEmpty()) { //Si las cajas de texto no están vacías, que entre al if
+                mAuth.signInWithEmailAndPassword(correo, contra) //Mandamos el correo y la contraseña y usamos este método de FirebaseAuth
+                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                pbAcceder.setVisibility(View.GONE); //Cuando se inicie sesión, que se oculte la ProgressBar
+                                if (task.isSuccessful()) { //Si el inicio de sesión fue exitoso, entrará en este if
+                                    Utilidades.redireccionarUsuario(IniciarSesion.this, correo); //Llamamos al método "redireccionarUsuario" de la clase Utilidades y le mandamos un contexto y el correo
+                                    //FirebaseUser user = mAuth.getCurrentUser();
+                                } else {
+                                    Toast.makeText(IniciarSesion.this, "CORREO O CONTRASEÑA INCORRECTA", Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
-                    });
+                        });
+            }
+            else { //Si alguna caja de texto está vacía, que entre aquí y muestre un mensaje emergente de advertencia
+                pbAcceder.setVisibility(View.GONE);
+                Toast.makeText(this, "TODOS LOS CAMPOS DEBEN LLENARSE", Toast.LENGTH_SHORT).show();
+            }
         }
-        else { //Si alguna caja de texto está vacía, que entre aquí y muestre un mensaje emergente de advertencia
-            pbAcceder.setVisibility(View.GONE);
-            Toast.makeText(this, "TODOS LOS CAMPOS DEBEN LLENARSE", Toast.LENGTH_SHORT).show();
+        catch (Exception e) {
+            Log.w("IniciarSesion", e);
         }
     }
 

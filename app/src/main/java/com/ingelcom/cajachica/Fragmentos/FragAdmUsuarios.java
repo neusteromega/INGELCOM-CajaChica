@@ -91,14 +91,12 @@ public class FragAdmUsuarios extends Fragment {
         //Eventos Clic de botones
         btnMiPerfil.setOnClickListener(v -> {
             //Redireccionamos al usuario al activity de "Perfil"
-            //Utilidades.iniciarActivity(getActivity(), Perfil.class, false);
-            Utilidades.iniciarActivityConString(getActivity(), Perfil.class, "ActivityPerfil", "PerfilAdmin");
+            Utilidades.iniciarActivityConString(getActivity(), Perfil.class, "ActivityPerfil", "PerfilAdmin", false);
         });
 
         btnAgregarUsuario.setOnClickListener(v -> {
             //Redireccionamos al usuario al activity de "AgregarEditarPerfil" y le indicamos que deberá reflejar el contenido de "AgregarUsuario"
-            //Utilidades.iniciarActivity(getActivity(), AgregarEditarPerfil.class, false);
-            Utilidades.iniciarActivityConString(getActivity(), AgregarEditarPerfil.class, "ActivityAEP", "AgregarUsuario");
+            Utilidades.iniciarActivityConString(getActivity(), AgregarEditarPerfil.class, "ActivityAEP", "AgregarUsuario", false);
         });
 
         btnListadoEmpleados.setOnClickListener(v -> {
