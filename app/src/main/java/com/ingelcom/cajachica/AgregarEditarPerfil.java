@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.DAO.Usuario;
@@ -22,9 +21,7 @@ import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class AgregarEditarPerfil extends AppCompatActivity {
 
@@ -116,7 +113,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
     private void inicializarSpinners() {
         //Para inicializar los spinners, llamamos al método "obtenerRegistros" de la clase "FirestoreOperaciones" a la cual le mandamos el nombre de la colección y el nombre del campo de Firestore de los cuales queremos obtener los registros. También invocamos los métodos "onCallback" y "onFailure" de la interfaz FirestoreCallback
         //ROLES
-        oper.obtenerRegistrosCampo("roles", "Nombre", new FirestoreCallbacks.FirestoreCallback() {
+        oper.obtenerRegistrosCampo("roles", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
             @Override
             public void onCallback(List<String> lista) {
                 //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
@@ -131,7 +128,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         });
 
         //CUADRILLAS
-        oper.obtenerRegistrosCampo("cuadrillas", "Nombre", new FirestoreCallbacks.FirestoreCallback() {
+        oper.obtenerRegistrosCampo("cuadrillas", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
             @Override
             public void onCallback(List<String> lista) {
                 List<String> listaCuadrillas = new ArrayList<>(); //Lista que tendrá todas las cuadrillas, más la opción de "No Pertenece"

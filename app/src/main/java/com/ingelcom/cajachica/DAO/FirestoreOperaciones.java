@@ -23,7 +23,7 @@ public class FirestoreOperaciones {
     }
 
     //Método para obtener los registros de un campo específico de todos los documentos de una colección de Firestore
-    public void obtenerRegistrosCampo(String nombreColeccion, String campo, final FirestoreCallbacks.FirestoreCallback callback) { //Recibe como parámetros el nombre de la colección, el nombre del campo y el "callback"
+    public void obtenerRegistrosCampo(String nombreColeccion, String campo, final FirestoreCallbacks.FirestoreListCallback callback) { //Recibe como parámetros el nombre de la colección, el nombre del campo y el "callback"
         //Asignamos el nombre de la colección guardado en "nombreColeccion"
         db.collection(nombreColeccion)
                 .get()
@@ -100,7 +100,7 @@ public class FirestoreOperaciones {
     }
 
     //Método que permite insertar registros (y crear un document) a una colección de Firestore
-    public void insertarRegistros(String nombreColeccion, Map<String,Object> registros, final FirestoreCallbacks.FirestoreInsertCallback callback) { //Recibe como parámetros el nombre de la colección, el HashMap con el nombre de los campos y datos a insertar, y el "callback"
+    public void insertarRegistros(String nombreColeccion, Map<String,Object> registros, final FirestoreCallbacks.FirestoreTextCallback callback) { //Recibe como parámetros el nombre de la colección, el HashMap con el nombre de los campos y datos a insertar, y el "callback"
         //Asignamos el nombre de la colección guardado en "nombreColeccion", y el HashMap "registros"
         db.collection(nombreColeccion)
             .add(registros)
@@ -113,7 +113,7 @@ public class FirestoreOperaciones {
     }
 
     //Método que nos ayuda a agregar uno o varios campos y datos a una colección específica, o para actualizar los campos ya existentes
-    public void agregarRegistrosColeccion(String nombreColeccion, String campoBuscar, String datoBuscar, Map<String,Object> nuevosCampos, final FirestoreCallbacks.FirestoreInsertCallback callback) { //Recibe como parámetros el nombre de la colección, el campo y el dato que servirán en la sentencia WHERE, el HashMap con los datos y campos nuevos (o campos ya existentes), y el callback a la interfaz "FirestoreCallback"
+    public void agregarRegistrosColeccion(String nombreColeccion, String campoBuscar, String datoBuscar, Map<String,Object> nuevosCampos, final FirestoreCallbacks.FirestoreTextCallback callback) { //Recibe como parámetros el nombre de la colección, el campo y el dato que servirán en la sentencia WHERE, el HashMap con los datos y campos nuevos (o campos ya existentes), y el callback a la interfaz "FirestoreCallback"
         //Asignamos el nombre de la colección guardado en "nombreColeccion". En el ".whereEqualTo" asignamos el campo y el dato que servirán para la sentencia WHERE
         db.collection(nombreColeccion)
                 .whereEqualTo(campoBuscar, datoBuscar)

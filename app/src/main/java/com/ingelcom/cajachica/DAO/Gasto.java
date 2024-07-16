@@ -48,7 +48,7 @@ public class Gasto {
                 datos.put("Total", totalGasto);
 
                 //Llamamos el método "insertarRegistros" de la clase "FirestoreOperaciones" y le mandamos el nombre de la colección, el HashMap con los datos a insertar. También invocamos los métodos "onSuccess" y "onFailure" de la interfaz FirestoreInsertCallback
-                oper.insertarRegistros("gastos", datos, new FirestoreCallbacks.FirestoreInsertCallback() {
+                oper.insertarRegistros("gastos", datos, new FirestoreCallbacks.FirestoreTextCallback() {
                     @Override
                     public void onSuccess(String texto) {
                         if (actualizarDinero) //Entrará al if si "actualizarDinero" es true, esto significa que el gasto está siendo efectuado por un usuario con rol "Empleado". Si fuera un usuario Administrador, no se actualizará el dinero de la cuadrilla ya que los admins usan un dinero aparte

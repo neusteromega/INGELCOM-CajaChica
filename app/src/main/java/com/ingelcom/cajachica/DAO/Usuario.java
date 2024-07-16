@@ -4,9 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.ingelcom.cajachica.AdmPantallas;
-import com.ingelcom.cajachica.AgregarEditarPerfil;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.Modelos.EmpleadosItems;
@@ -96,7 +94,7 @@ public class Usuario {
                             datos.put("Cuadrilla", cuadrilla);
 
                         //Llamamos el método "insertarRegistros" de la clase "FirestoreOperaciones" y le mandamos el nombre de la colección, el HashMap con los datos a insertar. También invocamos los métodos "onSuccess" y "onFailure" de la interfaz FirestoreInsertCallback
-                        oper.insertarRegistros("usuarios", datos, new FirestoreCallbacks.FirestoreInsertCallback() {
+                        oper.insertarRegistros("usuarios", datos, new FirestoreCallbacks.FirestoreTextCallback() {
                             @Override
                             public void onSuccess(String idDocumento) { //Si la inserción fue exitosa, entrará aquí
                                 Toast.makeText(contexto, "USUARIO AGREGADO EXITOSAMENTE", Toast.LENGTH_SHORT).show();

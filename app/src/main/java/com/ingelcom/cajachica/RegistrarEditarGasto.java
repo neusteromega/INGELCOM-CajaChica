@@ -4,7 +4,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -89,7 +88,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
     private void inicializarSpinners() {
         //Para inicializar los spinners, llamamos al método "obtenerRegistros" de la clase "FirestoreOperaciones" a la cual le mandamos el nombre de la colección y el nombre del campo de Firestore de los cuales queremos obtener los registros. También invocamos los métodos "onCallback" y "onFailure" de la interfaz FirestoreCallback
         //CUADRILLAS
-        oper.obtenerRegistrosCampo("cuadrillas", "Nombre", new FirestoreCallbacks.FirestoreCallback() {
+        oper.obtenerRegistrosCampo("cuadrillas", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
             @Override
             public void onCallback(List<String> lista) {
                 //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
@@ -104,7 +103,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
         });
 
         //TIPO DE COMPRAS
-        oper.obtenerRegistrosCampo("tipoCompras", "Nombre", new FirestoreCallbacks.FirestoreCallback() {
+        oper.obtenerRegistrosCampo("tipoCompras", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
             @Override
             public void onCallback(List<String> lista) {
                 //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
@@ -152,8 +151,50 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                                 }
                             }).show();
                     break;
+
+                case "RegistrarGastoEmpleado":
+
+                    //Creamos un alertDialog que pregunte si se desea registrar el gasto de dinero
+                    new AlertDialog.Builder(this).setTitle("REGISTRAR GASTO").setMessage("¿Está seguro que desea registrar el gasto de dinero")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "registrarGasto()"
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    //Enlazamos los EditText con las siguientes variables String
+                                    String lugarCompra = txtLugar.getText().toString();
+                                    String descripcion = txtDescripcion.getText().toString();
+                                    String factura = txtFactura.getText().toString();
+                                    String total = txtTotal.getText().toString();
+
+                                    //Obtenemos la selección hecha en el Spinner
+                                    String tipoCompra = spTipoCompras.getSelectedItem().toString();
+
+                                    try {
+                                        //Llamamos el método "obtenerCuadrillaUsuario" de la clase "Cuadrilla" en el cual podremos extraer de forma asíncrona el nombre de la cuadrilla a la que pertenece el usuario actual
+                                        cuad.obtenerCuadrillaUsuario(new FirestoreCallbacks.FirestoreTextCallback() {
+                                            @Override
+                                            public void onSuccess(String texto) {
+                                                //Llamamos el método "registrarGasto" donde se hará el proceso de inserción a Firestore, le mandamos los textboxes y selecciones de los spinners de esta pantalla, y un true que indica que se debe actualizar el dinero de la cuadrilla, ya que el gasto lo está efectuando un empleado
+                                                gast.registrarGasto(texto, lugarCompra, tipoCompra, descripcion, factura, total, true); //La variable "texto" tiene guardada la cuadrilla a la que pertenece el usuario
+                                            }
+
+                                            @Override
+                                            public void onFailure(Exception e) {
+                                                Log.e("CuadrillaUsuario", "Error al obtener la cuadrilla", e);
+                                            }
+                                        });
+                                    }
+                                    catch (Exception e) {
+                                        Log.w("ObtenerCuadrilla", e);
+                                    }
+                                }
+                            }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                }
+                            }).show();
+                    break;
             }
         }
-        //Utilidades.iniciarActivity(this, GastoIngresoRegistrado.class, false);
     }
 }

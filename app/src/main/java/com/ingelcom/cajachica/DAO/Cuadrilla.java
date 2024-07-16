@@ -5,14 +5,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Cuadrilla {
@@ -52,7 +48,7 @@ public class Cuadrilla {
                         datosNuevos.put("Dinero", dinero);
 
                         //Llamamos al método "agregarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar, el HashMap con los nuevos campos y datos (o los campos existentes para actualizar su contenido) e invocamos la interfaz "FirestoreInsertCallback"
-                        oper.agregarRegistrosColeccion("cuadrillas", "Nombre", cuadrilla, datosNuevos, new FirestoreCallbacks.FirestoreInsertCallback() {
+                        oper.agregarRegistrosColeccion("cuadrillas", "Nombre", cuadrilla, datosNuevos, new FirestoreCallbacks.FirestoreTextCallback() {
                             @Override
                             public void onSuccess(String texto) {
                                 //Si "texto" no es null, quiere decir que si se actualizó el campo "Dinero" de la cuadrilla, además, si entró a este "onSuccess" también quiere decir que lo realizó
@@ -85,7 +81,7 @@ public class Cuadrilla {
     }
 
     //Método que permite obtener la cuadrilla a la que pertenece un usuario
-    public void obtenerCuadrillaUsuario() {
+    public void obtenerCuadrillaUsuario(FirestoreCallbacks.FirestoreTextCallback callback) {
         FirebaseUser user = Utilidades.obtenerUsuario(); //Obtenemos el usuario actual llamando el método utilitario "obtenerUsuario"
         String correoActual = user.getEmail();
 
@@ -94,10 +90,11 @@ public class Cuadrilla {
             @Override
             public void onCallback(Map<String, Object> documento) {
                 if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
-                    String cuadrilla = (String) documento.get("Cuadrilla");
+                    String cuadrilla = (String) documento.get("Cuadrilla"); //Extraemos la cuadrilla de "documento" y la guardamos en la variable "cuadrilla"
+                    callback.onSuccess(cuadrilla); //Invocando el "callback.onSuccess" de la interfaz "FirestoreTextCallback", le mandamos la cuadrilla obtenida
                 }
                 else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
-                    Log.w("CuadrillaUsuario", "No se encontró el usuario.");
+                    callback.onFailure(new Exception("No se encontró el usuario"));
                 }
             }
 

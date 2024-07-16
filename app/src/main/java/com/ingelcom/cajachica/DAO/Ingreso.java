@@ -8,7 +8,6 @@ import com.google.firebase.Timestamp;
 import com.ingelcom.cajachica.GastoIngresoRegistrado;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
-import com.ingelcom.cajachica.RegistrarEditarIngreso;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -48,7 +47,7 @@ public class Ingreso {
                 datos.put("Total", totalIngreso);
 
                 //Llamamos el método "insertarRegistros" de la clase "FirestoreOperaciones" y le mandamos el nombre de la colección, el HashMap con los datos a insertar. También invocamos los métodos "onSuccess" y "onFailure" de la interfaz FirestoreInsertCallback
-                oper.insertarRegistros("ingresos", datos, new FirestoreCallbacks.FirestoreInsertCallback() {
+                oper.insertarRegistros("ingresos", datos, new FirestoreCallbacks.FirestoreTextCallback() {
                     @Override
                     public void onSuccess(String texto) {
                         //Toast.makeText(RegistrarEditarIngreso.this, "INGRESO REGISTRADO EXITOSAMENTE", Toast.LENGTH_SHORT).show();

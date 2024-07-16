@@ -6,7 +6,7 @@ import java.util.Map;
 public class FirestoreCallbacks {
 
     //Interfaces "callback" que nos ayudan a realizar operaciones que puedan tomar un tiempo en completarse, como las operaciones que requieren internet y pueden tardar un poco en realizarse debido a la conexión a la red
-    public interface FirestoreCallback {
+    public interface FirestoreListCallback {
         void onCallback(List<String> lista); //Se invoca cuando la operación de extracción de datos de Firestore ha sido exitosa, y recibe como parámetro el listado de registros obtenido de la colección de Firestore
         void onFailure(Exception e);
     }
@@ -26,7 +26,7 @@ public class FirestoreCallbacks {
         void onFailure(Exception e);
     }
 
-    public interface FirestoreInsertCallback {
+    public interface FirestoreTextCallback {
         void onSuccess(String texto);
         void onFailure(Exception e);
     }
