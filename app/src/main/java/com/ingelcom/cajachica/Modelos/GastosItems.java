@@ -1,16 +1,49 @@
 package com.ingelcom.cajachica.Modelos;
 
 public class GastosItems {
+    private String fechaHora;
+    private String cuadrilla;
+    private String lugarCompra;
     private String tipoCompra;
-    private String fecha;
-    private String empleado;
+    private String descripcion;
+    private String numeroFactura;
+    private String usuario;
     private String total;
+    //private String foto;
 
-    public GastosItems(String tipoCompra, String fecha, String empleado, String total) {
+    public GastosItems(String fechaHora, String cuadrilla, String lugarCompra, String tipoCompra, String descripcion, String numeroFactura, String usuario, String total) {
+        this.fechaHora = fechaHora;
+        this.cuadrilla = cuadrilla;
+        this.lugarCompra = lugarCompra;
         this.tipoCompra = tipoCompra;
-        this.fecha = fecha;
-        this.empleado = empleado;
+        this.descripcion = descripcion;
+        this.numeroFactura = numeroFactura;
+        this.usuario = usuario;
         this.total = total;
+    }
+
+    public String getFechaHora() {
+        return fechaHora;
+    }
+
+    public void setFechaHora(String fechaHora) {
+        this.fechaHora = fechaHora;
+    }
+
+    public String getCuadrilla() {
+        return cuadrilla;
+    }
+
+    public void setCuadrilla(String cuadrilla) {
+        this.cuadrilla = cuadrilla;
+    }
+
+    public String getLugarCompra() {
+        return lugarCompra;
+    }
+
+    public void setLugarCompra(String lugarCompra) {
+        this.lugarCompra = lugarCompra;
     }
 
     public String getTipoCompra() {
@@ -21,20 +54,28 @@ public class GastosItems {
         this.tipoCompra = tipoCompra;
     }
 
-    public String getFecha() {
-        return fecha;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
-    public String getEmpleado() {
-        return empleado;
+    public String getNumeroFactura() {
+        return numeroFactura;
     }
 
-    public void setEmpleado(String empleado) {
-        this.empleado = empleado;
+    public void setNumeroFactura(String numeroFactura) {
+        this.numeroFactura = numeroFactura;
+    }
+
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
     public String getTotal() {

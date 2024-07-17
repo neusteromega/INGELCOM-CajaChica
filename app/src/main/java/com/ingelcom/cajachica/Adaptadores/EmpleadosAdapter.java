@@ -16,8 +16,8 @@ import java.util.List;
 
 public class EmpleadosAdapter extends RecyclerView.Adapter<EmpleadosAdapter.RecyclerHolder> implements View.OnClickListener {
 
-    private List<EmpleadosItems> items;
-    private View.OnClickListener listener;
+    private List<EmpleadosItems> items; //Creamos una lista de tipo "EmpleadosItems"
+    private View.OnClickListener listener; //Creamos un escuchador (listener) de tipo "View.OnClickListener" que nos servirá para el onClick de cada tarjeta del RecyclerView
 
     public EmpleadosAdapter(List<EmpleadosItems> items) {
         this.items = items;

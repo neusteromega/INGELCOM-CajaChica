@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.ingelcom.cajachica.AdmPantallas;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
@@ -61,6 +62,32 @@ public class Usuario {
         }
         catch (Exception e) {
             Log.w("ObtenerEmpleados", e);
+        }
+    }
+
+    public void obtenerUnUsuario(FirestoreCallbacks.FirestoreDocumentCallback callback) {
+        try {
+            FirebaseUser user = Utilidades.obtenerUsuario(); //Obtenemos el usuario actual llamando el método utilitario "obtenerUsuario"
+            String correoActual = user.getEmail(); //Obtenemos el correo del usuario actual
+
+            oper.obtenerUnRegistro("usuarios", "Correo", correoActual, new FirestoreCallbacks.FirestoreDocumentCallback() {
+                @Override
+                public void onCallback(Map<String, Object> documento) {
+                    if (documento != null)
+                        callback.onCallback(documento);
+                    else
+                        Log.w("ObtenerUsuario", "Usuario no encontrado");
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    callback.onFailure(e);
+                    Log.w("BuscarUsuario", "Error al obtener el usuario", e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerUsuario", e);
         }
     }
 

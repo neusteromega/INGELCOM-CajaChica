@@ -20,6 +20,40 @@ public class Cuadrilla {
         this.contexto = contexto;
     }
 
+    public void obtenerCuadrillas() {
+        try {
+
+        }
+        catch (Exception e) {
+            Log.w("ObtenerCuadrillas", e);
+        }
+    }
+
+    //Método que nos permite obtener el documento de una cuadrilla específica mediante su "Nombre", e invocamos el "FirestoreDocumentCallback" para que al llamar este método, se pueda recibir el "documento" con el contenido de la cuadrilla
+    public void obtenerUnaCuadrilla(String nombre, FirestoreCallbacks.FirestoreDocumentCallback callback) {
+        try {
+            //Llamamos el método "obtenerUnRegistro" de la clase FirestoreOperaciones y le mamdamos el nombre de la colección, el campo, y el dato a buscar, e invocamos el "FirestoreDocumentCallback"
+            oper.obtenerUnRegistro("cuadrillas", "Nombre", nombre, new FirestoreCallbacks.FirestoreDocumentCallback() {
+                @Override
+                public void onCallback(Map<String, Object> documento) {
+                    if (documento != null) //Si "documento" no es nulo, quiere decir que encontró la cuadrilla
+                        callback.onCallback(documento); //Guardamos el "documento" con los datos de la cuadrilla en el "onCallback"
+                    else //Si "documento" es nulo, no se encontró la cuadrilla en la colección, y entrará en este else
+                        Log.w("ObtenerCuadrilla", "Cuadrilla no encontrada");
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    callback.onFailure(e);
+                    Log.w("BuscarCuadrilla", "Error al obtener la Cuadrilla", e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerCuadrilla", e);
+        }
+    }
+
     //Método que nos ayudará a actualizar el dinero de una cuadrilla, dependiendo su recibe un ingreso o si se realiza un gasto
     public void actualizarDineroCuadrilla(String cuadrilla, double total, String operacion) {
         try {
@@ -30,12 +64,7 @@ public class Cuadrilla {
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró la cuadrilla mediante su nombre
                         //Obtenemos el valor guardado en el campo "Dinero" de la colección "cuadrillas" y lo guardamos en la variable Object llamada "valor"
                         Object valor = documento.get("Dinero"); //Lo obtenemos como Object ya que Firestore puede almacenar números en varios formatos (por ejemplo, Long y Double) y esto puede causar problemas con el casting del contenido del campo
-                        double dinero = 0.0; //Creamos una variable double donde se guardará la conversión de "valor"
-
-                        if (valor instanceof Long) //Verificamos si "valor" es una instancia de Long
-                            dinero = ((Long) valor).doubleValue(); //Si lo es, lo convertimos a Double y que se guarde en "dinero"
-                        else if (valor instanceof Double) //También verificamos si "valor" es una instancia de Double
-                            dinero = (Double) valor; //Si lo es, los casteamos con Double y que lo guarde en "dinero"
+                        double dinero = Utilidades.convertirObjectADouble(valor); //Llamamos el método utilitario "convertirObjectADouble" y le mandamos el objeto "valor", y nos retorna este objeto ya convertido a double y lo guardamos en "dinero"
 
                         //Condición que determina qué operación se hará, si es un "Ingreso" se hará una suma, si es un "Gasto" se hará una resta
                         if (operacion.contentEquals("Ingreso"))

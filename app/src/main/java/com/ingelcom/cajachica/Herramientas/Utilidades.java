@@ -74,6 +74,31 @@ public class Utilidades {
         return null; //Si no entra al if, que retorne un null
     }
 
+    //Método que nos ayuda a obtener el usuario actual
+    public static FirebaseUser obtenerUsuario() {
+        FirebaseAuth mAuth; //Objeto que verifica la autenticación del usuario con Firebase
+        mAuth = FirebaseAuth.getInstance(); //Instanciamos el "mAuth"
+        FirebaseUser currentUser = mAuth.getCurrentUser(); //Obtenemos el usuario actual
+
+        return currentUser; //Retornamos el usuario actual
+    }
+
+    public static double convertirObjectADouble(Object valor) {
+        double valorConvertido = 0.0; //Creamos una variable double donde se guardará la conversión de "valor"
+
+        try {
+            if (valor instanceof Long) //Verificamos si "valor" es una instancia de Long
+                valorConvertido = ((Long) valor).doubleValue(); //Si lo es, lo convertimos a Double y que se guarde en "valorConvertido"
+            else if (valor instanceof Double) //También verificamos si "valor" es una instancia de Double
+                valorConvertido = (Double) valor; //Si lo es, los casteamos con Double y que lo guarde en "valorConvertido"
+        }
+        catch (Exception e) {
+            Log.w("ConvertirADouble", e);
+        }
+
+        return valorConvertido; //Retornamos el valorConvertido a Double
+    }
+
     //Método que permite mostrar y ocultar una contraseña
     public static int mostrarOcultarContrasena(int clicks, EditText txtContra, ImageView imgContra) { //Recibe como parámetros la cantidad de clicks, el EditText de la contraseña, y el ImageView de ver y ocultar la contraseña
         //En este if verificamos si la variable "clicks" es divisible entre 2 y si al realizar la división su residuo es 1
@@ -91,15 +116,6 @@ public class Utilidades {
         clicks++; //Aquí vamos aumentando la cantidad de clicks cada vez que se entre al método
         txtContra.setSelection(txtContra.getText().length()); //Mover el cursor al final del texto
         return clicks; //Retornamos la cantidad de Clicks
-    }
-
-    //Método que nos ayuda a obtener el usuario actual
-    public static FirebaseUser obtenerUsuario() {
-        FirebaseAuth mAuth; //Objeto que verifica la autenticación del usuario con Firebase
-        mAuth = FirebaseAuth.getInstance(); //Instanciamos el "mAuth"
-        FirebaseUser currentUser = mAuth.getCurrentUser(); //Obtenemos el usuario actual
-
-        return currentUser; //Retornamos el usuario actual
     }
 
     //Método que permite redireccionar al Usuario a una pantalla específica dependiendo de su rol. Se usa al iniciar sesión y al comprobar si el usuario tiene una sesión iniciada

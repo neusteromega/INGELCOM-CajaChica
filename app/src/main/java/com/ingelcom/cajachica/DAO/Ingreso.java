@@ -24,6 +24,14 @@ public class Ingreso {
         this.contexto = contexto;
     }
 
+    public void obtenerIngresos() {
+
+    }
+
+    public void obtenerUnIngreso() {
+
+    }
+
     public void registrarIngreso(String cuadrilla, String transferencia, String total) {
         if (!transferencia.isEmpty() && !total.isEmpty()) { //Verificamos que las dos cajas de texto no estén vacías para que entre al if
             try {

@@ -24,6 +24,14 @@ public class Gasto {
         this.contexto = contexto;
     }
 
+    public void obtenerGastos() {
+
+    }
+
+    public void obtenerUnGasto() {
+
+    }
+
     public void registrarGasto(String usuario, String cuadrilla, String lugar, String tipo, String descripcion, String factura, String total, boolean actualizarDinero) {
         if (!lugar.isEmpty() && !descripcion.isEmpty() && !factura.isEmpty() && !total.isEmpty()) { //Verificamos que las dos cajas de texto no estén vacías para que entre al if
             try {

@@ -26,12 +26,12 @@ import java.util.Map;
 
 public class RegistrarEditarGasto extends AppCompatActivity {
 
-    private LinearLayout llFecha, llCuadrilla;
-    private TextView lblTitulo, lblFecha, btnSubirCambiarFoto, btnConfirmar;
+    private LinearLayout llFecha, llCuadrilla, llDinero;
+    private TextView lblTitulo, lblDinero, lblFecha, btnSubirCambiarFoto, btnConfirmar;
     private EditText txtLugar, txtDescripcion, txtFactura, txtTotal;
     private ImageView imgFoto, imgEliminar;
     private Spinner spCuadrillas, spTipoCompras;
-    private String nombreActivity;
+    private String nombreActivity, dineroDisponible;
 
     private FirestoreOperaciones oper = new FirestoreOperaciones();
     private Cuadrilla cuad = new Cuadrilla(RegistrarEditarGasto.this);
@@ -50,12 +50,15 @@ public class RegistrarEditarGasto extends AppCompatActivity {
     private void inicializarElementos() {
         //Obtenemos el nombre del activity que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y le mandamos "this" para referenciar esta actividad y "Activity" como clave del putExtra
         nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityREG");
+        dineroDisponible = Utilidades.obtenerStringExtra(this, "DineroDisponible");
 
         llFecha = findViewById(R.id.LLFechaRG);
         llCuadrilla = findViewById(R.id.LLCuadrillaRG);
+        llDinero = findViewById(R.id.LLDineroRG);
 
         lblTitulo = findViewById(R.id.lblTituloRG);
-        lblFecha = findViewById(R.id.lblFechaRG);
+        lblDinero = findViewById(R.id.lblCantDineroRG);
+        lblFecha = findViewById(R.id.lblFechaRG); //POSIBLE ELIMINACIÓN
         txtLugar = findViewById(R.id.txtLugarCompraRG);
         txtDescripcion = findViewById(R.id.txtDescripcionRG);
         txtFactura = findViewById(R.id.txtFacturaRG);
@@ -75,6 +78,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
             switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
                 //Establecemos los elementos gráficos si la pantalla es "RegistrarGastoEmpleado"
                 case "RegistrarGastoEmpleado":
+                    lblDinero.setText("L. " + dineroDisponible);
                     //Ocultamos estos dos elementos (Fecha y Cuadrilla) para que el empleado no pueda verlos
                     llFecha.setVisibility(View.GONE);
                     llCuadrilla.setVisibility(View.GONE);
@@ -82,6 +86,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
 
                 case "RegistrarGastoAdmin":
                     llFecha.setVisibility(View.GONE);
+                    llDinero.setVisibility(View.GONE);
                     break;
             }
         }
@@ -192,7 +197,8 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                         else if (tipoGasto.contentEquals("GastoEmpleado"))
                             gast.registrarGasto(nombre, cuadrillaBDD, lugarCompra, tipoCompra, descripcion, factura, total, true); //Si el gasto lo registra un empleado, mandamos "cuadrillaBDD" que es la extracción de la cuadrilla a la que pertenece el usuario actual, y un true indicando que SI debe restar el gasto registrado del dinero disponible de la cuadrilla del usuario
 
-                    } else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
+                    }
+                    else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
                         Log.w("ObtenerUsuario", "Usuario no encontrado");
                     }
                 }

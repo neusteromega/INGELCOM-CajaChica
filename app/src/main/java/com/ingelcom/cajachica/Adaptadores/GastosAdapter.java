@@ -14,6 +14,7 @@ import com.ingelcom.cajachica.R;
 import java.util.List;
 
 public class GastosAdapter extends RecyclerView.Adapter<GastosAdapter.RecyclerHolder> implements View.OnClickListener {
+
     private List<GastosItems> items; //Creamos una lista de tipo "GastosItems"
     private View.OnClickListener listener; //Creamos un escuchador (listener) de tipo "View.OnClickListener" que nos servirá para el onClick de cada tarjeta del RecyclerView
 
@@ -36,8 +37,8 @@ public class GastosAdapter extends RecyclerView.Adapter<GastosAdapter.RecyclerHo
 
         //Haciendo uso del objeto "holder", asignamos los textos a las diferentes variables que se encuentran en la clase estática "RecyclerHolder"
         holder.tvTipoCompra.setText(item.getTipoCompra());
-        holder.tvFecha.setText(item.getFecha());
-        holder.tvEmpleado.setText(item.getEmpleado());
+        holder.tvFecha.setText(item.getFechaHora());
+        holder.tvEmpleado.setText(item.getUsuario());
         holder.tvTotal.setText(item.getTotal());
     }
 
