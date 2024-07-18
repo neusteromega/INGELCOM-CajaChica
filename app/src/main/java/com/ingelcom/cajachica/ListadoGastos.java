@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ingelcom.cajachica.Adaptadores.VPGastosAdapter;
@@ -24,6 +25,7 @@ import java.util.List;
 public class ListadoGastos extends AppCompatActivity {
 
     private TextView lblFecha, lblLineaCuadrilla, lblLineaSupervisores;
+    private ImageView btnEliminarMes;
     public ViewPager2 vpGastos;
     private Gasto gast = new Gasto(ListadoGastos.this);
 
@@ -35,6 +37,7 @@ public class ListadoGastos extends AppCompatActivity {
         lblFecha = findViewById(R.id.lblFechaLG);
         lblLineaCuadrilla = findViewById(R.id.lblCuadrillaLineaLG);
         lblLineaSupervisores = findViewById(R.id.lblSupervisoresLineaLG);
+        btnEliminarMes = findViewById(R.id.btnEliminarFechaLG);
         vpGastos = findViewById(R.id.vpListadoGastos); //Relacionamos la variable "vpGastos" con el ViewPager
 
         establecerElementos();
@@ -54,7 +57,7 @@ public class ListadoGastos extends AppCompatActivity {
     }
 
     private void establecerElementos() {
-        asignarMes(); //Llamamos el método "asignarMes" para que asigne el mes y el año actual al TextView lblFecha
+        //asignarMes(); //Llamamos el método "asignarMes" para que asigne el mes y el año actual al TextView lblFecha
         lblLineaSupervisores.setVisibility(View.INVISIBLE); //Ocultamos la linea bajo la palabra "Supervisores" al iniciar el Activity
 
         VPGastosAdapter vpAdapter = new VPGastosAdapter(this); //Creamos un objeto de "VPGastosAdapter" y le mandamos el contexto "this" de este Activity
@@ -83,13 +86,13 @@ public class ListadoGastos extends AppCompatActivity {
     }
 
     //Método que nos ayuda a establecer desde el inicio, el mes y el año actual al TextView lblFecha
-    private void asignarMes() {
+    /*private void asignarMes() {
         Calendar cal = Calendar.getInstance(); //Creamos un objeto de tipo Calendar que representa la fecha y hora actuales en el dispositivo donde se está ejecutando el código
         int year = cal.get(Calendar.YEAR); //Obtenemos el año actual
         int month = cal.get(Calendar.MONTH); //Obtenemos el mes actual
         String fecha = Utilidades.convertirMonthYearString(month + 1, year); //Guardamos el mes y año convertidos a String llamando al método "convertirMonthYearString" con los parámetros de mes y año, y esto retorna el String
         lblFecha.setText(fecha); //Asignamos la fecha ya convertida a String al TextView lblFecha
-    }
+    }*/
 
     //Evento Clic del LinearLayout "LLCuadrillaLG"
     public void gastosCuadrilla(View view) {
@@ -132,6 +135,10 @@ public class ListadoGastos extends AppCompatActivity {
         catch (Exception e) {
             Log.w("ObtenerMes", e);
         }
+    }
+
+    public void eliminarMes(View view) {
+        lblFecha.setText("Seleccionar Mes");
     }
 
     //Eliminar cuando se esté programando
