@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="15dp"
-    android:layout_marginTop="10dp"
+    android:layout_marginTop="5dp"
     android:layout_marginRight="15dp"
-    android:layout_marginBottom="10dp"
+    android:layout_marginBottom="5dp"
     android:animateLayoutChanges="true"
     app:cardCornerRadius="7dp"
     app:cardElevation="5dp"
@@ -19,9 +19,9 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="210dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="13dp"
             android:orientation="vertical"
             android:paddingTop="8dp"
             android:paddingBottom="8dp">
@@ -51,12 +51,14 @@
             <TextView
                 android:id="@+id/lblEmpleadoGst"
                 android:layout_width="wrap_content"
-                android:layout_height="25dp"
+                android:layout_height="22dp"
+                android:ellipsize="end"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center|left"
-                android:text="Nombre Empleado"
+                android:maxLines="1"
+                android:text="Nombre Completo"
                 android:textColor="@color/clr_fuente_primario"
-                android:textSize="14dp" />
+                android:textSize="13dp" />
 
         </LinearLayout>
 
@@ -78,7 +80,7 @@
                 android:gravity="right"
                 android:text="L.000.00"
                 android:textColor="@color/clr_fuente_primario"
-                android:textSize="16dp" />
+                android:textSize="15dp" />
 
             <ImageView
                 android:id="@+id/btnExpandirGst"

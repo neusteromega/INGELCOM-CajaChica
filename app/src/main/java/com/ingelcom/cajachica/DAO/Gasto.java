@@ -28,7 +28,7 @@ public class Gasto {
     }
 
     //Método que nos permitirá obtener todos los gastos, pero diviéndolos por los roles de Empleado y Administrador
-    public void obtenerGastos(FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems> callback) {
+    public void obtenerGastos(boolean filtrar, String datoFiltrar, FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems> callback) {
         try {
             //Llamamos el método "obtenerRegistros" de "FirestoreOperaciones", le mandamos el nombre de la colección, e invocamos la interfaz "FirestoreAllDocumentsCallback"
             oper.obtenerRegistros("gastos", new FirestoreCallbacks.FirestoreAllDocumentsCallback() {
@@ -47,14 +47,17 @@ public class Gasto {
                         String descripcion = (String) documento.get("Descripcion");
                         String numeroFactura = (String) documento.get("NumeroFactura");
                         String usuario = (String) documento.get("Usuario");
-                        String rol = (String) documento.get("RolEmpleado");
+                        String rol = (String) documento.get("RolUsuario");
                         double total = Utilidades.convertirObjectADouble(documento.get("Total")); //En este campo, al ser un number (o double) y no un String, llamamos al método utilitario "convertirObjectADouble" que convierte un object de Firestore y retorna un double
 
-                        //Creamos un objeto de tipo "GastosItems" en el cual guardamos los datos extraídos arriba
-                        GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, total);
-                        listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
-
-                        Log.d("Firestore", "Datos del documento: " + documento);
+                        if (filtrar && (cuadrilla.contentEquals(datoFiltrar) || rol.contentEquals(datoFiltrar))) {
+                            GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, total); //Creamos un objeto de tipo "GastosItems" en el cual guardamos los datos extraídos arriba
+                            listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
+                        }
+                        else {
+                            GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, total); //Creamos un objeto de tipo "GastosItems" en el cual guardamos los datos extraídos arriba
+                            listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
+                        }
                     }
                     //Cuando salga del "for", ya tendremos todos los gastos en la "listaGastos", y esta lista es la que mandamos al método "onCallback" de la interfaz
                     callback.onCallback(listaGastos);
@@ -92,7 +95,7 @@ public class Gasto {
                 //Insertamos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el valor a insertar
                 datos.put("ID", idDocumento);
                 datos.put("Usuario", usuario);
-                datos.put("RolEmpleado", rol);
+                datos.put("RolUsuario", rol);
                 datos.put("Fecha", timestamp);
                 datos.put("Cuadrilla", cuadrilla);
                 datos.put("Lugar", lugar);

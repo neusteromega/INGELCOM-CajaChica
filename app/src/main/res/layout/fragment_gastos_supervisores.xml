@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center"
-                android:text="Total de Gastos - Supervisores"
+                android:text="Total de Gastos"
                 android:textColor="@color/clr_fuente_primario"
                 android:textSize="17dp" />
 

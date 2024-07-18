@@ -39,7 +39,7 @@ public class GastosAdapter extends RecyclerView.Adapter<GastosAdapter.RecyclerHo
         holder.tvTipoCompra.setText(item.getTipoCompra());
         holder.tvFecha.setText(item.getFechaHora());
         holder.tvEmpleado.setText(item.getUsuario());
-        holder.tvTotal.setText(String.format("%.2f", item.getTotal()));
+        holder.tvTotal.setText("L. " + String.format("%.2f", item.getTotal()));
     }
 
     @Override

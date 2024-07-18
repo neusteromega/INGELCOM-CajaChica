@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -41,22 +42,28 @@ public class ListadoEmpleados extends AppCompatActivity {
         LinearLayoutManager managerEmp = new LinearLayoutManager(this); //Creamos un manager para que el RecyclerView se vea en forma de tarjetas
         rvEmpleados.setLayoutManager(managerEmp); //Asignamos el manager al RecyclerView
 
-        //Llamamos el método "obtenerEmpleados" de la clase "Usuario" donde invocamos la interfaz "FirestoreAllSpecialDocumentsCallback" y le indicamos que debe ser de tipo "EmpleadosItems"
-        usuario.obtenerEmpleados(new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<EmpleadosItems>() {
-            @Override
-            public void onCallback(List<EmpleadosItems> items) { //Esto nos devuelve la lista de tipo "EmpleadosItems" ya con los empleados extraídos de Firestore
-                inicializarRecyclerView(items);
-            }
+        try {
+            //Llamamos el método "obtenerEmpleados" de la clase "Usuario" donde invocamos la interfaz "FirestoreAllSpecialDocumentsCallback" y le indicamos que debe ser de tipo "EmpleadosItems"
+            usuario.obtenerEmpleados(new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<EmpleadosItems>() {
+                @Override
+                public void onCallback(List<EmpleadosItems> items) { //Esto nos devuelve la lista de tipo "EmpleadosItems" ya con los empleados extraídos de Firestore
+                    if (items != null)
+                        inicializarRecyclerView(items);
+                }
 
-            @Override
-            public void onFailure(Exception e) {
-                Toast.makeText(ListadoEmpleados.this, "ERROR AL CARGAR LOS EMPLEADOS", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Exception e) {
+                    Toast.makeText(ListadoEmpleados.this, "ERROR AL CARGAR LOS EMPLEADOS", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerEmpleados", e);
+        }
     }
 
     private void inicializarRecyclerView(List<EmpleadosItems> items) {
-        adapter = new EmpleadosAdapter(items); //Creamos un objeto de tipo EmpleadosAdapter en el cual enviamos la lista "items", y dicho objeto lo igualamos al otro objeto de tipo EmpleadosAdapter llamado "adapter" (este fue inicializado arriba de forma global)
+        adapter = new EmpleadosAdapter(items); //Creamos un nuevo objeto de tipo EmpleadosAdapter en el cual enviamos la lista "items", y dicho objeto lo igualamos al otro objeto de tipo EmpleadosAdapter llamado "adapter" (este fue inicializado arriba de forma global)
         rvEmpleados.setAdapter(adapter); //Asignamos el adapter al recyclerView de Empleados
 
         adapter.setOnClickListener(new View.OnClickListener() { //Usando el objeto de "adapter" llamamos al método "setOnClickListener" de la clase EmpleadosAdapter
@@ -74,7 +81,8 @@ public class ListadoEmpleados extends AppCompatActivity {
                 datosPerfil.put("Rol", items.get(rvEmpleados.getChildAdapterPosition(view)).getRol());
                 datosPerfil.put("Estado", items.get(rvEmpleados.getChildAdapterPosition(view)).getEstado());
 
-                Utilidades.iniciarActivityConDatos(ListadoEmpleados.this, Perfil.class, datosPerfil); //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
+                //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
+                Utilidades.iniciarActivityConDatos(ListadoEmpleados.this, Perfil.class, datosPerfil);
             }
         });
     }

@@ -206,7 +206,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Exception e) {
-
+                    Log.w("BuscarUsuario", "Error al obtener el usuario", e);
                 }
             });
         }
