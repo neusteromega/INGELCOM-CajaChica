@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center"
-                android:text="L.00.00"
+                android:text="L. 0.00"
                 android:textColor="@color/clr_fuente_gastos"
                 android:textSize="40dp" />
         </LinearLayout>
@@ -50,6 +50,7 @@
             android:id="@+id/rvGastosCuadrilla"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="15dp"
             tools:listitem="@layout/items_gastos" />
     </LinearLayout>
 </FrameLayout>

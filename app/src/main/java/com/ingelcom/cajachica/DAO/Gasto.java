@@ -28,7 +28,7 @@ public class Gasto {
     }
 
     //Método que nos permitirá obtener todos los gastos, pero diviéndolos por los roles de Empleado y Administrador
-    public void obtenerGastos(boolean filtrar, String datoFiltrar, FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems> callback) {
+    public void obtenerGastos(boolean filtrar, String datoCuadrilla, String datoRol, FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems> callback) {
         try {
             //Llamamos el método "obtenerRegistros" de "FirestoreOperaciones", le mandamos el nombre de la colección, e invocamos la interfaz "FirestoreAllDocumentsCallback"
             oper.obtenerRegistros("gastos", new FirestoreCallbacks.FirestoreAllDocumentsCallback() {
@@ -50,9 +50,11 @@ public class Gasto {
                         String rol = (String) documento.get("RolUsuario");
                         double total = Utilidades.convertirObjectADouble(documento.get("Total")); //En este campo, al ser un number (o double) y no un String, llamamos al método utilitario "convertirObjectADouble" que convierte un object de Firestore y retorna un double
 
-                        if (filtrar && (cuadrilla.contentEquals(datoFiltrar) || rol.contentEquals(datoFiltrar))) {
-                            GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, total); //Creamos un objeto de tipo "GastosItems" en el cual guardamos los datos extraídos arriba
-                            listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
+                        if (filtrar) { //Si "filtrar" es true, que entre if (quiere decir que si queremos filtrar los gastos)
+                            if (cuadrilla.contentEquals(datoCuadrilla) && rol.contentEquals(datoRol)) { //Una vez sabemos que si queremos filtrar los gastos, comprobamos la cuadrilla que se desea ver los gastos y el rol que en los gastosCuadrilla será "Empleado" y en los gastosSupervisores será "Administrador". Si ambos, cuadrilla y rol están en el gasto, entrará al if
+                                GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, total); //Creamos un objeto de tipo "GastosItems" en el cual guardamos los datos extraídos arriba
+                                listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
+                            }
                         }
                         else {
                             GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, total); //Creamos un objeto de tipo "GastosItems" en el cual guardamos los datos extraídos arriba

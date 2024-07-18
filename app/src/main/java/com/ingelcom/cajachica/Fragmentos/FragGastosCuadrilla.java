@@ -90,44 +90,49 @@ public class FragGastosCuadrilla extends Fragment {
         lblTotalGastos = view.findViewById(R.id.lblTotalGastosCua);
         rvGastos = view.findViewById(R.id.rvGastosCuadrilla);
 
-        rvGastos.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        obtenerGastos(usu, gast);
+        rvGastos.setLayoutManager(new LinearLayoutManager(getContext())); //Creamos un nuevo LinearLayoutManager para que el RecyclerView se vea en forma de tarjetas
+        obtenerGastos(usu, gast); //Llamamos al método "obtenerGastos" y le mandamos la instancias de las clases Usuario y Gasto
 
         return view;
     }
 
     private void obtenerGastos(Usuario usu, Gasto gast) {
-        usu.obtenerUnUsuario(new FirestoreCallbacks.FirestoreDocumentCallback() {
-            @Override
-            public void onCallback(Map<String, Object> documento) {
-                if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
-                    String cuadrilla = (String) documento.get("Cuadrilla"); //Obtenemos la cuadrilla de "documento"
+        //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" que obtener el usuario actual
+        try {
+            usu.obtenerUnUsuario(new FirestoreCallbacks.FirestoreDocumentCallback() {
+                @Override
+                public void onCallback(Map<String, Object> documento) {
+                    if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                        String cuadrilla = (String) documento.get("Cuadrilla"); //Obtenemos la cuadrilla de "documento"
 
-                    gast.obtenerGastos(true, cuadrilla, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
-                        @Override
-                        public void onCallback(List<GastosItems> items) {
-                            if (items != null)
-                                inicializarRecyclerView(items);
-                        }
+                        //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos un "true" que indica que si queremos filtrar los gastos, también la cuadrilla del usuario actual, y el rol "Empleado" (ya que queremos ver los gastos hechos por la cuadrilla y en la cuadrilla todos los usuarios tienen rol "Empleado") para realizar el filtrado de gastos
+                        gast.obtenerGastos(true, cuadrilla, "Empleado", new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                            @Override
+                            public void onCallback(List<GastosItems> items) { //En esta lista "items" están los gastos ya filtrados por cuadrilla
+                                if (items != null) //Si "items" no es null, que entre al if
+                                    inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
+                            }
 
-                        @Override
-                        public void onFailure(Exception e) {
-                            Toast.makeText(getContext(), "ERROR AL CARGAR LOS GASTOS", Toast.LENGTH_SHORT).show();
-                            Log.w("ObtenerGastos", e);
-                        }
-                    });
+                            @Override
+                            public void onFailure(Exception e) {
+                                Toast.makeText(getContext(), "ERROR AL CARGAR LOS GASTOS", Toast.LENGTH_SHORT).show();
+                                Log.w("ObtenerGastos", e);
+                            }
+                        });
+                    } else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
+                        Log.w("ObtenerUsuario", "Usuario no encontrado");
+                    }
                 }
-                else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
-                    Log.w("ObtenerUsuario", "Usuario no encontrado");
-                }
-            }
 
-            @Override
-            public void onFailure(Exception e) {
-                Log.w("BuscarUsuario", "Error al obtener el usuario", e);
-            }
-        });
+                @Override
+                public void onFailure(Exception e) {
+                    Log.w("BuscarUsuario", "Error al obtener el usuario", e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerUsuario", e);
+        }
     }
 
     private void inicializarRecyclerView(List<GastosItems> items) {
