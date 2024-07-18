@@ -55,7 +55,7 @@
             android:background="@drawable/clr_casillablanca_cuadrada"
             android:elevation="5dp"
             android:gravity="center"
-            android:onClick="DetalleGasto"
+            android:onClick="mostrarMeses"
             android:orientation="horizontal"
             android:paddingLeft="12dp"
             android:paddingRight="22dp">
@@ -107,7 +107,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:onClick="gastosCuadrilla"
+                android:orientation="vertical"
+                tools:ignore="TouchTargetSizeCheck">
 
                 <TextView
                     android:id="@+id/lblCuadrilla"
@@ -136,7 +138,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:onClick="gastosSupervisores"
+                android:orientation="vertical"
+                tools:ignore="TouchTargetSizeCheck">
 
                 <TextView
                     android:id="@+id/lblSupervisores"

@@ -108,12 +108,6 @@ public class Utilidades {
     public static String convertirTimestampAString(Timestamp valor) {
         String fechaHoraString = "";
 
-        /*if (valor != null) { //Verificamos que la variable "valor" no sea nula
-            Date fechaHora = valor.toDate(); //Convertimos "valor" a tipo "Date"
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()); //Creamos una instancia de SimpleDateFormat con el formato deseado (dd/MM/yyyy HH:mm:ss)
-            fechaHoraString = sdf.format(fechaHora); //Convertimos la fecha y hora a un String estableciendo el formato especificado anteriormente
-        }*/
-
         try {
             Date fechaHora = valor.toDate(); //Convertimos "valor" a tipo "Date"
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()); //Creamos una instancia de SimpleDateFormat con el formato deseado (dd/MM/yyyy HH:mm:ss)
@@ -179,31 +173,40 @@ public class Utilidades {
         }
     }
 
-    /*public static void spinnerConHint(Context contexto, Spinner spinner, List<String> lista, String nombreHint) {
-        List<String> listaHint = new ArrayList<>();
-        listaHint.add(nombreHint);
-        listaHint.addAll(lista);
+    //Método que nos ayuda a convertir el mes y el año (que primero están en números) en una cadena String (por ejemplo, "Marzo - 2024")
+    public static String convertirMonthYearString(int month, int year) {
+        return obtenerFormatoMes(month) + " - " + year; //Retornamos la cadena String a mostrar en el lblFechaSeleccionada, para ello primero convertir el número del mes al nombre del mes (valga la redundancia) llamando al método "obtenerFormatoMes" y le enviamos el número del mes "month" como parámetro
+    }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(contexto, R.layout.spinner_items, listaHint) {
-            @Override
-            public boolean isEnabled(int position) {
-                return position != 0; // Deshabilitar el primer elemento, en este caso, el hint
-            }
-
-            @Override
-            public View getDropDownView(int position, View convertView, android.view.ViewGroup parent) {
-                View view = super.getDropDownView(position, convertView, parent);
-                TextView tv = (TextView) view;
-
-                if (position == 0) {
-                    tv.setTextColor(contexto.getResources().getColor(android.R.color.darker_gray)); // Cambiar el color del hint
-                }
-
-                return view;
-            }
-        };
-
-        spinner.setAdapter(adapter);
-        spinner.setSelection(0); // Mostrar el hint inicialmente
-    }*/
+    //Método que nos ayuda a obtener el nombre del mes dependiendo su número (1 = Enero, 2 = Febrero, 3 = Marzo...)
+    private static String obtenerFormatoMes(int month) {
+        switch (month) { //Usamos un switch para trabajar con la variable "month", y en cada case retornará el nombre del mes dependiendo el número
+            case 1:
+                return "Enero";
+            case 2:
+                return "Febrero";
+            case 3:
+                return "Marzo";
+            case 4:
+                return "Abril";
+            case 5:
+                return "Mayo";
+            case 6:
+                return "Junio";
+            case 7:
+                return "Julio";
+            case 8:
+                return "Agosto";
+            case 9:
+                return "Septiembre";
+            case 10:
+                return "Octubre";
+            case 11:
+                return "Noviembre";
+            case 12:
+                return "Diciembre";
+            default:
+                return "Enero";
+        }
+    }
 }

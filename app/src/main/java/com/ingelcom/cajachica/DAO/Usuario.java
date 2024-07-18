@@ -46,10 +46,10 @@ public class Usuario {
                         //Filtramos solo los empleados con rol "Empleado"
                         if (rol.contentEquals("Empleado")) {
                             EmpleadosItems empleado = new EmpleadosItems(nombre, correo, cuadrilla, identidad, telefono, rol, estado); //Creamos un objeto de tipo "EmpleadosItems" en el cual guardamos los datos extraídos arriba
-                            listaEmpleados.add(empleado); //El objeto de tipo "EmpleadosItems" lo guardamos en la clase "listaEmpleados"
+                            listaEmpleados.add(empleado); //El objeto de tipo "EmpleadosItems" lo guardamos en la lista "listaEmpleados"
                         }
                     }
-                    //Cuando salga del "for", ya tendremos todos los empleados con rol "Empleado" en la "listaEmpleados", y esta lista es la que mandamos al llamar el método "onCallback" de la interfaz
+                    //Cuando salga del "for", ya tendremos todos los empleados con rol "Empleado" en la "listaEmpleados", y esta lista es la que mandamos al método "onCallback" de la interfaz
                     callback.onCallback(listaEmpleados);
                 }
 

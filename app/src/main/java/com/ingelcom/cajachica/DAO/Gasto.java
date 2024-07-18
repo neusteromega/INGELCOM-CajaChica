@@ -30,14 +30,17 @@ public class Gasto {
     //Método que nos permitirá obtener todos los gastos, pero diviéndolos por los roles de Empleado y Administrador
     public void obtenerGastos(FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems> callback) {
         try {
+            //Llamamos el método "obtenerRegistros" de "FirestoreOperaciones", le mandamos el nombre de la colección, e invocamos la interfaz "FirestoreAllDocumentsCallback"
             oper.obtenerRegistros("gastos", new FirestoreCallbacks.FirestoreAllDocumentsCallback() {
                 @Override
-                public void onCallback(List<Map<String, Object>> documentos) {
-                    List<GastosItems> listaGastos = new ArrayList<>();
+                public void onCallback(List<Map<String, Object>> documentos) { //Al invocar la interfaz, nos devuelve una lista de tipo "Map<String,Object>" llamada "documentos" en la cual se almacenarán todos los campos de todos los documentos de la colección
+                    List<GastosItems> listaGastos = new ArrayList<>(); //Creamos una lista de tipo "GastosItems"
 
+                    //Hacemos un for que recorra los documentos de la lista "documentos" y los vaya guardando uno por uno en la variable temporal "documento" de tipo "Map<String,Object>"
                     for (Map<String,Object> documento : documentos) {
+                        //Extraemos los campos del HashMap "documento", los campos necesarios en "GastosItems"
                         String id = (String) documento.get("ID");
-                        String fechaHora = Utilidades.convertirTimestampAString((Timestamp) documento.get("Fecha"));
+                        String fechaHora = Utilidades.convertirTimestampAString((Timestamp) documento.get("Fecha")); //En este campo, al ser un Timestamp y no un String, llamamos al método utilitario "convertirTimestampAString" que convierte un objeto Timestamp y retorna un string
                         String cuadrilla = (String) documento.get("Cuadrilla");
                         String lugarCompra = (String) documento.get("Lugar");
                         String tipoCompra = (String) documento.get("TipoCompra");
@@ -45,16 +48,15 @@ public class Gasto {
                         String numeroFactura = (String) documento.get("NumeroFactura");
                         String usuario = (String) documento.get("Usuario");
                         String rol = (String) documento.get("RolEmpleado");
-                        double total = Utilidades.convertirObjectADouble(documento.get("Total"));
+                        double total = Utilidades.convertirObjectADouble(documento.get("Total")); //En este campo, al ser un number (o double) y no un String, llamamos al método utilitario "convertirObjectADouble" que convierte un object de Firestore y retorna un double
 
-                        Toast.makeText(contexto, "FECHA: " + fechaHora, Toast.LENGTH_SHORT).show();
-
+                        //Creamos un objeto de tipo "GastosItems" en el cual guardamos los datos extraídos arriba
                         GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, total);
-                        listaGastos.add(gasto);
+                        listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
 
                         Log.d("Firestore", "Datos del documento: " + documento);
                     }
-
+                    //Cuando salga del "for", ya tendremos todos los gastos en la "listaGastos", y esta lista es la que mandamos al método "onCallback" de la interfaz
                     callback.onCallback(listaGastos);
                 }
 
