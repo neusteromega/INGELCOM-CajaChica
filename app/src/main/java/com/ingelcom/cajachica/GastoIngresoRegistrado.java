@@ -24,6 +24,11 @@ public class GastoIngresoRegistrado extends AppCompatActivity {
         establecerElementos();
     }
 
+    @Override
+    public void onBackPressed() { //Este método se ejecuta cuando el usuario presiona el botón de retroceso
+        redireccionarUsuario(); //Llamamos el método "redireccionarUsuario"
+    }
+
     private void inicializarElementos() {
         //Obtenemos el nombre del activity que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y le mandamos "this" para referenciar esta actividad y "Activity" como clave del putExtra
         nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityGIR");
@@ -56,8 +61,13 @@ public class GastoIngresoRegistrado extends AppCompatActivity {
     }
 
     public void regresarAlMenu(View view) {
+        redireccionarUsuario(); //Llamamos el método "redireccionarUsuario"
+    }
+
+    //Método que permite redireccionar al usuario a la pantalla inicial dependiendo de su rol
+    private void redireccionarUsuario() {
         FirebaseUser currentUser = Utilidades.obtenerUsuario(); //Obtenemos el usuario actual llamando el método utilitario "obtenerUsuario"
-        String correoInicial;
+        String correoInicial; //Variable donde guardaremos el correo del usuario actual
 
         //Verificamos que el usuario no sea null
         if (currentUser != null){

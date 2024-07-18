@@ -1,6 +1,7 @@
 package com.ingelcom.cajachica.Modelos;
 
 public class GastosItems {
+    private String id;
     private String fechaHora;
     private String cuadrilla;
     private String lugarCompra;
@@ -8,10 +9,12 @@ public class GastosItems {
     private String descripcion;
     private String numeroFactura;
     private String usuario;
-    private String total;
+    private String rol;
+    private double total;
     //private String foto;
 
-    public GastosItems(String fechaHora, String cuadrilla, String lugarCompra, String tipoCompra, String descripcion, String numeroFactura, String usuario, String total) {
+    public GastosItems(String id, String fechaHora, String cuadrilla, String lugarCompra, String tipoCompra, String descripcion, String numeroFactura, String usuario, String rol, double total) {
+        this.id = id;
         this.fechaHora = fechaHora;
         this.cuadrilla = cuadrilla;
         this.lugarCompra = lugarCompra;
@@ -19,7 +22,16 @@ public class GastosItems {
         this.descripcion = descripcion;
         this.numeroFactura = numeroFactura;
         this.usuario = usuario;
+        this.rol = rol;
         this.total = total;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getFechaHora() {
@@ -78,11 +90,19 @@ public class GastosItems {
         this.usuario = usuario;
     }
 
-    public String getTotal() {
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
+
+    public double getTotal() {
         return total;
     }
 
-    public void setTotal(String total) {
+    public void setTotal(double total) {
         this.total = total;
     }
 }

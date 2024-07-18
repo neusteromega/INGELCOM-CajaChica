@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ingelcom.cajachica.AdmPantallas;
@@ -16,7 +17,10 @@ import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.EmpMenuPrincipal;
 import com.ingelcom.cajachica.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class Utilidades {
@@ -83,6 +87,7 @@ public class Utilidades {
         return currentUser; //Retornamos el usuario actual
     }
 
+    //Método que permite convertir una variable de tipo "Object" a "double", pero la variable "Object" debe tener un número para lograr efectuar la conversión
     public static double convertirObjectADouble(Object valor) {
         double valorConvertido = 0.0; //Creamos una variable double donde se guardará la conversión de "valor"
 
@@ -97,6 +102,28 @@ public class Utilidades {
         }
 
         return valorConvertido; //Retornamos el valorConvertido a Double
+    }
+
+    //Método que permite convertir una variable de tipo "Timestamp" a un "String" en el que se muestre la fecha y hora
+    public static String convertirTimestampAString(Timestamp valor) {
+        String fechaHoraString = "";
+
+        /*if (valor != null) { //Verificamos que la variable "valor" no sea nula
+            Date fechaHora = valor.toDate(); //Convertimos "valor" a tipo "Date"
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()); //Creamos una instancia de SimpleDateFormat con el formato deseado (dd/MM/yyyy HH:mm:ss)
+            fechaHoraString = sdf.format(fechaHora); //Convertimos la fecha y hora a un String estableciendo el formato especificado anteriormente
+        }*/
+
+        try {
+            Date fechaHora = valor.toDate(); //Convertimos "valor" a tipo "Date"
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()); //Creamos una instancia de SimpleDateFormat con el formato deseado (dd/MM/yyyy HH:mm:ss)
+            fechaHoraString = sdf.format(fechaHora); //Convertimos la fecha y hora a un String estableciendo el formato especificado anteriormente
+        }
+        catch (Exception e) {
+            Log.w("TimestampDog", e);
+        }
+
+        return fechaHoraString; //Retornamos la fechaHora convertida a String
     }
 
     //Método que permite mostrar y ocultar una contraseña

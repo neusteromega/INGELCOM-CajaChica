@@ -8,10 +8,13 @@ import com.google.firebase.Timestamp;
 import com.ingelcom.cajachica.GastoIngresoRegistrado;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
+import com.ingelcom.cajachica.Modelos.GastosItems;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,15 +27,54 @@ public class Gasto {
         this.contexto = contexto;
     }
 
-    public void obtenerGastos() {
+    //Método que nos permitirá obtener todos los gastos, pero diviéndolos por los roles de Empleado y Administrador
+    public void obtenerGastos(FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems> callback) {
+        try {
+            oper.obtenerRegistros("gastos", new FirestoreCallbacks.FirestoreAllDocumentsCallback() {
+                @Override
+                public void onCallback(List<Map<String, Object>> documentos) {
+                    List<GastosItems> listaGastos = new ArrayList<>();
 
+                    for (Map<String,Object> documento : documentos) {
+                        String id = (String) documento.get("ID");
+                        String fechaHora = Utilidades.convertirTimestampAString((Timestamp) documento.get("Fecha"));
+                        String cuadrilla = (String) documento.get("Cuadrilla");
+                        String lugarCompra = (String) documento.get("Lugar");
+                        String tipoCompra = (String) documento.get("TipoCompra");
+                        String descripcion = (String) documento.get("Descripcion");
+                        String numeroFactura = (String) documento.get("NumeroFactura");
+                        String usuario = (String) documento.get("Usuario");
+                        String rol = (String) documento.get("RolEmpleado");
+                        double total = Utilidades.convertirObjectADouble(documento.get("Total"));
+
+                        Toast.makeText(contexto, "FECHA: " + fechaHora, Toast.LENGTH_SHORT).show();
+
+                        GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, total);
+                        listaGastos.add(gasto);
+
+                        Log.d("Firestore", "Datos del documento: " + documento);
+                    }
+
+                    callback.onCallback(listaGastos);
+                }
+
+                @Override
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("FirestoreError", "Error al obtener los documentos", e);
+                    callback.onFailure(e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerGastos", e);
+        }
     }
 
     public void obtenerUnGasto() {
 
     }
 
-    public void registrarGasto(String usuario, String cuadrilla, String lugar, String tipo, String descripcion, String factura, String total, boolean actualizarDinero) {
+    public void registrarGasto(String usuario, String rol, String cuadrilla, String lugar, String tipo, String descripcion, String factura, String total, boolean actualizarDinero) {
         if (!lugar.isEmpty() && !descripcion.isEmpty() && !factura.isEmpty() && !total.isEmpty()) { //Verificamos que las dos cajas de texto no estén vacías para que entre al if
             try {
                 Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
@@ -48,6 +90,7 @@ public class Gasto {
                 //Insertamos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el valor a insertar
                 datos.put("ID", idDocumento);
                 datos.put("Usuario", usuario);
+                datos.put("RolEmpleado", rol);
                 datos.put("Fecha", timestamp);
                 datos.put("Cuadrilla", cuadrilla);
                 datos.put("Lugar", lugar);

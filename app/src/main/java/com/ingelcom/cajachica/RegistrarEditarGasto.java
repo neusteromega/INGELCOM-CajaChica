@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.ingelcom.cajachica.DAO.Cuadrilla;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.DAO.Gasto;
+import com.ingelcom.cajachica.DAO.Usuario;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 
@@ -36,6 +37,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
     private FirestoreOperaciones oper = new FirestoreOperaciones();
     private Cuadrilla cuad = new Cuadrilla(RegistrarEditarGasto.this);
     private Gasto gast = new Gasto(RegistrarEditarGasto.this);
+    private Usuario usu = new Usuario(RegistrarEditarGasto.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,22 +183,21 @@ public class RegistrarEditarGasto extends AppCompatActivity {
         String tipoCompra = spTipoCompras.getSelectedItem().toString();
 
         try {
-            FirebaseUser user = Utilidades.obtenerUsuario(); //Obtenemos el usuario actual llamando el método utilitario "obtenerUsuario"
-            String correoActual = user.getEmail(); //Obtenemos el correo del usuario actual
-
-            oper.obtenerUnRegistro("usuarios", "Correo", correoActual, new FirestoreCallbacks.FirestoreDocumentCallback() {
+            //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" y creamos una invocación a la interfaz "FirestoreDocumentCallback"
+            usu.obtenerUnUsuario(new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
-                public void onCallback(Map<String, Object> documento) {
+                public void onCallback(Map<String, Object> documento) { //Los datos del usuario están guardados en el HashMap "documento"
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                        //Obtenemos estos 3 datos del usuario y los guardamos en sus respectivas variables
                         String nombre = (String) documento.get("Nombre");
                         String cuadrillaBDD = (String) documento.get("Cuadrilla");
+                        String rol = (String) documento.get("Rol");
 
                         //Dentro de ambas condiciones, llamamos el método "registrarGasto" donde se hará el proceso de inserción a Firestore, le mandamos los textboxes y selecciones de los spinners de esta pantalla
                         if (tipoGasto.contentEquals("GastoAdmin"))
-                            gast.registrarGasto(nombre, cuadrillaTXT, lugarCompra, tipoCompra, descripcion, factura, total, false); //Si el gasto lo registra un admin, mandamos "cuadrillaTXT" que es la selección de la cuadrilla en el Spinner, y un "false" indicando que no debe restar el gasto del dinero disponible de la cuadrilla ya que el gasto lo está registrando un admin con un dinero aparte
+                            gast.registrarGasto(nombre, rol, cuadrillaTXT, lugarCompra, tipoCompra, descripcion, factura, total, false); //Si el gasto lo registra un admin, mandamos "cuadrillaTXT" que es la selección de la cuadrilla en el Spinner, y un "false" indicando que no debe restar el gasto del dinero disponible de la cuadrilla ya que el gasto lo está registrando un admin con un dinero aparte
                         else if (tipoGasto.contentEquals("GastoEmpleado"))
-                            gast.registrarGasto(nombre, cuadrillaBDD, lugarCompra, tipoCompra, descripcion, factura, total, true); //Si el gasto lo registra un empleado, mandamos "cuadrillaBDD" que es la extracción de la cuadrilla a la que pertenece el usuario actual, y un true indicando que SI debe restar el gasto registrado del dinero disponible de la cuadrilla del usuario
-
+                            gast.registrarGasto(nombre, rol, cuadrillaBDD, lugarCompra, tipoCompra, descripcion, factura, total, true); //Si el gasto lo registra un empleado, mandamos "cuadrillaBDD" que es la extracción de la cuadrilla a la que pertenece el usuario actual, y un true indicando que SI debe restar el gasto registrado del dinero disponible de la cuadrilla del usuario
                     }
                     else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
                         Log.w("ObtenerUsuario", "Usuario no encontrado");
@@ -205,7 +206,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Exception e) {
-                    Log.w("BuscarDocumento", "Error al obtener el documento", e);
+
                 }
             });
         }

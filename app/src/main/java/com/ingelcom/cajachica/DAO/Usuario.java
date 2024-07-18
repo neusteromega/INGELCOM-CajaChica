@@ -33,7 +33,7 @@ public class Usuario {
                     List<EmpleadosItems> listaEmpleados = new ArrayList<>(); //Creamos una lista de tipo "EmpleadosItems"
 
                     //Hacemos un for que recorra los documentos de la lista "documentos" y los vaya guardando uno por uno en la variable temporal "documento" de tipo "Map<String,Object>"
-                    for (Map<String, Object> documento : documentos) {
+                    for (Map<String,Object> documento : documentos) {
                         //Extraemos los campos del HashMap "documento", los campos necesarios en "EmpleadosItems"
                         String nombre = (String) documento.get("Nombre");
                         String correo = (String) documento.get("Correo");
