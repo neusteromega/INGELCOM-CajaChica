@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="false"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="8dp"
+    app:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingTop="20dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="20dp">
+
+        <TextView
+            android:id="@+id/lblNombreCuadrillaCuaItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:gravity="center"
+            android:text="Nombre Cuadrilla"
+            android:textColor="@color/clr_fuente_primario"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/lblDineroCuaItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:gravity="center"
+            android:text="L.00,000.00"
+            android:textColor="@color/clr_fuente_secundario"
+            android:textSize="23dp" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

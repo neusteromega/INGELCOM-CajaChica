@@ -5,16 +5,24 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.TextView;
 
+import com.ingelcom.cajachica.Adaptadores.CuadrillasAdapter;
 import com.ingelcom.cajachica.AdmDatosCuadrilla;
+import com.ingelcom.cajachica.DAO.Cuadrilla;
+import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
+import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.ListadoIngresos;
 import com.ingelcom.cajachica.R;
 import com.ingelcom.cajachica.RegistrarEditarIngreso;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,6 +41,9 @@ public class FragAdmCuadrillas extends Fragment {
     private String mParam2;
 
     private TextView dinero;
+    private GridView gvCuadrillas;
+
+    private FirestoreOperaciones oper;
 
     public FragAdmCuadrillas() {
         // Required empty public constructor
@@ -63,6 +74,8 @@ public class FragAdmCuadrillas extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        oper = new FirestoreOperaciones(); //Creamos la instancia de la clase "FirestoreOperaciones"
     }
 
     @Override
@@ -71,6 +84,12 @@ public class FragAdmCuadrillas extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_adm_cuadrillas, container, false);
 
+        Cuadrilla cuad = new Cuadrilla(getContext());
+
+        gvCuadrillas = view.findViewById(R.id.gvCuadrillas);
+
+        obtenerCuadrillas(cuad);
+
         //TEMPORAL
         dinero = view.findViewById(R.id.lblDineroDispCua);
         dinero.setOnClickListener(v -> {
@@ -78,5 +97,15 @@ public class FragAdmCuadrillas extends Fragment {
         });
 
         return view;
+    }
+
+    private void obtenerCuadrillas(Cuadrilla cuad) {
+        try {
+            //HACER ESTE MÉTODO
+            cuad.obtenerCuadrillas();
+        }
+        catch (Exception e) {
+            Log.w("ObtenerCuadrillas", e);
+        }
     }
 }

@@ -95,36 +95,46 @@ public class RegistrarEditarGasto extends AppCompatActivity {
     }
 
     private void inicializarSpinners() {
-        //Para inicializar los spinners, llamamos al método "obtenerRegistros" de la clase "FirestoreOperaciones" a la cual le mandamos el nombre de la colección y el nombre del campo de Firestore de los cuales queremos obtener los registros. También invocamos los métodos "onCallback" y "onFailure" de la interfaz FirestoreCallback
-        //CUADRILLAS
-        oper.obtenerRegistrosCampo("cuadrillas", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
-            @Override
-            public void onCallback(List<String> lista) {
-                //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(RegistrarEditarGasto.this, R.layout.spinner_items, lista);
-                spCuadrillas.setAdapter(adapter); //Asignamos el adapter al Spinner "spCuadrillas"
-            }
+        try {
+            //Para inicializar los spinners, llamamos al método "obtenerRegistros" de la clase "FirestoreOperaciones" a la cual le mandamos el nombre de la colección y el nombre del campo de Firestore de los cuales queremos obtener los registros. También invocamos los métodos "onCallback" y "onFailure" de la interfaz FirestoreCallback
+            //CUADRILLAS
+            oper.obtenerRegistrosCampo("cuadrillas", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
+                @Override
+                public void onCallback(List<String> lista) {
+                    //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(RegistrarEditarGasto.this, R.layout.spinner_items, lista);
+                    spCuadrillas.setAdapter(adapter); //Asignamos el adapter al Spinner "spCuadrillas"
+                }
 
-            @Override
-            public void onFailure(Exception e) {
-                Log.w("Activity", "Error al obtener las cuadrillas.", e);
-            }
-        });
+                @Override
+                public void onFailure(Exception e) {
+                    Log.w("Activity", "Error al obtener las cuadrillas.", e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerCuadrillas", e);
+        }
 
-        //TIPO DE COMPRAS
-        oper.obtenerRegistrosCampo("tipoCompras", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
-            @Override
-            public void onCallback(List<String> lista) {
-                //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(RegistrarEditarGasto.this, R.layout.spinner_items, lista);
-                spTipoCompras.setAdapter(adapter); //Asignamos el adapter al Spinner "spTipoCompras"
-            }
+        try {
+            //TIPO DE COMPRAS
+            oper.obtenerRegistrosCampo("tipoCompras", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
+                @Override
+                public void onCallback(List<String> lista) {
+                    //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(RegistrarEditarGasto.this, R.layout.spinner_items, lista);
+                    spTipoCompras.setAdapter(adapter); //Asignamos el adapter al Spinner "spTipoCompras"
+                }
 
-            @Override
-            public void onFailure(Exception e) {
-                Log.w("Activity", "Error al obtener los tipos de compras.", e);
-            }
-        });
+                @Override
+                public void onFailure(Exception e) {
+                    Log.w("Activity", "Error al obtener los tipos de compras.", e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerTipoCompras", e);
+        }
     }
 
     public void subirFoto(View view) {

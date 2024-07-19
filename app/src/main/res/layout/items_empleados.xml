@@ -34,7 +34,7 @@
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center|left"
                 android:maxLines="1"
-                android:text="Nombre Completo Completo"
+                android:text="Nombre Completo"
                 android:textColor="@color/clr_fuente_primario"
                 android:textSize="16dp" />
 
