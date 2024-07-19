@@ -96,7 +96,7 @@ public class FragGastosSupervisores extends Fragment {
     }
 
     private void obtenerGastos(Usuario usu, Gasto gast) {
-        //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" que obtener el usuario actual
+        //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" que obtiene el usuario actual
         try {
             usu.obtenerUnUsuario(new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
@@ -104,10 +104,10 @@ public class FragGastosSupervisores extends Fragment {
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
                         String cuadrilla = (String) documento.get("Cuadrilla");
 
-                        //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos un "true" que indica que si queremos filtrar los gastos, y le mandamos el rol del usuario para que mediante el nombre del rol pueda realizar el filtrado de gastos
-                        gast.obtenerGastos(true, cuadrilla, "Administrador", new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                        //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla y el rol del usuario para que mediante ambos datos pueda realizar el filtrado de gastos. También mandamos el "mes" vacío indicando que no queremos filtrar por mes
+                        gast.obtenerGastos(cuadrilla, "Administrador", "", new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                             @Override
-                            public void onCallback(List<GastosItems> items) { //En esta lista "items" están los gastos ya filtrados por rol
+                            public void onCallback(List<GastosItems> items) { //En esta lista "items" están los gastos ya filtrados por cuadrilla y rol
                                 if (items != null) //Si "items" no es null, que entre al if
                                     inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
                             }

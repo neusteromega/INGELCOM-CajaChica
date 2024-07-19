@@ -10,11 +10,14 @@ import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.Modelos.GastosItems;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -27,8 +30,8 @@ public class Gasto {
         this.contexto = contexto;
     }
 
-    //Método que nos permitirá obtener todos los gastos, pero diviéndolos por los roles de Empleado y Administrador
-    public void obtenerGastos(boolean filtrar, String datoCuadrilla, String datoRol, FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems> callback) {
+    //Método que nos permitirá obtener todos los gastos, pero diviéndolos por los roles de Empleado y Administrador, por la cuadrilla, y por el mes y año sólo si se desea filtrar los mismos
+    public void obtenerGastos(String datoCuadrilla, String datoRol, String mes, FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems> callback) { //Recibe la cuadrilla, el rol y el mes para la obtención de los gastos, más el callback de la interfaz "FirestoreAllSpecialDocumentsCallback<GastosItems>"
         try {
             //Llamamos el método "obtenerRegistros" de "FirestoreOperaciones", le mandamos el nombre de la colección, e invocamos la interfaz "FirestoreAllDocumentsCallback"
             oper.obtenerRegistros("gastos", new FirestoreCallbacks.FirestoreAllDocumentsCallback() {
@@ -50,15 +53,41 @@ public class Gasto {
                         String rol = (String) documento.get("RolUsuario");
                         double total = Utilidades.convertirObjectADouble(documento.get("Total")); //En este campo, al ser un number (o double) y no un String, llamamos al método utilitario "convertirObjectADouble" que convierte un object de Firestore y retorna un double
 
-                        if (filtrar) { //Si "filtrar" es true, que entre if (quiere decir que si queremos filtrar los gastos)
+                        //Si el "mes" está vacío o si contiene el texto "Seleccionar Mes", significa que no se hará ningún filtrado de gastos por mes, y se obtendrán todos los gastos por cuadrilla y rol
+                        if (mes.isEmpty() || mes.contentEquals("Seleccionar Mes")) {
                             if (cuadrilla.contentEquals(datoCuadrilla) && rol.contentEquals(datoRol)) { //Una vez sabemos que si queremos filtrar los gastos, comprobamos la cuadrilla que se desea ver los gastos y el rol que en los gastosCuadrilla será "Empleado" y en los gastosSupervisores será "Administrador". Si ambos, cuadrilla y rol están en el gasto, entrará al if
                                 GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, total); //Creamos un objeto de tipo "GastosItems" en el cual guardamos los datos extraídos arriba
                                 listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
                             }
                         }
                         else {
-                            GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, total); //Creamos un objeto de tipo "GastosItems" en el cual guardamos los datos extraídos arriba
-                            listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
+                            if (cuadrilla.contentEquals(datoCuadrilla) && rol.contentEquals(datoRol)) {
+                                SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yy HH:mm:ss", new Locale("es", "ES"));
+                                String fechaFormateada = "";
+
+                                try {
+                                    Date fecha = formato.parse(fechaHora);
+                                    Calendar cal = Calendar.getInstance();
+                                    cal.setTime(fecha);
+
+                                    int year = cal.get(Calendar.YEAR);
+
+                                    SimpleDateFormat formatoMes = new SimpleDateFormat("MMMM", new Locale("es", "ES"));
+                                    String nombresMes = formatoMes.format(cal.getTime());
+
+                                    nombresMes = nombresMes.substring(0, 1).toUpperCase() + nombresMes.substring(1);
+                                    fechaFormateada = nombresMes + " - " + year;
+                                }
+                                catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
+                                if (mes.contentEquals(fechaFormateada)) {
+                                    Toast.makeText(contexto, "Fecha Formateada: " + mes, Toast.LENGTH_SHORT).show();
+                                    GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, total);
+                                    listaGastos.add(gasto);
+                                }
+                            }
                         }
                     }
                     //Cuando salga del "for", ya tendremos todos los gastos en la "listaGastos", y esta lista es la que mandamos al método "onCallback" de la interfaz
