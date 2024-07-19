@@ -3,6 +3,8 @@ package com.ingelcom.cajachica.Fragmentos;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +20,7 @@ import com.ingelcom.cajachica.DAO.Gasto;
 import com.ingelcom.cajachica.DAO.Usuario;
 import com.ingelcom.cajachica.DetalleGasto;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
+import com.ingelcom.cajachica.Herramientas.SharedViewGastosModel;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.Modelos.GastosItems;
 import com.ingelcom.cajachica.R;
@@ -43,8 +46,10 @@ public class FragGastosSupervisores extends Fragment {
     private String mParam2;
 
     private RecyclerView rvGastos;
-    private List<GastosItems> itemsGastos;
     private TextView lblTotalGastos;
+
+    //Instancia de la clase "SharedViewGastosModel" que nos ayuda a compartir datos con diferentes componentes de la interfaz de usuario, como ser fragmentos y actividades y que estos datos sobreviven a cambios de configuración como las rotaciones de pantalla
+    private SharedViewGastosModel svmGastos;
 
     public FragGastosSupervisores() {
         // Required empty public constructor
@@ -90,22 +95,24 @@ public class FragGastosSupervisores extends Fragment {
         rvGastos = view.findViewById(R.id.rvGastosSupervisores);
 
         rvGastos.setLayoutManager(new LinearLayoutManager(getContext())); //Creamos un nuevo LinearLayoutManager para que el RecyclerView se vea en forma de tarjetas
-        obtenerGastos(usu, gast); //Llamamos al método "obtenerGastos" y le mandamos la instancias de las clases Usuario y Gasto
+        obtenerGastos(usu, gast, ""); //Llamamos al método "obtenerGastos" y le mandamos la instancias de las clases Usuario y Gasto, y el "mes" vacío, ya que al crear el fragment no se realiza un filtrado de gastos por mes
+        obtenerMes(usu, gast); //Llamamos al método "obtenerMes" para recibir la selección del mes hecha por el usuario
 
         return view;
     }
 
-    private void obtenerGastos(Usuario usu, Gasto gast) {
+    //Método que nos ayuda a obtener los gastos de la colección "gastos" de Firestore y asignarlos al RecyclerView
+    private void obtenerGastos(Usuario usu, Gasto gast, String mes) { //Recibe las instancias de las clases "Usuario" y "Gasto", y el String con el mes y año (por ejemplo, "Julio - 2024") para hacer el filtrado de gastos
         //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" que obtiene el usuario actual
         try {
             usu.obtenerUnUsuario(new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
                 public void onCallback(Map<String, Object> documento) {
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
-                        String cuadrilla = (String) documento.get("Cuadrilla");
+                        String cuadrilla = (String) documento.get("Cuadrilla"); //Obtenemos la cuadrilla de "documento"
 
-                        //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla y el rol del usuario para que mediante ambos datos pueda realizar el filtrado de gastos. También mandamos el "mes" vacío indicando que no queremos filtrar por mes
-                        gast.obtenerGastos(cuadrilla, "Administrador", "", new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                        //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla del usuario actual, el rol "Administrador" (ya que queremos ver los gastos hechos por los administrador a la cuadrilla) y el "mes". Con esto se podrán obtener todos los gastos hechos por los administradores a la cuadrilla del usuario actual
+                        gast.obtenerGastos(cuadrilla, "Administrador", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                             @Override
                             public void onCallback(List<GastosItems> items) { //En esta lista "items" están los gastos ya filtrados por cuadrilla y rol
                                 if (items != null) //Si "items" no es null, que entre al if
@@ -118,7 +125,8 @@ public class FragGastosSupervisores extends Fragment {
                                 Log.w("ObtenerGastos", e);
                             }
                         });
-                    } else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
+                    }
+                    else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
                         Log.w("ObtenerUsuario", "Usuario no encontrado");
                     }
                 }
@@ -134,16 +142,18 @@ public class FragGastosSupervisores extends Fragment {
         }
     }
 
-    private void inicializarRecyclerView(List<GastosItems> items) {
+    //Método que nos ayuda a inicializar el RecyclerView de gastos
+    private void inicializarRecyclerView(List<GastosItems> items) { //Recibe una lista de tipo "GastosItems" con los gastos a mostrar en el RecyclerView
         GastosAdapter adapter = new GastosAdapter(items); //Creamos un nuevo objeto de tipo GastosAdapter en el cual enviamos la lista "items", y dicho objeto lo igualamos al otro objeto de tipo GastosAdapter llamado "adapter"
         rvGastos.setAdapter(adapter); //Asignamos el adapter al recyclerView de Gastos
-        double totalGastos = 0;
+        double totalGastos = 0; //Variable que nos servirá para calcular el total de los gastos que se muestren en el RecyclerView
 
+        //Recorremos la lista "items" y cada elemento de ella se guardará en la variable temporal "item" de tipo "GastosItems"
         for (GastosItems item : items) {
-            totalGastos += item.getTotal();
+            totalGastos += item.getTotal(); //Obtenemos el "total" de cada elemento de la lista "items" y lo vamos sumando en la variable "totalGastos"
         }
 
-        lblTotalGastos.setText("L. " + String.format("%.2f", totalGastos));
+        lblTotalGastos.setText("L. " + String.format("%.2f", totalGastos)); //Asignamos el totalGastos al TextView "lblTotalGastos" y formateamos la variable "totalGastos" para que se muestre con dos digitos después del punto decimal
 
         adapter.setOnClickListener(new View.OnClickListener() { //Usando el objeto de "adapter" llamamos al método "setOnClickListener" de la clase GastosAdapter
             @Override
@@ -167,5 +177,23 @@ public class FragGastosSupervisores extends Fragment {
                 Utilidades.iniciarActivityConDatos(getActivity(), DetalleGasto.class, datosGasto);
             }
         });
+    }
+
+    //Método que nos permite obtener el mes y el año seleccionado por el usuario. Aquí se obtiene literalmente el contenido del TextView lblFecha del Activity ListadoGastos, y se obtiene cada vez que el contenido de dicho TextView cambia
+    private void obtenerMes(Usuario usu, Gasto gast) { //Recibe las instancias de las clases "Usuario" y "Gasto"
+        try {
+            svmGastos = new ViewModelProvider(getActivity()).get(SharedViewGastosModel.class); //Obtenemos el ViewModel compartido, haciendo referencia a la clase "SharedViewGastosModel"
+
+            //Llamamos el método "getFecha" del usando la instancia "svmGastos" de la clase "SharedViewGastosModel" que devuelve un "LiveData<String>", esto proporciona una referencia observable al valor de fecha
+            svmGastos.getFecha().observe(getViewLifecycleOwner(), new Observer<String>() { //Configuramos un observador del "LiveData<String>" que devuelve "getFecha()". "getViewLifecycleOwner()" se usa para obtener el ciclo de vida del fragmento actual, asegurando que las actualizaciones solo se envíen cuando el fragmento esté en un estado activo (es decir, no cuando está destruido o detenido)
+                @Override
+                public void onChanged(String mes) { //Este método se llamará cada vez que el valor "fecha" cambie en el "LiveData<String>"
+                    obtenerGastos(usu, gast, mes); //Llamamos el método "obtenerGastos" de arriba y le mandamos las instancias de las clases "Usuario" y "Gasto", y "mes" que contiene el "lblFecha" del activity ListadoGastos
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerMes", e);
+        }
     }
 }

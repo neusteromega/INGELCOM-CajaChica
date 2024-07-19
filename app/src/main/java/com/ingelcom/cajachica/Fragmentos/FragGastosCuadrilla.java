@@ -22,7 +22,6 @@ import com.ingelcom.cajachica.DetalleGasto;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.SharedViewGastosModel;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
-import com.ingelcom.cajachica.ListadoEmpleados;
 import com.ingelcom.cajachica.Modelos.GastosItems;
 import com.ingelcom.cajachica.R;
 
@@ -112,39 +111,22 @@ public class FragGastosCuadrilla extends Fragment {
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
                         String cuadrilla = (String) documento.get("Cuadrilla"); //Obtenemos la cuadrilla de "documento"
 
-                        //Si el "mes" está vacío o si contiene el texto "Seleccionar Mes", significa que no se hará ningún filtrado de gastos por mes, y se obtendrán todos los gastos por cuadrilla y rol
-                       // if (mes.isEmpty() || mes.contentEquals("Seleccionar Mes")) {
-                            //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla del usuario actual, el rol "Empleado" (ya que queremos ver los gastos hechos por la cuadrilla y en la cuadrilla todos los usuarios tienen rol "Empleado") y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de la cuadrilla del usuario actual
-                            gast.obtenerGastos(cuadrilla, "Empleado", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
-                                @Override
-                                public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por cuadrilla y rol
-                                    if (items != null) //Si "items" no es null, que entre al if
-                                        inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
-                                }
+                        //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla del usuario actual, el rol "Empleado" (ya que queremos ver los gastos hechos por la cuadrilla y en la cuadrilla todos los usuarios tienen rol "Empleado") y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de la cuadrilla del usuario actual
+                        gast.obtenerGastos(cuadrilla, "Empleado", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                            @Override
+                            public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por cuadrilla y rol
+                                if (items != null) //Si "items" no es null, que entre al if
+                                    inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
+                            }
 
-                                @Override
-                                public void onFailure(Exception e) {
-                                    Toast.makeText(getContext(), "ERROR AL CARGAR LOS GASTOS", Toast.LENGTH_SHORT).show();
-                                    Log.w("ObtenerGastos", e);
-                                }
-                            });
-                        //}
-                        /*else { //Si "mes" no está vacío, ni contiene el texto "Seleccionar Mes", significa que está recibiendo un mes (por ejemplo, "Julio - 2024"), por lo tanto, se está deseando filtrar los gastos del RecyclerView por mes
-                            gast.obtenerGastos(cuadrilla, "Empleado", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
-                                @Override
-                                public void onCallback(List<GastosItems> items) { //En esta lista "items" están los gastos ya filtrados por cuadrilla
-                                    if (items != null) //Si "items" no es null, que entre al if
-                                        inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
-                                }
-
-                                @Override
-                                public void onFailure(Exception e) {
-                                    Toast.makeText(getContext(), "ERROR AL CARGAR LOS GASTOS", Toast.LENGTH_SHORT).show();
-                                    Log.w("ObtenerGastos", e);
-                                }
-                            });
-                        }*/
-                    } else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
+                            @Override
+                            public void onFailure(Exception e) {
+                                Toast.makeText(getContext(), "ERROR AL CARGAR LOS GASTOS", Toast.LENGTH_SHORT).show();
+                                Log.w("ObtenerGastos", e);
+                            }
+                        });
+                    }
+                    else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
                         Log.w("ObtenerUsuario", "Usuario no encontrado");
                     }
                 }

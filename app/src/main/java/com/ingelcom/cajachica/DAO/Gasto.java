@@ -62,10 +62,9 @@ public class Gasto {
                             else { //Si "mes" no está vacío, ni contiene el texto "Seleccionar Mes", significa que está recibiendo un mes (por ejemplo, "Julio - 2024"), por lo tanto, se está deseando filtrar los gastos del RecyclerView por mes
                                 String fechaFormateada = Utilidades.convertirFechaAFormatoMonthYear(fechaHora); //Creamos un String donde se guarda el retorno del método utilitario "convertirFechaAFormatoMonthYear" al que le mandamos la variable "fechaHora". Este método retorna un String con el formato deseado (Mes - Año) de la fecha extraída de Firestore
 
-                                if (mes.contentEquals(fechaFormateada)) {
-                                    Toast.makeText(contexto, "Fecha Formateada: " + mes, Toast.LENGTH_SHORT).show();
-                                    GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, total);
-                                    listaGastos.add(gasto);
+                                if (mes.contentEquals(fechaFormateada)) { //Si el contenido de "mes" es igual al contenido de "fechaFormateada", significa que la selección del "Mes - Año" hecha por el usuario en el activity ListadoGastos se encuentra entre las fechas de los gastos obtenidos, por lo tanto que entre al if y pueda obtener el gasto correspondiente al "Mes - Año" seleccionado
+                                    GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, total); //Creamos un objeto de tipo "GastosItems" en el cual guardamos los datos extraídos arriba
+                                    listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
                                 }
                             }
                         }
