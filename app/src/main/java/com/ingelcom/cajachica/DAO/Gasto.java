@@ -53,34 +53,14 @@ public class Gasto {
                         String rol = (String) documento.get("RolUsuario");
                         double total = Utilidades.convertirObjectADouble(documento.get("Total")); //En este campo, al ser un number (o double) y no un String, llamamos al método utilitario "convertirObjectADouble" que convierte un object de Firestore y retorna un double
 
-                        //Si el "mes" está vacío o si contiene el texto "Seleccionar Mes", significa que no se hará ningún filtrado de gastos por mes, y se obtendrán todos los gastos por cuadrilla y rol
-                        if (mes.isEmpty() || mes.contentEquals("Seleccionar Mes")) {
-                            if (cuadrilla.contentEquals(datoCuadrilla) && rol.contentEquals(datoRol)) { //Una vez sabemos que si queremos filtrar los gastos, comprobamos la cuadrilla que se desea ver los gastos y el rol que en los gastosCuadrilla será "Empleado" y en los gastosSupervisores será "Administrador". Si ambos, cuadrilla y rol están en el gasto, entrará al if
+                        //Comprobamos la cuadrilla que se desea ver los gastos y el rol que en los gastosCuadrilla será "Empleado" y en los gastosSupervisores será "Administrador". Si ambos, cuadrilla y rol están en el gasto, entrará al if, y por ende, habrán gastos para visualizar en el ListadoGastos
+                        if (cuadrilla.contentEquals(datoCuadrilla) && rol.contentEquals(datoRol)) {
+                            if (mes.isEmpty() || mes.contentEquals("Seleccionar Mes")) { //Si el "mes" está vacío o si contiene el texto "Seleccionar Mes", significa que no se hará ningún filtrado de gastos por mes, y se obtendrán todos los gastos por cuadrilla y rol
                                 GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, total); //Creamos un objeto de tipo "GastosItems" en el cual guardamos los datos extraídos arriba
                                 listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
                             }
-                        }
-                        else {
-                            if (cuadrilla.contentEquals(datoCuadrilla) && rol.contentEquals(datoRol)) {
-                                SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yy HH:mm:ss", new Locale("es", "ES"));
-                                String fechaFormateada = "";
-
-                                try {
-                                    Date fecha = formato.parse(fechaHora);
-                                    Calendar cal = Calendar.getInstance();
-                                    cal.setTime(fecha);
-
-                                    int year = cal.get(Calendar.YEAR);
-
-                                    SimpleDateFormat formatoMes = new SimpleDateFormat("MMMM", new Locale("es", "ES"));
-                                    String nombresMes = formatoMes.format(cal.getTime());
-
-                                    nombresMes = nombresMes.substring(0, 1).toUpperCase() + nombresMes.substring(1);
-                                    fechaFormateada = nombresMes + " - " + year;
-                                }
-                                catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
+                            else { //Si "mes" no está vacío, ni contiene el texto "Seleccionar Mes", significa que está recibiendo un mes (por ejemplo, "Julio - 2024"), por lo tanto, se está deseando filtrar los gastos del RecyclerView por mes
+                                String fechaFormateada = Utilidades.convertirFechaAFormatoMonthYear(fechaHora); //Creamos un String donde se guarda el retorno del método utilitario "convertirFechaAFormatoMonthYear" al que le mandamos la variable "fechaHora". Este método retorna un String con el formato deseado (Mes - Año) de la fecha extraída de Firestore
 
                                 if (mes.contentEquals(fechaFormateada)) {
                                     Toast.makeText(contexto, "Fecha Formateada: " + mes, Toast.LENGTH_SHORT).show();

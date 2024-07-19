@@ -17,7 +17,9 @@ import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.EmpMenuPrincipal;
 import com.ingelcom.cajachica.R;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -171,6 +173,31 @@ public class Utilidades {
         catch (Exception e) {
             Log.w("ObtenerRol", e);
         }
+    }
+
+    public static String convertirFechaAFormatoMonthYear(String fechaHora) {
+        //Creamos un SimpleDateFormat que nos ayudará a darle formato al contenido de "fechaHora" que se extrae de Firestore. Aquí en "new Locale("es", "ES")" especificamos que queremos un formato de fecha y hora en Español (esto para que los meses sean en español y no en inglés)
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yy HH:mm:ss", new Locale("es", "ES"));
+        String fechaFormateada = ""; //Creamos un String donde se guardará la fecha extraída de Firestore ya con el formato que deseamos (Mes - Año)
+
+        try {
+            Date fecha = formato.parse(fechaHora); //Creamos una variable de tipo "Date" donde le asignamos con el formato establecido en "formato" la "fechaHora" extraída de Firestore
+            Calendar cal = Calendar.getInstance(); //Creamos una variable de tipo "Calendar"
+            cal.setTime(fecha); //A la variable "cal" le asignamos la fecha y hora guardada en "fecha"
+
+            int year = cal.get(Calendar.YEAR); //Del contenido de "cal" extraemos el año y lo guardamos en "year"
+
+            SimpleDateFormat formatoMes = new SimpleDateFormat("MMMM", new Locale("es", "ES")); //Creamos un formato para extraer el mes, y también usamos "Locale("es", "ES")" para especificar que lo queremos en español
+            String nombreMes = formatoMes.format(cal.getTime()); //Usando el "formatoMes" y "cal.getTime()", guardamos el nombre del mes en la variable "nombreMes"
+
+            nombreMes = nombreMes.substring(0, 1).toUpperCase() + nombreMes.substring(1); //Aquí establecemos en mayúscula la primera letra del mes
+            fechaFormateada = nombreMes + " - " + year; //Guardamos en "fechaFormateada" el formato del "Mes - Año" que necesitamos para el filtrado
+        }
+        catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return fechaFormateada;
     }
 
     //Método que nos ayuda a convertir el mes y el año (que primero están en números) en una cadena String (por ejemplo, "Marzo - 2024")
