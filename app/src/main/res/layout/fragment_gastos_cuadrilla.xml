@@ -50,7 +50,6 @@
             android:id="@+id/rvGastosCuadrilla"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="15dp"
-            tools:listitem="@layout/items_gastos" />
+            android:layout_marginBottom="15dp" />
     </LinearLayout>
 </FrameLayout>
