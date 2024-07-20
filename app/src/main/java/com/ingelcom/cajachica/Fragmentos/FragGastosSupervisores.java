@@ -76,34 +76,51 @@ public class FragGastosSupervisores extends Fragment {
         obtenerGastos(usu, gast, ""); //Llamamos al método "obtenerGastos" y le mandamos la instancias de las clases Usuario y Gasto, y el "mes" vacío, ya que al crear el fragment no se realiza un filtrado de gastos por mes
         obtenerMes(usu, gast); //Llamamos al método "obtenerMes" para recibir la selección del mes hecha por el usuario
 
-        Toast.makeText(getContext(), "CUADRILLA: " + nombreCuadrilla, Toast.LENGTH_SHORT).show();
         return view;
     }
 
     //Método que nos ayuda a obtener los gastos de la colección "gastos" de Firestore y asignarlos al RecyclerView
     private void obtenerGastos(Usuario usu, Gasto gast, String mes) { //Recibe las instancias de las clases "Usuario" y "Gasto", y el String con el mes y año (por ejemplo, "Julio - 2024") para hacer el filtrado de gastos
-        //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" que obtiene el usuario actual
         try {
+            //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" que obtiene el usuario actual
             usu.obtenerUnUsuario(new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
                 public void onCallback(Map<String, Object> documento) {
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
                         String cuadrilla = (String) documento.get("Cuadrilla"); //Obtenemos la cuadrilla de "documento"
 
-                        //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla del usuario actual, el rol "Administrador" (ya que queremos ver los gastos hechos por los administrador a la cuadrilla) y el "mes". Con esto se podrán obtener todos los gastos hechos por los administradores a la cuadrilla del usuario actual
-                        gast.obtenerGastos(cuadrilla, "Administrador", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
-                            @Override
-                            public void onCallback(List<GastosItems> items) { //En esta lista "items" están los gastos ya filtrados por cuadrilla y rol
-                                if (items != null) //Si "items" no es null, que entre al if
-                                    inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
-                            }
+                        if (!cuadrilla.isEmpty()) { //Si "cuadrilla", que se extrae del documento con los datos del usuario actual, NO está vacía, por lo tanto, es un empleado quién inició sesión, así que se utilizará la misma variable "cuadrilla" para la obtención de los gastos
+                            //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla del usuario actual, el rol "Administrador" (ya que queremos ver los gastos hechos por los administrador a la cuadrilla) y el "mes". Con esto se podrán obtener todos los gastos hechos por los administradores a la cuadrilla del usuario actual
+                            gast.obtenerGastos(cuadrilla, "Administrador", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                                @Override
+                                public void onCallback(List<GastosItems> items) { //En esta lista "items" están los gastos ya filtrados por cuadrilla y rol
+                                    if (items != null) //Si "items" no es null, que entre al if
+                                        inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
+                                }
 
-                            @Override
-                            public void onFailure(Exception e) {
-                                Toast.makeText(getContext(), "ERROR AL CARGAR LOS GASTOS", Toast.LENGTH_SHORT).show();
-                                Log.w("ObtenerGastos", e);
-                            }
-                        });
+                                @Override
+                                public void onFailure(Exception e) {
+                                    Toast.makeText(getContext(), "ERROR AL CARGAR LOS GASTOS", Toast.LENGTH_SHORT).show();
+                                    Log.w("ObtenerGastos", e);
+                                }
+                            });
+                        }
+                        else { //En cambio, si "cuadrilla", que se extrae del documento con los datos del usuario actual, SI está vacía, quiere decir que es un administrador quien inició sesión, y los administradores no pertenecen a una cuadrilla; en este caso, para la obtención de los datos de la cuadrilla a la que se está visualizando sus gastos, se utiliza la variable "nombreCuadrilla" que se recibe como parámetro en este fragment
+                            //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla del usuario actual, el rol "Administrador" (ya que queremos ver los gastos hechos por los administrador a la cuadrilla) y el "mes". Con esto se podrán obtener todos los gastos hechos por los administradores a la cuadrilla del usuario actual
+                            gast.obtenerGastos(nombreCuadrilla, "Administrador", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                                @Override
+                                public void onCallback(List<GastosItems> items) { //En esta lista "items" están los gastos ya filtrados por cuadrilla y rol
+                                    if (items != null) //Si "items" no es null, que entre al if
+                                        inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
+                                }
+
+                                @Override
+                                public void onFailure(Exception e) {
+                                    Toast.makeText(getContext(), "ERROR AL CARGAR LOS GASTOS", Toast.LENGTH_SHORT).show();
+                                    Log.w("ObtenerGastos", e);
+                                }
+                            });
+                        }
                     }
                     else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
                         Log.w("ObtenerUsuario", "Usuario no encontrado");
