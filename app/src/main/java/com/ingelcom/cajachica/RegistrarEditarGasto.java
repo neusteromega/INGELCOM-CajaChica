@@ -50,7 +50,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
     }
 
     private void inicializarElementos() {
-        //Obtenemos el nombre del activity que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y le mandamos "this" para referenciar esta actividad y "Activity" como clave del putExtra
+        //Obtenemos el nombre del activity y el dinero disponible que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y le mandamos "this" para referenciar esta actividad y los nombres de las claves del putExtra
         nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityREG");
         dineroDisponible = Utilidades.obtenerStringExtra(this, "DineroDisponible");
 

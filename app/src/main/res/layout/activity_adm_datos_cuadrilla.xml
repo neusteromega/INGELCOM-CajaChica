@@ -33,7 +33,7 @@
                 app:srcCompat="@mipmap/ico_azul_regresar" />
 
             <TextView
-                android:id="@+id/lblDatosCuadrilla"
+                android:id="@+id/lblNombreCuadrillaDC"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:fontFamily="@font/montserrat_bold"
@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center"
-                android:text="L.00.00"
+                android:text="L. 00.00"
                 android:textColor="@color/clr_fuente_secundario"
                 android:textSize="40dp" />
         </LinearLayout>
@@ -106,13 +106,13 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="35dp"
             android:background="@drawable/clr_casillablanca_cuadrada"
             android:elevation="5dp"
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingLeft="12dp"
-            android:paddingRight="22dp">
+            android:paddingRight="12dp">
 
             <ImageView
                 android:id="@+id/imgFechaDC"
@@ -126,26 +126,44 @@
                 android:gravity="center|right"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/lblFechaDC"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center|left"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="10dp"
-                    android:text="Mes - Año"
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="17dp" />
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/lblFechaDC"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center|left"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="10dp"
+                        android:text="Seleccionar Mes"
+                        android:textColor="@color/clr_fuente_secundario"
+                        android:textSize="17dp" />
+
+                    <ImageView
+                        android:id="@+id/imgAbrirFechaDC"
+                        android:layout_width="11dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight="10dp"
+                        android:contentDescription="@string/descripcion"
+                        app:srcCompat="@mipmap/ico_gris_expandirabajo" />
+                </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/imgAbrirFechaDC"
-                    android:layout_width="11dp"
-                    android:layout_height="20dp"
+                    android:id="@+id/btnEliminarFechaDC"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="15dp"
                     android:contentDescription="@string/descripcion"
-                    app:srcCompat="@mipmap/ico_gris_expandirabajo" />
+                    app:srcCompat="@mipmap/ico_azul_eliminar"
+                    tools:ignore="TouchTargetSizeCheck" />
             </LinearLayout>
 
         </LinearLayout>
@@ -164,7 +182,7 @@
             <LinearLayout
                 android:id="@+id/LLIngresosDC"
                 android:layout_width="match_parent"
-                android:layout_height="95dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingLeft="15dp"
                 android:paddingTop="15dp"
@@ -180,7 +198,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:orientation="vertical">
 
@@ -191,9 +209,9 @@
                         android:layout_marginLeft="2dp"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="left"
-                        android:text="Ingresos por Mes"
+                        android:text="Ingresos"
                         android:textColor="@color/clr_fuente_primario"
-                        android:textSize="16dp" />
+                        android:textSize="17dp" />
 
                     <TextView
                         android:id="@+id/lblCantIngresosDC"
@@ -201,9 +219,9 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="left"
-                        android:text="L.15625.00"
+                        android:text="L. 0.00"
                         android:textColor="@color/clr_fuente_ingresos"
-                        android:textSize="38dp" />
+                        android:textSize="35dp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -221,7 +239,7 @@
             <LinearLayout
                 android:id="@+id/LLGastosDC"
                 android:layout_width="match_parent"
-                android:layout_height="95dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingLeft="15dp"
                 android:paddingTop="15dp"
@@ -236,7 +254,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:orientation="vertical">
 
@@ -247,9 +265,9 @@
                         android:layout_marginLeft="2dp"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="left"
-                        android:text="Gastos por Mes"
+                        android:text="Gastos"
                         android:textColor="@color/clr_fuente_primario"
-                        android:textSize="16dp" />
+                        android:textSize="17dp" />
 
                     <TextView
                         android:id="@+id/lblCantGastosDC"
@@ -257,9 +275,9 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="left"
-                        android:text="L.850.00"
+                        android:text="L. 0.00"
                         android:textColor="@color/clr_fuente_gastos"
-                        android:textSize="38dp" />
+                        android:textSize="35dp" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

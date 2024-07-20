@@ -3,11 +3,14 @@ package com.ingelcom.cajachica.Herramientas;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -78,6 +81,15 @@ public class Utilidades {
         }
 
         return null; //Si no entra al if, que retorne un null
+    }
+
+    public static <T extends Fragment> T crearFragmentoConArgumentos(T fragment, String clave, String valor) {
+        Bundle bundle = new Bundle();
+
+        bundle.putString(clave, valor);
+        fragment.setArguments(bundle);
+
+        return fragment;
     }
 
     //Método que nos ayuda a obtener el usuario actual

@@ -10,21 +10,25 @@ import com.ingelcom.cajachica.Fragmentos.FragGastosSupervisores;
 
 public class VPGastosAdapter extends FragmentStateAdapter {
 
-    //Método Constructor que toma como parámetro el contexto (this) del activity donde se encuentra el ViewPager, en este caso, el activity es el "ListadoGastos.java"
-    public VPGastosAdapter(@NonNull FragmentActivity fragmentActivity) {
+    private String nombreCuadrilla; //Dato que será recibo en los fragmentos implementados en este ViewPager2 (FragGastosCuadrilla y FragGastosSupervisores)
+
+    //Método Constructor que toma como parámetro el contexto (this) del activity donde se encuentra el ViewPager, en este caso, el activity es el "ListadoGastos.java"; y el nombre de la cuadrilla que se recibe para saber cuáles gastos mostrar
+    public VPGastosAdapter(@NonNull FragmentActivity fragmentActivity, String nombreCuadrilla) {
         super(fragmentActivity);
+        this.nombreCuadrilla = nombreCuadrilla;
     }
 
     @NonNull
     @Override
     public Fragment createFragment(int position) { //Método que crea y devuelve un fragmento basado en la posición actual del ViewPager.
         switch (position) { //Este Switch sirve para determinar qué fragmento crear basado en la posición del ViewPager. Al arrastrar con el dedo el ViewPager, este toma una nueva posición y dependiendo esa posición, retornamos el fragmento correspondiente
+            //En estos 3 returns, llamamos el método "newInstance" de los fragmentos y le mandamos el "nombreCuadrilla"
             case 0:
-                return new FragGastosCuadrilla();
+                return FragGastosCuadrilla.newInstance(nombreCuadrilla);
             case 1:
-                return new FragGastosSupervisores();
+                return FragGastosSupervisores.newInstance(nombreCuadrilla);
             default:
-                return new FragGastosCuadrilla();
+                return FragGastosCuadrilla.newInstance(nombreCuadrilla);
         }
     }
 

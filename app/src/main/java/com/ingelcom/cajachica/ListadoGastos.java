@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.ingelcom.cajachica.Adaptadores.VPGastosAdapter;
 import com.ingelcom.cajachica.DAO.Gasto;
+import com.ingelcom.cajachica.Fragmentos.FragGastosCuadrilla;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.SharedViewGastosModel;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
@@ -29,9 +30,8 @@ import java.util.List;
 public class ListadoGastos extends AppCompatActivity {
 
     private TextView lblFecha, lblLineaCuadrilla, lblLineaSupervisores;
-    private ImageView btnEliminarMes;
+    private String nombreCuadrilla;
     private ViewPager2 vpGastos;
-    private Gasto gast = new Gasto(ListadoGastos.this);
 
     //Instancia de la clase "SharedViewGastosModel" que nos ayuda a compartir datos con diferentes componentes de la interfaz de usuario, como ser fragmentos y actividades y que estos datos sobreviven a cambios de configuración como las rotaciones de pantalla
     private SharedViewGastosModel svmGastos;
@@ -41,24 +41,29 @@ public class ListadoGastos extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listado_gastos);
 
-        lblFecha = findViewById(R.id.lblFechaLG);
-        lblLineaCuadrilla = findViewById(R.id.lblCuadrillaLineaLG);
-        lblLineaSupervisores = findViewById(R.id.lblSupervisoresLineaLG);
-        btnEliminarMes = findViewById(R.id.btnEliminarFechaLG);
-        vpGastos = findViewById(R.id.vpListadoGastos); //Relacionamos la variable "vpGastos" con el ViewPager
-
-        svmGastos = new ViewModelProvider(this).get(SharedViewGastosModel.class); //Obtenemos el ViewModel compartido, haciendo referencia a la clase "SharedViewGastosModel"
-
+        inicializarElementos();
         establecerElementos();
         cambioFecha();
         cambioViewPager();
+    }
+
+    private void inicializarElementos() {
+        //Obtenemos el nombre de la cuadrilla que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y les mandamos "this" para referenciar esta actividad y el nombre de la clave del putExtra
+        nombreCuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
+
+        lblFecha = findViewById(R.id.lblFechaLG);
+        lblLineaCuadrilla = findViewById(R.id.lblCuadrillaLineaLG);
+        lblLineaSupervisores = findViewById(R.id.lblSupervisoresLineaLG);
+        vpGastos = findViewById(R.id.vpListadoGastos); //Relacionamos la variable "vpGastos" con el ViewPager
+
+        svmGastos = new ViewModelProvider(this).get(SharedViewGastosModel.class); //Obtenemos el ViewModel compartido, haciendo referencia a la clase "SharedViewGastosModel"
     }
 
     private void establecerElementos() {
         //asignarMes(); //Llamamos el método "asignarMes" para que asigne el mes y el año actual al TextView lblFecha
         lblLineaSupervisores.setVisibility(View.INVISIBLE); //Ocultamos la linea bajo la palabra "Supervisores" al iniciar el Activity
 
-        VPGastosAdapter vpAdapter = new VPGastosAdapter(this); //Creamos un objeto de "VPGastosAdapter" y le mandamos el contexto "this" de este Activity
+        VPGastosAdapter vpAdapter = new VPGastosAdapter(this, nombreCuadrilla); //Creamos un objeto de "VPGastosAdapter" y le mandamos el contexto "this" de este Activity
         vpGastos.setAdapter(vpAdapter); //Asignamos el adaptador al vpGastos
     }
 
@@ -156,10 +161,5 @@ public class ListadoGastos extends AppCompatActivity {
 
     public void eliminarMes(View view) {
         lblFecha.setText("Seleccionar Mes");
-    }
-
-    //Eliminar cuando se esté programando
-    public void detalleGasto(View view) {
-        Utilidades.iniciarActivity(this, DetalleGasto.class, false);
     }
 }
