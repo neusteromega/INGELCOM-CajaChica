@@ -9,8 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ingelcom.cajachica.Adaptadores.CuadrillasAdapter;
 import com.ingelcom.cajachica.AdmDatosCuadrilla;
@@ -19,9 +21,12 @@ import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.ListadoIngresos;
+import com.ingelcom.cajachica.Modelos.CuadrillasItems;
+import com.ingelcom.cajachica.Modelos.GastosItems;
 import com.ingelcom.cajachica.R;
 import com.ingelcom.cajachica.RegistrarEditarIngreso;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -42,6 +47,7 @@ public class FragAdmCuadrillas extends Fragment {
 
     private TextView dinero;
     private GridView gvCuadrillas;
+    private CuadrillasAdapter customAdapter;
 
     private FirestoreOperaciones oper;
 
@@ -90,22 +96,51 @@ public class FragAdmCuadrillas extends Fragment {
 
         obtenerCuadrillas(cuad);
 
-        //TEMPORAL
+        /*//TEMPORAL
         dinero = view.findViewById(R.id.lblDineroDispCua);
         dinero.setOnClickListener(v -> {
             Utilidades.iniciarActivity(getActivity(), AdmDatosCuadrilla.class, false);
-        });
+        });*/
 
         return view;
     }
 
     private void obtenerCuadrillas(Cuadrilla cuad) {
         try {
-            //HACER ESTE MÉTODO
-            cuad.obtenerCuadrillas();
+            cuad.obtenerCuadrillas(new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<CuadrillasItems>() {
+                @Override
+                public void onCallback(List<CuadrillasItems> items) {
+                    inicializarGridView(items);
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Toast.makeText(getContext(), "ERROR AL CARGAR LAS CUADRILLAS", Toast.LENGTH_SHORT).show();
+                    Log.w("ObtenerCuadrillas", e);
+                }
+            });
         }
         catch (Exception e) {
             Log.w("ObtenerCuadrillas", e);
         }
+    }
+
+    private void inicializarGridView(List<CuadrillasItems> items) {
+        customAdapter = new CuadrillasAdapter(items, getContext());
+        gvCuadrillas.setAdapter(customAdapter);
+
+        gvCuadrillas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                HashMap<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
+
+                //Agregamos las claves y datos al HashMap
+                datos.put("Cuadrilla", items.get(i).getCuadrilla());
+                datos.put("Dinero", items.get(i).getDinero());
+
+                //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
+                Utilidades.iniciarActivityConDatos(getActivity(), AdmDatosCuadrilla.class, datos);
+            }
+        });
     }
 }

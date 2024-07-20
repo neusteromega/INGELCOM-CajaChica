@@ -7,8 +7,11 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseUser;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
+import com.ingelcom.cajachica.Modelos.CuadrillasItems;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Cuadrilla {
@@ -20,9 +23,34 @@ public class Cuadrilla {
         this.contexto = contexto;
     }
 
-    public void obtenerCuadrillas() {
+    //Método que nos permitirá obtener todas las cuadrillas en Firestore
+    public void obtenerCuadrillas(FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<CuadrillasItems> callback) { //Llamamos la interfaz "FirestoreAllSpecialDocumentsCallback" y le indicamos que debe ser de tipo "CuadrillasItems"
         try {
+            //Llamamos el método "obtenerRegistros" de "FirestoreOperaciones", le mandamos el nombre de la colección, e invocamos la interfaz "FirestoreAllDocumentsCallback"
+            oper.obtenerRegistros("cuadrillas", new FirestoreCallbacks.FirestoreAllDocumentsCallback() {
+                @Override
+                public void onCallback(List<Map<String, Object>> documentos) { //Al invocar la interfaz, nos devuelve una lista de tipo "Map<String,Object>" llamada "documentos" en la cual se almacenarán todos los campos de todos los documentos de la colección
+                    List<CuadrillasItems> listaCuadrillas = new ArrayList<>(); //Creamos una lista de tipo "CuadrillasItems"
 
+                    //Hacemos un for que recorra los documentos de la lista "documentos" y los vaya guardando uno por uno en la variable temporal "documento" de tipo "Map<String,Object>"
+                    for (Map<String,Object> documento : documentos) {
+                        //Extraemos los campos del HashMap "documento", los campos necesarios en "CuadrillasItems"
+                        String nombre = (String) documento.get("Nombre");
+                        double dinero = Utilidades.convertirObjectADouble(documento.get("Dinero")); //En este campo, al ser un number (o double) y no un String, llamamos al método utilitario "convertirObjectADouble" que convierte un object de Firestore y retorna un double
+
+                        CuadrillasItems cuadrilla = new CuadrillasItems(nombre, dinero); //Creamos un objeto de tipo "CuadrillasItems" en el cual guardamos los datos extraídos arriba
+                        listaCuadrillas.add(cuadrilla); //El objeto de tipo "CuadrillasItems" lo guardamos en la lista "listaCuadrillas"
+                    }
+                    //Cuando salga del "for", ya tendremos todos los gastos en la "listaCuadrillas", y esta lista es la que mandamos al método "onCallback" de la interfaz
+                    callback.onCallback(listaCuadrillas);
+                }
+
+                @Override
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("FirestoreError", "Error al obtener los documentos", e);
+                    callback.onFailure(e);
+                }
+            });
         }
         catch (Exception e) {
             Log.w("ObtenerCuadrillas", e);
