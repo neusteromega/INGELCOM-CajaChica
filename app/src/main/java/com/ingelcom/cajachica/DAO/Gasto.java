@@ -53,7 +53,7 @@ public class Gasto {
                         String rol = (String) documento.get("RolUsuario");
                         double total = Utilidades.convertirObjectADouble(documento.get("Total")); //En este campo, al ser un number (o double) y no un String, llamamos al método utilitario "convertirObjectADouble" que convierte un object de Firestore y retorna un double
 
-                        //Comprobamos la cuadrilla que se desea ver los gastos y el rol que en los gastosCuadrilla será "Empleado" y en los gastosSupervisores será "Administrador". Si ambos, cuadrilla y rol están en el gasto, entrará al if, y por ende, habrán gastos para visualizar en el ListadoGastos
+                        //Comprobamos la cuadrilla a la cual se le desea ver sus gastos, y el rol que en el listado de "gastosCuadrilla" será "Empleado" y en el listado de "gastosSupervisores" será "Administrador". Si ambos, cuadrilla y rol están en el gasto, entrará al if, y por ende, habrán gastos para visualizar en el ListadoGastos
                         if (cuadrilla.contentEquals(datoCuadrilla) && rol.contentEquals(datoRol)) {
                             if (mes.isEmpty() || mes.contentEquals("Seleccionar Mes")) { //Si el "mes" está vacío o si contiene el texto "Seleccionar Mes", significa que no se hará ningún filtrado de gastos por mes, y se obtendrán todos los gastos por cuadrilla y rol
                                 GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, total); //Creamos un objeto de tipo "GastosItems" en el cual guardamos los datos extraídos arriba

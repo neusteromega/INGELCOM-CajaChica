@@ -41,7 +41,7 @@
                 android:background="@drawable/clr_casillaazul_separador"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center"
-                android:textSize="3dp" />
+                android:textSize="2dp" />
 
             <LinearLayout
                 android:id="@+id/LLDineroDispCua"
@@ -51,8 +51,8 @@
                 android:layout_marginBottom="15dp"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp">
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp">
 
                 <ImageView
                     android:id="@+id/imgDineroDispCua"
@@ -63,9 +63,9 @@
 
                 <TextView
                     android:id="@+id/lblDineroDispCua"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_extrabold"
+                    android:fontFamily="@font/montserrat_bold"
                     android:text="Dinero Disponible"
                     android:textColor="@color/clr_fuente_primario"
                     android:textSize="20dp" />

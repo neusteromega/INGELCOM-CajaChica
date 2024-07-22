@@ -106,7 +106,7 @@ public class FragGastosCuadrilla extends Fragment {
                             });
                         }
                         else { //En cambio, si "cuadrilla", que se extrae del documento con los datos del usuario actual, SI está vacía, quiere decir que es un administrador quien inició sesión, y los administradores no pertenecen a una cuadrilla; en este caso, para la obtención de los datos de la cuadrilla a la que se está visualizando sus gastos, se utiliza la variable "nombreCuadrilla" que se recibe como parámetro en este fragment
-                            //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla recibida como parámetro en este fragment, el rol "Empleado" (ya que queremos ver los gastos hechos por la cuadrilla y en la cuadrilla todos los usuarios tienen rol "Empleado") y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de la cuadrilla del usuario actual
+                            //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla recibida como parámetro en este fragment, el rol "Empleado" (ya que queremos ver los gastos hechos por la cuadrilla y en la cuadrilla todos los usuarios tienen rol "Empleado") y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de la cuadrilla
                             gast.obtenerGastos(nombreCuadrilla, "Empleado", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                                 @Override
                                 public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por cuadrilla y rol
@@ -140,7 +140,7 @@ public class FragGastosCuadrilla extends Fragment {
 
     //Método que nos ayuda a inicializar el RecyclerView de gastos
     private void inicializarRecyclerView(List<GastosItems> items) { //Recibe una lista de tipo "GastosItems" con los gastos a mostrar en el RecyclerView
-        GastosAdapter adapter = new GastosAdapter(items); //Creamos un nuevo objeto de tipo GastosAdapter en el cual enviamos la lista "items", y dicho objeto lo igualamos al otro objeto de tipo GastosAdapter llamado "adapter"
+        GastosAdapter adapter = new GastosAdapter(items); //Creamos un nuevo objeto de tipo GastosAdapter en el cual enviamos la lista "items"
         rvGastos.setAdapter(adapter); //Asignamos el adapter al recyclerView de Gastos
         double totalGastos = 0; //Variable que nos servirá para calcular el total de los gastos que se muestren en el RecyclerView
 

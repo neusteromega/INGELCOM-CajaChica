@@ -67,23 +67,30 @@ public class ListadoGastos extends AppCompatActivity {
         vpGastos.setAdapter(vpAdapter); //Asignamos el adaptador al vpGastos
     }
 
+    //Método que detecta cuando el lblFecha cambia su valor
     private void cambioFecha() {
-        lblFecha.addTextChangedListener(new TextWatcher() {
-            @Override //Antes de que el texto del lblFecha cambie
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        try {
+            //Para detectar cuando el lblFecha cambia su valor, llamamos el método "addTextChangedListener"
+            lblFecha.addTextChangedListener(new TextWatcher() {
+                @Override //Antes de que el texto del lblFecha cambie
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            }
+                }
 
-            @Override //Durante el texto del lblFecha está cambiando
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                svmGastos.setFecha(charSequence.toString()); //Llamamos el método "setFecha" de la clase "SharedViewGastosModel" y le mandamos el "charSequence" que es el texto del TextView "lblFecha" y lo convertimos a String
-            }
+                @Override //Durante el texto del lblFecha está cambiando
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    svmGastos.setFecha(charSequence.toString()); //Llamamos el método "setFecha" de la clase "SharedViewGastosModel" y le mandamos el "charSequence" que es el texto del TextView "lblFecha" y lo convertimos a String
+                }
 
-            @Override //Después de que el texto del lblFecha cambie
-            public void afterTextChanged(Editable editable) {
+                @Override //Después de que el texto del lblFecha cambie
+                public void afterTextChanged(Editable editable) {
 
-            }
-        });
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("DetectarFecha", e);
+        }
     }
 
     //Método que permite establecer las lineas bajo las palabras "Cuadrilla" y "Supervisores" cuando se arrastren los fragments del ViewPager
@@ -133,11 +140,12 @@ public class ListadoGastos extends AppCompatActivity {
     }
 
     //Evento Clic del LinearLayout de Fecha, al dar clic en el mismo, se abrirá un "Popup DatePicker" en el que se podrá seleccionar un mes y año y esto servirá para filtrar los gastos
-    public void mostrarMeses(View view) {
+    public void mostrarMesesGastos(View view) {
         try {
+            //Creamos una instancia de la interfaz "DatePickerDialog.OnDateSetListener" y esta define el método "onDateSet" que se llama cuando el usuario selecciona una fecha en el DatePickerDialog
             DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
                 @Override
-                public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                public void onDateSet(DatePicker datePicker, int year, int month, int day) { //Se ejecuta cuando el usuario ha seleccionado una fecha
                     month = month + 1; //Al mes le sumamos +1 porque los meses por defecto empiezan en 0 y no en 1
                     String fecha = Utilidades.convertirMonthYearString(month, year); //Guardamos el mes y año convertidos a String llamando al método "convertirMonthYearString" con los parámetros de mes y año, y esto retorna el String
                     lblFecha.setText(fecha); //Asignamos la fecha ya convertida a String al TextView lblFecha
@@ -159,7 +167,8 @@ public class ListadoGastos extends AppCompatActivity {
         }
     }
 
-    public void eliminarMes(View view) {
+    //Método para eliminar la selección del Mes - Año
+    public void eliminarMesGastos(View view) {
         lblFecha.setText("Seleccionar Mes");
     }
 }

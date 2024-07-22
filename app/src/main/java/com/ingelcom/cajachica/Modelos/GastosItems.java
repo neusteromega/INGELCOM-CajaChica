@@ -1,6 +1,7 @@
 package com.ingelcom.cajachica.Modelos;
 
 public class GastosItems {
+
     private String id;
     private String fechaHora;
     private String cuadrilla;

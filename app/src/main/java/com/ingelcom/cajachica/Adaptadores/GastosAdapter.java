@@ -33,7 +33,7 @@ public class GastosAdapter extends RecyclerView.Adapter<GastosAdapter.RecyclerHo
     //Este método se ejecuta las veces que el método "getItemCount" lo indique, o sea, dependiendo del size de la lista "items"
     @Override
     public void onBindViewHolder(@NonNull GastosAdapter.RecyclerHolder holder, int position) {
-        GastosItems item = items.get(position); //Creamos una lista de tipo "GastosItems" llamada "item" la cual igualamos a la otra lista "items" extrayendo posición por posición
+        GastosItems item = items.get(position); //Creamos un objeto de tipo "GastosItems" llamado "item" el cual igualamos a la lista "items" extrayendo posición por posición
 
         //Haciendo uso del objeto "holder", asignamos los textos a las diferentes variables que se encuentran en la clase estática "RecyclerHolder"
         holder.tvTipoCompra.setText(item.getTipoCompra());

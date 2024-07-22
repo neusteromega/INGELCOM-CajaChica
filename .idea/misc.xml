@@ -10,7 +10,7 @@
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/drawable/clr_casillablanca_semiredonda.xml" value="0.2645" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/drawable/clr_casilladegradadoazul_redonda.xml" value="0.2645" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/drawable/clr_casillagris_separador.xml" value="0.2635" />
-        <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_adm_datos_cuadrilla.xml" value="0.264" />
+        <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_adm_datos_cuadrilla.xml" value="0.2" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_adm_inicio.xml" value="0.2" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_adm_listado_ingresos.xml" value="0.264" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_adm_pantallas.xml" value="0.2" />
@@ -24,8 +24,8 @@
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_gasto_ingreso_registrado.xml" value="0.2" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_iniciar_sesion.xml" value="0.2" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_listado_empleados.xml" value="0.264" />
-        <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_listado_gastos.xml" value="0.264" />
-        <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_listado_ingresos.xml" value="0.2129115006412997" />
+        <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_listado_gastos.xml" value="0.1" />
+        <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_listado_ingresos.xml" value="0.18309859154929578" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_main.xml" value="0.152" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_perfil.xml" value="0.2" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_registrar_editar_gasto.xml" value="0.11" />
@@ -43,7 +43,7 @@
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/items_adminicio.xml" value="0.2129115006412997" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/items_cuadrillas.xml" value="0.4" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/items_empleados.xml" value="0.264" />
-        <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/items_gastos.xml" value="0.176" />
+        <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/items_gastos.xml" value="0.264" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/items_gastos_cuadrilla.xml" value="0.21205643437366395" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/items_ingresos.xml" value="0.264" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/items_ingresos_recientes.xml" value="0.264" />

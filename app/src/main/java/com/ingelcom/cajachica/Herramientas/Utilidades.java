@@ -83,15 +83,6 @@ public class Utilidades {
         return null; //Si no entra al if, que retorne un null
     }
 
-    public static <T extends Fragment> T crearFragmentoConArgumentos(T fragment, String clave, String valor) {
-        Bundle bundle = new Bundle();
-
-        bundle.putString(clave, valor);
-        fragment.setArguments(bundle);
-
-        return fragment;
-    }
-
     //Método que nos ayuda a obtener el usuario actual
     public static FirebaseUser obtenerUsuario() {
         FirebaseAuth mAuth; //Objeto que verifica la autenticación del usuario con Firebase

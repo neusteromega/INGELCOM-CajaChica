@@ -76,7 +76,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:onClick="mostrarMeses"
+                    android:onClick="mostrarMesesGastos"
                     android:orientation="horizontal">
 
                     <TextView
@@ -108,7 +108,7 @@
                     android:layout_height="25dp"
                     android:layout_marginLeft="15dp"
                     android:contentDescription="@string/descripcion"
-                    android:onClick="eliminarMes"
+                    android:onClick="eliminarMesGastos"
                     app:srcCompat="@mipmap/ico_azul_eliminar"
                     tools:ignore="TouchTargetSizeCheck" />
             </LinearLayout>

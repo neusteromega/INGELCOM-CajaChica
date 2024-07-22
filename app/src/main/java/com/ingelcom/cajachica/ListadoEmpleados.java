@@ -63,7 +63,7 @@ public class ListadoEmpleados extends AppCompatActivity {
     }
 
     private void inicializarRecyclerView(List<EmpleadosItems> items) {
-        adapter = new EmpleadosAdapter(items); //Creamos un nuevo objeto de tipo EmpleadosAdapter en el cual enviamos la lista "items", y dicho objeto lo igualamos al otro objeto de tipo EmpleadosAdapter llamado "adapter" (este fue inicializado arriba de forma global)
+        adapter = new EmpleadosAdapter(items); //Instanciamos el objeto de tipo EmpleadosAdapter en el cual enviamos la lista "items" (este "adapter" fue inicializado arriba de forma global)
         rvEmpleados.setAdapter(adapter); //Asignamos el adapter al recyclerView de Empleados
 
         adapter.setOnClickListener(new View.OnClickListener() { //Usando el objeto de "adapter" llamamos al método "setOnClickListener" de la clase EmpleadosAdapter

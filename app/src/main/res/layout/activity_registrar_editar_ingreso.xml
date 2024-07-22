@@ -50,7 +50,7 @@
             android:background="@drawable/clr_casillaazul_separador"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center"
-            android:textSize="3dp" />
+            android:textSize="2dp" />
     </LinearLayout>
 
     <LinearLayout

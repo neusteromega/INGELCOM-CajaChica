@@ -140,7 +140,7 @@ public class FragGastosSupervisores extends Fragment {
 
     //Método que nos ayuda a inicializar el RecyclerView de gastos
     private void inicializarRecyclerView(List<GastosItems> items) { //Recibe una lista de tipo "GastosItems" con los gastos a mostrar en el RecyclerView
-        GastosAdapter adapter = new GastosAdapter(items); //Creamos un nuevo objeto de tipo GastosAdapter en el cual enviamos la lista "items", y dicho objeto lo igualamos al otro objeto de tipo GastosAdapter llamado "adapter"
+        GastosAdapter adapter = new GastosAdapter(items); //Creamos un nuevo objeto de tipo GastosAdapter en el cual enviamos la lista "items"
         rvGastos.setAdapter(adapter); //Asignamos el adapter al recyclerView de Gastos
         double totalGastos = 0; //Variable que nos servirá para calcular el total de los gastos que se muestren en el RecyclerView
 

@@ -42,14 +42,14 @@
                         android:id="@+id/lblTransferenciaTituloIng"
                         android:layout_width="wrap_content"
                         android:layout_height="25dp"
-                        android:layout_marginRight="3dp"
+                        android:layout_marginRight="4dp"
                         android:ellipsize="end"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center|left"
                         android:maxLines="1"
-                        android:text="# de Transferencia:"
+                        android:text="No. Transferencia:"
                         android:textColor="@color/clr_fuente_primario"
-                        android:textSize="14dp" />
+                        android:textSize="13dp" />
 
                     <TextView
                         android:id="@+id/lblTransferenciaIng"
@@ -61,11 +61,11 @@
                         android:maxLines="1"
                         android:text="000000000"
                         android:textColor="@color/clr_fuente_primario"
-                        android:textSize="14dp" />
+                        android:textSize="13dp" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
 
@@ -73,12 +73,13 @@
                         android:id="@+id/lblFechaTituloing"
                         android:layout_width="wrap_content"
                         android:layout_height="25dp"
-                        android:layout_marginRight="3dp"
+                        android:layout_marginRight="4dp"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center|left"
-                        android:text="Fecha:"
+                        android:text="Fecha y Hora:"
                         android:textColor="@color/clr_fuente_secundario"
-                        android:textSize="14dp" />
+                        android:textSize="13dp"
+                        android:visibility="visible" />
 
                     <TextView
                         android:id="@+id/lblFechaIng"
@@ -86,9 +87,9 @@
                         android:layout_height="25dp"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center|left"
-                        android:text="00/00/0000"
+                        android:text="00/00/0000 00:00:00"
                         android:textColor="@color/clr_fuente_secundario"
-                        android:textSize="14dp" />
+                        android:textSize="13dp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -100,12 +101,12 @@
                         android:id="@+id/lblTotalTituloIng"
                         android:layout_width="wrap_content"
                         android:layout_height="28dp"
-                        android:layout_marginRight="3dp"
+                        android:layout_marginRight="4dp"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center|left"
                         android:text="Total:"
                         android:textColor="@color/clr_fuente_primario"
-                        android:textSize="18dp" />
+                        android:textSize="17dp" />
 
                     <TextView
                         android:id="@+id/lblTotalIng"
@@ -115,7 +116,7 @@
                         android:gravity="center|left"
                         android:text="L.00.00"
                         android:textColor="@color/clr_fuente_primario"
-                        android:textSize="18dp" />
+                        android:textSize="17dp" />
                 </LinearLayout>
 
             </LinearLayout>

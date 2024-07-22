@@ -85,7 +85,7 @@
             android:background="@drawable/clr_casillaazul_separador"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center"
-            android:textSize="3dp" />
+            android:textSize="2dp" />
 
     </LinearLayout>
 
@@ -131,6 +131,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
+                    android:onClick="mostrarMesesTotales"
                     android:orientation="horizontal">
 
                     <TextView
@@ -162,6 +163,7 @@
                     android:layout_height="25dp"
                     android:layout_marginLeft="15dp"
                     android:contentDescription="@string/descripcion"
+                    android:onClick="eliminarMesTotales"
                     app:srcCompat="@mipmap/ico_azul_eliminar"
                     tools:ignore="TouchTargetSizeCheck" />
             </LinearLayout>
