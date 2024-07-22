@@ -20,11 +20,15 @@ import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.EmpMenuPrincipal;
 import com.ingelcom.cajachica.R;
 
+import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -238,5 +242,48 @@ public class Utilidades {
             default:
                 return "Enero";
         }
+    }
+
+    //Método genérico que permite ordenar una lista genérica, por el
+    public static <T> List<T> ordenarListaPorCampo(List<T> items, String nombreCampo, String orden) {
+        if (items == null || items.isEmpty() || nombreCampo == null || nombreCampo.isEmpty()) {
+            return items;
+        }
+
+        try {
+            Field campo = items.get(0).getClass().getDeclaredField(nombreCampo);
+            campo.setAccessible(true);
+
+            if (campo.getType() == double.class || campo.getType() == Double.class) {
+                // Ordena la lista basada en el campo double
+                Collections.sort(items, new Comparator<T>() {
+                    @Override
+                    public int compare(T o1, T o2) {
+                        try {
+                            Double valor1 = (Double) campo.get(o1);
+                            Double valor2 = (Double) campo.get(o2);
+
+                            if ("Menor".equalsIgnoreCase(orden)) {
+                                return valor1.compareTo(valor2);
+                            }
+                            else if ("Mayor".equalsIgnoreCase(orden)) {
+                                return valor2.compareTo(valor1);
+                            }
+                            else {
+                                throw new IllegalArgumentException("Orden no reconocido: " + orden);
+                            }
+                        }
+                        catch (IllegalAccessException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+            }
+        }
+        catch (NoSuchFieldException  e) {
+            e.printStackTrace();
+        }
+
+        return items;
     }
 }

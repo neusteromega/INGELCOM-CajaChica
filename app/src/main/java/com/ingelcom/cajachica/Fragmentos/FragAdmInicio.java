@@ -18,6 +18,7 @@ import com.ingelcom.cajachica.DAO.Cuadrilla;
 import com.ingelcom.cajachica.DAO.Gasto;
 import com.ingelcom.cajachica.DAO.Ingreso;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
+import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.Modelos.CuadrillasItems;
 import com.ingelcom.cajachica.Modelos.GastosItems;
 import com.ingelcom.cajachica.Modelos.IngresosItems;
@@ -133,6 +134,7 @@ public class FragAdmInicio extends Fragment {
                 @Override
                 public void onCallback(List<CuadrillasItems> items) { //En esta lista "items" están todas las cuadrillas
                     if (items != null) //Si "items" no es null, que entre al if
+                        items = Utilidades.ordenarListaPorCampo(items, "dinero", "Menor");
                         inicializarRecyclerView(items, "Cuadrilla"); //Llamamos el método "inicializarRecyclerView" de abajo, le mandamos la lista "items" y el tipo "Cuadrilla" indicando que debe inicializar el rvCuadrillas
                 }
 

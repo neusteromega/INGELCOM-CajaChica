@@ -69,7 +69,7 @@ public class InicioAdapter<T> extends RecyclerView.Adapter<InicioAdapter.Recycle
             holder.tvCuadrilla.setText(cuadrilla.getCuadrilla());
             holder.tvCantidad.setText("L. " + String.format("%.2f", cuadrilla.getDinero()));
 
-            //Ocultamos el "tvTipoCompra" que no se usará en el listado de Dinero Disponible de Cuadrillas. Aquí no asignamos color al "tvCantidad" ya que por defecto tiene el color lila deseado
+            //Ocultamos el "tvTipoCompra" y "tvFechaHora" que no se usarán en el listado de Dinero Disponible de Cuadrillas. Aquí no asignamos color al "tvCantidad" ya que por defecto tiene el color lila deseado
             holder.tvTipoCompra.setVisibility(View.GONE);
             holder.tvFechaHora.setVisibility(View.GONE);
         }
