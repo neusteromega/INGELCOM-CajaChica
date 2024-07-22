@@ -76,7 +76,7 @@ public class ListadoIngresos extends AppCompatActivity {
 
     //Método que nos ayuda a inicializar el RecyclerView de ingresos
     private void inicializarRecyclerView(List<IngresosItems> items) {
-        rvIngresos.setLayoutManager(new LinearLayoutManager(this));
+        rvIngresos.setLayoutManager(new LinearLayoutManager(this)); //Creamos un nuevo LinearLayoutManager para que el RecyclerView se vea en forma de tarjetas
 
         IngresosAdapter adapter = new IngresosAdapter(items); //Creamos un nuevo objeto de tipo IngresosAdapter en el cual enviamos la lista "items"
         rvIngresos.setAdapter(adapter); //Asignamos el adapter al recyclerView de Ingresos

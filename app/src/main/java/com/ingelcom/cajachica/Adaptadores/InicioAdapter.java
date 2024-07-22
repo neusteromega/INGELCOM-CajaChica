@@ -8,6 +8,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ingelcom.cajachica.Modelos.CuadrillasItems;
+import com.ingelcom.cajachica.Modelos.GastosItems;
+import com.ingelcom.cajachica.Modelos.IngresosItems;
 import com.ingelcom.cajachica.R;
 
 import java.util.List;
@@ -35,8 +38,38 @@ public class InicioAdapter<T> extends RecyclerView.Adapter<InicioAdapter.Recycle
     public void onBindViewHolder(@NonNull RecyclerHolder holder, int position) {
         T item = items.get(position); //Creamos un objeto de tipo "T" llamado "item" el cual igualamos a la lista "items" extrayendo posición por posición
 
-        //Haciendo uso del objeto "holder", asignamos los textos a las diferentes variables que se encuentran en la clase estática "RecyclerHolder"
-        //holder.tvCuadrilla.setText(item.);
+        if (item instanceof IngresosItems) { //Verificamos si "item" es una instancia de "IngresosItems"
+            IngresosItems ingreso = (IngresosItems) item; //Creamos un objeto de tipo "IngresosItems" y le asignamos el contenido de "item" el cual tiene valor "T", así que los casteamos para que sea de tipo "IngresosItems"
+
+            //Haciendo uso del objeto "holder", asignamos los textos a las diferentes variables que se encuentran en la clase estática "RecyclerHolder"
+            holder.tvCuadrilla.setText(ingreso.getCuadrilla());
+            holder.tvCantidad.setText("L. " + String.format("%.2f", ingreso.getTotal()));
+
+            //Ocultamos el "tvTipoCompra" que no se usará en el listado de Ingresos Recientes, y asignamos el color verde al "tvCantidad"
+            holder.tvTipoCompra.setVisibility(View.GONE);
+            holder.tvCantidad.setTextColor(holder.itemView.getContext().getColor(R.color.clr_fuente_ingresos));
+        }
+        else if (item instanceof GastosItems) { //Verificamos si "item" es una instancia de "GastosItems"
+            GastosItems gasto = (GastosItems) item; //Creamos un objeto de tipo "GastosItems" y le asignamos el contenido de "item" el cual tiene valor "T", así que los casteamos para que sea de tipo "GastosItems"
+
+            //Haciendo uso del objeto "holder", asignamos los textos a las diferentes variables que se encuentran en la clase estática "RecyclerHolder"
+            holder.tvCuadrilla.setText(gasto.getCuadrilla());
+            holder.tvTipoCompra.setText(gasto.getTipoCompra());
+            holder.tvCantidad.setText("L. " + String.format("%.2f", gasto.getTotal()));
+
+            //Asignamos el color rojo al "tvCantidad"
+            holder.tvCantidad.setTextColor(holder.itemView.getContext().getColor(R.color.clr_fuente_gastos));
+        }
+        else if (item instanceof CuadrillasItems) { //Verificamos si "item" es una instancia de "CuadrillasItems"
+            CuadrillasItems cuadrilla = (CuadrillasItems) item; //Creamos un objeto de tipo "CuadrillasItems" y le asignamos el contenido de "item" el cual tiene valor "T", así que los casteamos para que sea de tipo "CuadrillasItems"
+
+            //Haciendo uso del objeto "holder", asignamos los textos a las diferentes variables que se encuentran en la clase estática "RecyclerHolder"
+            holder.tvCuadrilla.setText(cuadrilla.getCuadrilla());
+            holder.tvCantidad.setText("L. " + String.format("%.2f", cuadrilla.getDinero()));
+
+            //Ocultamos el "tvTipoCompra" que no se usará en el listado de Dinero Disponible de Cuadrillas. Aquí no asignamos color al "tvCantidad" ya que por defecto tiene el color lila deseado
+            holder.tvTipoCompra.setVisibility(View.GONE);
+        }
     }
 
     @Override

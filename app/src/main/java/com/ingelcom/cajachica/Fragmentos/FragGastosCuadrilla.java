@@ -72,7 +72,6 @@ public class FragGastosCuadrilla extends Fragment {
         lblTotalGastos = view.findViewById(R.id.lblTotalGastosCua);
         rvGastos = view.findViewById(R.id.rvGastosCuadrilla);
 
-        rvGastos.setLayoutManager(new LinearLayoutManager(getContext())); //Creamos un nuevo LinearLayoutManager para que el RecyclerView se vea en forma de tarjetas
         obtenerGastos(usu, gast, ""); //Llamamos al método "obtenerGastos" y le mandamos la instancias de las clases Usuario y Gasto, y el "mes" vacío, ya que al crear el fragment no se realiza un filtrado de gastos por mes
         obtenerMes(usu, gast); //Llamamos al método "obtenerMes" para recibir la selección del mes hecha por el usuario
 
@@ -140,6 +139,8 @@ public class FragGastosCuadrilla extends Fragment {
 
     //Método que nos ayuda a inicializar el RecyclerView de gastos
     private void inicializarRecyclerView(List<GastosItems> items) { //Recibe una lista de tipo "GastosItems" con los gastos a mostrar en el RecyclerView
+        rvGastos.setLayoutManager(new LinearLayoutManager(getContext())); //Creamos un nuevo LinearLayoutManager para que el RecyclerView se vea en forma de tarjetas
+
         GastosAdapter adapter = new GastosAdapter(items); //Creamos un nuevo objeto de tipo GastosAdapter en el cual enviamos la lista "items"
         rvGastos.setAdapter(adapter); //Asignamos el adapter al recyclerView de Gastos
         double totalGastos = 0; //Variable que nos servirá para calcular el total de los gastos que se muestren en el RecyclerView

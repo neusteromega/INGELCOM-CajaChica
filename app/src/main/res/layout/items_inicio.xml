@@ -4,9 +4,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center|top"
-    android:layout_marginLeft="12dp"
+    android:layout_marginLeft="5dp"
     android:layout_marginTop="10dp"
-    android:layout_marginRight="12dp"
+    android:layout_marginRight="5dp"
     android:layout_marginBottom="10dp"
     android:animateLayoutChanges="true"
     app:cardCornerRadius="10dp"
@@ -14,8 +14,9 @@
     app:cardUseCompatPadding="false">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical"
         android:paddingLeft="12dp"
         android:paddingTop="12dp"
@@ -24,12 +25,12 @@
 
         <TextView
             android:id="@+id/lblNombreCuadrillaInicio"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center"
-            android:text="Abastecimiento"
+            android:text="Nombre Cuadrilla"
             android:textColor="@color/clr_fuente_primario"
             android:textSize="16dp" />
 
@@ -38,21 +39,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
+            android:ellipsize="end"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center"
-            android:text="Combustible"
+            android:maxLines="1"
+            android:text="Tipo de Compra"
             android:textColor="@color/clr_fuente_secundario"
-            android:textSize="13dp" />
+            android:textSize="12dp" />
 
         <TextView
             android:id="@+id/lblCantidadInicio"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center"
-            android:text="L. 1300.00"
-            android:textColor="@color/clr_fuente_gastos"
+            android:text="L. 0.00"
+            android:textColor="@color/clr_fuente_secundario"
             android:textSize="23dp" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

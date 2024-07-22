@@ -61,8 +61,10 @@
                 android:id="@+id/rvIngresosInicio"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:orientation="horizontal"
-                android:scrollbars="horizontal|none">
+                android:scrollbars="none">
 
             </androidx.recyclerview.widget.RecyclerView>
 
@@ -70,7 +72,7 @@
                 android:id="@+id/LLGastosInicio"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="40dp"
                 android:layout_marginBottom="10dp"
                 android:gravity="center|left"
                 android:orientation="horizontal"
@@ -98,14 +100,16 @@
                 android:id="@+id/rvGastosInicio"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:orientation="horizontal"
-                android:scrollbars="horizontal|none" />
+                android:scrollbars="none" />
 
             <LinearLayout
                 android:id="@+id/LLDineroDispInicio"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="40dp"
                 android:layout_marginBottom="10dp"
                 android:gravity="center|left"
                 android:orientation="horizontal"
@@ -130,11 +134,13 @@
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvDineroDispInicio"
+                android:id="@+id/rvCuadrillasInicio"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:orientation="horizontal"
-                android:scrollbars="horizontal|none" />
+                android:scrollbars="none" />
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

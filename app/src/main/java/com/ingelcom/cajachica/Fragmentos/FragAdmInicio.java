@@ -3,12 +3,27 @@ package com.ingelcom.cajachica.Fragmentos;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.ingelcom.cajachica.Adaptadores.IngresosAdapter;
+import com.ingelcom.cajachica.Adaptadores.InicioAdapter;
+import com.ingelcom.cajachica.DAO.Cuadrilla;
+import com.ingelcom.cajachica.DAO.Gasto;
+import com.ingelcom.cajachica.DAO.Ingreso;
+import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
+import com.ingelcom.cajachica.Modelos.CuadrillasItems;
+import com.ingelcom.cajachica.Modelos.GastosItems;
+import com.ingelcom.cajachica.Modelos.IngresosItems;
 import com.ingelcom.cajachica.R;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,28 +32,18 @@ import com.ingelcom.cajachica.R;
  */
 public class FragAdmInicio extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private RecyclerView rvIngresos, rvGastos, rvCuadrillas;
 
     public FragAdmInicio() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragAdmInicio.
-     */
-    // TODO: Rename and change types and number of parameters
     public static FragAdmInicio newInstance(String param1, String param2) {
         FragAdmInicio fragment = new FragAdmInicio();
         Bundle args = new Bundle();
@@ -58,9 +63,112 @@ public class FragAdmInicio extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_adm_inicio, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_adm_inicio, container, false);
+
+        rvIngresos = view.findViewById(R.id.rvIngresosInicio);
+        rvGastos = view.findViewById(R.id.rvGastosInicio);
+        rvCuadrillas = view.findViewById(R.id.rvCuadrillasInicio);
+
+        Ingreso ingr = new Ingreso(getContext());
+        Gasto gast = new Gasto(getContext());
+        Cuadrilla cuad = new Cuadrilla(getContext());
+
+        obtenerIngresos(ingr);
+        obtenerGastos(gast);
+        obtenerCuadrillas(cuad);
+
+        return view;
+    }
+
+    //Método que permite obtener los Ingresos de Firestore
+    private void obtenerIngresos(Ingreso ingr) {
+        try {
+            //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la "cuadrilla" y el "mes" vacíos para indicar que no se haga un filtrado de ingresos. Con esto se podrán obtener todos los ingresos hechos por los administradores
+            ingr.obtenerIngresos("", "", new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
+                @Override
+                public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos
+                    if (items != null) //Si "items" no es null, que entre al if
+                        inicializarRecyclerView(items, "Ingreso"); //Llamamos el método "inicializarRecyclerView" de abajo, le mandamos la lista "items" y el tipo "Ingreso" indicando que debe inicializar el rvIngresos
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Log.w("ObtenerIngresos", e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerIngresos", e);
+        }
+    }
+
+    //Método que permite obtener los Gastos de Firestore
+    private void obtenerGastos(Gasto gast) {
+        try {
+            //Llamamos el método "obtenerGastos" de la clase "Gasto", le mandamos la "cuadrilla", el "rol" y el "mes" vacíos para indicar que no se haga un filtrado de gastos. Con esto se podrán obtener todos los gastos hechos por los administradores y empleados
+            gast.obtenerGastos("", "", "", new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                @Override
+                public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos
+                    if (items != null) //Si "items" no es null, que entre al if
+                        inicializarRecyclerView(items, "Gasto"); //Llamamos el método "inicializarRecyclerView" de abajo, le mandamos la lista "items" y el tipo "Gastos" indicando que debe inicializar el rvGastos
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Log.w("ObtenerGastos", e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerGastos", e);
+        }
+    }
+
+    //Método que permite obtener las Cuadrillas de Firestore
+    private void obtenerCuadrillas(Cuadrilla cuad) {
+        try {
+            //Llamamos el método "obtenerCuadrillas" de la clase "Cuadrilla". Con esto se podrán obtener todas las cuadrillas y su dinero disponible
+            cuad.obtenerCuadrillas(new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<CuadrillasItems>() {
+                @Override
+                public void onCallback(List<CuadrillasItems> items) { //En esta lista "items" están todas las cuadrillas
+                    if (items != null) //Si "items" no es null, que entre al if
+                        inicializarRecyclerView(items, "Cuadrilla"); //Llamamos el método "inicializarRecyclerView" de abajo, le mandamos la lista "items" y el tipo "Cuadrilla" indicando que debe inicializar el rvCuadrillas
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Log.w("ObtenerCuadrillas", e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerCuadrillas", e);
+        }
+    }
+
+    //Método genérico que nos ayuda a inicializar los RecyclerView
+    private <T> void inicializarRecyclerView(List<T> items, String tipo) { //Recibe una lista de tipo "T", esto quiere decir que puede ser cualquier tipo de lista
+        LinearLayoutManager manager = new LinearLayoutManager(getContext()); //Creamos un nuevo LinearLayoutManager para que el RecyclerView se vea en forma de tarjetas
+        manager.setOrientation(LinearLayoutManager.HORIZONTAL); //Asignamos que la orientación de los recyclerviews sea horizontal, estableciendo esa propiedad en el "LinearLayoutManager"
+
+        if (tipo.contentEquals("Ingreso")) { //Si "tipo" es "Ingreso", que asigne los elementos al rvIngresos
+            rvIngresos.setLayoutManager(manager); //Creamos un nuevo LinearLayoutManager para que el RecyclerView "rvIngresos" se vea en forma de tarjetas
+
+            InicioAdapter<T> adapterIngresos = new InicioAdapter<>(items); //Creamos un adapter al instanciar la clase genérica "InicioAdapter" y le mandamos la lista "items"
+            rvIngresos.setAdapter(adapterIngresos); //Asignamos el adapter al recyclerView de Ingresos
+        }
+        else if (tipo.contentEquals("Gasto")) { //En cambio, si "tipo" es "Gasto", que asigne los elementos al rvGastos
+            rvGastos.setLayoutManager(manager); //Creamos un nuevo LinearLayoutManager para que el RecyclerView "rvGastos" se vea en forma de tarjetas
+
+            InicioAdapter<T> adapterGastos = new InicioAdapter<>(items); //Creamos un adapter al instanciar la clase genérica "InicioAdapter" y le mandamos la lista "items"
+            rvGastos.setAdapter(adapterGastos); //Asignamos el adapter al recyclerView de Gastos
+        }
+        else if (tipo.contentEquals("Cuadrilla")) { //En cambio, si "tipo" es "Cuadrilla", que asigne los elementos al rvCuadrillas
+            rvCuadrillas.setLayoutManager(manager); //Creamos un nuevo LinearLayoutManager para que el RecyclerView "rvCuadrillas" se vea en forma de tarjetas
+
+            InicioAdapter<T> adapterCuadrillas = new InicioAdapter<>(items); //Creamos un adapter al instanciar la clase genérica "InicioAdapter" y le mandamos la lista "items"
+            rvCuadrillas.setAdapter(adapterCuadrillas); //Asignamos el adapter al recyclerView de Cuadrillas
+        }
     }
 }
