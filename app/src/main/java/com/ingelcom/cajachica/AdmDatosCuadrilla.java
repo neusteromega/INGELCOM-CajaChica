@@ -94,6 +94,7 @@ public class AdmDatosCuadrilla extends AppCompatActivity {
                 public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados por cuadrilla
                     if (items != null) //Si "items" no es null, que entre al if
                         calcularTotalIngresos(items); //Llamamos el método "calculaTotalIngresos" y le mandamos la lista "items"
+                        //calcularTotales(items, "Ingreso");
                 }
 
                 @Override
@@ -106,6 +107,19 @@ public class AdmDatosCuadrilla extends AppCompatActivity {
             Log.w("ObtenerIngresos", e);
         }
     }
+
+    /*private <T> void calcularTotales(List<T> items, String tipo) {
+        if (tipo.contentEquals("Ingreso")) {
+            double totalIngresos = 0; //Variable que nos servirá para calcular el total de los ingresos que se muestren en el RecyclerView
+
+            //Recorremos la lista "items" y cada elemento de ella se guardará en la variable temporal "item" de tipo "IngresosItems"
+            for (IngresosItems item : items) {
+                totalIngresos += item.getTotal(); //Obtenemos el "total" de cada elemento de la lista "items" y lo vamos sumando en la variable "totalIngresos"
+            }
+
+            lblIngresos.setText("L. " + String.format("%.2f", totalIngresos)); //Asignamos el totalIngresos al TextView "lblIngresos" y formateamos la variable "totalIngresos" para que se muestre con dos digitos después del punto decimal
+        }
+    }*/
 
     //Método que calcula os totales de los gastos de la cuadrilla
     private void calcularTotalGastos(List<GastosItems> items) {

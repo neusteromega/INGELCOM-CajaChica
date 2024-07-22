@@ -37,7 +37,7 @@
             android:name=".Perfil"
             android:exported="false" />
         <activity
-            android:name=".DetalleGasto"
+            android:name=".DetalleGastoIngreso"
             android:exported="false" />
         <activity
             android:name=".ListadoGastos"

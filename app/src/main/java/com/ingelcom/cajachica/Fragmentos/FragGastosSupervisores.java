@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.ingelcom.cajachica.Adaptadores.GastosAdapter;
 import com.ingelcom.cajachica.DAO.Gasto;
 import com.ingelcom.cajachica.DAO.Usuario;
-import com.ingelcom.cajachica.DetalleGasto;
+import com.ingelcom.cajachica.DetalleGastoIngreso;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.SharedViewGastosModel;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
@@ -157,7 +157,7 @@ public class FragGastosSupervisores extends Fragment {
                 HashMap<String,Object> datosGasto = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
 
                 //Agregamos las claves y datos al HashMap
-                datosGasto.put("ActivityDG", "DetalleGastoEmpleado");
+                datosGasto.put("ActivityDGI", "DetalleGastoEmpleado");
                 datosGasto.put("ID", items.get(rvGastos.getChildAdapterPosition(view)).getId());
                 datosGasto.put("FechaHora", items.get(rvGastos.getChildAdapterPosition(view)).getFechaHora());
                 datosGasto.put("Cuadrilla", items.get(rvGastos.getChildAdapterPosition(view)).getCuadrilla());
@@ -170,7 +170,7 @@ public class FragGastosSupervisores extends Fragment {
                 datosGasto.put("Total", items.get(rvGastos.getChildAdapterPosition(view)).getTotal());
 
                 //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
-                Utilidades.iniciarActivityConDatos(getActivity(), DetalleGasto.class, datosGasto);
+                Utilidades.iniciarActivityConDatos(getActivity(), DetalleGastoIngreso.class, datosGasto);
             }
         });
     }

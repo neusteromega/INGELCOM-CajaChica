@@ -27,7 +27,7 @@
             android:id="@+id/lblNombreCuadrillaInicio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
+            android:layout_marginBottom="3dp"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center"
             android:text="Nombre Cuadrilla"
@@ -36,14 +36,26 @@
 
         <TextView
             android:id="@+id/lblTipoCompraInicio"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="1dp"
             android:ellipsize="end"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center"
             android:maxLines="1"
             android:text="Tipo de Compra"
+            android:textColor="@color/clr_fuente_secundario"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/lblFechaInicio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="Fecha Hora"
             android:textColor="@color/clr_fuente_secundario"
             android:textSize="12dp" />
 

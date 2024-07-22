@@ -43,6 +43,7 @@ public class InicioAdapter<T> extends RecyclerView.Adapter<InicioAdapter.Recycle
 
             //Haciendo uso del objeto "holder", asignamos los textos a las diferentes variables que se encuentran en la clase estática "RecyclerHolder"
             holder.tvCuadrilla.setText(ingreso.getCuadrilla());
+            holder.tvFechaHora.setText(ingreso.getFechaHora());
             holder.tvCantidad.setText("L. " + String.format("%.2f", ingreso.getTotal()));
 
             //Ocultamos el "tvTipoCompra" que no se usará en el listado de Ingresos Recientes, y asignamos el color verde al "tvCantidad"
@@ -55,6 +56,7 @@ public class InicioAdapter<T> extends RecyclerView.Adapter<InicioAdapter.Recycle
             //Haciendo uso del objeto "holder", asignamos los textos a las diferentes variables que se encuentran en la clase estática "RecyclerHolder"
             holder.tvCuadrilla.setText(gasto.getCuadrilla());
             holder.tvTipoCompra.setText(gasto.getTipoCompra());
+            holder.tvFechaHora.setText(gasto.getFechaHora());
             holder.tvCantidad.setText("L. " + String.format("%.2f", gasto.getTotal()));
 
             //Asignamos el color rojo al "tvCantidad"
@@ -69,6 +71,7 @@ public class InicioAdapter<T> extends RecyclerView.Adapter<InicioAdapter.Recycle
 
             //Ocultamos el "tvTipoCompra" que no se usará en el listado de Dinero Disponible de Cuadrillas. Aquí no asignamos color al "tvCantidad" ya que por defecto tiene el color lila deseado
             holder.tvTipoCompra.setVisibility(View.GONE);
+            holder.tvFechaHora.setVisibility(View.GONE);
         }
     }
 
@@ -92,6 +95,7 @@ public class InicioAdapter<T> extends RecyclerView.Adapter<InicioAdapter.Recycle
         //Variables para cada elemento cambiante de las tarjetas del RecyclerView
         private TextView tvCuadrilla;
         private TextView tvTipoCompra;
+        private TextView tvFechaHora;
         private TextView tvCantidad;
 
         public RecyclerHolder(@NonNull View itemView) { //Método Constructor que recibe un View
@@ -100,6 +104,7 @@ public class InicioAdapter<T> extends RecyclerView.Adapter<InicioAdapter.Recycle
             //Referenciamos los elementos de la vista de las tarjetas del RecyclerView a las variables de arriba
             tvCuadrilla = itemView.findViewById(R.id.lblNombreCuadrillaInicio);
             tvTipoCompra = itemView.findViewById(R.id.lblTipoCompraInicio);
+            tvFechaHora = itemView.findViewById(R.id.lblFechaInicio);
             tvCantidad = itemView.findViewById(R.id.lblCantidadInicio);
         }
     }

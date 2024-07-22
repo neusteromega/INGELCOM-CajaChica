@@ -95,7 +95,7 @@ public class ListadoIngresos extends AppCompatActivity {
                 HashMap<String,Object> datosIngreso = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
 
                 //Agregamos las claves y datos al HashMap
-                datosIngreso.put("ActivityREI", "EditarIngreso");
+                datosIngreso.put("ActivityDGI", "EditarIngreso");
                 datosIngreso.put("ID", items.get(rvIngresos.getChildAdapterPosition(view)).getId());
                 datosIngreso.put("FechaHora", items.get(rvIngresos.getChildAdapterPosition(view)).getFechaHora());
                 datosIngreso.put("Cuadrilla", items.get(rvIngresos.getChildAdapterPosition(view)).getCuadrilla());
@@ -103,7 +103,7 @@ public class ListadoIngresos extends AppCompatActivity {
                 datosIngreso.put("Total", items.get(rvIngresos.getChildAdapterPosition(view)).getTotal());
 
                 //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
-                Utilidades.iniciarActivityConDatos(ListadoIngresos.this, RegistrarEditarIngreso.class, datosIngreso);
+                Utilidades.iniciarActivityConDatos(ListadoIngresos.this, DetalleGastoIngreso.class, datosIngreso);
             }
         });
     }
