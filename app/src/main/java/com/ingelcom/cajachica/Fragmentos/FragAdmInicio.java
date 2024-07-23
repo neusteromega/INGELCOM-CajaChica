@@ -10,13 +10,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.ingelcom.cajachica.Adaptadores.IngresosAdapter;
 import com.ingelcom.cajachica.Adaptadores.InicioAdapter;
+import com.ingelcom.cajachica.AdmDatosCuadrilla;
 import com.ingelcom.cajachica.DAO.Cuadrilla;
 import com.ingelcom.cajachica.DAO.Gasto;
 import com.ingelcom.cajachica.DAO.Ingreso;
+import com.ingelcom.cajachica.DetalleGastoIngreso;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.Modelos.CuadrillasItems;
@@ -24,6 +24,7 @@ import com.ingelcom.cajachica.Modelos.GastosItems;
 import com.ingelcom.cajachica.Modelos.IngresosItems;
 import com.ingelcom.cajachica.R;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -90,6 +91,7 @@ public class FragAdmInicio extends Fragment {
                 @Override
                 public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos
                     if (items != null) //Si "items" no es null, que entre al if
+                        items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente");
                         inicializarRecyclerView(items, "Ingreso"); //Llamamos el método "inicializarRecyclerView" de abajo, le mandamos la lista "items" y el tipo "Ingreso" indicando que debe inicializar el rvIngresos
                 }
 
@@ -112,6 +114,7 @@ public class FragAdmInicio extends Fragment {
                 @Override
                 public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos
                     if (items != null) //Si "items" no es null, que entre al if
+                        items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente");
                         inicializarRecyclerView(items, "Gasto"); //Llamamos el método "inicializarRecyclerView" de abajo, le mandamos la lista "items" y el tipo "Gastos" indicando que debe inicializar el rvGastos
                 }
 
@@ -134,8 +137,8 @@ public class FragAdmInicio extends Fragment {
                 @Override
                 public void onCallback(List<CuadrillasItems> items) { //En esta lista "items" están todas las cuadrillas
                     if (items != null) //Si "items" no es null, que entre al if
-                        items = Utilidades.ordenarListaPorCampo(items, "dinero", "Menor");
-                        inicializarRecyclerView(items, "Cuadrilla"); //Llamamos el método "inicializarRecyclerView" de abajo, le mandamos la lista "items" y el tipo "Cuadrilla" indicando que debe inicializar el rvCuadrillas
+                        items = Utilidades.ordenarListaPorDouble(items, "dinero", "Ascendente"); //Llamamos el método utilitario "ordenarListaPorDouble". Le mandamos la lista "items", el nombre del campo double "Dinero", y el tipo de orden "Menor" para que lo ordene de forma ascendente. Este método retorna la lista ya ordenada y la guardamos en "items"
+                        inicializarRecyclerView(items, "Cuadrilla"); //Llamamos el método "inicializarRecyclerView" de abajo, le mandamos la lista "items" ya ordenada y el tipo "Cuadrilla" indicando que debe inicializar el rvCuadrillas
                 }
 
                 @Override
@@ -159,18 +162,83 @@ public class FragAdmInicio extends Fragment {
 
             InicioAdapter<T> adapterIngresos = new InicioAdapter<>(items); //Creamos un adapter al instanciar la clase genérica "InicioAdapter" y le mandamos la lista "items"
             rvIngresos.setAdapter(adapterIngresos); //Asignamos el adapter al recyclerView de Ingresos
+
+            adapterIngresos.setOnClickListener(new View.OnClickListener() { //Usando el objeto de "adapterIngresos" llamamos al método "setOnClickListener" de la clase InicioAdapter
+                @Override
+                public void onClick(View view) { //Al dar clic en una tarjeta del RecyclerView, se realizará lo siguiente
+                    int posicion = rvIngresos.getChildAdapterPosition(view); //Obtenemos la posición del elemento clickeado en el RecyclerView
+                    T item = items.get(posicion); //De la lista "items" (que se utiliza para mostrar el RecyclerView) obtenemos el elemento clickeado utilizando la "posicion" obtenida arriba. Y este elemento clickeado lo guardamos en una variable de tipo "T" ya que "items" también es de tipo "T"
+                    HashMap<String,Object> datosIngreso = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
+
+                    //Agregamos las claves y datos al HashMap
+                    datosIngreso.put("ActivityDGI", "DetalleIngreso");
+
+                    //Llamamos el método utilitario "obtenerCampo" y le mandamos el "item" clickeado, y los nombres de los métodos getter de la clase IngresosItems para que nos retorne los valores que devuelven estos métodos y poder guardarlos en el HashMap
+                    datosIngreso.put("ID", Utilidades.obtenerCampo(item, "getId"));
+                    datosIngreso.put("FechaHora", Utilidades.obtenerCampo(item, "getFechaHora"));
+                    datosIngreso.put("Cuadrilla", Utilidades.obtenerCampo(item, "getCuadrilla"));
+                    datosIngreso.put("Transferencia", Utilidades.obtenerCampo(item, "getTransferencia"));
+                    datosIngreso.put("Total", Utilidades.obtenerCampo(item, "getTotal"));
+
+                    //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
+                    Utilidades.iniciarActivityConDatos(getActivity(), DetalleGastoIngreso.class, datosIngreso);
+                }
+            });
         }
         else if (tipo.contentEquals("Gasto")) { //En cambio, si "tipo" es "Gasto", que asigne los elementos al rvGastos
             rvGastos.setLayoutManager(manager); //Creamos un nuevo LinearLayoutManager para que el RecyclerView "rvGastos" se vea en forma de tarjetas
 
             InicioAdapter<T> adapterGastos = new InicioAdapter<>(items); //Creamos un adapter al instanciar la clase genérica "InicioAdapter" y le mandamos la lista "items"
             rvGastos.setAdapter(adapterGastos); //Asignamos el adapter al recyclerView de Gastos
+
+            adapterGastos.setOnClickListener(new View.OnClickListener() { //Usando el objeto de "adapterGastos" llamamos al método "setOnClickListener" de la clase InicioAdapter
+                @Override
+                public void onClick(View view) { //Al dar clic en una tarjeta del RecyclerView, se realizará lo siguiente
+                    int posicion = rvGastos.getChildAdapterPosition(view); //Obtenemos la posición del elemento clickeado en el RecyclerView
+                    T item = items.get(posicion); //De la lista "items" (que se utiliza para mostrar el RecyclerView) obtenemos el elemento clickeado utilizando la "posicion" obtenida arriba. Y este elemento clickeado lo guardamos en una variable de tipo "T" ya que "items" también es de tipo "T"
+                    HashMap<String,Object> datosGasto = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
+
+                    //Agregamos las claves y datos al HashMap
+                    datosGasto.put("ActivityDGI", "DetalleGasto");
+
+                    //Llamamos el método utilitario "obtenerCampo" y le mandamos el "item" clickeado, y los nombres de los métodos getter de la clase GastosItems para que nos retorne los valores que devuelven estos métodos y poder guardarlos en el HashMap
+                    datosGasto.put("ID", Utilidades.obtenerCampo(item, "getId"));
+                    datosGasto.put("FechaHora", Utilidades.obtenerCampo(item, "getFechaHora"));
+                    datosGasto.put("Cuadrilla", Utilidades.obtenerCampo(item, "getCuadrilla"));
+                    datosGasto.put("LugarCompra", Utilidades.obtenerCampo(item, "getLugarCompra"));
+                    datosGasto.put("TipoCompra", Utilidades.obtenerCampo(item, "getTipoCompra"));
+                    datosGasto.put("Descripcion", Utilidades.obtenerCampo(item, "getDescripcion"));
+                    datosGasto.put("NumeroFactura", Utilidades.obtenerCampo(item, "getNumeroFactura"));
+                    datosGasto.put("Usuario", Utilidades.obtenerCampo(item, "getUsuario"));
+                    datosGasto.put("Rol", Utilidades.obtenerCampo(item, "getRol"));
+                    datosGasto.put("Total", Utilidades.obtenerCampo(item, "getTotal"));
+
+                    //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
+                    Utilidades.iniciarActivityConDatos(getActivity(), DetalleGastoIngreso.class, datosGasto);
+                }
+            });
         }
         else if (tipo.contentEquals("Cuadrilla")) { //En cambio, si "tipo" es "Cuadrilla", que asigne los elementos al rvCuadrillas
             rvCuadrillas.setLayoutManager(manager); //Creamos un nuevo LinearLayoutManager para que el RecyclerView "rvCuadrillas" se vea en forma de tarjetas
 
             InicioAdapter<T> adapterCuadrillas = new InicioAdapter<>(items); //Creamos un adapter al instanciar la clase genérica "InicioAdapter" y le mandamos la lista "items"
             rvCuadrillas.setAdapter(adapterCuadrillas); //Asignamos el adapter al recyclerView de Cuadrillas
+
+            adapterCuadrillas.setOnClickListener(new View.OnClickListener() { //Usando el objeto de "adapterCuadrillas" llamamos al método "setOnClickListener" de la clase InicioAdapter
+                @Override
+                public void onClick(View view) { //Al dar clic en una tarjeta del RecyclerView, se realizará lo siguiente
+                    int posicion = rvGastos.getChildAdapterPosition(view); //Obtenemos la posición del elemento clickeado en el RecyclerView
+                    T item = items.get(posicion); //De la lista "items" (que se utiliza para mostrar el RecyclerView) obtenemos el elemento clickeado utilizando la "posicion" obtenida arriba. Y este elemento clickeado lo guardamos en una variable de tipo "T" ya que "items" también es de tipo "T"
+                    HashMap<String,Object> datosCuadrilla = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
+
+                    //Llamamos el método utilitario "obtenerCampo" y le mandamos el "item" clickeado, y los nombres de los métodos getter de la clase IngresosItems para que nos retorne los valores que devuelven estos métodos y poder guardarlos en el HashMap
+                    datosCuadrilla.put("Cuadrilla", Utilidades.obtenerCampo(item, "getCuadrilla"));
+                    datosCuadrilla.put("DineroDisponible", String.format("%.2f", Utilidades.obtenerCampo(item, "getDinero"))); //El resultado de "getDinero" lo convertimos a String en formato para que tenga dos décimales
+
+                    //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
+                    Utilidades.iniciarActivityConDatos(getActivity(), AdmDatosCuadrilla.class, datosCuadrilla);
+                }
+            });
         }
     }
 }

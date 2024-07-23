@@ -21,6 +21,7 @@ import com.ingelcom.cajachica.EmpMenuPrincipal;
 import com.ingelcom.cajachica.R;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -47,7 +48,7 @@ public class Utilidades {
         }
     }
 
-    //Método que permite enviar un dato String a un activity
+    //Método que permite enviar un dato String a un activity e iniciar el mismo
     public static void iniciarActivityConString(Context contexto, Class<?> activityClase, String clave, String valor, boolean finalizarActivity) {
         Intent intent = new Intent(contexto, activityClase); //Creamos el intent y le establecemos el contexto y el nombre del activity
         intent.putExtra(clave, valor); //Usando "putExtra" le establecemos una clave al envío de datos, y le mandamos el texto guardado en "valor"
@@ -59,6 +60,7 @@ public class Utilidades {
         }
     }
 
+    //Método que permite enviar un HashMap con diferentes datos a un activity e iniciar el mismo
     public static void iniciarActivityConDatos(Context contexto, Class<?> activityClase, HashMap<String,Object> datos) {
         Intent intent = new Intent(contexto, activityClase);
 
@@ -246,16 +248,16 @@ public class Utilidades {
     }
 
     //Método genérico que permite ordenar una lista genérica basada en un campo específico de tipo "double" o "Double"
-    public static <T> List<T> ordenarListaPorCampo(List<T> items, String nombreCampo, String orden) { //Recibe la lista genérica de tipo "T", el nombreCampo es el campo double por el cual se hará el ordenamiento, y el String "Orden" recibe un "Menor" si el orden es ascendente, y un "Mayor" si el orden es descendente
-        //// Si la lista es nula, está vacía, el nombre del campo es nulo o está vacío, se retorna la lista tal como está
-        if (items == null || items.isEmpty() || nombreCampo == null || nombreCampo.isEmpty()) {
+    public static <T> List<T> ordenarListaPorDouble(List<T> items, String nombreCampo, String orden) { //Recibe la lista genérica de tipo "T", el nombreCampo es el campo double por el cual se hará el ordenamiento, y el String "Orden" recibe un "Menor" si el orden es ascendente, y un "Mayor" si el orden es descendente
+        //Si la lista es nula, el nombre del campo, y el tipo de orden algunos es nulo o está vacío, se retorna la lista tal como está
+        if (items == null || items.isEmpty() || nombreCampo == null || nombreCampo.isEmpty() || orden == null || orden.isEmpty()) {
             return items;
         }
 
         try {
-            //Hacemos una búsqueda en la lista "items" mediante el "nombreCampo", y tras los resultados, obtenemos el elemento encontrado en la posición 0, la primera y única posición porque el nombre del campo guardado en "nombreCampo" no se repite en la lista (por ejemplo, si buscamos el campo "Total" en la lista items, ese nombre de campo no se repetirá)
+            //Hacemos una búsqueda en la lista "items" mediante el "nombreCampo", y tras los resultados, obtenemos el elemento encontrado en la posición 0, la primera y única posición porque el nombre del campo guardado en "nombreCampo" no se repite en la lista (por ejemplo, si buscamos el campo "total" en la lista items, ese nombre de campo no se repetirá)
             Field campo = items.get(0).getClass().getDeclaredField(nombreCampo); //Obtenemos el nombre del tipo de dato con "getDeclaredField" y lo guardamos en la variable "campo" de tipo Field
-            campo.setAccessible(true);
+            campo.setAccessible(true); //Lo utilizamos para permitir el acceso a un campo privado o protegido de una clase
 
             //Verificamos si el tipo del campo es double o Double. Si el campo no es de este tipo, el método no hará nada más
             if (campo.getType() == double.class || campo.getType() == Double.class) {
@@ -268,10 +270,10 @@ public class Utilidades {
                             Double valor1 = (Double) campo.get(o1);
                             Double valor2 = (Double) campo.get(o2);
 
-                            if ("Menor".equalsIgnoreCase(orden)) { //Si orden es "Menor" (ignorando mayúsculas y minúsculas), que entre al if
+                            if ("Ascendente".equalsIgnoreCase(orden)) { //Si orden es "Ascendente" (ignorando mayúsculas y minúsculas), que entre al if
                                 return valor1.compareTo(valor2); //Comparamos "valor1" con "valor2" de forma ascendente
                             }
-                            else if ("Mayor".equalsIgnoreCase(orden)) { //Si orden es "Mayor" (ignorando mayúsculas y minúsculas), que entre al if
+                            else if ("Descendente".equalsIgnoreCase(orden)) { //Si orden es "Descendente" (ignorando mayúsculas y minúsculas), que entre al if
                                 return valor2.compareTo(valor1); //Comparamos "valor2" con "valor1" de forma descendente
                             }
                             else { //Si orden no es "Menor" ni "Mayor", lanza una excepción
@@ -286,9 +288,72 @@ public class Utilidades {
             }
         }
         catch (NoSuchFieldException  e) {
+            e.printStackTrace();
+        }
+
+        return items; //Retornamos la lista "items", que ha sido ordenada si ha ido bien, o la lista original si no se realizó ningún ordenamiento
+    }
+
+    //Método genérico que permite ordenar una lista genérica basada en una FechaHora
+    public static <T> List<T> ordenarListaPorFechaHora(List<T> items, String nombreCampo, String orden) {
+        //Si la lista es nula, el nombre del campo, y el tipo de orden algunos es nulo o está vacío, se retorna la lista tal como está
+        if (items == null || items.isEmpty() || nombreCampo == null || nombreCampo.isEmpty() || orden == null || orden.isEmpty()) {
+            return items;
+        }
+
+        try {
+            //Hacemos una búsqueda en la lista "items" mediante el "nombreCampo", y tras los resultados, obtenemos el elemento encontrado en la posición 0, la primera y única posición porque el nombre del campo guardado en "nombreCampo" no se repite en la lista (por ejemplo, si buscamos el campo "fechaHora" en la lista items, ese nombre de campo no se repetirá)
+            Field campo = items.get(0).getClass().getDeclaredField(nombreCampo); //Obtenemos el nombre del tipo de dato con "getDeclaredField" y lo guardamos en la variable "campo" de tipo Field
+            campo.setAccessible(true); //Lo utilizamos para permitir el acceso a un campo privado o protegido de una clase
+            SimpleDateFormat formatoFechaHora = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()); //Creamos una variable de tipo "SimpleDateFormat" con el formato "dd/MM/yyyy HH:mm"
+
+            //Utilizamos el método "Collections.sort" para ordenar la lista "items"
+            Collections.sort(items, new Comparator<T>() { //"Comparator<T>" es una interfaz que se usa para definir la lógica de comparación entre dos objetos del mismo tipo (T)
+                @Override //Implementamos el método "compare" del "Comparator<T>"
+                public int compare(T o1, T o2) { //Este método toma dos objetos "o1" y "o2" de tipo "T" y devuelve un valor entero que indica el orden relativo de los dos objetos. Devuelve un valor negativo si "o1" debe ir antes que "o2". Devuelve 0 si "o1" y "o2" son iguales. Devuelve un valor positivo si "o1" debe ir después que "o2"
+                    try {
+                        //Obtenemos los valores del campo especificado en "nombreCampo", y estos valores son convertidos a String
+                        String valor1 = (String) campo.get(o1);
+                        String valor2 = (String) campo.get(o2);
+
+                        //Convertimos los valores a tipo "Date" usando el "formatoFechaHora"
+                        Date fecha1 = formatoFechaHora.parse(valor1);
+                        Date fecha2 = formatoFechaHora.parse(valor2);
+
+                        if ("Ascendente".equalsIgnoreCase(orden)) { //Si orden es "Ascendente" (ignorando mayúsculas y minúsculas), que entre al if
+                            return fecha1.compareTo(fecha2); //Comparamos "fecha1" con "fecha2" de forma ascendente
+                        }
+                        else if ("Descendente".equalsIgnoreCase(orden)) { //Si orden es "Descendente" (ignorando mayúsculas y minúsculas), que entre al if
+                            return fecha2.compareTo(fecha1); //Comparamos "fecha2" con "fecha1" de forma descendente
+                        }
+                        else { //Si orden no es "Menor" ni "Mayor", lanza una excepción
+                            throw new IllegalArgumentException("Orden no reconocido: " + orden);
+                        }
+                    }
+                    catch (IllegalAccessException | ParseException e) {
+                        throw new RuntimeException(e); //En caso de error de acceso a campo, lanzamos una excepción de runtime
+                    }
+                }
+            });
+
+        } catch (NoSuchFieldException e) {
             e.printStackTrace(); //Manejamos excepción si el campo no existe en la clase
         }
 
         return items; //Retornamos la lista "items", que ha sido ordenada si ha ido bien, o la lista original si no se realizó ningún ordenamiento
+    }
+
+    //Método que utiliza una reflexión para llamar a los métodos getter (por ejemplo, los getter de la clase GastosItems) en los objetos de tipo "T", y retorna un "Object"
+    public static Object obtenerCampo(Object obj, String nombreMetodo) { //Recibe un objeto genérico del que se quiere obtener un campo, y el nombre del método getter de la clase modelo
+        try {
+            //"obj.getClass()" obtiene la clase del objeto "obj"
+            Method metodo = obj.getClass().getMethod(nombreMetodo); //"getMethod(nombreMetodo)" busca y obtiene el método público con el nombre "nombreMetodo" en la clase modelo del objeto "obj". Este método debe coincidir exactamente con el nombre proporcionado en "nombreMetodo", incluyendo mayúsculas y minúsculas
+            //Retornamos el resultado de la invocación del método (por ejemplo, si el método encontrado fue "public void setId(String id) { this.id = id; }", devolverá el "id" que devuelve este método getter). El resultado es de tipo Object para permitir la máxima flexibilidad en el tipo de retorno
+            return metodo.invoke(obj); //Invocamos el método obtenido en el objeto "obj". Si el método getter no requiere argumentos (lo cual es típico), "invoke" se llama con solo el objeto "obj"
+        }
+        catch (Exception e) {
+            Log.w("ObtenerCampo", e);
+            return null; //Devuelve null en caso de que ocurra una excepción, indicando que no se pudo obtener el valor del campo
+        }
     }
 }
