@@ -119,11 +119,11 @@ public class Utilidades {
 
         try {
             Date fechaHora = valor.toDate(); //Convertimos "valor" a tipo "Date"
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()); //Creamos una instancia de SimpleDateFormat con el formato deseado (dd/MM/yyyy HH:mm:ss)
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()); //Creamos una instancia de SimpleDateFormat con el formato deseado (dd/MM/yyyy HH:mm:ss)
             fechaHoraString = sdf.format(fechaHora); //Convertimos la fecha y hora a un String estableciendo el formato especificado anteriormente
         }
         catch (Exception e) {
-            Log.w("TimestampDog", e);
+            Log.w("ConvertirTimestampString", e);
         }
 
         return fechaHoraString; //Retornamos la fechaHora convertida a String
@@ -182,9 +182,10 @@ public class Utilidades {
         }
     }
 
+    //Método que nos ayuda a convertir una FechaHora (00/00/0000 00:00) a un formato de "Mes - Año"
     public static String convertirFechaAFormatoMonthYear(String fechaHora) {
         //Creamos un SimpleDateFormat que nos ayudará a darle formato al contenido de "fechaHora" que se extrae de Firestore. Aquí en "new Locale("es", "ES")" especificamos que queremos un formato de fecha y hora en Español (esto para que los meses sean en español y no en inglés)
-        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yy HH:mm:ss", new Locale("es", "ES"));
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yy HH:mm", new Locale("es", "ES"));
         String fechaFormateada = ""; //Creamos un String donde se guardará la fecha extraída de Firestore ya con el formato que deseamos (Mes - Año)
 
         try {
@@ -244,46 +245,50 @@ public class Utilidades {
         }
     }
 
-    //Método genérico que permite ordenar una lista genérica, por el
-    public static <T> List<T> ordenarListaPorCampo(List<T> items, String nombreCampo, String orden) {
+    //Método genérico que permite ordenar una lista genérica basada en un campo específico de tipo "double" o "Double"
+    public static <T> List<T> ordenarListaPorCampo(List<T> items, String nombreCampo, String orden) { //Recibe la lista genérica de tipo "T", el nombreCampo es el campo double por el cual se hará el ordenamiento, y el String "Orden" recibe un "Menor" si el orden es ascendente, y un "Mayor" si el orden es descendente
+        //// Si la lista es nula, está vacía, el nombre del campo es nulo o está vacío, se retorna la lista tal como está
         if (items == null || items.isEmpty() || nombreCampo == null || nombreCampo.isEmpty()) {
             return items;
         }
 
         try {
-            Field campo = items.get(0).getClass().getDeclaredField(nombreCampo);
+            //Hacemos una búsqueda en la lista "items" mediante el "nombreCampo", y tras los resultados, obtenemos el elemento encontrado en la posición 0, la primera y única posición porque el nombre del campo guardado en "nombreCampo" no se repite en la lista (por ejemplo, si buscamos el campo "Total" en la lista items, ese nombre de campo no se repetirá)
+            Field campo = items.get(0).getClass().getDeclaredField(nombreCampo); //Obtenemos el nombre del tipo de dato con "getDeclaredField" y lo guardamos en la variable "campo" de tipo Field
             campo.setAccessible(true);
 
+            //Verificamos si el tipo del campo es double o Double. Si el campo no es de este tipo, el método no hará nada más
             if (campo.getType() == double.class || campo.getType() == Double.class) {
-                // Ordena la lista basada en el campo double
-                Collections.sort(items, new Comparator<T>() {
-                    @Override
-                    public int compare(T o1, T o2) {
+                //Utilizamos el método "Collections.sort" para ordenar la lista "items"
+                Collections.sort(items, new Comparator<T>() { //"Comparator<T>" es una interfaz que se usa para definir la lógica de comparación entre dos objetos del mismo tipo (T)
+                    @Override //Implementamos el método "compare" del "Comparator<T>"
+                    public int compare(T o1, T o2) { //Este método toma dos objetos "o1" y "o2" de tipo "T" y devuelve un valor entero que indica el orden relativo de los dos objetos. Devuelve un valor negativo si "o1" debe ir antes que "o2". Devuelve 0 si "o1" y "o2" son iguales. Devuelve un valor positivo si "o1" debe ir después que "o2"
                         try {
+                            //Obtenemos los valores del campo especificado en "nombreCampo", y estos valores son convertidos a "Double"
                             Double valor1 = (Double) campo.get(o1);
                             Double valor2 = (Double) campo.get(o2);
 
-                            if ("Menor".equalsIgnoreCase(orden)) {
-                                return valor1.compareTo(valor2);
+                            if ("Menor".equalsIgnoreCase(orden)) { //Si orden es "Menor" (ignorando mayúsculas y minúsculas), que entre al if
+                                return valor1.compareTo(valor2); //Comparamos "valor1" con "valor2" de forma ascendente
                             }
-                            else if ("Mayor".equalsIgnoreCase(orden)) {
-                                return valor2.compareTo(valor1);
+                            else if ("Mayor".equalsIgnoreCase(orden)) { //Si orden es "Mayor" (ignorando mayúsculas y minúsculas), que entre al if
+                                return valor2.compareTo(valor1); //Comparamos "valor2" con "valor1" de forma descendente
                             }
-                            else {
+                            else { //Si orden no es "Menor" ni "Mayor", lanza una excepción
                                 throw new IllegalArgumentException("Orden no reconocido: " + orden);
                             }
                         }
                         catch (IllegalAccessException e) {
-                            throw new RuntimeException(e);
+                            throw new RuntimeException(e); //En caso de error de acceso a campo, lanzamos una excepción de runtime
                         }
                     }
                 });
             }
         }
         catch (NoSuchFieldException  e) {
-            e.printStackTrace();
+            e.printStackTrace(); //Manejamos excepción si el campo no existe en la clase
         }
 
-        return items;
+        return items; //Retornamos la lista "items", que ha sido ordenada si ha ido bien, o la lista original si no se realizó ningún ordenamiento
     }
 }
