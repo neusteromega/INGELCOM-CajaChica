@@ -14,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseUser;
 import com.ingelcom.cajachica.DAO.Cuadrilla;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.DAO.Gasto;
@@ -78,15 +77,14 @@ public class RegistrarEditarGasto extends AppCompatActivity {
     private void establecerElementos() {
         if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
             switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
-                //Establecemos los elementos gráficos si la pantalla es "RegistrarGastoEmpleado"
-                case "RegistrarGastoEmpleado":
+                case "RegistrarGastoEmpleado": //Establecemos los elementos gráficos si la pantalla es "RegistrarGastoEmpleado"
                     lblDinero.setText("L. " + dineroDisponible);
                     //Ocultamos estos dos elementos (Fecha y Cuadrilla) para que el empleado no pueda verlos
                     llFecha.setVisibility(View.GONE);
                     llCuadrilla.setVisibility(View.GONE);
                     break;
 
-                case "RegistrarGastoAdmin":
+                case "RegistrarGastoAdmin": //Establecemos los elementos gráficos si la pantalla es "RegistrarGastoAdmin"
                     llFecha.setVisibility(View.GONE);
                     llDinero.setVisibility(View.GONE);
                     break;
@@ -193,8 +191,8 @@ public class RegistrarEditarGasto extends AppCompatActivity {
         String tipoCompra = spTipoCompras.getSelectedItem().toString();
 
         try {
-            //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" y creamos una invocación a la interfaz "FirestoreDocumentCallback"
-            usu.obtenerUnUsuario(new FirestoreCallbacks.FirestoreDocumentCallback() {
+            //Llamamos el método "obtenerUsuarioActual" de la clase "Usuario" y creamos una invocación a la interfaz "FirestoreDocumentCallback"
+            usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
                 public void onCallback(Map<String, Object> documento) { //Los datos del usuario están guardados en el HashMap "documento"
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo

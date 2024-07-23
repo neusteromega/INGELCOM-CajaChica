@@ -82,7 +82,7 @@ public class FragGastosCuadrilla extends Fragment {
     private void obtenerGastos(Usuario usu, Gasto gast, String mes) { //Recibe las instancias de las clases "Usuario" y "Gasto", y el String con el mes y año (por ejemplo, "Julio - 2024") para hacer el filtrado de gastos
         try {
             //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" que obtiene el usuario actual
-            usu.obtenerUnUsuario(new FirestoreCallbacks.FirestoreDocumentCallback() { //Invocamos a la interfaz "FirestoreAllSpecialDocumentsCallback" y le decimos que debe recibir un "GastosItems"
+            usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() { //Invocamos a la interfaz "FirestoreAllSpecialDocumentsCallback" y le decimos que debe recibir un "GastosItems"
                 @Override
                 public void onCallback(Map<String, Object> documento) {
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
@@ -168,7 +168,7 @@ public class FragGastosCuadrilla extends Fragment {
                 datosGasto.put("NumeroFactura", items.get(rvGastos.getChildAdapterPosition(view)).getNumeroFactura());
                 datosGasto.put("Usuario", items.get(rvGastos.getChildAdapterPosition(view)).getUsuario());
                 datosGasto.put("Rol", items.get(rvGastos.getChildAdapterPosition(view)).getRol());
-                datosGasto.put("Total", items.get(rvGastos.getChildAdapterPosition(view)).getTotal());
+                datosGasto.put("Total", String.format("%.2f", items.get(rvGastos.getChildAdapterPosition(view)).getTotal()));
 
                 //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
                 Utilidades.iniciarActivityConDatos(getActivity(), DetalleGastoIngreso.class, datosGasto);

@@ -3,13 +3,15 @@ package com.ingelcom.cajachica.Modelos;
 public class IngresosItems {
 
     private String id;
+    private String usuario;
     private String fechaHora;
     private String cuadrilla;
     private String transferencia;
     private double total;
 
-    public IngresosItems(String id, String fechaHora, String cuadrilla, String transferencia, double total) {
+    public IngresosItems(String id, String usuario, String fechaHora, String cuadrilla, String transferencia, double total) {
         this.id = id;
+        this.usuario = usuario;
         this.fechaHora = fechaHora;
         this.cuadrilla = cuadrilla;
         this.transferencia = transferencia;
@@ -22,6 +24,14 @@ public class IngresosItems {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
     public String getFechaHora() {

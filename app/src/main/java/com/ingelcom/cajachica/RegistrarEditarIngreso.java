@@ -16,10 +16,12 @@ import android.widget.TextView;
 import com.ingelcom.cajachica.DAO.Cuadrilla;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.DAO.Ingreso;
+import com.ingelcom.cajachica.DAO.Usuario;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 
 import java.util.List;
+import java.util.Map;
 
 public class RegistrarEditarIngreso extends AppCompatActivity {
 
@@ -33,6 +35,7 @@ public class RegistrarEditarIngreso extends AppCompatActivity {
     private FirestoreOperaciones oper = new FirestoreOperaciones();
     private Cuadrilla cuad = new Cuadrilla(RegistrarEditarIngreso.this);
     private Ingreso ingr = new Ingreso(RegistrarEditarIngreso.this);
+    private Usuario usu = new Usuario(RegistrarEditarIngreso.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,12 +123,7 @@ public class RegistrarEditarIngreso extends AppCompatActivity {
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "registrarIngreso()"
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                //Enlazamos los EditText con las siguientes variables String
-                                String cuadrilla = spCuadrillas.getSelectedItem().toString();
-                                String transferencia = txtTransferencia.getText().toString();
-                                String total = txtTotal.getText().toString();
-
-                                ingr.registrarIngreso(cuadrilla, transferencia, total); //Llamamos el método "registrarIngreso" donde se hará el proceso de inserción a Firestore y le mandamos los textboxes y selecciones de los spinners de esta pantalla
+                                agregarIngreso(); //Llamamos el método "agregarIngreso" de abajo para que se complete la inserción de los datos
                             }
                         }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
                                 @Override
@@ -138,6 +136,38 @@ public class RegistrarEditarIngreso extends AppCompatActivity {
                 case "EditarIngreso":
                     break;
             }
+        }
+    }
+
+    //Método que permite agregar un nuevo ingreso de dinero y almacenar los datos del mismo en Firestore
+    private void agregarIngreso() {
+        //Enlazamos los EditText con las siguientes variables String
+        String cuadrilla = spCuadrillas.getSelectedItem().toString();
+        String transferencia = txtTransferencia.getText().toString();
+        String total = txtTotal.getText().toString();
+
+        try {
+            //Llamamos el método "obtenerUsuarioActual" de la clase "Usuario" y creamos una invocación a la interfaz "FirestoreDocumentCallback"
+            usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
+                @Override
+                public void onCallback(Map<String, Object> documento) { //Los datos del usuario están guardados en el HashMap "documento"
+                    if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                        String nombre = (String) documento.get("Nombre"); //Obtenemos el nombre del usuario actual
+                        ingr.registrarIngreso(nombre, cuadrilla, transferencia, total); //Llamamos el método "registrarIngreso" donde se hará el proceso de inserción a Firestore y le mandamos el nombre del usuario actual (el usuario que está registrando el ingreso de dinero), los textboxes y selecciones de los spinners de esta pantalla
+                    }
+                    else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
+                        Log.w("ObtenerUsuario", "Usuario no encontrado");
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Log.w("ObtenerUsuario", "Error al obtener el usuario", e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerUsuario", e);
         }
     }
 }

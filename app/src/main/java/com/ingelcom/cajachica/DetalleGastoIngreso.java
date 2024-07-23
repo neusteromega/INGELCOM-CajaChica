@@ -1,23 +1,30 @@
 package com.ingelcom.cajachica;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ingelcom.cajachica.DAO.Usuario;
+import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
+
+import java.util.Map;
 
 public class DetalleGastoIngreso extends AppCompatActivity {
 
     private TextView lblTitulo, lblTotalGastIngr, lblDinero;
     private TextView lblFecha, lblUsuario, lblCuadrilla, lblLugar, lblTipoCompra, lblDescripcion, lblFactura, lblTransferencia;
-    private TextView sepFechaUser, sepUserCuad, sepCuadLugar, sepLugarTipo, sepTipoDesc, sepDescFact, sepFactTransf;
+    private TextView sepPrincipal, sepFechaCuad, sepCuadUser, sepCuadLugar, sepLugarTipo, sepTipoDesc, sepDescFact, sepFactTransf;
     private ImageView btnRegresar, btnEditar, imgFoto;
 
     private String nombreActivity, id, fecha, usuario, cuadrilla, lugarCompra, tipoCompra, descripcion, factura, transferencia, total;
+    private Usuario usu = new Usuario(DetalleGastoIngreso.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +50,9 @@ public class DetalleGastoIngreso extends AppCompatActivity {
         lblFactura = findViewById(R.id.lblFacturaDGI);
         lblTransferencia = findViewById(R.id.lblTransferenciaDGI);
 
-        sepFechaUser = findViewById(R.id.lblSepFechaUsuarioDGI);
-        sepUserCuad = findViewById(R.id.lblSepUsuarioCuadrillaDGI);
+        sepPrincipal = findViewById(R.id.lblSeparadorDGI);
+        sepFechaCuad = findViewById(R.id.lblSepFechaCuadrillaDGI);
+        sepCuadUser = findViewById(R.id.lblSepCuadrillaUsuarioDGI);
         sepCuadLugar = findViewById(R.id.lblSepCuadrillaLugarDGI);
         sepLugarTipo = findViewById(R.id.lblSepLugarTipoDGI);
         sepTipoDesc = findViewById(R.id.lblSepTipoDescripcionDGI);
@@ -59,30 +67,135 @@ public class DetalleGastoIngreso extends AppCompatActivity {
     private void obtenerDatos() {
         nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityDGI");
 
-        switch (nombreActivity) {
-            case "DetalleGasto":
-                id = Utilidades.obtenerStringExtra(this, "ID");
-                fecha = Utilidades.obtenerStringExtra(this, "FechaHora");
-                usuario = Utilidades.obtenerStringExtra(this, "Usuario");
-                cuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
-                lugarCompra = Utilidades.obtenerStringExtra(this, "LugarCompra");
-                tipoCompra = Utilidades.obtenerStringExtra(this, "TipoCompra");
-                descripcion = Utilidades.obtenerStringExtra(this, "Descripcion");
-                factura = Utilidades.obtenerStringExtra(this, "NumeroFactura");
-                total = Utilidades.obtenerStringExtra(this, "Total");
-                break;
+        if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
+            switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
+                case "DetalleGasto": //Obtener los datos y guardarlos en las variables globales si la pantalla es "DetalleGasto"
+                    id = Utilidades.obtenerStringExtra(this, "ID");
+                    fecha = Utilidades.obtenerStringExtra(this, "FechaHora");
+                    cuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
+                    usuario = Utilidades.obtenerStringExtra(this, "Usuario");
+                    lugarCompra = Utilidades.obtenerStringExtra(this, "LugarCompra");
+                    tipoCompra = Utilidades.obtenerStringExtra(this, "TipoCompra");
+                    descripcion = Utilidades.obtenerStringExtra(this, "Descripcion");
+                    factura = Utilidades.obtenerStringExtra(this, "NumeroFactura");
+                    total = Utilidades.obtenerStringExtra(this, "Total");
+                    break;
 
-            case "DetalleIngreso":
-
-                break;
+                case "DetalleIngreso": //Obtener los datos y guardarlos en las variables globales si la pantalla es "DetalleIngreso"
+                    id = Utilidades.obtenerStringExtra(this, "ID");
+                    fecha = Utilidades.obtenerStringExtra(this, "FechaHora");
+                    cuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
+                    usuario = Utilidades.obtenerStringExtra(this, "Usuario");
+                    transferencia = Utilidades.obtenerStringExtra(this, "Transferencia");
+                    total = Utilidades.obtenerStringExtra(this, "Total");
+                    break;
+            }
         }
     }
 
     private void establecerElementos() {
+        if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
+            switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
+                case "DetalleGasto": //Establecemos los elementos gráficos si la pantalla es "DetalleGasto"
 
+                    //Asignamos los titulos, el Dinero y el color del Dinero
+                    lblTitulo.setText("Detalle de Gasto");
+                    lblTotalGastIngr.setText("Total Gastado");
+                    lblDinero.setText("L. " + total);
+                    lblDinero.setTextColor(this.getColor(R.color.clr_fuente_gastos));
+
+                    //Ocultamos estos elementos
+
+                    lblTransferencia.setVisibility(View.GONE);
+                    sepPrincipal.setVisibility(View.GONE);
+                    sepFactTransf.setVisibility(View.GONE);
+
+                    asignarDatos("Gasto"); //Llamamos al método "asignarDatos" de abajo y le mandamos "Gasto" para indicar que asigne los datos al gasto
+                    break;
+
+                case "DetalleIngreso": //Establecemos los elementos gráficos si la pantalla es "DetalleGasto"
+
+                    //Asignamos los titulos, el Dinero y el color del Dinero
+                    lblTitulo.setText("Detalle de Ingreso");
+                    lblTotalGastIngr.setText("Total Ingresado");
+                    lblDinero.setText("L. " + total);
+                    lblDinero.setTextColor(this.getColor(R.color.clr_fuente_ingresos));
+
+                    //Ocultamos estos elementos
+                    lblLugar.setVisibility(View.GONE);
+                    lblTipoCompra.setVisibility(View.GONE);
+                    lblDescripcion.setVisibility(View.GONE);
+                    lblFactura.setVisibility(View.GONE);
+                    sepLugarTipo.setVisibility(View.GONE);
+                    sepTipoDesc.setVisibility(View.GONE);
+                    sepDescFact.setVisibility(View.GONE);
+                    sepFactTransf.setVisibility(View.GONE);
+                    imgFoto.setVisibility(View.GONE);
+
+                    asignarDatos("Ingreso"); //Llamamos al método "asignarDatos" de abajo y le mandamos "Ingreso" para indicar que asigne los datos al ingreso
+                    break;
+            }
+        }
     }
 
+    //Método que permite asignar los datos a los TextViews
+    private void asignarDatos(String tipo) {
+        //Obtenemos los colores para establecer en los TextViews
+        int colorInicial = ContextCompat.getColor(this, R.color.clr_fuente_primario);
+        int colorFinal = ContextCompat.getColor(this, R.color.clr_fuente_secundario);
+
+        if (tipo.contentEquals("Gasto")) {
+            //Para cada TextView, llamámos al método utilitario "obtenerStringDosColores" que nos devuelve un "SpannableString" con el texto a asignar el TextView ya convertido a dos colores. Por ejemplo, "Fecha: 00/00/0000 00:00", la parte de "Fecha: " será de un color, y la parte de "00/00/0000 00:00" será de otro color
+            lblFecha.setText(Utilidades.obtenerStringDosColores("Fecha y Hora: ", fecha, colorInicial, colorFinal));
+            lblUsuario.setText(Utilidades.obtenerStringDosColores("Usuario: ", usuario, colorInicial, colorFinal));
+            lblCuadrilla.setText(Utilidades.obtenerStringDosColores("Cuadrilla: ", cuadrilla, colorInicial, colorFinal));
+            lblLugar.setText(Utilidades.obtenerStringDosColores("Lugar: ", lugarCompra, colorInicial, colorFinal));
+            lblTipoCompra.setText(Utilidades.obtenerStringDosColores("Compra: ", tipoCompra, colorInicial, colorFinal));
+            lblDescripcion.setText(Utilidades.obtenerStringDosColores("Descripción: ", descripcion, colorInicial, colorFinal));
+            lblFactura.setText(Utilidades.obtenerStringDosColores("No. Factura: ", factura, colorInicial, colorFinal));
+        }
+        else if (tipo.contentEquals("Ingreso")) {
+            //Para cada TextView, llamámos al método utilitario "obtenerStringDosColores" que nos devuelve un "SpannableString" con el texto a asignar el TextView ya convertido a dos colores. Por ejemplo, "Fecha: 00/00/0000 00:00", la parte de "Fecha: " será de un color, y la parte de "00/00/0000 00:00" será de otro color
+            lblFecha.setText(Utilidades.obtenerStringDosColores("Fecha y Hora: ", fecha, colorInicial, colorFinal));
+            lblUsuario.setText(Utilidades.obtenerStringDosColores("Usuario: ", usuario, colorInicial, colorFinal));
+            lblCuadrilla.setText(Utilidades.obtenerStringDosColores("Cuadrilla: ", cuadrilla, colorInicial, colorFinal));
+            lblTransferencia.setText(Utilidades.obtenerStringDosColores("No. Transferencia: ", transferencia, colorInicial, colorFinal));
+        }
+    }
+
+    //Método Click del botón para editar un Gasto o un Ingreso
     public void EditarGasto(View view) {
-        Utilidades.iniciarActivity(this, RegistrarEditarGasto.class, false);
+        if (nombreActivity.contentEquals("DetalleGasto")) { //Si el "nombreActivity" tiene el texto "DetalleGasto", que entre al if
+            try {
+                //Llamamos el método "obtenerUsuarioActual" de la clase "Usuario" y creamos una invocación a la interfaz "FirestoreDocumentCallback"
+                usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
+                    @Override
+                    public void onCallback(Map<String, Object> documento) { //Los datos del usuario están guardados en el HashMap "documento"
+                        if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                            String rol = (String) documento.get("Rol");
+
+                            if (rol.contentEquals("Administrador")) //Si el rol del usuario actual es "Administrador" que mande el texto "EditarGastoAdmin" al activity "RegistrarEditarGasto"
+                                Utilidades.iniciarActivityConString(DetalleGastoIngreso.this, RegistrarEditarGasto.class, "ActivityREG", "EditarGastoAdmin", false);
+                            else if (rol.contentEquals("Empleado")) //En cambio, si el rol del usuario actual es "Empleado" que mande el texto "EditarGastoEmpleado" al activity "RegistrarEditarGasto"
+                                Utilidades.iniciarActivityConString(DetalleGastoIngreso.this, RegistrarEditarGasto.class, "ActivityREG", "EditarGastoEmpleado", false);
+                        }
+                        else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
+                            Log.w("ObtenerUsuario", "Usuario no encontrado");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.w("BuscarUsuario", "Error al obtener el usuario", e);
+                    }
+                });
+            }
+            catch (Exception e) {
+                Log.w("ObtenerUsuario", e);
+            }
+        }
+        else if (nombreActivity.contentEquals("DetalleIngreso")) { //En cambio, si el "nombreActivity" tiene el texto "DetalleIngreso", que entre al else if
+            Utilidades.iniciarActivityConString(DetalleGastoIngreso.this, RegistrarEditarIngreso.class, "ActivityREI", "EditarIngreso", false); //Mandamos el texto "EditarIngreso" al activity "RegistrarEditarIngreso"
+        }
     }
 }

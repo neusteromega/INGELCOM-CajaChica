@@ -83,7 +83,7 @@ public class FragGastosSupervisores extends Fragment {
     private void obtenerGastos(Usuario usu, Gasto gast, String mes) { //Recibe las instancias de las clases "Usuario" y "Gasto", y el String con el mes y año (por ejemplo, "Julio - 2024") para hacer el filtrado de gastos
         try {
             //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" que obtiene el usuario actual
-            usu.obtenerUnUsuario(new FirestoreCallbacks.FirestoreDocumentCallback() {
+            usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
                 public void onCallback(Map<String, Object> documento) {
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
@@ -157,7 +157,7 @@ public class FragGastosSupervisores extends Fragment {
                 HashMap<String,Object> datosGasto = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
 
                 //Agregamos las claves y datos al HashMap
-                datosGasto.put("ActivityDGI", "DetalleGastoEmpleado");
+                datosGasto.put("ActivityDGI", "DetalleGasto");
                 datosGasto.put("ID", items.get(rvGastos.getChildAdapterPosition(view)).getId());
                 datosGasto.put("FechaHora", items.get(rvGastos.getChildAdapterPosition(view)).getFechaHora());
                 datosGasto.put("Cuadrilla", items.get(rvGastos.getChildAdapterPosition(view)).getCuadrilla());
@@ -167,7 +167,7 @@ public class FragGastosSupervisores extends Fragment {
                 datosGasto.put("NumeroFactura", items.get(rvGastos.getChildAdapterPosition(view)).getNumeroFactura());
                 datosGasto.put("Usuario", items.get(rvGastos.getChildAdapterPosition(view)).getUsuario());
                 datosGasto.put("Rol", items.get(rvGastos.getChildAdapterPosition(view)).getRol());
-                datosGasto.put("Total", items.get(rvGastos.getChildAdapterPosition(view)).getTotal());
+                datosGasto.put("Total", String.format("%.2f", items.get(rvGastos.getChildAdapterPosition(view)).getTotal()));
 
                 //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
                 Utilidades.iniciarActivityConDatos(getActivity(), DetalleGastoIngreso.class, datosGasto);

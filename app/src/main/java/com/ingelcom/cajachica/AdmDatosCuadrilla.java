@@ -121,7 +121,7 @@ public class AdmDatosCuadrilla extends AppCompatActivity {
         }
     }*/
 
-    //Método que calcula os totales de los gastos de la cuadrilla
+    //Método que calcula los totales de los gastos de la cuadrilla
     private void calcularTotalGastos(List<GastosItems> items) {
         double totalGastos = 0; //Variable que nos servirá para calcular el total de los gastos que se muestren en el RecyclerView
 

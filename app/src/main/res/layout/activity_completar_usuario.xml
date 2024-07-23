@@ -24,7 +24,7 @@
             android:layout_marginTop="30dp"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center"
-            android:text="Buscar Usuario"
+            android:text="Completar Usuario"
             android:textColor="@color/clr_fuente_primario"
             android:textSize="29dp" />
 

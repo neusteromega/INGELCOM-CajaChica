@@ -10,7 +10,7 @@
 
     <color name="clr_fondo_primario">#E8EFF7</color>
     <color name="clr_fuente_primario">#131F95</color>
-    <color name="clr_fuente_secundario">#515fdb</color>
+    <color name="clr_fuente_secundario">#515FDB</color>
     <color name="clr_fuente_terciario">#FFFFFF</color>
     <color name="clr_fuente_gastos">#EB6060</color>
     <color name="clr_fuente_ingresos">#4CAF50</color>

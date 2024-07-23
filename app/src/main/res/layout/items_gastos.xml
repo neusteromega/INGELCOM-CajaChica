@@ -44,7 +44,7 @@
                 android:layout_height="25dp"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center|left"
-                android:text="00/00/0000"
+                android:text="00/00/0000 00:00"
                 android:textColor="@color/clr_fuente_secundario"
                 android:textSize="14dp" />
 

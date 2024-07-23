@@ -57,7 +57,7 @@ public class EmpMenuPrincipal extends AppCompatActivity {
     private void obtenerCuadrillaUsuario() {
         try {
             //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" y creamos una invocación a la interfaz "FirestoreDocumentCallback"
-            usu.obtenerUnUsuario(new FirestoreCallbacks.FirestoreDocumentCallback() {
+            usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
                 public void onCallback(Map<String, Object> documento) {
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que si encontró el usuario

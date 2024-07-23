@@ -166,22 +166,28 @@ public class FragAdmInicio extends Fragment {
             adapterIngresos.setOnClickListener(new View.OnClickListener() { //Usando el objeto de "adapterIngresos" llamamos al método "setOnClickListener" de la clase InicioAdapter
                 @Override
                 public void onClick(View view) { //Al dar clic en una tarjeta del RecyclerView, se realizará lo siguiente
-                    int posicion = rvIngresos.getChildAdapterPosition(view); //Obtenemos la posición del elemento clickeado en el RecyclerView
-                    T item = items.get(posicion); //De la lista "items" (que se utiliza para mostrar el RecyclerView) obtenemos el elemento clickeado utilizando la "posicion" obtenida arriba. Y este elemento clickeado lo guardamos en una variable de tipo "T" ya que "items" también es de tipo "T"
-                    HashMap<String,Object> datosIngreso = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
+                    try {
+                        int posicion = rvIngresos.getChildAdapterPosition(view); //Obtenemos la posición del elemento clickeado en el RecyclerView
+                        T item = items.get(posicion); //De la lista "items" (que se utiliza para mostrar el RecyclerView) obtenemos el elemento clickeado utilizando la "posicion" obtenida arriba. Y este elemento clickeado lo guardamos en una variable de tipo "T" ya que "items" también es de tipo "T"
+                        HashMap<String, Object> datosIngreso = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
 
-                    //Agregamos las claves y datos al HashMap
-                    datosIngreso.put("ActivityDGI", "DetalleIngreso");
+                        //Agregamos las claves y datos al HashMap
+                        datosIngreso.put("ActivityDGI", "DetalleIngreso");
 
-                    //Llamamos el método utilitario "obtenerCampo" y le mandamos el "item" clickeado, y los nombres de los métodos getter de la clase IngresosItems para que nos retorne los valores que devuelven estos métodos y poder guardarlos en el HashMap
-                    datosIngreso.put("ID", Utilidades.obtenerCampo(item, "getId"));
-                    datosIngreso.put("FechaHora", Utilidades.obtenerCampo(item, "getFechaHora"));
-                    datosIngreso.put("Cuadrilla", Utilidades.obtenerCampo(item, "getCuadrilla"));
-                    datosIngreso.put("Transferencia", Utilidades.obtenerCampo(item, "getTransferencia"));
-                    datosIngreso.put("Total", Utilidades.obtenerCampo(item, "getTotal"));
+                        //Llamamos el método utilitario "obtenerCampo" y le mandamos el "item" clickeado, y los nombres de los métodos getter de la clase IngresosItems para que nos retorne los valores que devuelven estos métodos y poder guardarlos en el HashMap
+                        datosIngreso.put("ID", Utilidades.obtenerCampo(item, "getId"));
+                        datosIngreso.put("Usuario", Utilidades.obtenerCampo(item, "getUsuario"));
+                        datosIngreso.put("FechaHora", Utilidades.obtenerCampo(item, "getFechaHora"));
+                        datosIngreso.put("Cuadrilla", Utilidades.obtenerCampo(item, "getCuadrilla"));
+                        datosIngreso.put("Transferencia", Utilidades.obtenerCampo(item, "getTransferencia"));
+                        datosIngreso.put("Total", String.format("%.2f", Utilidades.obtenerCampo(item, "getTotal")));
 
-                    //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
-                    Utilidades.iniciarActivityConDatos(getActivity(), DetalleGastoIngreso.class, datosIngreso);
+                        //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
+                        Utilidades.iniciarActivityConDatos(getActivity(), DetalleGastoIngreso.class, datosIngreso);
+                    }
+                    catch (Exception e) {
+                        Log.w("ObtenerIngreso", e);
+                    }
                 }
             });
         }
@@ -194,27 +200,32 @@ public class FragAdmInicio extends Fragment {
             adapterGastos.setOnClickListener(new View.OnClickListener() { //Usando el objeto de "adapterGastos" llamamos al método "setOnClickListener" de la clase InicioAdapter
                 @Override
                 public void onClick(View view) { //Al dar clic en una tarjeta del RecyclerView, se realizará lo siguiente
-                    int posicion = rvGastos.getChildAdapterPosition(view); //Obtenemos la posición del elemento clickeado en el RecyclerView
-                    T item = items.get(posicion); //De la lista "items" (que se utiliza para mostrar el RecyclerView) obtenemos el elemento clickeado utilizando la "posicion" obtenida arriba. Y este elemento clickeado lo guardamos en una variable de tipo "T" ya que "items" también es de tipo "T"
-                    HashMap<String,Object> datosGasto = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
+                    try {
+                        int posicion = rvGastos.getChildAdapterPosition(view); //Obtenemos la posición del elemento clickeado en el RecyclerView
+                        T item = items.get(posicion); //De la lista "items" (que se utiliza para mostrar el RecyclerView) obtenemos el elemento clickeado utilizando la "posicion" obtenida arriba. Y este elemento clickeado lo guardamos en una variable de tipo "T" ya que "items" también es de tipo "T"
+                        HashMap<String, Object> datosGasto = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
 
-                    //Agregamos las claves y datos al HashMap
-                    datosGasto.put("ActivityDGI", "DetalleGasto");
+                        //Agregamos las claves y datos al HashMap
+                        datosGasto.put("ActivityDGI", "DetalleGasto");
 
-                    //Llamamos el método utilitario "obtenerCampo" y le mandamos el "item" clickeado, y los nombres de los métodos getter de la clase GastosItems para que nos retorne los valores que devuelven estos métodos y poder guardarlos en el HashMap
-                    datosGasto.put("ID", Utilidades.obtenerCampo(item, "getId"));
-                    datosGasto.put("FechaHora", Utilidades.obtenerCampo(item, "getFechaHora"));
-                    datosGasto.put("Cuadrilla", Utilidades.obtenerCampo(item, "getCuadrilla"));
-                    datosGasto.put("LugarCompra", Utilidades.obtenerCampo(item, "getLugarCompra"));
-                    datosGasto.put("TipoCompra", Utilidades.obtenerCampo(item, "getTipoCompra"));
-                    datosGasto.put("Descripcion", Utilidades.obtenerCampo(item, "getDescripcion"));
-                    datosGasto.put("NumeroFactura", Utilidades.obtenerCampo(item, "getNumeroFactura"));
-                    datosGasto.put("Usuario", Utilidades.obtenerCampo(item, "getUsuario"));
-                    datosGasto.put("Rol", Utilidades.obtenerCampo(item, "getRol"));
-                    datosGasto.put("Total", Utilidades.obtenerCampo(item, "getTotal"));
+                        //Llamamos el método utilitario "obtenerCampo" y le mandamos el "item" clickeado, y los nombres de los métodos getter de la clase GastosItems para que nos retorne los valores que devuelven estos métodos y poder guardarlos en el HashMap
+                        datosGasto.put("ID", Utilidades.obtenerCampo(item, "getId"));
+                        datosGasto.put("FechaHora", Utilidades.obtenerCampo(item, "getFechaHora"));
+                        datosGasto.put("Cuadrilla", Utilidades.obtenerCampo(item, "getCuadrilla"));
+                        datosGasto.put("LugarCompra", Utilidades.obtenerCampo(item, "getLugarCompra"));
+                        datosGasto.put("TipoCompra", Utilidades.obtenerCampo(item, "getTipoCompra"));
+                        datosGasto.put("Descripcion", Utilidades.obtenerCampo(item, "getDescripcion"));
+                        datosGasto.put("NumeroFactura", Utilidades.obtenerCampo(item, "getNumeroFactura"));
+                        datosGasto.put("Usuario", Utilidades.obtenerCampo(item, "getUsuario"));
+                        //datosGasto.put("Rol", Utilidades.obtenerCampo(item, "getRol"));
+                        datosGasto.put("Total", String.format("%.2f", Utilidades.obtenerCampo(item, "getTotal")));
 
-                    //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
-                    Utilidades.iniciarActivityConDatos(getActivity(), DetalleGastoIngreso.class, datosGasto);
+                        //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
+                        Utilidades.iniciarActivityConDatos(getActivity(), DetalleGastoIngreso.class, datosGasto);
+                    }
+                    catch (Exception e) {
+                        Log.w("ObtenerGasto", e);
+                    }
                 }
             });
         }
@@ -227,16 +238,21 @@ public class FragAdmInicio extends Fragment {
             adapterCuadrillas.setOnClickListener(new View.OnClickListener() { //Usando el objeto de "adapterCuadrillas" llamamos al método "setOnClickListener" de la clase InicioAdapter
                 @Override
                 public void onClick(View view) { //Al dar clic en una tarjeta del RecyclerView, se realizará lo siguiente
-                    int posicion = rvGastos.getChildAdapterPosition(view); //Obtenemos la posición del elemento clickeado en el RecyclerView
-                    T item = items.get(posicion); //De la lista "items" (que se utiliza para mostrar el RecyclerView) obtenemos el elemento clickeado utilizando la "posicion" obtenida arriba. Y este elemento clickeado lo guardamos en una variable de tipo "T" ya que "items" también es de tipo "T"
-                    HashMap<String,Object> datosCuadrilla = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
+                    try {
+                        int posicion = rvGastos.getChildAdapterPosition(view); //Obtenemos la posición del elemento clickeado en el RecyclerView
+                        T item = items.get(posicion); //De la lista "items" (que se utiliza para mostrar el RecyclerView) obtenemos el elemento clickeado utilizando la "posicion" obtenida arriba. Y este elemento clickeado lo guardamos en una variable de tipo "T" ya que "items" también es de tipo "T"
+                        HashMap<String, Object> datosCuadrilla = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
 
-                    //Llamamos el método utilitario "obtenerCampo" y le mandamos el "item" clickeado, y los nombres de los métodos getter de la clase IngresosItems para que nos retorne los valores que devuelven estos métodos y poder guardarlos en el HashMap
-                    datosCuadrilla.put("Cuadrilla", Utilidades.obtenerCampo(item, "getCuadrilla"));
-                    datosCuadrilla.put("DineroDisponible", String.format("%.2f", Utilidades.obtenerCampo(item, "getDinero"))); //El resultado de "getDinero" lo convertimos a String en formato para que tenga dos décimales
+                        //Llamamos el método utilitario "obtenerCampo" y le mandamos el "item" clickeado, y los nombres de los métodos getter de la clase IngresosItems para que nos retorne los valores que devuelven estos métodos y poder guardarlos en el HashMap
+                        datosCuadrilla.put("Cuadrilla", Utilidades.obtenerCampo(item, "getCuadrilla"));
+                        datosCuadrilla.put("DineroDisponible", String.format("%.2f", Utilidades.obtenerCampo(item, "getDinero"))); //El resultado de "getDinero" lo convertimos a String en formato para que tenga dos décimales
 
-                    //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
-                    Utilidades.iniciarActivityConDatos(getActivity(), AdmDatosCuadrilla.class, datosCuadrilla);
+                        //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
+                        Utilidades.iniciarActivityConDatos(getActivity(), AdmDatosCuadrilla.class, datosCuadrilla);
+                    }
+                    catch (Exception e) {
+                        Log.w("ObtenerCuadrilla", e);
+                    }
                 }
             });
         }

@@ -3,8 +3,12 @@ package com.ingelcom.cajachica.Herramientas;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.method.PasswordTransformationMethod;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -355,5 +359,20 @@ public class Utilidades {
             Log.w("ObtenerCampo", e);
             return null; //Devuelve null en caso de que ocurra una excepción, indicando que no se pudo obtener el valor del campo
         }
+    }
+
+    //Método que obtiene un "SpannableString" con dos colores para establecer el contenido de un TextView con dos colores
+    public static SpannableString obtenerStringDosColores(String textoInicial, String textoFinal, int colorInicial, int colorFinal) { //Recibe el texto inicial y el texto final que serán de diferentes colores; también el color inicial (para el texto inicial) y el color final (para el texto final)
+        SpannableString spannable = new SpannableString(textoInicial + textoFinal); //Creamos un SpannableString con el texto completo (concatenamos los dos textos). "SpannableString" permite aplicar estilos y formatos a partes específicas del texto, como color, negrita, cursiva, etc.
+
+        //Creamos dos variables de tipo "ForegroundColorSpan" que nos ayuda a aplicar los colores a los textos. A ambos les pasamos los colores guardados en "colorInicial" y "colorFinal"
+        ForegroundColorSpan colorInicio = new ForegroundColorSpan(colorInicial);
+        ForegroundColorSpan colorFin = new ForegroundColorSpan(colorFinal);
+
+        //Usando la instancia "spannable" de tipo "SpannableString", y usando "setSpan" establecemos los colores específicos que tendrá cada porción del texto
+        spannable.setSpan(colorInicio, 0, textoInicial.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); //Indicamos que empiece a aplicar el color desde la posición 0 del String, hasta el "textoInicial.Length()" (El tamaño del textoInicial, o sea, se aplica cuando termina el textoInicial)
+        spannable.setSpan(colorFin, textoInicial.length(), spannable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); //Indicamos que aplique el segundo color desde "textoInicial.Length()" (aquí es donde terminó de aplicar el primer color), hasta "spannable.length()" (el tamaño del "spannable") que sería el final del texto en el SpannableString
+
+        return spannable; //Retornamos el "spannable" ya con los colores establecidos
     }
 }

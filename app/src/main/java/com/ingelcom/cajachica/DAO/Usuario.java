@@ -65,7 +65,8 @@ public class Usuario {
         }
     }
 
-    public void obtenerUnUsuario(FirestoreCallbacks.FirestoreDocumentCallback callback) {
+    //Método que permite obtener el documento de Firestore del usuario actual
+    public void obtenerUsuarioActual(FirestoreCallbacks.FirestoreDocumentCallback callback) {
         try {
             FirebaseUser user = Utilidades.obtenerUsuario(); //Obtenemos el usuario actual llamando el método utilitario "obtenerUsuario"
             String correoActual = user.getEmail(); //Obtenemos el correo del usuario actual
