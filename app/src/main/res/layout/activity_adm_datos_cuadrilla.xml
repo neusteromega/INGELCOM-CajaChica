@@ -334,6 +334,26 @@
                 android:textSize="19dp"
                 tools:ignore="TouchTargetSizeCheck" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/btnVerDeduccionesDC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/clr_casilladegradadoazul_redonda"
+            android:elevation="5dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:gravity="center"
+            android:onClick="verDeducciones"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="Ver Deducciones por Planilla"
+            android:textColor="@color/clr_fuente_terciario"
+            android:textSize="19dp"
+            tools:ignore="TouchTargetSizeCheck" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

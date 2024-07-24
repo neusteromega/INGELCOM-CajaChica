@@ -20,6 +20,7 @@ import com.ingelcom.cajachica.Modelos.GastosItems;
 import com.ingelcom.cajachica.Modelos.IngresosItems;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 public class AdmDatosCuadrilla extends AppCompatActivity {
@@ -204,10 +205,26 @@ public class AdmDatosCuadrilla extends AppCompatActivity {
     }
 
     public void verIngresos(View view) {
-        Utilidades.iniciarActivityConString(AdmDatosCuadrilla.this, ListadoIngresosDeducciones.class, "Cuadrilla", nombreCuadrilla, false);
+        HashMap<String,Object> datos = new HashMap<>(); //Creamos un HashMap que nos servirá para guardar los datos que deseamos enviar al próximo activity
+
+        //Agregamos las claves y datos al HashMap
+        datos.put("ActivityLID", "ListadoIngresosAdmin");
+        datos.put("Cuadrilla", nombreCuadrilla);
+
+        Utilidades.iniciarActivityConDatos(AdmDatosCuadrilla.this, ListadoIngresosDeducciones.class, datos); //Mandamos el hashMap con los datos a la clase "ListadoIngresosDeducciones"
     }
 
     public void verGastos(View view) {
         Utilidades.iniciarActivityConString(AdmDatosCuadrilla.this, ListadoGastos.class, "Cuadrilla", nombreCuadrilla, false);
+    }
+
+    public void verDeducciones(View view) {
+        HashMap<String,Object> datos = new HashMap<>(); //Creamos un HashMap que nos servirá para guardar los datos que deseamos enviar al próximo activity
+
+        //Agregamos las claves y datos al HashMap
+        datos.put("ActivityLID", "ListadoDeducciones");
+        datos.put("Cuadrilla", nombreCuadrilla);
+
+        Utilidades.iniciarActivityConDatos(AdmDatosCuadrilla.this, ListadoIngresosDeducciones.class, datos); //Mandamos el hashMap con los datos a la clase "ListadoIngresosDeducciones"
     }
 }

@@ -128,6 +128,10 @@ public class EmpMenuPrincipal extends AppCompatActivity {
         Utilidades.iniciarActivity(this, ListadoGastos.class, false);
     }
 
+    public void listadoIngresos(View view) {
+        Utilidades.iniciarActivityConString(this, ListadoIngresosDeducciones.class, "ActivityLID", "ListadoIngresosEmpleado", false);
+    }
+
     public void miPerfil(View view) {
         Utilidades.iniciarActivityConString(this, Perfil.class, "ActivityPerfil", "PerfilEmpleado", false); //Enviamos el texto "PerfilEmpleado" que ayudará a saber que el Activity "Perfil" debe mostrar los datos del Empleado actual
     }

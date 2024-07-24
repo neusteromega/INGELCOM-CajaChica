@@ -12,26 +12,34 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ingelcom.cajachica.Adaptadores.IngresosAdapter;
+import com.ingelcom.cajachica.DAO.Deduccion;
 import com.ingelcom.cajachica.DAO.Ingreso;
+import com.ingelcom.cajachica.DAO.Usuario;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
+import com.ingelcom.cajachica.Modelos.DeduccionesItems;
 import com.ingelcom.cajachica.Modelos.IngresosItems;
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ListadoIngresosDeducciones extends AppCompatActivity {
 
-    private TextView lblFecha, lblTotalIngresos;
-    private String nombreCuadrilla;
-    private RecyclerView rvIngresos;
+    private LinearLayout llFecha;
+    private TextView lblTitulo, lblFecha, lblTotal, lblTotalTitulo;
+    private String nombreActivity, nombreCuadrilla;
+    private RecyclerView rvIngrDeduc;
 
     private Ingreso ingr = new Ingreso(ListadoIngresosDeducciones.this);
+    private Deduccion deduc = new Deduccion(ListadoIngresosDeducciones.this);
+    private Usuario usu = new Usuario(ListadoIngresosDeducciones.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,35 +47,114 @@ public class ListadoIngresosDeducciones extends AppCompatActivity {
         setContentView(R.layout.activity_listado_ingresos_deducciones);
 
         inicializarElementos();
+        establecerElementos();
+        obtenerDatos("");
         cambioFecha();
-        obtenerIngresos("");
     }
 
     private void inicializarElementos() {
-        //Obtenemos el nombre de la cuadrilla que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y les mandamos "this" para referenciar esta actividad y el nombre de la clave del putExtra
+        //Obtenemos el nombre del activity y de la cuadrilla que se envía desde el activity anterior (el "nombreCuadrilla" puede quedar vacío si el activity anterior no fue AdmDatosCuadrilla, ya que sólo aquí se manda el nombre de la cuadrilla)
+        nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityLID");
         nombreCuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
 
+        llFecha = findViewById(R.id.LLFechaLI);
+        lblTitulo = findViewById(R.id.lblTituloLI);
         lblFecha = findViewById(R.id.lblFechaLI);
-        lblTotalIngresos = findViewById(R.id.lblCantIngresosLI);
-        rvIngresos = findViewById(R.id.rvListadoIngrDeduc);
+        lblTotal = findViewById(R.id.lblCantIngresosLI);
+        lblTotalTitulo = findViewById(R.id.lblTotalIngresosLI);
+        rvIngrDeduc = findViewById(R.id.rvListadoIngrDeduc);
     }
 
-    private void obtenerIngresos(String mes) {
-        try {
-            //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla recibida en "nombreCuadrilla" y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores
-            ingr.obtenerIngresos(nombreCuadrilla, mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
-                @Override
-                public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados por cuadrilla
-                    if (items != null) //Si "items" no es null, que entre al if
-                        inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items"
-                }
+    private void establecerElementos() {
+        switch (nombreActivity) {
+            case "ListadoIngresosAdmin":
+                lblTitulo.setText("Listado de Ingresos");
+                lblTotalTitulo.setText("Total de Ingresos");
+                lblTotal.setTextColor(getResources().getColor(R.color.clr_fuente_ingresos));
+                break;
 
-                @Override
-                public void onFailure(Exception e) {
-                    Toast.makeText(ListadoIngresosDeducciones.this, "ERROR AL CARGAR LOS INGRESOS", Toast.LENGTH_SHORT).show();
-                    Log.w("ObtenerIngresos", e);
-                }
-            });
+            case "ListadoIngresosEmpleado":
+                lblTitulo.setText("Listado de Ingresos");
+                lblTotalTitulo.setText("Total de Ingresos");
+                lblTotal.setTextColor(getResources().getColor(R.color.clr_fuente_ingresos));
+                break;
+
+            case "ListadoDeducciones":
+                llFecha.setVisibility(View.GONE);
+                lblTitulo.setText("Listado de Deducciones");
+                lblTotalTitulo.setText("Total de Deducciones");
+                lblTotal.setTextColor(getResources().getColor(R.color.clr_fuente_secundario));
+                break;
+        }
+    }
+
+    private void obtenerDatos(String mes) {
+        try {
+            if (nombreActivity.contentEquals("ListadoIngresosAdmin")) {
+                //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla recibida en "nombreCuadrilla" y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores
+                ingr.obtenerIngresos(nombreCuadrilla, mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
+                    @Override
+                    public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados por cuadrilla
+                        if (items != null) //Si "items" no es null, que entre al if
+                            inicializarRecyclerView(items, "Ingresos"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items"
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Toast.makeText(ListadoIngresosDeducciones.this, "ERROR AL CARGAR LOS INGRESOS", Toast.LENGTH_SHORT).show();
+                        Log.w("ObtenerIngresos", e);
+                    }
+                });
+            }
+            else if (nombreActivity.contentEquals("ListadoIngresosEmpleado")) {
+                //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" que obtiene el usuario actual
+                usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
+                    @Override
+                    public void onCallback(Map<String, Object> documento) {
+                        if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                            String cuadrilla = (String) documento.get("Cuadrilla"); //Obtenemos la cuadrilla de "documento"
+
+                            //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla obtenida de Firestore en "cuadrilla" y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores
+                            ingr.obtenerIngresos(cuadrilla, mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
+                                @Override
+                                public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados por cuadrilla
+                                    if (items != null) //Si "items" no es null, que entre al if
+                                        inicializarRecyclerView(items, "Ingresos"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items"
+                                }
+
+                                @Override
+                                public void onFailure(Exception e) {
+                                    Toast.makeText(ListadoIngresosDeducciones.this, "ERROR AL CARGAR LOS INGRESOS", Toast.LENGTH_SHORT).show();
+                                    Log.w("ObtenerIngresos", e);
+                                }
+                            });
+                        }
+                        else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
+                            Log.w("ObtenerUsuario", "Usuario no encontrado");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.w("BuscarUsuario", "Error al obtener el usuario", e);
+                    }
+                });
+            }
+            else if (nombreActivity.contentEquals("ListadoDeducciones")) {
+                //Llamamos el método "obtenerDeducciones" de la clase "Deduccion", le mandamos la cuadrilla recibida en "nombreCuadrilla". Con esto se podrán obtener todas las deducciones por planilla hechas por los administradores
+                deduc.obtenerDeducciones(nombreCuadrilla, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<DeduccionesItems>() {
+                    @Override
+                    public void onCallback(List<DeduccionesItems> items) { //En esta lista "items" están todas las deducciones ya filtradas por cuadrilla
+                        if (items != null) //Si "items" no es null, que entre al if
+                            inicializarRecyclerView(items, "Deducciones"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items"
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+
+                    }
+                });
+            }
         }
         catch (Exception e) {
             Log.w("ObtenerIngresos", e);
@@ -75,38 +162,44 @@ public class ListadoIngresosDeducciones extends AppCompatActivity {
     }
 
     //Método que nos ayuda a inicializar el RecyclerView de ingresos
-    private void inicializarRecyclerView(List<IngresosItems> items) {
-        rvIngresos.setLayoutManager(new LinearLayoutManager(this)); //Creamos un nuevo LinearLayoutManager para que el RecyclerView se vea en forma de tarjetas
+    private <T> void inicializarRecyclerView(List<?> items, String tipo) {
+        rvIngrDeduc.setLayoutManager(new LinearLayoutManager(this)); //Creamos un nuevo LinearLayoutManager para que el RecyclerView se vea en forma de tarjetas
 
-        IngresosAdapter adapter = new IngresosAdapter(items); //Creamos un nuevo objeto de tipo IngresosAdapter en el cual enviamos la lista "items"
-        rvIngresos.setAdapter(adapter); //Asignamos el adapter al recyclerView de Ingresos
-        double totalIngresos = 0; //Variable que nos servirá para calcular el total de los ingresos que se muestren en el RecyclerView
+        if (tipo.contentEquals("Ingresos")) {
+            List<IngresosItems> ingresosItems = (List<IngresosItems>) items;
+            IngresosAdapter adapter = new IngresosAdapter(ingresosItems); //Creamos un nuevo objeto de tipo IngresosAdapter en el cual enviamos la lista "items"
+            rvIngrDeduc.setAdapter(adapter); //Asignamos el adapter al recyclerView de Ingresos
+            double totalIngresos = 0; //Variable que nos servirá para calcular el total de los ingresos que se muestren en el RecyclerView
 
-        //Recorremos la lista "items" y cada elemento de ella se guardará en la variable temporal "item" de tipo "IngresosItems"
-        for (IngresosItems item : items) {
-            totalIngresos += item.getTotal(); //Obtenemos el "total" de cada elemento de la lista "items" y lo vamos sumando en la variable "totalIngresos"
-        }
-
-        lblTotalIngresos.setText("L. " + String.format("%.2f", totalIngresos)); //Asignamos el totalIngresos al TextView "lblTotalIngresos" y formateamos la variable "totalIngresos" para que se muestre con dos digitos después del punto decimal
-
-        adapter.setOnClickListener(new View.OnClickListener() { //Usando el objeto de "adapter" llamamos al método "setOnClickListener" de la clase IngresosAdapter
-            @Override
-            public void onClick(View view) { //Al dar clic en una tarjeta del RecyclerView, se realizará lo siguiente
-                HashMap<String,Object> datosIngreso = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
-
-                //Agregamos las claves y datos al HashMap
-                datosIngreso.put("ActivityDGI", "DetalleIngreso");
-                datosIngreso.put("ID", items.get(rvIngresos.getChildAdapterPosition(view)).getId());
-                datosIngreso.put("Usuario", items.get(rvIngresos.getChildAdapterPosition(view)).getUsuario());
-                datosIngreso.put("FechaHora", items.get(rvIngresos.getChildAdapterPosition(view)).getFechaHora());
-                datosIngreso.put("Cuadrilla", items.get(rvIngresos.getChildAdapterPosition(view)).getCuadrilla());
-                datosIngreso.put("Transferencia", items.get(rvIngresos.getChildAdapterPosition(view)).getTransferencia());
-                datosIngreso.put("Total", String.format("%.2f", items.get(rvIngresos.getChildAdapterPosition(view)).getTotal()));
-
-                //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
-                Utilidades.iniciarActivityConDatos(ListadoIngresosDeducciones.this, DetalleGastoIngreso.class, datosIngreso);
+            //Recorremos la lista "items" y cada elemento de ella se guardará en la variable temporal "item" de tipo "IngresosItems"
+            for (IngresosItems item : ingresosItems) {
+                totalIngresos += item.getTotal(); //Obtenemos el "total" de cada elemento de la lista "items" y lo vamos sumando en la variable "totalIngresos"
             }
-        });
+
+            lblTotal.setText("L. " + String.format("%.2f", totalIngresos)); //Asignamos el totalIngresos al TextView "lblTotalIngresos" y formateamos la variable "totalIngresos" para que se muestre con dos digitos después del punto decimal
+
+            adapter.setOnClickListener(new View.OnClickListener() { //Usando el objeto de "adapter" llamamos al método "setOnClickListener" de la clase IngresosAdapter
+                @Override
+                public void onClick(View view) { //Al dar clic en una tarjeta del RecyclerView, se realizará lo siguiente
+                    HashMap<String, Object> datosIngreso = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
+
+                    //Agregamos las claves y datos al HashMap
+                    datosIngreso.put("ActivityDGI", "DetalleIngreso");
+                    datosIngreso.put("ID", ingresosItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getId());
+                    datosIngreso.put("Usuario", ingresosItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getUsuario());
+                    datosIngreso.put("FechaHora", ingresosItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getFechaHora());
+                    datosIngreso.put("Cuadrilla", ingresosItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getCuadrilla());
+                    datosIngreso.put("Transferencia", ingresosItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getTransferencia());
+                    datosIngreso.put("Total", String.format("%.2f", ingresosItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getTotal()));
+
+                    //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
+                    Utilidades.iniciarActivityConDatos(ListadoIngresosDeducciones.this, DetalleGastoIngreso.class, datosIngreso);
+                }
+            });
+        }
+        else if (tipo.contentEquals("Deducciones")) {
+
+        }
     }
 
     private void cambioFecha() {
@@ -120,7 +213,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity {
 
                 @Override //Durante el texto del lblFecha está cambiando
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    obtenerIngresos(lblFecha.getText().toString()); //Llamamos el método "obtenerIngresos" de arriba y le mandamos el contenido del lblFecha
+                    obtenerDatos(lblFecha.getText().toString()); //Llamamos el método "obtenerIngresos" de arriba y le mandamos el contenido del lblFecha
                 }
 
                 @Override //Después de que el texto del lblFecha cambie
