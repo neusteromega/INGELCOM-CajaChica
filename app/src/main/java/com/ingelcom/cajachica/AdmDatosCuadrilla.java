@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,11 +11,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ingelcom.cajachica.DAO.Gasto;
 import com.ingelcom.cajachica.DAO.Ingreso;
-import com.ingelcom.cajachica.DAO.Usuario;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.Modelos.GastosItems;
@@ -207,7 +204,7 @@ public class AdmDatosCuadrilla extends AppCompatActivity {
     }
 
     public void verIngresos(View view) {
-        Utilidades.iniciarActivityConString(AdmDatosCuadrilla.this, ListadoIngresos.class, "Cuadrilla", nombreCuadrilla, false);
+        Utilidades.iniciarActivityConString(AdmDatosCuadrilla.this, ListadoIngresosDeducciones.class, "Cuadrilla", nombreCuadrilla, false);
     }
 
     public void verGastos(View view) {

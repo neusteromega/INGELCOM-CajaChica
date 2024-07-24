@@ -25,18 +25,18 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-public class ListadoIngresos extends AppCompatActivity {
+public class ListadoIngresosDeducciones extends AppCompatActivity {
 
     private TextView lblFecha, lblTotalIngresos;
     private String nombreCuadrilla;
     private RecyclerView rvIngresos;
 
-    private Ingreso ingr = new Ingreso(ListadoIngresos.this);
+    private Ingreso ingr = new Ingreso(ListadoIngresosDeducciones.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_listado_ingresos);
+        setContentView(R.layout.activity_listado_ingresos_deducciones);
 
         inicializarElementos();
         cambioFecha();
@@ -49,7 +49,7 @@ public class ListadoIngresos extends AppCompatActivity {
 
         lblFecha = findViewById(R.id.lblFechaLI);
         lblTotalIngresos = findViewById(R.id.lblCantIngresosLI);
-        rvIngresos = findViewById(R.id.rvListadoIngresos);
+        rvIngresos = findViewById(R.id.rvListadoIngrDeduc);
     }
 
     private void obtenerIngresos(String mes) {
@@ -64,7 +64,7 @@ public class ListadoIngresos extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Exception e) {
-                    Toast.makeText(ListadoIngresos.this, "ERROR AL CARGAR LOS INGRESOS", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ListadoIngresosDeducciones.this, "ERROR AL CARGAR LOS INGRESOS", Toast.LENGTH_SHORT).show();
                     Log.w("ObtenerIngresos", e);
                 }
             });
@@ -104,7 +104,7 @@ public class ListadoIngresos extends AppCompatActivity {
                 datosIngreso.put("Total", String.format("%.2f", items.get(rvIngresos.getChildAdapterPosition(view)).getTotal()));
 
                 //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
-                Utilidades.iniciarActivityConDatos(ListadoIngresos.this, DetalleGastoIngreso.class, datosIngreso);
+                Utilidades.iniciarActivityConDatos(ListadoIngresosDeducciones.this, DetalleGastoIngreso.class, datosIngreso);
             }
         });
     }
@@ -153,7 +153,7 @@ public class ListadoIngresos extends AppCompatActivity {
             int day = cal.get(Calendar.DAY_OF_MONTH); //Obtenemos el día actual
             int style = AlertDialog.THEME_HOLO_LIGHT; //En una variable entera guardamos el estilo que tendrá la ventana emergente
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(ListadoIngresos.this, style, dateSetListener, year, month, day); //Creamos un nuevo objeto de tipo DatePickerDialog y le mandamos como parámetros al constructor, un contexto, la variable "style" que guarda el estilo, el "dateSetListener", el año, mes y día, estos últimos para que al abrir el AlertDialog, se muestre el mes actual
+            DatePickerDialog datePickerDialog = new DatePickerDialog(ListadoIngresosDeducciones.this, style, dateSetListener, year, month, day); //Creamos un nuevo objeto de tipo DatePickerDialog y le mandamos como parámetros al constructor, un contexto, la variable "style" que guarda el estilo, el "dateSetListener", el año, mes y día, estos últimos para que al abrir el AlertDialog, se muestre el mes actual
             datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("day", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de días asignando "GONE" en su visibilidad
             datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo mes y año
         }

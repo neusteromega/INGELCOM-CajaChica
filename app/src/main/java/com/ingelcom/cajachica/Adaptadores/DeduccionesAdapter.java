@@ -9,17 +9,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ingelcom.cajachica.Modelos.DeduccionesItems;
 import com.ingelcom.cajachica.Modelos.IngresosItems;
 import com.ingelcom.cajachica.R;
 
 import java.util.List;
 
-public class IngresosAdapter extends RecyclerView.Adapter<IngresosAdapter.RecyclerHolder> implements View.OnClickListener {
+public class DeduccionesAdapter extends RecyclerView.Adapter<DeduccionesAdapter.RecyclerHolder> implements View.OnClickListener {
 
-    private List<IngresosItems> items; //Creamos una lista de tipo "IngresosItems"
+    private List<DeduccionesItems> items; //Creamos una lista de tipo "IngresosItems"
     private View.OnClickListener listener; //Creamos un escuchador (listener) de tipo "View.OnClickListener" que nos servirá para el onClick de cada tarjeta del RecyclerView
 
-    public IngresosAdapter(List<IngresosItems> items) {
+    public DeduccionesAdapter(List<DeduccionesItems> items) {
         this.items = items;
     }
 
@@ -33,15 +34,15 @@ public class IngresosAdapter extends RecyclerView.Adapter<IngresosAdapter.Recycl
 
     //Este método se ejecuta las veces que el método "getItemCount" lo indique, o sea, dependiendo del size de la lista "items"
     @Override
-    public void onBindViewHolder(@NonNull IngresosAdapter.RecyclerHolder holder, int position) {
-        IngresosItems item = items.get(position); //Creamos un objeto de tipo "IngresosItems" llamado "item" el cual igualamos a la lista "items" extrayendo posición por posición
+    public void onBindViewHolder(@NonNull RecyclerHolder holder, int position) {
+        DeduccionesItems item = items.get(position); //Creamos un objeto de tipo "DeduccionesItems" llamado "item" el cual igualamos a la lista "items" extrayendo posición por posición
 
         //Haciendo uso del objeto "holder", asignamos los textos a las diferentes variables que se encuentran en la clase estática "RecyclerHolder"
-        holder.tvTransferencia.setText(item.getTransferencia());
+        holder.tvUsuario.setText(item.getUsuario());
         holder.tvFecha.setText(item.getFechaHora());
         holder.tvTotal.setText("L. " + String.format("%.2f", item.getTotal()));
-        holder.tvTransfTitulo.setText("No. Transferencia:");
-        holder.imgExpandir.setImageResource(R.mipmap.ico_azul_expandir);
+        holder.tvUsuarioTitulo.setText("Usuario:");
+        holder.imgEditar.setImageResource(R.mipmap.ico_azul_editar);
     }
 
     @Override
@@ -62,21 +63,21 @@ public class IngresosAdapter extends RecyclerView.Adapter<IngresosAdapter.Recycl
 
     public static class RecyclerHolder extends RecyclerView.ViewHolder {
         //Variables para cada elemento cambiante de las tarjetas del RecyclerView
-        private TextView tvTransferencia;
+        private TextView tvUsuario;
         private TextView tvFecha;
         private TextView tvTotal;
-        private TextView tvTransfTitulo;
-        private ImageView imgExpandir;
+        private TextView tvUsuarioTitulo;
+        private ImageView imgEditar;
 
         public RecyclerHolder(@NonNull View itemView) { //Método Constructor que recibe un View
             super(itemView);
 
             //Referenciamos los elementos de la vista de las tarjetas del RecyclerView a las variables de arriba
-            tvTransferencia = itemView.findViewById(R.id.lblTransfUserIng);
+            tvUsuario = itemView.findViewById(R.id.lblTransfUserIng);
             tvFecha = itemView.findViewById(R.id.lblFechaIng);
             tvTotal = itemView.findViewById(R.id.lblTotalIng);
-            tvTransfTitulo = itemView.findViewById(R.id.lblTransfUserTituloIng);
-            imgExpandir = itemView.findViewById(R.id.imgExpandirEditarIng);
+            tvUsuarioTitulo = itemView.findViewById(R.id.lblTransfUserTituloIng);
+            imgEditar = itemView.findViewById(R.id.imgExpandirEditarIng);
         }
     }
 }

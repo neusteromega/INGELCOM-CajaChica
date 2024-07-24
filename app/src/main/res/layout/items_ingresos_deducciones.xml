@@ -34,12 +34,12 @@
                 android:paddingBottom="8dp">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/lblTransferenciaTituloIng"
+                        android:id="@+id/lblTransfUserTituloIng"
                         android:layout_width="wrap_content"
                         android:layout_height="25dp"
                         android:layout_marginRight="4dp"
@@ -52,8 +52,8 @@
                         android:textSize="13dp" />
 
                     <TextView
-                        android:id="@+id/lblTransferenciaIng"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/lblTransfUserIng"
+                        android:layout_width="match_parent"
                         android:layout_height="25dp"
                         android:ellipsize="end"
                         android:fontFamily="@font/montserrat_bold"
@@ -78,8 +78,7 @@
                         android:gravity="center|left"
                         android:text="Fecha y Hora:"
                         android:textColor="@color/clr_fuente_secundario"
-                        android:textSize="13dp"
-                        android:visibility="visible" />
+                        android:textSize="13dp" />
 
                     <TextView
                         android:id="@+id/lblFechaIng"
@@ -93,7 +92,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
 
@@ -110,7 +109,7 @@
 
                     <TextView
                         android:id="@+id/lblTotalIng"
-                        android:layout_width="wrap_content"
+                        android:layout_width="250dp"
                         android:layout_height="28dp"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center|left"
@@ -128,7 +127,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/btnEditarIng"
+                    android:id="@+id/imgExpandirEditarIng"
                     android:layout_width="25dp"
                     android:layout_height="20dp"
                     app:srcCompat="@mipmap/ico_azul_expandir" />

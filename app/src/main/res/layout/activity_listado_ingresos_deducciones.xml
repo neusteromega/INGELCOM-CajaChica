@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/clr_fondo_primario"
-    tools:context=".ListadoIngresos">
+    tools:context=".ListadoIngresosDeducciones">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -151,9 +151,9 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvListadoIngresos"
+            android:id="@+id/rvListadoIngrDeduc"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/items_ingresos" />
+            tools:listitem="@layout/items_ingresos_deducciones" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

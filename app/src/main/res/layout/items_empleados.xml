@@ -68,8 +68,10 @@
                     android:id="@+id/lblCuadrillaEmp"
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
+                    android:ellipsize="end"
                     android:fontFamily="@font/montserrat_bold"
                     android:gravity="center|left"
+                    android:maxLines="1"
                     android:text="Nombre Cuadrilla"
                     android:textColor="@color/clr_fuente_primario"
                     android:textSize="14dp" />

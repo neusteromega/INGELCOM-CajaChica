@@ -19,7 +19,7 @@
             android:name=".ListadoEmpleados"
             android:exported="false" />
         <activity
-            android:name=".ListadoIngresos"
+            android:name=".ListadoIngresosDeducciones"
             android:exported="false" />
         <activity
             android:name=".AdmDatosCuadrilla"

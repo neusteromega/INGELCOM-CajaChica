@@ -1,6 +1,5 @@
 package com.ingelcom.cajachica.Fragmentos;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ingelcom.cajachica.Adaptadores.CuadrillasAdapter;
@@ -20,11 +18,8 @@ import com.ingelcom.cajachica.DAO.Cuadrilla;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
-import com.ingelcom.cajachica.ListadoIngresos;
 import com.ingelcom.cajachica.Modelos.CuadrillasItems;
-import com.ingelcom.cajachica.Modelos.GastosItems;
 import com.ingelcom.cajachica.R;
-import com.ingelcom.cajachica.RegistrarEditarIngreso;
 
 import java.util.HashMap;
 import java.util.List;

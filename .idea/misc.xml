@@ -26,7 +26,7 @@
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_iniciar_sesion.xml" value="0.2" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_listado_empleados.xml" value="0.264" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_listado_gastos.xml" value="0.1" />
-        <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_listado_ingresos.xml" value="0.18309859154929578" />
+        <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_listado_ingresos.xml" value="0.2" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_main.xml" value="0.152" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_perfil.xml" value="0.2" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/activity_registrar_editar_gasto.xml" value="0.2" />
@@ -47,6 +47,7 @@
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/items_gastos.xml" value="0.264" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/items_gastos_cuadrilla.xml" value="0.21205643437366395" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/items_ingresos.xml" value="0.264" />
+        <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/items_ingresos_deducciones.xml" value="0.264" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/items_ingresos_recientes.xml" value="0.4" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/items_inicio.xml" value="0.4" />
         <entry key="..\:/Users/Usuario/Desktop/AplicacionesMoviles/INGELCOM_CajaChica/app/src/main/res/layout/spinner_item_cuadrillas.xml" value="0.2" />
