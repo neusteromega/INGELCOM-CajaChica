@@ -65,19 +65,64 @@
         app:layout_constraintTop_toBottomOf="@id/LLEncabezadoRI">
 
         <LinearLayout
+            android:id="@+id/LLDineroRI"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/clr_casillablanca_cuadrada"
+            android:elevation="5dp"
+            android:orientation="vertical"
+            android:paddingTop="12dp"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:id="@+id/lblDineroRI"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:text="Dinero Disponible"
+                android:textColor="@color/clr_fuente_primario"
+                android:textSize="17dp" />
+
+            <TextView
+                android:id="@+id/lblSeleccioneCuadrillaRI"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:text="(Seleccione una Cuadrilla para verlo)"
+                android:textColor="@color/clr_fuente_primario"
+                android:textSize="13dp" />
+
+            <TextView
+                android:id="@+id/lblCantDineroRI"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:text="L.00.00"
+                android:textColor="@color/clr_fuente_secundario"
+                android:textSize="40dp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/LLFechaRI"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginRight="15dp"
             android:layout_marginBottom="15dp"
             android:background="@drawable/clr_casillablanca_cuadrada"
             android:elevation="5dp"
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingLeft="12dp"
-            android:paddingRight="22dp"
-            android:visibility="gone">
+            android:paddingRight="22dp">
 
             <ImageView
                 android:id="@+id/imgFechaRI"
@@ -116,7 +161,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/LLCuadrillaRG"
+            android:id="@+id/LLCuadrillaRI"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
@@ -130,7 +175,7 @@
             android:paddingRight="5dp">
 
             <ImageView
-                android:id="@+id/imgCuadrillaRG"
+                android:id="@+id/imgCuadrillaRI"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 app:srcCompat="@mipmap/ico_azul_cuadrilla" />

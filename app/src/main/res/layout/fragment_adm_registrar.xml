@@ -27,15 +27,6 @@
             android:textColor="@color/clr_fuente_primario"
             android:textSize="25dp" />
 
-        <TextView
-            android:id="@+id/lblSeparadorReg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:background="@drawable/clr_casillaazul_separador"
-            android:fontFamily="@font/montserrat_bold"
-            android:gravity="center"
-            android:textSize="3dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -67,8 +58,8 @@
 
             <ImageView
                 android:id="@+id/imgIngresoReg"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_marginBottom="10dp"
                 app:srcCompat="@mipmap/ico_color_ingreso" />
 
@@ -80,7 +71,7 @@
                 android:text="Ingreso"
                 android:textAlignment="center"
                 android:textColor="@color/clr_fuente_secundario"
-                android:textSize="23dp" />
+                android:textSize="22dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -100,8 +91,8 @@
 
             <ImageView
                 android:id="@+id/imgGastoReg"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_marginBottom="5dp"
                 app:srcCompat="@mipmap/ico_color_gasto" />
 
@@ -113,7 +104,41 @@
                 android:text="Gasto"
                 android:textAlignment="center"
                 android:textColor="@color/clr_fuente_secundario"
-                android:textSize="23dp" />
+                android:textSize="22dp" />
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LLDeduccionReg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/clr_casillablanca_semiredonda"
+            android:elevation="5dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="15dp"
+            android:paddingBottom="10dp">
+
+            <ImageView
+                android:id="@+id/imgDeduccionReg"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginBottom="5dp"
+                app:srcCompat="@mipmap/ico_color_deduccion" />
+
+            <TextView
+                android:id="@+id/lblDeduccionReg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="Deducción por Planilla"
+                android:textAlignment="center"
+                android:textColor="@color/clr_fuente_secundario"
+                android:textSize="22dp" />
+        </LinearLayout>
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
