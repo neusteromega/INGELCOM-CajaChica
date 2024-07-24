@@ -34,7 +34,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginTop="35dp"
             android:layout_marginRight="15dp"
-            android:layout_marginBottom="35dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/clr_casillablanca_cuadrada"
             android:elevation="5dp"
             android:orientation="vertical"
@@ -57,19 +57,10 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center"
-                android:text="L.00.00"
+                android:text="L. 0.00"
                 android:textColor="@color/clr_fuente_secundario"
                 android:textSize="40dp" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/lblSeparadorMenuEMP"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/clr_casillaazul_separador"
-            android:fontFamily="@font/montserrat_bold"
-            android:gravity="center"
-            android:textSize="2dp" />
 
     </LinearLayout>
 
@@ -77,9 +68,9 @@
         android:id="@+id/LLOpcionesMenuEMP"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="5dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/LLCerrarSesionMenuEMP"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/LLEncabezadoMenuEMP">
@@ -145,10 +136,10 @@
 
                 <ImageView
                     android:id="@+id/imgListadoGastosMenuEMP"
-                    android:layout_width="100dp"
+                    android:layout_width="95dp"
                     android:layout_height="100dp"
                     android:layout_marginBottom="5dp"
-                    app:srcCompat="@mipmap/ico_azul_listadogastos" />
+                    app:srcCompat="@mipmap/ico_azul_gastos" />
 
                 <TextView
                     android:id="@+id/lblListadoGastosMenuEMP"
@@ -205,7 +196,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/LLCerrarSesionMenuEMP"
+                android:id="@+id/LLListadoIngresosMenuEMP"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="7dp"
@@ -216,29 +207,65 @@
                 android:background="@drawable/clr_casillablanca_semiredonda"
                 android:elevation="5dp"
                 android:gravity="center"
-                android:onClick="cerrarSesion"
                 android:orientation="vertical"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp">
 
                 <ImageView
-                    android:id="@+id/imgCerrarSesionMenuEMP"
-                    android:layout_width="85dp"
+                    android:id="@+id/imgListadoIngresosMenuEMP"
+                    android:layout_width="95dp"
                     android:layout_height="100dp"
                     android:layout_marginBottom="5dp"
-                    app:srcCompat="@mipmap/ico_azul_cerrarsesion" />
+                    app:srcCompat="@mipmap/ico_azul_ingresos" />
 
                 <TextView
-                    android:id="@+id/lblCerrarSesionMenuEMP"
+                    android:id="@+id/lblListadoIngresosMenuEMP"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_bold"
-                    android:text="Cerrar\nSesión"
+                    android:text="Listado\nde Ingresos"
                     android:textAlignment="center"
                     android:textColor="@color/clr_fuente_secundario"
                     android:textSize="22dp" />
             </LinearLayout>
         </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LLCerrarSesionMenuEMP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="35dp"
+        android:background="@drawable/clr_casilladegradadoazul_redonda"
+        android:elevation="5dp"
+        android:gravity="center"
+        android:onClick="cerrarSesion"
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/imgCerrarSesionMenuEMP"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:srcCompat="@mipmap/ico_blanco_cerrarsesion" />
+
+        <TextView
+            android:id="@+id/lblCerrarSesionMenuEMP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Cerrar Sesión"
+            android:textAlignment="center"
+            android:textColor="@color/clr_fuente_terciario"
+            android:textSize="22dp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
