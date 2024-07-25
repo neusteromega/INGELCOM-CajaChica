@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ingelcom.cajachica.Adaptadores.DeduccionesAdapter;
 import com.ingelcom.cajachica.Adaptadores.IngresosAdapter;
 import com.ingelcom.cajachica.DAO.Deduccion;
 import com.ingelcom.cajachica.DAO.Ingreso;
@@ -151,7 +152,8 @@ public class ListadoIngresosDeducciones extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Exception e) {
-
+                        Toast.makeText(ListadoIngresosDeducciones.this, "ERROR AL CARGAR LAS DEDUCCIONES", Toast.LENGTH_SHORT).show();
+                        Log.w("ObtenerDeducciones", e);
                     }
                 });
             }
@@ -198,7 +200,33 @@ public class ListadoIngresosDeducciones extends AppCompatActivity {
             });
         }
         else if (tipo.contentEquals("Deducciones")) {
+            List<DeduccionesItems> deduccionesItems = (List<DeduccionesItems>) items;
+            DeduccionesAdapter adapter = new DeduccionesAdapter(deduccionesItems);
+            rvIngrDeduc.setAdapter(adapter);
+            double totalDeducciones = 0;
 
+            for (DeduccionesItems item : deduccionesItems) {
+                totalDeducciones += item.getTotal();
+            }
+
+            lblTotal.setText("L. " + String.format("%.2f", totalDeducciones));
+
+            adapter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    HashMap<String, Object> datosDeduccion = new HashMap<>();
+
+                    //Agregamos las claves y datos al HashMap
+                    datosDeduccion.put("ActivityREI", "EditarDeduccion");
+                    datosDeduccion.put("ID", deduccionesItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getId());
+                    datosDeduccion.put("Usuario", deduccionesItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getUsuario());
+                    datosDeduccion.put("FechaHora", deduccionesItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getFechaHora());
+                    datosDeduccion.put("Cuadrilla", deduccionesItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getCuadrilla());
+                    datosDeduccion.put("Total", String.format("%.2f", deduccionesItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getTotal()));
+
+                    Utilidades.iniciarActivityConDatos(ListadoIngresosDeducciones.this, RegistrarEditarIngreso.class, datosDeduccion);
+                }
+            });
         }
     }
 
