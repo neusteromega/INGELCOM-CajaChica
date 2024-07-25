@@ -59,7 +59,7 @@
                         android:layout_width="25dp"
                         android:layout_height="match_parent"
                         android:contentDescription="@string/descripcion"
-                        android:onClick="EditarGasto"
+                        android:onClick="editarGastoIngreso"
                         app:srcCompat="@mipmap/ico_azul_editar"
                         tools:ignore="TouchTargetSizeCheck" />
                 </LinearLayout>

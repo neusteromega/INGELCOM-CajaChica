@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/clr_fondo_primario"
-    tools:context=".RegistrarEditarIngreso">
+    tools:context=".RegistrarEditarIngresoDeduccion">
 
     <LinearLayout
         android:id="@+id/LLEncabezadoRI"
@@ -23,7 +23,7 @@
             android:gravity="center|left"
             android:orientation="horizontal"
             android:paddingLeft="20dp"
-            android:paddingRight="40dp">
+            android:paddingRight="30dp">
 
             <ImageView
                 android:id="@+id/imgRegresarRI"
@@ -95,7 +95,7 @@
                 android:layout_marginBottom="2dp"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center"
-                android:text="(Seleccione una Cuadrilla para verlo)"
+                android:text="De la Cuadrilla Seleccionada"
                 android:textColor="@color/clr_fuente_primario"
                 android:textSize="13dp" />
 

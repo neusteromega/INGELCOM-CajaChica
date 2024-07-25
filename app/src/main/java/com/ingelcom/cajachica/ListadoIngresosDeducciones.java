@@ -164,7 +164,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity {
     }
 
     //Método que nos ayuda a inicializar el RecyclerView de ingresos
-    private <T> void inicializarRecyclerView(List<?> items, String tipo) {
+    private void inicializarRecyclerView(List<?> items, String tipo) {
         rvIngrDeduc.setLayoutManager(new LinearLayoutManager(this)); //Creamos un nuevo LinearLayoutManager para que el RecyclerView se vea en forma de tarjetas
 
         if (tipo.contentEquals("Ingresos")) {
@@ -217,14 +217,14 @@ public class ListadoIngresosDeducciones extends AppCompatActivity {
                     HashMap<String, Object> datosDeduccion = new HashMap<>();
 
                     //Agregamos las claves y datos al HashMap
-                    datosDeduccion.put("ActivityREI", "EditarDeduccion");
+                    datosDeduccion.put("ActivityREID", "EditarDeduccion");
                     datosDeduccion.put("ID", deduccionesItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getId());
                     datosDeduccion.put("Usuario", deduccionesItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getUsuario());
                     datosDeduccion.put("FechaHora", deduccionesItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getFechaHora());
                     datosDeduccion.put("Cuadrilla", deduccionesItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getCuadrilla());
                     datosDeduccion.put("Total", String.format("%.2f", deduccionesItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getTotal()));
 
-                    Utilidades.iniciarActivityConDatos(ListadoIngresosDeducciones.this, RegistrarEditarIngreso.class, datosDeduccion);
+                    Utilidades.iniciarActivityConDatos(ListadoIngresosDeducciones.this, RegistrarEditarIngresoDeduccion.class, datosDeduccion);
                 }
             });
         }

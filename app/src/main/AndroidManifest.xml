@@ -25,7 +25,7 @@
             android:name=".AdmDatosCuadrilla"
             android:exported="false" />
         <activity
-            android:name=".RegistrarEditarIngreso"
+            android:name=".RegistrarEditarIngresoDeduccion"
             android:exported="false" />
         <activity
             android:name=".AdmPantallas"

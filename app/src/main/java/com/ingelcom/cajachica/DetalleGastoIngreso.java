@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ingelcom.cajachica.DAO.Usuario;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
@@ -164,7 +163,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
     }
 
     //Método Click del botón para editar un Gasto o un Ingreso
-    public void EditarGasto(View view) {
+    public void editarGastoIngreso(View view) {
         if (nombreActivity.contentEquals("DetalleGasto")) { //Si el "nombreActivity" tiene el texto "DetalleGasto", que entre al if
             try {
                 //Llamamos el método "obtenerUsuarioActual" de la clase "Usuario" y creamos una invocación a la interfaz "FirestoreDocumentCallback"
@@ -195,7 +194,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
             }
         }
         else if (nombreActivity.contentEquals("DetalleIngreso")) { //En cambio, si el "nombreActivity" tiene el texto "DetalleIngreso", que entre al else if
-            Utilidades.iniciarActivityConString(DetalleGastoIngreso.this, RegistrarEditarIngreso.class, "ActivityREI", "EditarIngreso", false); //Mandamos el texto "EditarIngreso" al activity "RegistrarEditarIngreso"
+            Utilidades.iniciarActivityConString(DetalleGastoIngreso.this, RegistrarEditarIngresoDeduccion.class, "ActivityREID", "EditarIngreso", false); //Mandamos el texto "EditarIngreso" al activity "RegistrarEditarIngreso"
         }
     }
 }

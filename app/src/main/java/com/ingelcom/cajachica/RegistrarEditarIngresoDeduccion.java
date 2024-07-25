@@ -7,11 +7,13 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ingelcom.cajachica.DAO.Cuadrilla;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
@@ -20,45 +22,51 @@ import com.ingelcom.cajachica.DAO.Usuario;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-public class RegistrarEditarIngreso extends AppCompatActivity {
+public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
 
-    private LinearLayout llFecha;
-    private TextView lblTitulo, lblFecha;
+    private LinearLayout llFecha, llDinero, llTransferencia;
+    private TextView lblTitulo, lblFecha, lblDinero;
     private EditText txtTransferencia, txtTotal;
     private Spinner spCuadrillas;
     private int day, month, year;
-    private String nombreActivity, fechaHoraActual;
+    private String nombreActivity, fechaHoraActual, cuadrilla;
 
     private FirestoreOperaciones oper = new FirestoreOperaciones();
-    private Cuadrilla cuad = new Cuadrilla(RegistrarEditarIngreso.this);
-    private Ingreso ingr = new Ingreso(RegistrarEditarIngreso.this);
-    private Usuario usu = new Usuario(RegistrarEditarIngreso.this);
+    private Cuadrilla cuad = new Cuadrilla(RegistrarEditarIngresoDeduccion.this);
+    private Ingreso ingr = new Ingreso(RegistrarEditarIngresoDeduccion.this);
+    private Usuario usu = new Usuario(RegistrarEditarIngresoDeduccion.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registrar_editar_ingreso);
+        setContentView(R.layout.activity_registrar_editar_ingreso_deduccion);
 
         inicializarElementos();
-        establecerElementos();
         inicializarSpinner();
+        establecerElementos();
+        cambioCuadrilla();
     }
 
     private void inicializarElementos() {
         //Obtenemos el nombre del activity que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y le mandamos "this" para referenciar esta actividad y "Activity" como clave del putExtra
-        nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityREI");
+        nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityREID");
+        cuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla"); //Obtenemos la cuadrilla
 
-        /*final Calendar c = Calendar.getInstance(); //Creamos un objeto de tipo Calendar que representa la fecha y hora actuales en el dispositivo donde se está ejecutando el código
+        final Calendar c = Calendar.getInstance(); //Creamos un objeto de tipo Calendar que representa la fecha y hora actuales en el dispositivo donde se está ejecutando el código
         year = c.get(Calendar.YEAR); //Obtenemos el año actual
         month = c.get(Calendar.MONTH); //Obtenemos el mes actual
-        day = c.get(Calendar.DAY_OF_MONTH); //Obtenemos el día actual*/
+        day = c.get(Calendar.DAY_OF_MONTH); //Obtenemos el día actual
 
         llFecha = findViewById(R.id.LLFechaRI);
+        llDinero = findViewById(R.id.LLDineroRI);
+        llTransferencia = findViewById(R.id.LLTransferenciaRI);
         lblTitulo = findViewById(R.id.lblTituloRI);
         lblFecha = findViewById(R.id.lblFechaRI);
+        lblDinero = findViewById(R.id.lblCantDineroRI);
         txtTransferencia = findViewById(R.id.txtTransferenciaRI);
         txtTotal = findViewById(R.id.txtTotalRI);
         spCuadrillas = findViewById(R.id.spCuadrillaRI);
@@ -67,34 +75,84 @@ public class RegistrarEditarIngreso extends AppCompatActivity {
     private void establecerElementos() {
         if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
             switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
+                //Establecemos los elementos gráficos dependiendo de la pantalla
                 case "RegistrarIngreso":
+                    lblTitulo.setText("Registrar Ingreso");//Asignamos el titulo
                     lblFecha.setText(String.format("%02d/%02d/%04d", day, month + 1, year)); //Asignamos la fecha seleccionada con el formato "00/00/0000" al TextView "lblFecha"
+                    llDinero.setVisibility(View.GONE);
                     break;
 
-                //Establecemos los elementos gráficos si la pantalla es "EditarIngreso"
+                case "RegistrarDeduccion":
+                    lblTitulo.setText("Registrar Deducción"); //Asignamos el titulo
+                    lblFecha.setText(String.format("%02d/%02d/%04d", day, month + 1, year));
+                    //llDinero.setVisibility(View.VISIBLE);
+                    llTransferencia.setVisibility(View.GONE);
+                    break;
+
                 case "EditarIngreso":
                     lblTitulo.setText("Editar Ingreso"); //Asignamos el titulo
+                    llDinero.setVisibility(View.GONE);
+                    break;
+
+                case "EditarDeduccion":
+                    lblTitulo.setText("Editar Deducción"); //Asignamos el titulo
+                    //llDinero.setVisibility(View.VISIBLE);
+                    llTransferencia.setVisibility(View.GONE);
+                    obtenerDineroCuadrilla();
                     break;
             }
         }
     }
 
     private void inicializarSpinner() {
-        //Para inicializar el spinner, llamamos al método "obtenerRegistros" de la clase "FirestoreOperaciones" a la cual le mandamos el nombre de la colección y el nombre del campo de Firestore de los cuales queremos obtener los registros. También invocamos los métodos "onCallback" y "onFailure" de la interfaz FirestoreCallback
-        //CUADRILLAS
-        oper.obtenerRegistrosCampo("cuadrillas", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
-            @Override
-            public void onCallback(List<String> lista) {
-                //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(RegistrarEditarIngreso.this, R.layout.spinner_items, lista);
-                spCuadrillas.setAdapter(adapter); //Asignamos el adapter al Spinner "spCuadrillas"
-            }
+        try {
+            //Para inicializar el spinner, llamamos al método "obtenerRegistros" de la clase "FirestoreOperaciones" a la cual le mandamos el nombre de la colección y el nombre del campo de Firestore de los cuales queremos obtener los registros. También invocamos los métodos "onCallback" y "onFailure" de la interfaz FirestoreCallback
+            //CUADRILLAS
+            oper.obtenerRegistrosCampo("cuadrillas", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
+                @Override
+                public void onCallback(List<String> lista) {
+                    //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(RegistrarEditarIngresoDeduccion.this, R.layout.spinner_items, lista);
+                    spCuadrillas.setAdapter(adapter); //Asignamos el adapter al Spinner "spCuadrillas"
 
-            @Override
-            public void onFailure(Exception e) {
-                Log.w("Activity", "Error al obtener las cuadrillas.", e);
-            }
-        });
+                    if (cuadrilla != null && !cuadrilla.isEmpty()) { //Si "cuadrilla" (la variable global que recibe la cuadrilla del Activity anterior) no es nula y no está vacía, significa que si está recibiendo una Cuadrilla del activity anterior, por lo tanto, que entre al if
+                        int posiciónCuadrilla = adapter.getPosition(cuadrilla); //Obtenemos la posición de la cuadrilla recibida en el Spinner, y guardamos dicha posición en una variable int
+                        spCuadrillas.setSelection(posiciónCuadrilla); //Una vez obtenemos la posición de la cuadrilla recibida en el Spinner, la asignamos al "spCuadrillas" para que al cargar el activity, ya esté seleccionada la cuadrilla específica en el Spinner
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Log.w("Activity", "Error al obtener las cuadrillas.", e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("InicializarCuadrillas", e);
+        }
+    }
+
+    //Método que permite obtener el dinero de la cuadrilla guardada en la variable global "cuadrilla"
+    private void obtenerDineroCuadrilla() {
+        try {
+            //Llamamos el método "obtenerUnaCuadrilla" de la clase "Cuadrilla", le mandamos la cuadrilla y creamos una invocación a la interfaz "FirestoreDocumentCallback"
+            cuad.obtenerUnaCuadrilla(cuadrilla, new FirestoreCallbacks.FirestoreDocumentCallback() {
+                @Override
+                public void onCallback(Map<String, Object> documento) {
+                    if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró la cuadrilla en Firestore
+                        double dinero = Utilidades.convertirObjectADouble(documento.get("Dinero")); //Obtenemos el dinero de la cuadrilla actual en Firestore, y lo convertimos a double llamando el método utilitario "convertirObjectADouble"
+                        lblDinero.setText("L. " + String.format("%.2f", dinero)); //Asignamos el dinero extraído de Firestore de la cuadrilla al "lblDinero" con un formato para que tenga dos decimales después del punto y una "L. " al inicio
+                    }
+                }
+                @Override
+                public void onFailure(Exception e) {
+                    Log.w("ObtenerCuadrilla", "Error al obtener la cuadrilla", e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerCuadrilla", e);
+        }
     }
 
     //Método Click del LinearLayout de Fecha, el cual al dar clic en él, se mostrará un calendario emergente para seleccionar una fecha
@@ -133,7 +191,13 @@ public class RegistrarEditarIngreso extends AppCompatActivity {
                             }).show();
                     break;
 
+                case "RegistrarDeduccion":
+                    break;
+
                 case "EditarIngreso":
+                    break;
+
+                case "EditarDeduccion":
                     break;
             }
         }
@@ -141,7 +205,7 @@ public class RegistrarEditarIngreso extends AppCompatActivity {
 
     //Método que permite agregar un nuevo ingreso de dinero y almacenar los datos del mismo en Firestore
     private void agregarIngreso() {
-        //Enlazamos los EditText con las siguientes variables String
+        //Enlazamos los EditText y Spinners con las siguientes variables String
         String cuadrilla = spCuadrillas.getSelectedItem().toString();
         String transferencia = txtTransferencia.getText().toString();
         String total = txtTotal.getText().toString();
@@ -168,6 +232,32 @@ public class RegistrarEditarIngreso extends AppCompatActivity {
         }
         catch (Exception e) {
             Log.w("ObtenerUsuario", e);
+        }
+    }
+
+    //Método que permite agregar una nueva deducción por planilla y almacenar los datos de la misma en Firestore
+    private void agregarDeduccion() {
+
+    }
+
+    private void cambioCuadrilla() {
+        try {
+            //Evento que detecta la selección hecha en el "spCuadrillas"
+            spCuadrillas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                    cuadrilla = adapterView.getItemAtPosition(position).toString(); //Obtenemos la selección hecha en el Spinner y la guardamos en la variable global "cuadrilla"
+                    obtenerDineroCuadrilla(); //Llamamos el método "obtenerDineroCuadrilla" que obtiene el dinero de la cuadrilla seleccionada en el Spinner
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("DetectarCuadrilla", e);
         }
     }
 }

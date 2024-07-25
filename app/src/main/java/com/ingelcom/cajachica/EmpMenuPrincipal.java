@@ -84,7 +84,7 @@ public class EmpMenuPrincipal extends AppCompatActivity {
     //Método que nos permite obtener el dinero disponible de una cuadrilla
     private void obtenerDineroCuadrilla(String cuadrilla) {
         try {
-            //Llamamos el método "obtenerUnaCuadrilla" de la clase "Cuadrilla" y creamos una invocación a la interfaz "FirestoreDocumentCallback"
+            //Llamamos el método "obtenerUnaCuadrilla" de la clase "Cuadrilla", le mandamos la cuadrilla y creamos una invocación a la interfaz "FirestoreDocumentCallback"
             cuad.obtenerUnaCuadrilla(cuadrilla, new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
                 public void onCallback(Map<String, Object> documento) {
