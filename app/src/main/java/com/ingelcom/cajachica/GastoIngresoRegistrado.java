@@ -56,6 +56,13 @@ public class GastoIngresoRegistrado extends AppCompatActivity {
                     lblExito.setText("¡EL GASTO HA SIDO REGISTRADO CON ÉXITO");
                     lblMensaje.setText("Puede revisar el Listado de Gastos de la Cuadrilla para visualizar el Gasto Registrado");
                     break;
+
+                //Establecemos los elementos gráficos si la pantalla es "DeduccionRegistrada"
+                case "DeduccionRegistrada":
+                    lblTitulo.setText("Deducción Registrada");
+                    lblExito.setText("¡LA DEDUCCIÓN HA SIDO REGISTRADA CON ÉXITO!");
+                    lblMensaje.setText("Puede revisar el Listado de Deducciones de la Cuadrilla para visualizar la Deducción Registrada.");
+                    break;
             }
         }
     }

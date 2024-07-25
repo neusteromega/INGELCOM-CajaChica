@@ -2,15 +2,21 @@ package com.ingelcom.cajachica.DAO;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.Timestamp;
+import com.ingelcom.cajachica.GastoIngresoRegistrado;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.Modelos.DeduccionesItems;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class Deduccion {
 
@@ -58,6 +64,50 @@ public class Deduccion {
         }
         catch (Exception e) {
             Log.w("ObtenerDeducciones", e);
+        }
+    }
+
+    //Método que nos permite registrar una Deducción en Firestore
+    public void registrarDeduccion(String usuario, String cuadrilla, String total) {
+        if (!total.isEmpty()) { //Verificamos que la caja de texto de "total" no esté vacía para que entre al if
+            try {
+                Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
+
+                String idDocumento = UUID.randomUUID().toString(); //Generamos un UUID que es un elemento único y lo guardamos en la variable "idDocumento". Esto nos servirá para que el documento que se cree al insertar los datos, tenga un identificador único
+                double totalIngreso = Double.parseDouble(total); //Convertimos la variable String "total" en double y su contenido lo guardamos en "totalIngreso"
+                Map<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos a insertar
+
+                Calendar calendar = Calendar.getInstance(); //Obtenemos una instancia de la clase "Calendar"
+                Date fechaHora = calendar.getTime(); //"calendar.getTime()" devuelve un objeto Date que representa la fecha y hora actual contenida en el objeto Calendar, esto lo guardamos en "fechaHora"
+                Timestamp timestamp = new Timestamp(fechaHora); //Convertimos "fechaHora" en un objeto "Timestamp" para que sea compatible con Firestore
+
+                //Insertamos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el valor a insertar
+                datos.put("ID", idDocumento);
+                datos.put("Usuario", usuario);
+                datos.put("Fecha", timestamp);
+                datos.put("Cuadrilla", cuadrilla);
+                datos.put("Total", totalIngreso);
+
+                //Llamamos el método "insertarRegistros" de la clase "FirestoreOperaciones" y le mandamos el nombre de la colección, el HashMap con los datos a insertar. También invocamos los métodos "onSuccess" y "onFailure" de la interfaz FirestoreInsertCallback
+                oper.insertarRegistros("deducciones", datos, new FirestoreCallbacks.FirestoreTextCallback() {
+                    @Override
+                    public void onSuccess(String texto) {
+                        cuad.actualizarDineroCuadrilla(cuadrilla, totalIngreso, "Deduccion"); //Llamamos el método "actualizarDineroCuadrilla" de la clase "Cuadrilla" y le mandamos el nombre de la cuadrilla, el total deducido y la palabra "Deduccion" para indicar que se hizo una Deducción por planilla
+                        Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "DeduccionRegistrada", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "DeduccionRegistrada" para indicar que fue una Deducción la que se registró, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarIngresoDeduccion
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Toast.makeText(contexto, "ERROR AL REGISTRAR LA DEDUCCIÓN", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            catch (Exception e) {
+                Log.w("RegistrarDeduccion", e);
+            }
+        }
+        else {
+            Toast.makeText(contexto, "TODOS LOS CAMPOS DEBEN LLENARSE", Toast.LENGTH_SHORT).show();
         }
     }
 }

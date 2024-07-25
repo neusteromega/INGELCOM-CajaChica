@@ -94,11 +94,11 @@ public class Cuadrilla {
                         Object valor = documento.get("Dinero"); //Lo obtenemos como Object ya que Firestore puede almacenar números en varios formatos (por ejemplo, Long y Double) y esto puede causar problemas con el casting del contenido del campo
                         double dinero = Utilidades.convertirObjectADouble(valor); //Llamamos el método utilitario "convertirObjectADouble" y le mandamos el objeto "valor", y nos retorna este objeto ya convertido a double y lo guardamos en "dinero"
 
-                        //Condición que determina qué operación se hará, si es un "Ingreso" se hará una suma, si es un "Gasto" se hará una resta
+                        //Condición que determina qué operación se hará, si es un "Ingreso" se hará una suma, si es un "Gasto" o "Deduccion" se hará una resta
                         if (operacion.contentEquals("Ingreso"))
                             dinero += total; //Sumamemos el ingreso registrado por el administrador, y que está guardado en la variable "total"
-                        else if (operacion.contentEquals("Gasto"))
-                            dinero -= total; //Restamos el gasto registrado, y que está guardado en la variable "total"
+                        else if (operacion.contentEquals("Gasto") || operacion.contentEquals("Deduccion"))
+                            dinero -= total; //Restamos la deducción o gasto registrado, y que está guardado en la variable "total"
 
                         //Creamos el HashMap y le insertamos el nuevo valor de "dinero" para el campo "Dinero"
                         Map<String,Object> datosNuevos = new HashMap<>();

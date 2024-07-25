@@ -88,6 +88,7 @@ public class Ingreso {
 
     }
 
+    //Método que nos permite registrar un Ingreso en Firestore
     public void registrarIngreso(String usuario, String cuadrilla, String transferencia, String total) {
         if (!transferencia.isEmpty() && !total.isEmpty()) { //Verificamos que las dos cajas de texto no estén vacías para que entre al if
             try {
@@ -115,9 +116,8 @@ public class Ingreso {
                 oper.insertarRegistros("ingresos", datos, new FirestoreCallbacks.FirestoreTextCallback() {
                     @Override
                     public void onSuccess(String texto) {
-                        //Toast.makeText(RegistrarEditarIngreso.this, "INGRESO REGISTRADO EXITOSAMENTE", Toast.LENGTH_SHORT).show();
                         cuad.actualizarDineroCuadrilla(cuadrilla, totalIngreso, "Ingreso"); //Llamamos el método "actualizarDineroCuadrilla" de la clase "Cuadrilla" y le mandamos el nombre de la cuadrilla, el total ingresado y la palabra "Ingreso" para indicar que se hizo un Ingreso y no un Gasto
-                        Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "IngresoRegistrado", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "IngresoRegistrado" para indicar que fue un Ingreso y no un Gasto el que se registró, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarIngreso
+                        Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "IngresoRegistrado", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "IngresoRegistrado" para indicar que fue un Ingreso el que se registró, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarIngresoDeduccion
                     }
 
                     @Override

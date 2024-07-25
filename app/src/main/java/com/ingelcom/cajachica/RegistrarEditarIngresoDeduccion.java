@@ -13,9 +13,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ingelcom.cajachica.DAO.Cuadrilla;
+import com.ingelcom.cajachica.DAO.Deduccion;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.DAO.Ingreso;
 import com.ingelcom.cajachica.DAO.Usuario;
@@ -38,6 +38,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
     private FirestoreOperaciones oper = new FirestoreOperaciones();
     private Cuadrilla cuad = new Cuadrilla(RegistrarEditarIngresoDeduccion.this);
     private Ingreso ingr = new Ingreso(RegistrarEditarIngresoDeduccion.this);
+    private Deduccion deduc = new Deduccion(RegistrarEditarIngresoDeduccion.this);
     private Usuario usu = new Usuario(RegistrarEditarIngresoDeduccion.this);
 
     @Override
@@ -171,6 +172,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         datePickerDialog.show();
     }*/
 
+    //Evento Clic del botón "Confirmar"
     public void confirmar(View view) {
         if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
             switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
@@ -178,12 +180,12 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
 
                     //Creamos un alertDialog que pregunte si se desea registrar el ingreso de dinero a la cuadrilla seleccionada
                     new AlertDialog.Builder(this).setTitle("REGISTRAR INGRESO").setMessage("¿Está seguro que desea registrar el ingreso de dinero a la cuadrilla seleccionada?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "registrarIngreso()"
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "agregarIngresoDeduccion()"
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                agregarIngreso(); //Llamamos el método "agregarIngreso" de abajo para que se complete la inserción de los datos
+                                agregarIngresoDeduccion("Ingreso"); //Llamamos el método "agregarIngresoDeduccion" de abajo para que se complete la inserción de los datos
                             }
-                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
+                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
@@ -192,6 +194,20 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                     break;
 
                 case "RegistrarDeduccion":
+
+                    //Creamos un alertDialog que pregunte si se desea registrar la deducción por planilla a la cuadrilla seleccionada
+                    new AlertDialog.Builder(this).setTitle("REGISTRAR DEDUCCIÓN").setMessage("¿Está seguro que desea registrar la deducción por planilla a la cuadrilla seleccionada?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "agregarIngresoDeduccion()"
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                agregarIngresoDeduccion("Deduccion"); //Llamamos el método "agregarIngresoDeduccion" de abajo para que se complete la inserción de los datos
+                            }
+                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                }
+                            }).show();
                     break;
 
                 case "EditarIngreso":
@@ -203,8 +219,8 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         }
     }
 
-    //Método que permite agregar un nuevo ingreso de dinero y almacenar los datos del mismo en Firestore
-    private void agregarIngreso() {
+    //Método que permite agregar un nuevo ingreso de dinero y/o una nueva deducción por planilla y almacenar los datos del mismo en Firestore
+    private void agregarIngresoDeduccion(String tipo) {
         //Enlazamos los EditText y Spinners con las siguientes variables String
         String cuadrilla = spCuadrillas.getSelectedItem().toString();
         String transferencia = txtTransferencia.getText().toString();
@@ -217,7 +233,11 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                 public void onCallback(Map<String, Object> documento) { //Los datos del usuario están guardados en el HashMap "documento"
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
                         String nombre = (String) documento.get("Nombre"); //Obtenemos el nombre del usuario actual
-                        ingr.registrarIngreso(nombre, cuadrilla, transferencia, total); //Llamamos el método "registrarIngreso" donde se hará el proceso de inserción a Firestore y le mandamos el nombre del usuario actual (el usuario que está registrando el ingreso de dinero), los textboxes y selecciones de los spinners de esta pantalla
+
+                        if (tipo.contentEquals("Ingreso")) //Si "tipo" es "Ingreso" que registre el ingreso en Firestore
+                            ingr.registrarIngreso(nombre, cuadrilla, transferencia, total); //Llamamos el método "registrarIngreso" donde se hará el proceso de inserción a Firestore y le mandamos el nombre del usuario actual (el usuario que está registrando el ingreso de dinero), los textboxes y selecciones de los spinners de esta pantalla
+                        else if (tipo.contentEquals("Deduccion")) //En cambio, si "tipo" es "Deduccion" que registra la deducción en Firestore
+                            deduc.registrarDeduccion(nombre, cuadrilla, total); //Llamamos el método "registrarDeduccion" donde se hará el proceso de inserción a Firestore y le mandamos el nombre del usuario actual (el usuario que está registrando la deducción por planilla), los textboxes y selecciones de los spinners de esta pantalla
                     }
                     else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
                         Log.w("ObtenerUsuario", "Usuario no encontrado");
