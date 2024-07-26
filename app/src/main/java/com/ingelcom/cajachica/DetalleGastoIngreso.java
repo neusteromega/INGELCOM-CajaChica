@@ -185,38 +185,12 @@ public class DetalleGastoIngreso extends AppCompatActivity {
 
     //Método Click del botón para editar un Gasto o un Ingreso
     public void editarGastoIngreso(View view) {
-        if (nombreActivity.equalsIgnoreCase("DetalleGastoCuadrilla") || nombreActivity.equalsIgnoreCase("DetalleGastoSupervisores")) { //Si el "nombreActivity" tiene el texto "DetalleGasto", que entre al if
-            try {
-                //Llamamos el método "obtenerUsuarioActual" de la clase "Usuario" y creamos una invocación a la interfaz "FirestoreDocumentCallback"
-                usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
-                    @Override
-                    public void onCallback(Map<String, Object> documento) { //Los datos del usuario están guardados en el HashMap "documento"
-                        if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
-                            String rol = (String) documento.get("Rol");
-
-                            if (rol.equalsIgnoreCase("Administrador")) //Si el rol del usuario actual es "Administrador" que mande el texto "EditarGastoAdmin" al activity "RegistrarEditarGasto"
-                                Utilidades.iniciarActivityConString(DetalleGastoIngreso.this, RegistrarEditarGasto.class, "ActivityREG", "EditarGastoAdmin", false);
-                            else if (rol.equalsIgnoreCase("Empleado")) //En cambio, si el rol del usuario actual es "Empleado" que mande el texto "EditarGastoEmpleado" al activity "RegistrarEditarGasto"
-                                Utilidades.iniciarActivityConString(DetalleGastoIngreso.this, RegistrarEditarGasto.class, "ActivityREG", "EditarGastoEmpleado", false);
-                        }
-                        else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
-                            Log.w("ObtenerUsuario", "Usuario no encontrado");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Exception e) {
-                        Log.w("BuscarUsuario", "Error al obtener el usuario", e);
-                    }
-                });
-            }
-            catch (Exception e) {
-                Log.w("ObtenerUsuario", e);
-            }
-        }
-        else if (nombreActivity.contentEquals("DetalleIngreso")) { //En cambio, si el "nombreActivity" tiene el texto "DetalleIngreso", que entre al else if
+        if (nombreActivity.equalsIgnoreCase("DetalleGastoCuadrilla")) //Si el "nombreActivity" tiene el texto "DetalleGastoCuadrilla", que entre al if
+            Utilidades.iniciarActivityConString(DetalleGastoIngreso.this, RegistrarEditarGasto.class, "ActivityREG", "EditarGastoEmpleado", false); //Abrimos el activity "RegistrarEditarGasto" y le mandamos el texto "EditarGastoEmpleado" como parámetro
+        else if (nombreActivity.equalsIgnoreCase("DetalleGastoSupervisores")) //Si el "nombreActivity" tiene el texto "DetalleGastoSupervisores", que entre al if
+            Utilidades.iniciarActivityConString(DetalleGastoIngreso.this, RegistrarEditarGasto.class, "ActivityREG", "EditarGastoAdmin", false); //Abrimos el activity "RegistrarEditarGasto" y le mandamos el texto "EditarGastoAdmin" como parámetro
+        else if (nombreActivity.contentEquals("DetalleIngreso")) //En cambio, si el "nombreActivity" tiene el texto "DetalleIngreso", que entre al else if
             Utilidades.iniciarActivityConString(DetalleGastoIngreso.this, RegistrarEditarIngresoDeduccion.class, "ActivityREID", "EditarIngreso", false); //Mandamos el texto "EditarIngreso" al activity "RegistrarEditarIngreso"
-        }
     }
 
     //Método que ocultar el botón de Editar cuando el rol del Usuario es "Empleado"

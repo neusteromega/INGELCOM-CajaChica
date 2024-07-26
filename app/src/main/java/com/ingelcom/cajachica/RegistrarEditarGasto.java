@@ -88,7 +88,6 @@ public class RegistrarEditarGasto extends AppCompatActivity {
 
                 case "RegistrarGastoAdmin": //Establecemos los elementos gráficos si la pantalla es "RegistrarGastoAdmin"
                     lblTitulo.setText("Registrar Gasto");
-
                     llDinero.setVisibility(View.GONE);
                     break;
 
@@ -103,7 +102,6 @@ public class RegistrarEditarGasto extends AppCompatActivity {
 
                 case "EditarGastoAdmin":
                     lblTitulo.setText("Editar Gasto");
-
                     llDinero.setVisibility(View.GONE);
                     break;
             }
