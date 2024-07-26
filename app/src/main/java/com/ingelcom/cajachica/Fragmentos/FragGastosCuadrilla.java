@@ -158,7 +158,7 @@ public class FragGastosCuadrilla extends Fragment {
                 HashMap<String,Object> datosGasto = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
 
                 //Agregamos las claves y datos al HashMap
-                datosGasto.put("ActivityDGI", "DetalleGasto");
+                datosGasto.put("ActivityDGI", "DetalleGastoCuadrilla");
                 datosGasto.put("ID", items.get(rvGastos.getChildAdapterPosition(view)).getId());
                 datosGasto.put("FechaHora", items.get(rvGastos.getChildAdapterPosition(view)).getFechaHora());
                 datosGasto.put("Cuadrilla", items.get(rvGastos.getChildAdapterPosition(view)).getCuadrilla());

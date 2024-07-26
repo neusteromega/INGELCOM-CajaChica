@@ -68,7 +68,9 @@ public class DetalleGastoIngreso extends AppCompatActivity {
 
         if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
             switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
-                case "DetalleGasto": //Obtener los datos y guardarlos en las variables globales si la pantalla es "DetalleGasto"
+                case "DetalleGastoCuadrilla": //Obtener los datos y guardarlos en las variables globales si la pantalla es "DetalleGastoCuadrilla" o "DetalleGastoSupervisores"
+
+                case "DetalleGastoSupervisores":
                     id = Utilidades.obtenerStringExtra(this, "ID");
                     fecha = Utilidades.obtenerStringExtra(this, "FechaHora");
                     cuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
@@ -95,7 +97,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
     private void establecerElementos() {
         if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
             switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
-                case "DetalleGasto": //Establecemos los elementos gráficos si la pantalla es "DetalleGasto"
+                case "DetalleGastoCuadrilla": //Establecemos los elementos gráficos si la pantalla es "DetalleGastoCuadrilla"
 
                     //Asignamos los titulos, el Dinero y el color del Dinero
                     lblTitulo.setText("Detalle de Gasto");
@@ -109,6 +111,24 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                     sepPrincipal.setVisibility(View.GONE);
                     sepFactTransf.setVisibility(View.GONE);
 
+                    asignarDatos("Gasto"); //Llamamos al método "asignarDatos" de abajo y le mandamos "Gasto" para indicar que asigne los datos al gasto
+                    break;
+
+                case "DetalleGastoSupervisores":
+
+                    //Asignamos los titulos, el Dinero y el color del Dinero
+                    lblTitulo.setText("Detalle de Gasto");
+                    lblTotalGastIngr.setText("Total Gastado");
+                    lblDinero.setText("L. " + total);
+                    lblDinero.setTextColor(this.getColor(R.color.clr_fuente_gastos));
+
+                    //Ocultamos estos elementos
+
+                    lblTransferencia.setVisibility(View.GONE);
+                    sepPrincipal.setVisibility(View.GONE);
+                    sepFactTransf.setVisibility(View.GONE);
+
+                    ocultarBotonEditar();
                     asignarDatos("Gasto"); //Llamamos al método "asignarDatos" de abajo y le mandamos "Gasto" para indicar que asigne los datos al gasto
                     break;
 
@@ -131,6 +151,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                     sepFactTransf.setVisibility(View.GONE);
                     imgFoto.setVisibility(View.GONE);
 
+                    ocultarBotonEditar();
                     asignarDatos("Ingreso"); //Llamamos al método "asignarDatos" de abajo y le mandamos "Ingreso" para indicar que asigne los datos al ingreso
                     break;
             }
@@ -195,6 +216,32 @@ public class DetalleGastoIngreso extends AppCompatActivity {
         }
         else if (nombreActivity.contentEquals("DetalleIngreso")) { //En cambio, si el "nombreActivity" tiene el texto "DetalleIngreso", que entre al else if
             Utilidades.iniciarActivityConString(DetalleGastoIngreso.this, RegistrarEditarIngresoDeduccion.class, "ActivityREID", "EditarIngreso", false); //Mandamos el texto "EditarIngreso" al activity "RegistrarEditarIngreso"
+        }
+    }
+
+    //Método que ocultar el botón de Editar cuando el rol del Usuario es "Empleado"
+    private void ocultarBotonEditar() {
+        try {
+            //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" y creamos una invocación a la interfaz "FirestoreDocumentCallback"
+            usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
+                @Override
+                public void onCallback(Map<String, Object> documento) {
+                    if (documento != null) { //Si documento no es nulo, quiere decir que si encontró el usuario actual
+                        String rol = (String) documento.get("Rol");
+
+                        if (rol.equalsIgnoreCase("Empleado"))
+                            btnEditar.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Log.w("BuscarUsuario", "Error al obtener el usuario", e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerUsuario", e);
         }
     }
 }
