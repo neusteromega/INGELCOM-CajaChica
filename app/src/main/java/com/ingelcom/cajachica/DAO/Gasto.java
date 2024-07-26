@@ -54,15 +54,15 @@ public class Gasto {
                         double total = Utilidades.convertirObjectADouble(documento.get("Total")); //En este campo, al ser un number (o double) y no un String, llamamos al método utilitario "convertirObjectADouble" que convierte un object de Firestore y retorna un double
 
                         //Comprobamos la cuadrilla a la cual se le desea ver sus gastos, y el rol que en el listado de "gastosCuadrilla" será "Empleado" y en el listado de "gastosSupervisores" será "Administrador". Si ambos, cuadrilla y rol están en el gasto, entrará al if, y por ende, habrán gastos para visualizar en el ListadoGastos
-                        if (cuadrilla.contentEquals(datoCuadrilla) && rol.contentEquals(datoRol)) {
-                            if (mes.isEmpty() || mes.contentEquals("Seleccionar Mes")) { //Si el "mes" está vacío o si contiene el texto "Seleccionar Mes", significa que no se hará ningún filtrado de gastos por mes, y se obtendrán todos los gastos por cuadrilla y rol
+                        if (cuadrilla.equalsIgnoreCase(datoCuadrilla) && rol.equalsIgnoreCase(datoRol)) {
+                            if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si el "mes" está vacío o si contiene el texto "Seleccionar Mes", significa que no se hará ningún filtrado de gastos por mes, y se obtendrán todos los gastos por cuadrilla y rol
                                 GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, total); //Creamos un objeto de tipo "GastosItems" en el cual guardamos los datos extraídos arriba
                                 listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
                             }
                             else { //Si "mes" no está vacío, ni contiene el texto "Seleccionar Mes", significa que está recibiendo un mes (por ejemplo, "Julio - 2024"), por lo tanto, se está deseando filtrar los gastos del RecyclerView por mes
                                 String fechaFormateada = Utilidades.convertirFechaAFormatoMonthYear(fechaHora); //Creamos un String donde se guarda el retorno del método utilitario "convertirFechaAFormatoMonthYear" al que le mandamos la variable "fechaHora". Este método retorna un String con el formato deseado (Mes - Año) de la fecha extraída de Firestore
 
-                                if (mes.contentEquals(fechaFormateada)) { //Si el contenido de "mes" es igual al contenido de "fechaFormateada", significa que la selección del "Mes - Año" hecha por el usuario en el activity ListadoGastos se encuentra entre las fechas de los gastos obtenidos, por lo tanto que entre al if y pueda obtener el gasto correspondiente al "Mes - Año" seleccionado
+                                if (mes.equalsIgnoreCase(fechaFormateada)) { //Si el contenido de "mes" es igual al contenido de "fechaFormateada" (ignorando mayúsculas y minúsculas), significa que la selección del "Mes - Año" hecha por el usuario en el activity ListadoGastos se encuentra entre las fechas de los gastos obtenidos, por lo tanto que entre al if y pueda obtener el gasto correspondiente al "Mes - Año" seleccionado
                                     GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, total); //Creamos un objeto de tipo "GastosItems" en el cual guardamos los datos extraídos arriba
                                     listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
                                 }

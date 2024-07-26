@@ -10,9 +10,11 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,12 +28,14 @@ import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.Modelos.DeduccionesItems;
 import com.ingelcom.cajachica.Modelos.IngresosItems;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
-public class ListadoIngresosDeducciones extends AppCompatActivity {
+public class ListadoIngresosDeducciones extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
     private LinearLayout llFecha;
     private TextView lblTitulo, lblFecha, lblTotal, lblTotalTitulo;
@@ -257,29 +261,76 @@ public class ListadoIngresosDeducciones extends AppCompatActivity {
 
     //Evento Clic del LinearLayout de Fecha, al dar clic en el mismo, se abrirá un "Popup DatePicker" en el que se podrá seleccionar un mes y año y esto servirá para filtrar los gastos
     public void mostrarMesesIngresos(View view) {
-        try {
-            //Creamos una instancia de la interfaz "DatePickerDialog.OnDateSetListener" y esta define el método "onDateSet" que se llama cuando el usuario selecciona una fecha en el DatePickerDialog
-            DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker datePicker, int year, int month, int day) { //Se ejecuta cuando el usuario ha seleccionado una fecha
-                    month = month + 1; //Al mes le sumamos +1 porque los meses por defecto empiezan en 0 y no en 1
-                    String fecha = Utilidades.convertirMonthYearString(month, year); //Guardamos el mes y año convertidos a String llamando al método "convertirMonthYearString" con los parámetros de mes y año, y esto retorna el String
-                    lblFecha.setText(fecha); //Asignamos la fecha ya convertida a String al TextView lblFecha
-                }
-            };
+        if (nombreActivity.contentEquals("ListadoIngresosAdmin")) {
+            try {
+                //Creamos una instancia de la interfaz "DatePickerDialog.OnDateSetListener" y esta define el método "onDateSet" que se llama cuando el usuario selecciona una fecha en el DatePickerDialog
+                DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int month, int day) { //Se ejecuta cuando el usuario ha seleccionado una fecha
+                        month = month + 1; //Al mes le sumamos +1 porque los meses por defecto empiezan en 0 y no en 1
+                        String fecha = Utilidades.convertirMonthYearString(month, year); //Guardamos el mes y año convertidos a String llamando al método "convertirMonthYearString" con los parámetros de mes y año, y esto retorna el String
+                        lblFecha.setText(fecha); //Asignamos la fecha ya convertida a String al TextView lblFecha
+                    }
+                };
 
-            Calendar cal = Calendar.getInstance(); //Creamos un objeto de tipo Calendar que representa la fecha y hora actuales en el dispositivo donde se está ejecutando el código
-            int year = cal.get(Calendar.YEAR); //Obtenemos el año actual
-            int month = cal.get(Calendar.MONTH); //Obtenemos el mes actual
-            int day = cal.get(Calendar.DAY_OF_MONTH); //Obtenemos el día actual
-            int style = AlertDialog.THEME_HOLO_LIGHT; //En una variable entera guardamos el estilo que tendrá la ventana emergente
+                Calendar cal = Calendar.getInstance(); //Creamos un objeto de tipo Calendar que representa la fecha y hora actuales en el dispositivo donde se está ejecutando el código
+                int year = cal.get(Calendar.YEAR); //Obtenemos el año actual
+                int month = cal.get(Calendar.MONTH); //Obtenemos el mes actual
+                int day = cal.get(Calendar.DAY_OF_MONTH); //Obtenemos el día actual
+                int style = AlertDialog.THEME_HOLO_LIGHT; //En una variable entera guardamos el estilo que tendrá la ventana emergente
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(ListadoIngresosDeducciones.this, style, dateSetListener, year, month, day); //Creamos un nuevo objeto de tipo DatePickerDialog y le mandamos como parámetros al constructor, un contexto, la variable "style" que guarda el estilo, el "dateSetListener", el año, mes y día, estos últimos para que al abrir el AlertDialog, se muestre el mes actual
-            datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("day", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de días asignando "GONE" en su visibilidad
-            datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo mes y año
+                DatePickerDialog datePickerDialog = new DatePickerDialog(ListadoIngresosDeducciones.this, style, dateSetListener, year, month, day); //Creamos un nuevo objeto de tipo DatePickerDialog y le mandamos como parámetros al constructor, un contexto, la variable "style" que guarda el estilo, el "dateSetListener", el año, mes y día, estos últimos para que al abrir el AlertDialog, se muestre el mes actual
+                datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("day", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de días asignando "GONE" en su visibilidad
+                datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo mes y año
+            }
+            catch (Exception e) {
+                Log.w("ObtenerMes", e);
+            }
         }
-        catch (Exception e) {
-            Log.w("ObtenerMes", e);
+        else if (nombreActivity.contentEquals("ListadoIngresosEmpleado")) {
+            try {
+                // Obtener los meses actual y anterior
+                Calendar calendar = Calendar.getInstance();
+
+                // Configurar el formato de fecha en español
+                SimpleDateFormat sdf = new SimpleDateFormat("MMMM - yyyy", new Locale("es", "ES"));
+                String mesActual = sdf.format(calendar.getTime());
+
+                calendar.add(Calendar.MONTH, -1);
+                String mesAnterior = sdf.format(calendar.getTime());
+
+                mesActual = mesActual.substring(0, 1).toUpperCase() + mesActual.substring(1); //Aquí establecemos en mayúscula la primera letra del mes
+                mesAnterior = mesAnterior.substring(0, 1).toUpperCase() + mesAnterior.substring(1); //Aquí establecemos en mayúscula la primera letra del mes
+
+                PopupMenu popup = new PopupMenu(this, view); // Objeto de tipo "PopupMenu"
+                popup.setOnMenuItemClickListener(this); // Indicamos que asigne el evento "OnMenuItemClick" para que haga algo cada vez que se dé click a una opción del menú
+                popup.inflate(R.menu.popupmenu_ultimosdosmeses); // Inflamos la vista del menú indicando la ruta de dicha vista gráfica
+
+                // Asignar los textos a los items del menú
+                popup.getMenu().findItem(R.id.menuMesActual).setTitle(mesActual);
+                popup.getMenu().findItem(R.id.menuMesAnterior).setTitle(mesAnterior);
+
+                popup.show(); // Mostramos el menú ya inflado
+            }
+            catch (Exception e) {
+                Log.w("ObtenerMes", e);
+            }
+        }
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) { //Parte lógica de lo que queremos que haga cada opción del popup menú
+        String mesSeleccionado = menuItem.getTitle().toString();
+
+        switch (menuItem.getItemId()) {
+            case R.id.menuMesAnterior:
+                lblFecha.setText(mesSeleccionado);
+                return true;
+            case R.id.menuMesActual:
+                lblFecha.setText(mesSeleccionado);
+                return true;
+            default:
+                return false;
         }
     }
 
