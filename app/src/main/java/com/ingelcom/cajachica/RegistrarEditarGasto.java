@@ -78,14 +78,32 @@ public class RegistrarEditarGasto extends AppCompatActivity {
         if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
             switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
                 case "RegistrarGastoEmpleado": //Establecemos los elementos gráficos si la pantalla es "RegistrarGastoEmpleado"
+                    lblTitulo.setText("Registrar Gasto");
                     lblDinero.setText("L. " + dineroDisponible);
+
                     //Ocultamos estos dos elementos (Fecha y Cuadrilla) para que el empleado no pueda verlos
                     llFecha.setVisibility(View.GONE);
                     llCuadrilla.setVisibility(View.GONE);
                     break;
 
                 case "RegistrarGastoAdmin": //Establecemos los elementos gráficos si la pantalla es "RegistrarGastoAdmin"
+                    lblTitulo.setText("Registrar Gasto");
+
+                    llDinero.setVisibility(View.GONE);
+                    break;
+
+                case "EditarGastoEmpleado": //Establecemos los elementos gráficos si la pantalla es "EditarGastoEmpleado"
+                    lblTitulo.setText("Editar Gasto");
+                    lblDinero.setText("L. " + dineroDisponible);
+
+                    //Ocultamos estos dos elementos (Fecha y Cuadrilla) para que el empleado no pueda verlos
                     llFecha.setVisibility(View.GONE);
+                    llCuadrilla.setVisibility(View.GONE);
+                    break;
+
+                case "EditarGastoAdmin":
+                    lblTitulo.setText("Editar Gasto");
+
                     llDinero.setVisibility(View.GONE);
                     break;
             }

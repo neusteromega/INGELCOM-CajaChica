@@ -43,8 +43,12 @@ public class Usuario {
                         String rol = (String) documento.get("Rol"); //El "Rol" lo extraemos para verificar si es Empleado o Administrador
                         String estado = String.valueOf(documento.get("Estado"));
 
+                        if (correo.isEmpty()) { //Si el usuario aún no tiene un correo, que asigne el texto "Sin Correo"
+                            correo = "Sin Correo";
+                        }
+
                         //Filtramos solo los empleados con rol "Empleado"
-                        if (rol.contentEquals("Empleado")) {
+                        if (rol.equalsIgnoreCase("Empleado")) {
                             EmpleadosItems empleado = new EmpleadosItems(nombre, correo, cuadrilla, identidad, telefono, rol, estado); //Creamos un objeto de tipo "EmpleadosItems" en el cual guardamos los datos extraídos arriba
                             listaEmpleados.add(empleado); //El objeto de tipo "EmpleadosItems" lo guardamos en la lista "listaEmpleados"
                         }
@@ -114,12 +118,7 @@ public class Usuario {
                         datos.put("Rol", rol);
                         datos.put("Correo", ""); //El correo estará vacío hasta que el usuario lo cree más adelante
                         datos.put("Estado", true);
-
-                        //Si la selección hecha en el spinner "Cuadrillas" fue "No Pertenece", que inserte un valor vacío ("") en el campo "Cuadrilla" de Firestore
-                        if (cuadrilla.contentEquals("No Pertenece"))
-                            datos.put("Cuadrilla", "");
-                        else //Pero si la selección hecha en el spinner "Cuadrillas" fue otra diferente a "No Pertenece", que inserte esa selección en el campo "Cuadrilla" de Firestore
-                            datos.put("Cuadrilla", cuadrilla);
+                        datos.put("Cuadrilla", cuadrilla);
 
                         //Llamamos el método "insertarRegistros" de la clase "FirestoreOperaciones" y le mandamos el nombre de la colección, el HashMap con los datos a insertar. También invocamos los métodos "onSuccess" y "onFailure" de la interfaz FirestoreInsertCallback
                         oper.insertarRegistros("usuarios", datos, new FirestoreCallbacks.FirestoreTextCallback() {

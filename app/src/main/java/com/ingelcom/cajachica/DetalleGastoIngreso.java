@@ -185,7 +185,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
 
     //Método Click del botón para editar un Gasto o un Ingreso
     public void editarGastoIngreso(View view) {
-        if (nombreActivity.contentEquals("DetalleGasto")) { //Si el "nombreActivity" tiene el texto "DetalleGasto", que entre al if
+        if (nombreActivity.equalsIgnoreCase("DetalleGastoCuadrilla") || nombreActivity.equalsIgnoreCase("DetalleGastoSupervisores")) { //Si el "nombreActivity" tiene el texto "DetalleGasto", que entre al if
             try {
                 //Llamamos el método "obtenerUsuarioActual" de la clase "Usuario" y creamos una invocación a la interfaz "FirestoreDocumentCallback"
                 usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
@@ -194,9 +194,9 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                         if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
                             String rol = (String) documento.get("Rol");
 
-                            if (rol.contentEquals("Administrador")) //Si el rol del usuario actual es "Administrador" que mande el texto "EditarGastoAdmin" al activity "RegistrarEditarGasto"
+                            if (rol.equalsIgnoreCase("Administrador")) //Si el rol del usuario actual es "Administrador" que mande el texto "EditarGastoAdmin" al activity "RegistrarEditarGasto"
                                 Utilidades.iniciarActivityConString(DetalleGastoIngreso.this, RegistrarEditarGasto.class, "ActivityREG", "EditarGastoAdmin", false);
-                            else if (rol.contentEquals("Empleado")) //En cambio, si el rol del usuario actual es "Empleado" que mande el texto "EditarGastoEmpleado" al activity "RegistrarEditarGasto"
+                            else if (rol.equalsIgnoreCase("Empleado")) //En cambio, si el rol del usuario actual es "Empleado" que mande el texto "EditarGastoEmpleado" al activity "RegistrarEditarGasto"
                                 Utilidades.iniciarActivityConString(DetalleGastoIngreso.this, RegistrarEditarGasto.class, "ActivityREG", "EditarGastoEmpleado", false);
                         }
                         else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
@@ -227,10 +227,10 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                 @Override
                 public void onCallback(Map<String, Object> documento) {
                     if (documento != null) { //Si documento no es nulo, quiere decir que si encontró el usuario actual
-                        String rol = (String) documento.get("Rol");
+                        String rol = (String) documento.get("Rol"); //Obtenemos el rol del usuario
 
-                        if (rol.equalsIgnoreCase("Empleado"))
-                            btnEditar.setVisibility(View.GONE);
+                        if (rol.equalsIgnoreCase("Empleado")) //Si el rol es "Empleado", que entre al if
+                            btnEditar.setVisibility(View.GONE); //Ocultamos el botón de Editar
                     }
                 }
 

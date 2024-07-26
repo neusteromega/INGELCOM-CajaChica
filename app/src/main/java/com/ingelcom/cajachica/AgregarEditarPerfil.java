@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -25,8 +26,8 @@ import java.util.List;
 
 public class AgregarEditarPerfil extends AppCompatActivity {
 
-    private LinearLayout llNombreApellido, llIdentidad, llTelefono, llCorreo, llContra, llConfContra, llRol, llCuadrilla, llEstado;
-    private EditText txtNombreApellido, txtIdentidad, txtTelefono, txtCorreo, txtContra, txtConfContra;
+    private LinearLayout llNombreApellido, llIdentidad, llTelefono, llCorreo, llRol, llCuadrilla, llEstado;
+    private EditText txtNombreApellido, txtIdentidad, txtTelefono, txtCorreo;
     private TextView lblTitulo, btnConfirmar;
     private Spinner spRoles, spCuadrillas, spEstado;
     private ImageView btnRegresar;
@@ -46,6 +47,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         inicializarElementos();
         establecerElementos();
         inicializarSpinners();
+        ocultarCuadrillas();
     }
 
     private void inicializarElementos() {
@@ -53,8 +55,6 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         llIdentidad = findViewById(R.id.LLIdentidadAEP);
         llTelefono = findViewById(R.id.LLTelefonoAEP);
         llCorreo = findViewById(R.id.LLCorreoAEP);
-        /*llContra = findViewById(R.id.LLContrasenaAEP);
-        llConfContra = findViewById(R.id.LLConfContrasenaAEP);*/
         llRol = findViewById(R.id.LLRolAEP);
         llCuadrilla = findViewById(R.id.LLCuadrillaAEP);
         llEstado = findViewById(R.id.LLEstadoAEP);
@@ -63,8 +63,6 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         txtIdentidad = findViewById(R.id.txtIdentidadAEP);
         txtTelefono = findViewById(R.id.txtTelefonoAEP);
         txtCorreo = findViewById(R.id.txtCorreoAEP);
-        /*txtContra = findViewById(R.id.txtContrasenaAEP);
-        txtConfContra = findViewById(R.id.txtConfContrasenaAEP);*/
 
         lblTitulo = findViewById(R.id.lblTituloAEP);
         btnRegresar = findViewById(R.id.imgRegresarAEP);
@@ -87,8 +85,6 @@ public class AgregarEditarPerfil extends AppCompatActivity {
 
                     //Ocultamos con "GONE" los elementos que no son necesarios
                     llCorreo.setVisibility(View.GONE);
-                    /*llContra.setVisibility(View.GONE);
-                    llConfContra.setVisibility(View.GONE);*/
                     llEstado.setVisibility(View.GONE);
                     break;
 
@@ -131,12 +127,12 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         oper.obtenerRegistrosCampo("cuadrillas", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
             @Override
             public void onCallback(List<String> lista) {
-                List<String> listaCuadrillas = new ArrayList<>(); //Lista que tendrá todas las cuadrillas, más la opción de "No Pertenece"
+                /*List<String> listaCuadrillas = new ArrayList<>(); //Lista que tendrá todas las cuadrillas, más la opción de "No Pertenece"
                 listaCuadrillas.add("No Pertenece"); //Agregamos la opción de "No Pertenece"
-                listaCuadrillas.addAll(lista); //Anexamos la lista de cuadrillas de Firestore que está en la variable "lista"
+                listaCuadrillas.addAll(lista); //Anexamos la lista de cuadrillas de Firestore que está en la variable "lista"*/
 
                 //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(AgregarEditarPerfil.this, R.layout.spinner_items, listaCuadrillas);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(AgregarEditarPerfil.this, R.layout.spinner_items, lista);
                 spCuadrillas.setAdapter(adapter); //Asignamos el adapter a "spCuadrillas"
                 //Utilidades.spinnerConHint(AgregarEditarPerfil.this, spCuadrillas, lista, "Cuadrillas");
             }
@@ -170,9 +166,14 @@ public class AgregarEditarPerfil extends AppCompatActivity {
 
                                 //Obtenemos la selección hecha en los Spinners de Roles y Cuadrillas
                                 String rol = spRoles.getSelectedItem().toString();
-                                String cuadrilla = spCuadrillas.getSelectedItem().toString();
 
-                                usu.insertarUsuario(nombre, identidad, telefono, rol, cuadrilla); //Llamamos el método "insertarUsuario" de la clase "Usuario" donde se hará el proceso de inserción a Firestore y le mandamos los textboxes y selecciones de los spinners de esta pantalla
+                                if (rol.equalsIgnoreCase("Empleado")) { //Si el rol seleccionado fue "Empleado", que agarre la cuadrilla del "spCuadrillas"
+                                    String cuadrilla = spCuadrillas.getSelectedItem().toString();
+                                    usu.insertarUsuario(nombre, identidad, telefono, rol, cuadrilla); //Llamamos el método "insertarUsuario" de la clase "Usuario" donde se hará el proceso de inserción a Firestore y le mandamos los textboxes y selecciones de los spinners de esta pantalla
+                                }
+                                else if (rol.equalsIgnoreCase("Administrador")) //En cambio, si el rol seleccionado fue "Administrador", que mande la cuadrilla vacía
+                                    usu.insertarUsuario(nombre, identidad, telefono, rol, ""); //Llamamos el método "insertarUsuario" de la clase "Usuario" donde se hará el proceso de inserción a Firestore y le mandamos los textboxes y selecciones de los spinners de esta pantalla
+
                             }
                         }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
                                 @Override
@@ -186,8 +187,28 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         }
     }
 
-    //Interfaz "callback" que nos ayuda a realizar operaciones que puedan tomar un tiempo en completarse, como las operaciones que requieren internet y pueden tardar un poco en realizarse debido a la conexión a internet
-    /*public interface ValidacionCallback {
-        void onResultado(boolean esValido); //Recibe un valor booleano que determina si la identidad está disponible
-    }*/
+    private void ocultarCuadrillas() {
+        try {
+            //Evento que detecta la selección hecha en el "spRoles"
+            spRoles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                    String rol = adapterView.getItemAtPosition(position).toString(); //Obtenemos la selección hecha en el Spinner y la guardamos en la variable "rol"
+
+                    if (rol.equalsIgnoreCase("Administrador")) //Si el rol obtenido del Spinner es "Administrador" que entre al if
+                        llCuadrilla.setVisibility(View.GONE); //Ocultamos el "llCuadrilla" cuando el rol sea "Administrador" ya que los administradores no pueden pertenecer a una cuadrilla
+                    else if (rol.equalsIgnoreCase("Empleado")) //Si el rol obtenido del Spinner es "Empleado" que entre al if
+                        llCuadrilla.setVisibility(View.VISIBLE); //Mostramos el "llCuadrilla" cuando el rol sea "Empleado" ya que los empleados si pueden pertenecer a una cuadrilla
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("DetectarRol", e);
+        }
+    }
 }
