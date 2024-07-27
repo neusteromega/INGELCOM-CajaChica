@@ -68,8 +68,8 @@ public class Deduccion {
     }
 
     //Método que nos permite registrar una Deducción en Firestore
-    public void registrarDeduccion(String usuario, String cuadrilla, String total) {
-        if (!total.isEmpty()) { //Verificamos que la caja de texto de "total" no esté vacía para que entre al if
+    public void registrarDeduccion(String usuario, Timestamp fechaHora, String cuadrilla, String total) {
+        if (fechaHora != null && !total.isEmpty()) { //Verificamos que la caja de texto de "total" no esté vacía, y que el timestamp "fechaHora" no sea nulo para que entre al if
             try {
                 Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
 
@@ -77,14 +77,10 @@ public class Deduccion {
                 double totalIngreso = Double.parseDouble(total); //Convertimos la variable String "total" en double y su contenido lo guardamos en "totalIngreso"
                 Map<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos a insertar
 
-                Calendar calendar = Calendar.getInstance(); //Obtenemos una instancia de la clase "Calendar"
-                Date fechaHora = calendar.getTime(); //"calendar.getTime()" devuelve un objeto Date que representa la fecha y hora actual contenida en el objeto Calendar, esto lo guardamos en "fechaHora"
-                Timestamp timestamp = new Timestamp(fechaHora); //Convertimos "fechaHora" en un objeto "Timestamp" para que sea compatible con Firestore
-
                 //Insertamos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el valor a insertar
                 datos.put("ID", idDocumento);
                 datos.put("Usuario", usuario);
-                datos.put("Fecha", timestamp);
+                datos.put("Fecha", fechaHora);
                 datos.put("Cuadrilla", cuadrilla);
                 datos.put("Total", totalIngreso);
 

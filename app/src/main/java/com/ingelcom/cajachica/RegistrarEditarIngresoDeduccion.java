@@ -43,7 +43,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
     private Spinner spCuadrillas;
     private int day, month, year;
     private String nombreActivity, fechaHoraActual, cuadrilla;
-    private Timestamp timestamp;
+    private Timestamp timestamp = null;
 
     private FirestoreOperaciones oper = new FirestoreOperaciones();
     private Cuadrilla cuad = new Cuadrilla(RegistrarEditarIngresoDeduccion.this);
@@ -166,40 +166,42 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         }
     }
 
-    //Método Click del LinearLayout de Fecha, el cual al dar clic en él, se mostrará un calendario emergente para seleccionar una fecha
+    //Método Click del LinearLayout de Fecha, el cual al dar clic en él, se mostrará un calendario emergente para seleccionar una fecha, y luego un reloj para seleccionar la hora
     public void seleccionarFecha(View view) {
-        final Calendar calendar = Calendar.getInstance();
+        final Calendar calendar = Calendar.getInstance(); //Creamos una instancia de Calendar que representa la fecha y hora actuales. Y en ella se irán almacenando las selecciones de fecha y hora que haga el usuario en el calendario y reloj
 
-        // Inicializar el DatePickerDialog
+        //Inicializamos el DatePickerDialog con el año, mes y día actuales
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                //Actualizamos el "calendar" con el año, mes y día seleccionados por el usuario
                 calendar.set(Calendar.YEAR, year);
                 calendar.set(Calendar.MONTH, monthOfYear);
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                // Inicializar el TimePickerDialog después de seleccionar la fecha
+                //Inicializamos el TimePickerDialog después de seleccionar la fecha
                 TimePickerDialog timePickerDialog = new TimePickerDialog(RegistrarEditarIngresoDeduccion.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
+                        //Actualizamos el "calendar" con la hora y los minutos seleccionados por el usuario
                         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         calendar.set(Calendar.MINUTE, minute);
 
-                        // Formatear y mostrar la fecha y hora seleccionada en el TextView
+                        //Formateamos y mostramos la fecha y hora seleccionada en el TextView
                         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy - HH:mm", Locale.getDefault());
                         String fechaHoraSeleccionada = sdf.format(calendar.getTime());
                         lblFecha.setText(fechaHoraSeleccionada);
 
-                        Date fechaHora = calendar.getTime();
-                        timestamp = new Timestamp(fechaHora);
+                        Date fechaHora = calendar.getTime(); //Convertimos la fecha y hora seleccionada a un objeto Date
+                        timestamp = new Timestamp(fechaHora); //Convertimos el objeto Date a un objeto Timestamp (Variable global inicializada en null arriba)
                     }
                 }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
 
-                timePickerDialog.show();
+                timePickerDialog.show(); //Mostramos el TimePickerDialog
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
-        datePickerDialog.show();
+        datePickerDialog.show(); //Mostramos el DatePickerDialog
     }
 
     //Evento Clic del botón "Confirmar"
@@ -265,9 +267,9 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                         String nombre = (String) documento.get("Nombre"); //Obtenemos el nombre del usuario actual
 
                         if (tipo.contentEquals("Ingreso")) //Si "tipo" es "Ingreso" que registre el ingreso en Firestore
-                            ingr.registrarIngreso(nombre, cuadrilla, transferencia, total); //Llamamos el método "registrarIngreso" donde se hará el proceso de inserción a Firestore y le mandamos el nombre del usuario actual (el usuario que está registrando el ingreso de dinero), los textboxes y selecciones de los spinners de esta pantalla
+                            ingr.registrarIngreso(nombre, timestamp, cuadrilla, transferencia, total); //Llamamos el método "registrarIngreso" donde se hará el proceso de inserción a Firestore y le mandamos el nombre del usuario actual (el usuario que está registrando el ingreso de dinero), la fecha y hora seleccionada, los textboxes y selecciones de los spinners de esta pantalla
                         else if (tipo.contentEquals("Deduccion")) //En cambio, si "tipo" es "Deduccion" que registra la deducción en Firestore
-                            deduc.registrarDeduccion(nombre, cuadrilla, total); //Llamamos el método "registrarDeduccion" donde se hará el proceso de inserción a Firestore y le mandamos el nombre del usuario actual (el usuario que está registrando la deducción por planilla), los textboxes y selecciones de los spinners de esta pantalla
+                            deduc.registrarDeduccion(nombre, timestamp, cuadrilla, total); //Llamamos el método "registrarDeduccion" donde se hará el proceso de inserción a Firestore y le mandamos el nombre del usuario actual (el usuario que está registrando la deducción por planilla), la fecha y hora seleccionada, los textboxes y selecciones de los spinners de esta pantalla
                     }
                     else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
                         Log.w("ObtenerUsuario", "Usuario no encontrado");

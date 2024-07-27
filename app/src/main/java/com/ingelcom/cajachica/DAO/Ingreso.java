@@ -89,8 +89,8 @@ public class Ingreso {
     }
 
     //Método que nos permite registrar un Ingreso en Firestore
-    public void registrarIngreso(String usuario, String cuadrilla, String transferencia, String total) {
-        if (!transferencia.isEmpty() && !total.isEmpty()) { //Verificamos que las dos cajas de texto no estén vacías para que entre al if
+    public void registrarIngreso(String usuario, Timestamp fechaHora, String cuadrilla, String transferencia, String total) {
+        if (fechaHora != null && !transferencia.isEmpty() && !total.isEmpty()) { //Verificamos que las dos cajas de texto no estén vacías, y que el "Timestamp" no sea nulo para que entre al if
             try {
                 Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
 
@@ -98,14 +98,10 @@ public class Ingreso {
                 double totalIngreso = Double.parseDouble(total); //Convertimos la variable String "total" en double y su contenido lo guardamos en "totalIngreso"
                 Map<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos a insertar
 
-                Calendar calendar = Calendar.getInstance(); //Obtenemos una instancia de la clase "Calendar"
-                Date fechaHora = calendar.getTime(); //"calendar.getTime()" devuelve un objeto Date que representa la fecha y hora actual contenida en el objeto Calendar, esto lo guardamos en "fechaHora"
-                Timestamp timestamp = new Timestamp(fechaHora); //Convertimos "fechaHora" en un objeto "Timestamp" para que sea compatible con Firestore
-
                 //Insertamos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el valor a insertar
                 datos.put("ID", idDocumento);
                 datos.put("Usuario", usuario);
-                datos.put("Fecha", timestamp);
+                datos.put("Fecha", fechaHora);
                 datos.put("Cuadrilla", cuadrilla);
                 datos.put("Transferencia", transferencia);
                 datos.put("Total", totalIngreso);
