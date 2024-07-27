@@ -169,7 +169,7 @@ public class FragAdmInicio extends Fragment {
                     try {
                         int posicion = rvIngresos.getChildAdapterPosition(view); //Obtenemos la posición del elemento clickeado en el RecyclerView
                         T item = items.get(posicion); //De la lista "items" (que se utiliza para mostrar el RecyclerView) obtenemos el elemento clickeado utilizando la "posicion" obtenida arriba. Y este elemento clickeado lo guardamos en una variable de tipo "T" ya que "items" también es de tipo "T"
-                        HashMap<String, Object> datosIngreso = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
+                        HashMap<String,Object> datosIngreso = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
 
                         //Agregamos las claves y datos al HashMap
                         datosIngreso.put("ActivityDGI", "DetalleIngreso");
@@ -206,7 +206,7 @@ public class FragAdmInicio extends Fragment {
                         HashMap<String, Object> datosGasto = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
 
                         //Agregamos las claves y datos al HashMap
-                        datosGasto.put("ActivityDGI", "DetalleGasto");
+                        datosGasto.put("ActivityDGI", "DetalleGastoSupervisores");
 
                         //Llamamos el método utilitario "obtenerCampo" y le mandamos el "item" clickeado, y los nombres de los métodos getter de la clase GastosItems para que nos retorne los valores que devuelven estos métodos y poder guardarlos en el HashMap
                         datosGasto.put("ID", Utilidades.obtenerCampo(item, "getId"));

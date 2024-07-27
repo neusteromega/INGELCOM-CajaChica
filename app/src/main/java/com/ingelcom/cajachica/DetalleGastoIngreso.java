@@ -9,10 +9,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ingelcom.cajachica.DAO.Cuadrilla;
 import com.ingelcom.cajachica.DAO.Usuario;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class DetalleGastoIngreso extends AppCompatActivity {
@@ -24,6 +26,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
 
     private String nombreActivity, id, fecha, usuario, cuadrilla, lugarCompra, tipoCompra, descripcion, factura, transferencia, total;
     private Usuario usu = new Usuario(DetalleGastoIngreso.this);
+    private Cuadrilla cuad = new Cuadrilla(DetalleGastoIngreso.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,12 +188,44 @@ public class DetalleGastoIngreso extends AppCompatActivity {
 
     //Método Click del botón para editar un Gasto o un Ingreso
     public void editarGastoIngreso(View view) {
-        if (nombreActivity.equalsIgnoreCase("DetalleGastoCuadrilla")) //Si el "nombreActivity" tiene el texto "DetalleGastoCuadrilla", que entre al if
-            Utilidades.iniciarActivityConString(DetalleGastoIngreso.this, RegistrarEditarGasto.class, "ActivityREG", "EditarGastoEmpleado", false); //Abrimos el activity "RegistrarEditarGasto" y le mandamos el texto "EditarGastoEmpleado" como parámetro
-        else if (nombreActivity.equalsIgnoreCase("DetalleGastoSupervisores")) //Si el "nombreActivity" tiene el texto "DetalleGastoSupervisores", que entre al if
-            Utilidades.iniciarActivityConString(DetalleGastoIngreso.this, RegistrarEditarGasto.class, "ActivityREG", "EditarGastoAdmin", false); //Abrimos el activity "RegistrarEditarGasto" y le mandamos el texto "EditarGastoAdmin" como parámetro
-        else if (nombreActivity.contentEquals("DetalleIngreso")) //En cambio, si el "nombreActivity" tiene el texto "DetalleIngreso", que entre al else if
-            Utilidades.iniciarActivityConString(DetalleGastoIngreso.this, RegistrarEditarIngresoDeduccion.class, "ActivityREID", "EditarIngreso", false); //Mandamos el texto "EditarIngreso" al activity "RegistrarEditarIngreso"
+        try {
+            //Llamamos el método "obtenerUnaCuadrilla" de la clase "Cuadrilla", le mandamos la cuadrilla y creamos una invocación a la interfaz "FirestoreDocumentCallback"
+            cuad.obtenerUnaCuadrilla(cuadrilla, new FirestoreCallbacks.FirestoreDocumentCallback() {
+                @Override
+                public void onCallback(Map<String, Object> documento) {
+                    if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró la cuadrilla
+                        Object valor = documento.get("Dinero"); //Lo obtenemos como Object ya que Firestore puede almacenar números en varios formatos (por ejemplo, Long y Double) y esto puede causar problemas con el casting del contenido del campo
+                        double dinero = Utilidades.convertirObjectADouble(valor); //Llamamos el método utilitario "convertirObjectADouble" y le mandamos el objeto "valor", y nos retorna este objeto ya convertido a double y lo guardamos en "dinero"
+                        HashMap<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
+
+                        if (nombreActivity.equalsIgnoreCase("DetalleGastoCuadrilla")) {//Si el "nombreActivity" tiene el texto "DetalleGastoCuadrilla", que entre al if
+                            //Agregamos las claves y datos al HashMap
+                            datos.put("ActivityREG", "EditarGastoEmpleado");
+                            datos.put("DineroDisponible", String.format("%.2f", dinero));
+
+                            Utilidades.iniciarActivityConDatos(DetalleGastoIngreso.this, RegistrarEditarGasto.class, datos); //Abrimos el activity "RegistrarEditarGasto" y le mandamos el HashMap "datos" con los parámetros
+                        }
+                        else if (nombreActivity.equalsIgnoreCase("DetalleGastoSupervisores")) {//Si el "nombreActivity" tiene el texto "DetalleGastoSupervisores", que entre al if
+                            //Agregamos las claves y datos al HashMap
+                            datos.put("ActivityREG", "EditarGastoAdmin");
+                            datos.put("DineroDisponible", String.format("%.2f", dinero));
+
+                            Utilidades.iniciarActivityConDatos(DetalleGastoIngreso.this, RegistrarEditarGasto.class, datos); //Abrimos el activity "RegistrarEditarGasto" y le mandamos el HashMap "datos" con los parámetros
+                        }
+                        else if (nombreActivity.contentEquals("DetalleIngreso")) //En cambio, si el "nombreActivity" tiene el texto "DetalleIngreso", que entre al else if
+                            Utilidades.iniciarActivityConString(DetalleGastoIngreso.this, RegistrarEditarIngresoDeduccion.class, "ActivityREID", "EditarIngreso", false); //Mandamos el texto "EditarIngreso" al activity "RegistrarEditarIngreso"
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerCuadrilla", e);
+        }
     }
 
     //Método que ocultar el botón de Editar cuando el rol del Usuario es "Empleado"

@@ -29,8 +29,8 @@ import java.util.List;
 
 public class ListadoGastos extends AppCompatActivity {
 
-    private TextView lblFecha, lblLineaCuadrilla, lblLineaSupervisores;
-    private String nombreCuadrilla;
+    private TextView lblTitulo, lblFecha, lblLineaCuadrilla, lblLineaSupervisores;
+    private String nombreActivity, nombreCuadrilla;
     private ViewPager2 vpGastos;
 
     //Instancia de la clase "SharedViewGastosModel" que nos ayuda a compartir datos con diferentes componentes de la interfaz de usuario, como ser fragmentos y actividades y que estos datos sobreviven a cambios de configuración como las rotaciones de pantalla
@@ -48,9 +48,11 @@ public class ListadoGastos extends AppCompatActivity {
     }
 
     private void inicializarElementos() {
-        //Obtenemos el nombre de la cuadrilla que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y les mandamos "this" para referenciar esta actividad y el nombre de la clave del putExtra
+        //Obtenemos el nombre del Activity y de la cuadrilla que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y les mandamos "this" para referenciar esta actividad y el nombre de la clave del putExtra
+        nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityLG");
         nombreCuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
 
+        lblTitulo = findViewById(R.id.lblTituloLG);
         lblFecha = findViewById(R.id.lblFechaLG);
         lblLineaCuadrilla = findViewById(R.id.lblCuadrillaLineaLG);
         lblLineaSupervisores = findViewById(R.id.lblSupervisoresLineaLG);
@@ -60,7 +62,16 @@ public class ListadoGastos extends AppCompatActivity {
     }
 
     private void establecerElementos() {
-        //asignarMes(); //Llamamos el método "asignarMes" para que asigne el mes y el año actual al TextView lblFecha
+        switch (nombreActivity) {
+            case "ListadoGastosEmpleado":
+                lblTitulo.setText("Listado de Gastos");
+                break;
+
+            case "ListadoGastosAdmin":
+                lblTitulo.setText(nombreCuadrilla); //Establecemos el nombre de la cuadrilla en el titulo
+                break;
+        }
+
         lblLineaSupervisores.setVisibility(View.INVISIBLE); //Ocultamos la linea bajo la palabra "Supervisores" al iniciar el Activity
 
         VPGastosAdapter vpAdapter = new VPGastosAdapter(this, nombreCuadrilla); //Creamos un objeto de "VPGastosAdapter" y le mandamos el contexto "this" de este Activity
@@ -113,15 +124,6 @@ public class ListadoGastos extends AppCompatActivity {
             }
         });
     }
-
-    //Método que nos ayuda a establecer desde el inicio, el mes y el año actual al TextView lblFecha
-    /*private void asignarMes() {
-        Calendar cal = Calendar.getInstance(); //Creamos un objeto de tipo Calendar que representa la fecha y hora actuales en el dispositivo donde se está ejecutando el código
-        int year = cal.get(Calendar.YEAR); //Obtenemos el año actual
-        int month = cal.get(Calendar.MONTH); //Obtenemos el mes actual
-        String fecha = Utilidades.convertirMonthYearString(month + 1, year); //Guardamos el mes y año convertidos a String llamando al método "convertirMonthYearString" con los parámetros de mes y año, y esto retorna el String
-        lblFecha.setText(fecha); //Asignamos la fecha ya convertida a String al TextView lblFecha
-    }*/
 
     //Evento Clic del LinearLayout "LLCuadrillaLG"
     public void gastosCuadrilla(View view) {

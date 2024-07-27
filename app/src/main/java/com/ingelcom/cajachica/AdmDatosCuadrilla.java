@@ -215,7 +215,13 @@ public class AdmDatosCuadrilla extends AppCompatActivity {
     }
 
     public void verGastos(View view) {
-        Utilidades.iniciarActivityConString(AdmDatosCuadrilla.this, ListadoGastos.class, "Cuadrilla", nombreCuadrilla, false);
+        HashMap<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
+
+        //Agregamos las claves y datos al HashMap
+        datos.put("ActivityLG", "ListadoGastosAdmin");
+        datos.put("Cuadrilla", nombreCuadrilla);
+
+        Utilidades.iniciarActivityConDatos(AdmDatosCuadrilla.this, ListadoGastos.class, datos); //Mandamos el hashMap con los datos a la clase "ListadoGastos"
     }
 
     public void verDeducciones(View view) {

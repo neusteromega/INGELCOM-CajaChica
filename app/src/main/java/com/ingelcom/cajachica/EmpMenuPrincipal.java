@@ -125,7 +125,7 @@ public class EmpMenuPrincipal extends AppCompatActivity {
     }
 
     public void listadoGastos(View view) {
-        Utilidades.iniciarActivity(this, ListadoGastos.class, false);
+        Utilidades.iniciarActivityConString(EmpMenuPrincipal.this, ListadoGastos.class, "ActivityLG", "ListadoGastosEmpleado", false);
     }
 
     public void listadoIngresos(View view) {

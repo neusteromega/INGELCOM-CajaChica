@@ -73,7 +73,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
     private void establecerElementos() {
         switch (nombreActivity) {
             case "ListadoIngresosAdmin":
-                lblTitulo.setText("Listado de Ingresos");
+                lblTitulo.setText(nombreCuadrilla);
                 lblTotalTitulo.setText("Total de Ingresos");
                 lblTotal.setTextColor(getResources().getColor(R.color.clr_fuente_ingresos));
                 break;
@@ -86,7 +86,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
 
             case "ListadoDeducciones":
                 llFecha.setVisibility(View.GONE);
-                lblTitulo.setText("Listado de Deducciones");
+                lblTitulo.setText(nombreCuadrilla);
                 lblTotalTitulo.setText("Total de Deducciones");
                 lblTotal.setTextColor(getResources().getColor(R.color.clr_fuente_secundario));
                 break;
