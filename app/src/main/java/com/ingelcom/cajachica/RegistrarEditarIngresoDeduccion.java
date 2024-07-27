@@ -17,7 +17,9 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.google.firebase.Timestamp;
 import com.ingelcom.cajachica.DAO.Cuadrilla;
 import com.ingelcom.cajachica.DAO.Deduccion;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
@@ -28,6 +30,7 @@ import com.ingelcom.cajachica.Herramientas.Utilidades;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -40,6 +43,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
     private Spinner spCuadrillas;
     private int day, month, year;
     private String nombreActivity, fechaHoraActual, cuadrilla;
+    private Timestamp timestamp;
 
     private FirestoreOperaciones oper = new FirestoreOperaciones();
     private Cuadrilla cuad = new Cuadrilla(RegistrarEditarIngresoDeduccion.this);
@@ -185,6 +189,9 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy - HH:mm", Locale.getDefault());
                         String fechaHoraSeleccionada = sdf.format(calendar.getTime());
                         lblFecha.setText(fechaHoraSeleccionada);
+
+                        Date fechaHora = calendar.getTime();
+                        timestamp = new Timestamp(fechaHora);
                     }
                 }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
 

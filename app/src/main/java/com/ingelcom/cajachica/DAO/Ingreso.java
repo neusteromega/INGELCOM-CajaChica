@@ -99,8 +99,6 @@ public class Ingreso {
                 Map<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos a insertar
 
                 Calendar calendar = Calendar.getInstance(); //Obtenemos una instancia de la clase "Calendar"
-                //SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()); //Creamos un formato para la fecha y hora. "Locale.getDefault()" especifica que el formato debe seguir las convenciones predeterminadas del sistema
-                //fechaHoraActual = sdf.format(calendar.getTime()); //Obtenemos la fecha y hora actual con "calendar.getTime()" y lo convertimos al formato guardado en "sdf" y esto lo asignamos al String "fechaHoraActual"
                 Date fechaHora = calendar.getTime(); //"calendar.getTime()" devuelve un objeto Date que representa la fecha y hora actual contenida en el objeto Calendar, esto lo guardamos en "fechaHora"
                 Timestamp timestamp = new Timestamp(fechaHora); //Convertimos "fechaHora" en un objeto "Timestamp" para que sea compatible con Firestore
 
