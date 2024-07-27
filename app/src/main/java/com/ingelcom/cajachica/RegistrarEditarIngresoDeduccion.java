@@ -3,12 +3,14 @@ package com.ingelcom.cajachica;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -22,8 +24,10 @@ import com.ingelcom.cajachica.DAO.Usuario;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
@@ -157,20 +161,20 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
     }
 
     //Método Click del LinearLayout de Fecha, el cual al dar clic en él, se mostrará un calendario emergente para seleccionar una fecha
-    /*public void seleccionarFecha(View view) {
+    public void seleccionarFecha(View view) {
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
                 lblFecha.setText(String.format("%02d/%02d/%04d", dayOfMonth, monthOfYear + 1, year));
 
                 Calendar calendar = Calendar.getInstance();
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
                 fechaHoraActual = sdf.format(calendar.getTime());
             }
         }, year, month, day); //Estas tres variables nos ayudan a que la fecha predeterminada en el calendario sea la fecha de hoy
 
         datePickerDialog.show();
-    }*/
+    }
 
     //Evento Clic del botón "Confirmar"
     public void confirmar(View view) {
