@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.ingelcom.cajachica.DAO.Cuadrilla;
 import com.ingelcom.cajachica.DAO.Deduccion;
@@ -83,13 +85,13 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                 //Establecemos los elementos gráficos dependiendo de la pantalla
                 case "RegistrarIngreso":
                     lblTitulo.setText("Registrar Ingreso");//Asignamos el titulo
-                    lblFecha.setText(String.format("%02d/%02d/%04d", day, month + 1, year)); //Asignamos la fecha seleccionada con el formato "00/00/0000" al TextView "lblFecha"
+                    //lblFecha.setText(String.format("%02d/%02d/%04d", day, month + 1, year)); //Asignamos la fecha seleccionada con el formato "00/00/0000" al TextView "lblFecha"
                     llDinero.setVisibility(View.GONE);
                     break;
 
                 case "RegistrarDeduccion":
                     lblTitulo.setText("Registrar Deducción"); //Asignamos el titulo
-                    lblFecha.setText(String.format("%02d/%02d/%04d", day, month + 1, year));
+                    //lblFecha.setText(String.format("%02d/%02d/%04d", day, month + 1, year));
                     //llDinero.setVisibility(View.VISIBLE);
                     llTransferencia.setVisibility(View.GONE);
                     break;
@@ -162,16 +164,33 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
 
     //Método Click del LinearLayout de Fecha, el cual al dar clic en él, se mostrará un calendario emergente para seleccionar una fecha
     public void seleccionarFecha(View view) {
+        final Calendar calendar = Calendar.getInstance();
+
+        // Inicializar el DatePickerDialog
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
-                lblFecha.setText(String.format("%02d/%02d/%04d", dayOfMonth, monthOfYear + 1, year));
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, monthOfYear);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                Calendar calendar = Calendar.getInstance();
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
-                fechaHoraActual = sdf.format(calendar.getTime());
+                // Inicializar el TimePickerDialog después de seleccionar la fecha
+                TimePickerDialog timePickerDialog = new TimePickerDialog(RegistrarEditarIngresoDeduccion.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
+                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        calendar.set(Calendar.MINUTE, minute);
+
+                        // Formatear y mostrar la fecha y hora seleccionada en el TextView
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy - HH:mm", Locale.getDefault());
+                        String fechaHoraSeleccionada = sdf.format(calendar.getTime());
+                        lblFecha.setText(fechaHoraSeleccionada);
+                    }
+                }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
+
+                timePickerDialog.show();
             }
-        }, year, month, day); //Estas tres variables nos ayudan a que la fecha predeterminada en el calendario sea la fecha de hoy
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
         datePickerDialog.show();
     }

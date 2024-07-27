@@ -134,6 +134,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center|right"
+                android:onClick="seleccionarFecha"
                 android:orientation="horizontal">
 
                 <TextView
@@ -146,7 +147,7 @@
                     android:gravity="center|left"
                     android:paddingLeft="15dp"
                     android:paddingRight="10dp"
-                    android:text="Fecha"
+                    android:text="Fecha y Hora"
                     android:textColor="@color/clr_fuente_secundario"
                     android:textSize="17dp" />
 

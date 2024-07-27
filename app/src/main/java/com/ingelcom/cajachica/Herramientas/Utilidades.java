@@ -125,7 +125,7 @@ public class Utilidades {
 
         try {
             Date fechaHora = valor.toDate(); //Convertimos "valor" a tipo "Date"
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()); //Creamos una instancia de SimpleDateFormat con el formato deseado (dd/MM/yyyy HH:mm:ss)
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy - HH:mm", Locale.getDefault()); //Creamos una instancia de SimpleDateFormat con el formato deseado (dd/MM/yyyy HH:mm:ss)
             fechaHoraString = sdf.format(fechaHora); //Convertimos la fecha y hora a un String estableciendo el formato especificado anteriormente
         }
         catch (Exception e) {
@@ -191,7 +191,7 @@ public class Utilidades {
     //Método que nos ayuda a convertir una FechaHora (00/00/0000 00:00) a un formato de "Mes - Año"
     public static String convertirFechaAFormatoMonthYear(String fechaHora) {
         //Creamos un SimpleDateFormat que nos ayudará a darle formato al contenido de "fechaHora" que se extrae de Firestore. Aquí en "new Locale("es", "ES")" especificamos que queremos un formato de fecha y hora en Español (esto para que los meses sean en español y no en inglés)
-        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yy HH:mm", new Locale("es", "ES"));
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yy - HH:mm", new Locale("es", "ES"));
         String fechaFormateada = ""; //Creamos un String donde se guardará la fecha extraída de Firestore ya con el formato que deseamos (Mes - Año)
 
         try {
@@ -291,8 +291,8 @@ public class Utilidades {
                 });
             }
         }
-        catch (NoSuchFieldException  e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            Log.w("OrdenarListaDouble", e);
         }
 
         return items; //Retornamos la lista "items", que ha sido ordenada si ha ido bien, o la lista original si no se realizó ningún ordenamiento
@@ -309,7 +309,7 @@ public class Utilidades {
             //Hacemos una búsqueda en la lista "items" mediante el "nombreCampo", y tras los resultados, obtenemos el elemento encontrado en la posición 0, la primera y única posición porque el nombre del campo guardado en "nombreCampo" no se repite en la lista (por ejemplo, si buscamos el campo "fechaHora" en la lista items, ese nombre de campo no se repetirá)
             Field campo = items.get(0).getClass().getDeclaredField(nombreCampo); //Obtenemos el nombre del tipo de dato con "getDeclaredField" y lo guardamos en la variable "campo" de tipo Field
             campo.setAccessible(true); //Lo utilizamos para permitir el acceso a un campo privado o protegido de una clase
-            SimpleDateFormat formatoFechaHora = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()); //Creamos una variable de tipo "SimpleDateFormat" con el formato "dd/MM/yyyy HH:mm"
+            SimpleDateFormat formatoFechaHora = new SimpleDateFormat("dd/MM/yyyy - HH:mm", Locale.getDefault()); //Creamos una variable de tipo "SimpleDateFormat" con el formato "dd/MM/yyyy HH:mm"
 
             //Utilizamos el método "Collections.sort" para ordenar la lista "items"
             Collections.sort(items, new Comparator<T>() { //"Comparator<T>" es una interfaz que se usa para definir la lógica de comparación entre dos objetos del mismo tipo (T)
@@ -340,8 +340,8 @@ public class Utilidades {
                 }
             });
 
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace(); //Manejamos excepción si el campo no existe en la clase
+        } catch (Exception e) {
+            Log.w("OrdenarListaFechaHora", e);
         }
 
         return items; //Retornamos la lista "items", que ha sido ordenada si ha ido bien, o la lista original si no se realizó ningún ordenamiento
