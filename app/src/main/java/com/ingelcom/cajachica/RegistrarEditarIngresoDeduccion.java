@@ -42,7 +42,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
     private EditText txtTransferencia, txtTotal;
     private Spinner spCuadrillas;
     private int day, month, year;
-    private String nombreActivity, fechaHoraActual, cuadrilla;
+    private String nombreActivity, id, fechaHora, cuadrilla, usuario, transferencia, total;
     private Timestamp timestamp = null;
 
     private FirestoreOperaciones oper = new FirestoreOperaciones();
@@ -57,16 +57,13 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         setContentView(R.layout.activity_registrar_editar_ingreso_deduccion);
 
         inicializarElementos();
+        obtenerDatos();
         inicializarSpinner();
         establecerElementos();
         cambioCuadrilla();
     }
 
     private void inicializarElementos() {
-        //Obtenemos el nombre del activity que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y le mandamos "this" para referenciar esta actividad y "Activity" como clave del putExtra
-        nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityREID");
-        cuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla"); //Obtenemos la cuadrilla
-
         final Calendar c = Calendar.getInstance(); //Creamos un objeto de tipo Calendar que representa la fecha y hora actuales en el dispositivo donde se está ejecutando el código
         year = c.get(Calendar.YEAR); //Obtenemos el año actual
         month = c.get(Calendar.MONTH); //Obtenemos el mes actual
@@ -83,35 +80,27 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         spCuadrillas = findViewById(R.id.spCuadrillaRI);
     }
 
-    private void establecerElementos() {
-        if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
-            switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
-                //Establecemos los elementos gráficos dependiendo de la pantalla
-                case "RegistrarIngreso":
-                    lblTitulo.setText("Registrar Ingreso");//Asignamos el titulo
-                    //lblFecha.setText(String.format("%02d/%02d/%04d", day, month + 1, year)); //Asignamos la fecha seleccionada con el formato "00/00/0000" al TextView "lblFecha"
-                    llDinero.setVisibility(View.GONE);
-                    break;
+    private void obtenerDatos() {
+        //Obtenemos el nombre del activity que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y le mandamos "this" para referenciar esta actividad y "Activity" como clave del putExtra
+        nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityREID");
 
-                case "RegistrarDeduccion":
-                    lblTitulo.setText("Registrar Deducción"); //Asignamos el titulo
-                    //lblFecha.setText(String.format("%02d/%02d/%04d", day, month + 1, year));
-                    //llDinero.setVisibility(View.VISIBLE);
-                    llTransferencia.setVisibility(View.GONE);
-                    break;
+        switch (nombreActivity) {
+            case "EditarIngreso":
+                id = Utilidades.obtenerStringExtra(this, "ID");
+                fechaHora = Utilidades.obtenerStringExtra(this, "FechaHora");
+                cuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
+                usuario = Utilidades.obtenerStringExtra(this, "Usuario");
+                transferencia = Utilidades.obtenerStringExtra(this, "Transferencia");
+                total = Utilidades.obtenerStringExtra(this, "Total");
+                break;
 
-                case "EditarIngreso":
-                    lblTitulo.setText("Editar Ingreso"); //Asignamos el titulo
-                    llDinero.setVisibility(View.GONE);
-                    break;
-
-                case "EditarDeduccion":
-                    lblTitulo.setText("Editar Deducción"); //Asignamos el titulo
-                    //llDinero.setVisibility(View.VISIBLE);
-                    llTransferencia.setVisibility(View.GONE);
-                    obtenerDineroCuadrilla();
-                    break;
-            }
+            case "EditarDeduccion":
+                id = Utilidades.obtenerStringExtra(this, "ID");
+                fechaHora = Utilidades.obtenerStringExtra(this, "FechaHora");
+                cuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
+                usuario = Utilidades.obtenerStringExtra(this, "Usuario");
+                total = Utilidades.obtenerStringExtra(this, "Total");
+                break;
         }
     }
 
@@ -140,6 +129,40 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         }
         catch (Exception e) {
             Log.w("InicializarCuadrillas", e);
+        }
+    }
+
+    private void establecerElementos() {
+        if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
+            switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
+                //Establecemos los elementos gráficos dependiendo de la pantalla
+                case "RegistrarIngreso":
+                    lblTitulo.setText("Registrar Ingreso");//Asignamos el titulo
+                    //lblFecha.setText(String.format("%02d/%02d/%04d", day, month + 1, year)); //Asignamos la fecha seleccionada con el formato "00/00/0000" al TextView "lblFecha"
+                    //llDinero.setVisibility(View.GONE);
+                    break;
+
+                case "RegistrarDeduccion":
+                    lblTitulo.setText("Registrar Deducción"); //Asignamos el titulo
+                    //lblFecha.setText(String.format("%02d/%02d/%04d", day, month + 1, year));
+                    llTransferencia.setVisibility(View.GONE);
+                    break;
+
+                case "EditarIngreso":
+                    lblTitulo.setText("Editar Ingreso"); //Asignamos el titulo
+                    lblFecha.setText(fechaHora);
+                    txtTransferencia.setText(transferencia);
+                    txtTotal.setText(total);
+                    break;
+
+                case "EditarDeduccion":
+                    lblTitulo.setText("Editar Deducción"); //Asignamos el titulo
+                    lblFecha.setText(fechaHora);
+                    txtTotal.setText(total);
+
+                    llTransferencia.setVisibility(View.GONE);
+                    break;
+            }
         }
     }
 
@@ -192,8 +215,8 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                         String fechaHoraSeleccionada = sdf.format(calendar.getTime());
                         lblFecha.setText(fechaHoraSeleccionada);
 
-                        Date fechaHora = calendar.getTime(); //Convertimos la fecha y hora seleccionada a un objeto Date
-                        timestamp = new Timestamp(fechaHora); //Convertimos el objeto Date a un objeto Timestamp (Variable global inicializada en null arriba)
+                        Date fechaHoraDate = calendar.getTime(); //Convertimos la fecha y hora seleccionada a un objeto Date
+                        timestamp = new Timestamp(fechaHoraDate); //Convertimos el objeto Date a un objeto Timestamp (Variable global inicializada en null arriba)
                     }
                 }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
 
@@ -285,11 +308,6 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         catch (Exception e) {
             Log.w("ObtenerUsuario", e);
         }
-    }
-
-    //Método que permite agregar una nueva deducción por planilla y almacenar los datos de la misma en Firestore
-    private void agregarDeduccion() {
-
     }
 
     private void cambioCuadrilla() {

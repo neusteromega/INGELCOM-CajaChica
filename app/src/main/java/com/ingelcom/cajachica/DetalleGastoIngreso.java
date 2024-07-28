@@ -212,14 +212,24 @@ public class DetalleGastoIngreso extends AppCompatActivity {
 
                             Utilidades.iniciarActivityConDatos(DetalleGastoIngreso.this, RegistrarEditarGasto.class, datos); //Abrimos el activity "RegistrarEditarGasto" y le mandamos el HashMap "datos" con los parámetros
                         }
-                        else if (nombreActivity.contentEquals("DetalleIngreso")) //En cambio, si el "nombreActivity" tiene el texto "DetalleIngreso", que entre al else if
-                            Utilidades.iniciarActivityConString(DetalleGastoIngreso.this, RegistrarEditarIngresoDeduccion.class, "ActivityREID", "EditarIngreso", false); //Mandamos el texto "EditarIngreso" al activity "RegistrarEditarIngreso"
+                        else if (nombreActivity.equalsIgnoreCase("DetalleIngreso")) {//En cambio, si el "nombreActivity" tiene el texto "DetalleIngreso", que entre al else if
+                            //Agregamos las claves y datos al HashMap
+                            datos.put("ActivityREID", "EditarIngreso");
+                            datos.put("ID", id);
+                            datos.put("FechaHora", fecha);
+                            datos.put("Cuadrilla", cuadrilla);
+                            datos.put("Usuario", usuario);
+                            datos.put("Transferencia", transferencia);
+                            datos.put("Total", total);
+
+                            Utilidades.iniciarActivityConDatos(DetalleGastoIngreso.this, RegistrarEditarIngresoDeduccion.class, datos);
+                        }
                     }
                 }
 
                 @Override
                 public void onFailure(Exception e) {
-
+                    Log.w("ObtenerCuadrilla", e);
                 }
             });
         }

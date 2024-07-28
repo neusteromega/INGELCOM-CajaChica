@@ -223,9 +223,9 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
                     //Agregamos las claves y datos al HashMap
                     datosDeduccion.put("ActivityREID", "EditarDeduccion");
                     datosDeduccion.put("ID", deduccionesItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getId());
-                    datosDeduccion.put("Usuario", deduccionesItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getUsuario());
                     datosDeduccion.put("FechaHora", deduccionesItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getFechaHora());
                     datosDeduccion.put("Cuadrilla", deduccionesItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getCuadrilla());
+                    datosDeduccion.put("Usuario", deduccionesItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getUsuario());
                     datosDeduccion.put("Total", String.format("%.2f", deduccionesItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getTotal()));
 
                     Utilidades.iniciarActivityConDatos(ListadoIngresosDeducciones.this, RegistrarEditarIngresoDeduccion.class, datosDeduccion);
