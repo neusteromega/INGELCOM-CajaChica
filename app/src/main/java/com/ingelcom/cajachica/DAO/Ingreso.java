@@ -154,17 +154,12 @@ public class Ingreso {
                 oper.agregarActualizarRegistrosColeccion("ingresos", "ID", id, datos, new FirestoreCallbacks.FirestoreTextCallback() {
                     @Override
                     public void onSuccess(String texto) {
-                        //Si "texto" no es null, quiere decir que si se actualizaron los campos necesarios, además, si entró a este "onSuccess" también quiere decir que realizó la modificación
-                        if (texto != null)
-                            Toast.makeText(contexto, "INGRESO ACTUALIZADO EXITOSAMENTE", Toast.LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(contexto, "ERROR AL ACTUALIZAR EL INGRESO", Toast.LENGTH_SHORT).show();
+                        Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "IngresoEditado", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "IngresoEditado" para indicar que fue un Ingreso el que se modificó, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarIngresoDeduccion
                     }
 
                     @Override
                     public void onFailure(Exception e) {
-                        Log.w("ActualizarIngreso", "No se encontró el ingreso: " + e);
-                    }
+                        Toast.makeText(contexto, "ERROR AL MODIFICAR EL INGRESO", Toast.LENGTH_SHORT).show();                    }
                 });
             }
             catch (Exception e) {

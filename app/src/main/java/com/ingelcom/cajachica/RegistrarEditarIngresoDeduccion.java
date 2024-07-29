@@ -270,13 +270,14 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
 
                 case "EditarIngreso":
 
+                    //Creamos un alertDialog que pregunte si se desea editar el ingreso de dinero a la cuadrilla seleccionada
                     new AlertDialog.Builder(this).setTitle("EDITAR INGRESO").setMessage("¿Está seguro que desea modificar los datos del ingreso?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarIngresoDeduccion()"
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                editarIngresoDeduccion("Ingreso");
+                                editarIngresoDeduccion("Ingreso"); //Llamamos el método "editarIngresoDeduccion" de abajo para que se complete la modificación de los datos
                             }
-                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
@@ -305,9 +306,9 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
                         String nombre = (String) documento.get("Nombre"); //Obtenemos el nombre del usuario actual
 
-                        if (tipo.contentEquals("Ingreso")) //Si "tipo" es "Ingreso" que registre el ingreso en Firestore
+                        if (tipo.equalsIgnoreCase("Ingreso")) //Si "tipo" es "Ingreso" que registre el ingreso en Firestore
                             ingr.registrarIngreso(nombre, timestamp, cuadrilla, transferencia, total); //Llamamos el método "registrarIngreso" donde se hará el proceso de inserción a Firestore y le mandamos el nombre del usuario actual (el usuario que está registrando el ingreso de dinero), la fecha y hora seleccionada, los textboxes y selecciones de los spinners de esta pantalla
-                        else if (tipo.contentEquals("Deduccion")) //En cambio, si "tipo" es "Deduccion" que registra la deducción en Firestore
+                        else if (tipo.equalsIgnoreCase("Deduccion")) //En cambio, si "tipo" es "Deduccion" que registra la deducción en Firestore
                             deduc.registrarDeduccion(nombre, timestamp, cuadrilla, total); //Llamamos el método "registrarDeduccion" donde se hará el proceso de inserción a Firestore y le mandamos el nombre del usuario actual (el usuario que está registrando la deducción por planilla), la fecha y hora seleccionada, los textboxes y selecciones de los spinners de esta pantalla
                     }
                     else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
@@ -327,7 +328,13 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
     }
 
     private void editarIngresoDeduccion(String tipo) {
+        //Enlazamos los EditText y Spinners con las siguientes variables String
+        String cuadrilla = spCuadrillas.getSelectedItem().toString();
+        String transferencia = txtTransferencia.getText().toString();
+        String totalNuevo = txtTotal.getText().toString();
 
+        if (tipo.equalsIgnoreCase("Ingreso")) //Si "tipo" es "Ingreso" que modifique el ingreso en Firestore
+            ingr.editarIngreso(id, timestamp, cuadrilla, transferencia, this.total, totalNuevo); //Llamamos el método "editarIngreso" de la clase Ingreso donde se hará el proceso de modificación de los datos del ingreso, para ello le mandamos el id, la fecha y hora guardada en "timestamp", la cuadrilla, el número de transferencia, el total anterior (se llama a "this.total") y el total nuevo que se extrae del EditText
     }
 
     private void cambioCuadrilla() {

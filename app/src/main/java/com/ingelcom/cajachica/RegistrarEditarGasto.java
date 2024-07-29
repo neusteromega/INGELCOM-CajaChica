@@ -3,17 +3,22 @@ package com.ingelcom.cajachica;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
+import com.google.firebase.Timestamp;
 import com.ingelcom.cajachica.DAO.Cuadrilla;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.DAO.Gasto;
@@ -21,7 +26,11 @@ import com.ingelcom.cajachica.DAO.Usuario;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class RegistrarEditarGasto extends AppCompatActivity {
@@ -32,6 +41,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
     private ImageView imgFoto, imgEliminar;
     private Spinner spCuadrillas, spTipoCompras;
     private String nombreActivity, dineroDisponible;
+    private Timestamp timestamp = null;
 
     private FirestoreOperaciones oper = new FirestoreOperaciones();
     private Cuadrilla cuad = new Cuadrilla(RegistrarEditarGasto.this);
@@ -103,9 +113,50 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                 case "EditarGastoAdmin":
                     lblTitulo.setText("Editar Gasto");
                     llDinero.setVisibility(View.GONE);
+
+                    //Como la fechaHora se obtiene en formato String, usamos el método utilitario "convertirFechaHoraATimestamp" para convertirlo a Timestamp y el resultado lo guardamos en la variable global "timestamp"
+                    //timestamp = Utilidades.convertirFechaHoraATimestamp(fechaHora);
                     break;
             }
         }
+    }
+
+    //Método Click del LinearLayout de Fecha, el cual al dar clic en él, se mostrará un calendario emergente para seleccionar una fecha, y luego un reloj para seleccionar la hora
+    public void seleccionarFecha(View view) {
+        final Calendar calendar = Calendar.getInstance(); //Creamos una instancia de Calendar que representa la fecha y hora actuales. Y en ella se irán almacenando las selecciones de fecha y hora que haga el usuario en el calendario y reloj
+
+        //Inicializamos el DatePickerDialog con el año, mes y día actuales
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                //Actualizamos el "calendar" con el año, mes y día seleccionados por el usuario
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, monthOfYear);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                //Inicializamos el TimePickerDialog después de seleccionar la fecha
+                TimePickerDialog timePickerDialog = new TimePickerDialog(RegistrarEditarGasto.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
+                        //Actualizamos el "calendar" con la hora y los minutos seleccionados por el usuario
+                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        calendar.set(Calendar.MINUTE, minute);
+
+                        //Formateamos y mostramos la fecha y hora seleccionada en el TextView
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy - HH:mm", Locale.getDefault());
+                        String fechaHoraSeleccionada = sdf.format(calendar.getTime());
+                        lblFecha.setText(fechaHoraSeleccionada);
+
+                        Date fechaHoraDate = calendar.getTime(); //Convertimos la fecha y hora seleccionada a un objeto Date
+                        timestamp = new Timestamp(fechaHoraDate); //Convertimos el objeto Date a un objeto Timestamp (Variable global inicializada en null arriba)
+                    }
+                }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
+
+                timePickerDialog.show(); //Mostramos el TimePickerDialog
+            }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+
+        datePickerDialog.show(); //Mostramos el DatePickerDialog
     }
 
     private void inicializarSpinners() {
@@ -218,10 +269,10 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                         String rol = (String) documento.get("Rol");
 
                         //Dentro de ambas condiciones, llamamos el método "registrarGasto" donde se hará el proceso de inserción a Firestore, le mandamos los textboxes y selecciones de los spinners de esta pantalla
-                        if (tipoGasto.contentEquals("GastoAdmin"))
-                            gast.registrarGasto(nombre, rol, cuadrillaTXT, lugarCompra, tipoCompra, descripcion, factura, total, false); //Si el gasto lo registra un admin, mandamos "cuadrillaTXT" que es la selección de la cuadrilla en el Spinner, y un "false" indicando que no debe restar el gasto del dinero disponible de la cuadrilla ya que el gasto lo está registrando un admin con un dinero aparte
-                        else if (tipoGasto.contentEquals("GastoEmpleado"))
-                            gast.registrarGasto(nombre, rol, cuadrillaBDD, lugarCompra, tipoCompra, descripcion, factura, total, true); //Si el gasto lo registra un empleado, mandamos "cuadrillaBDD" que es la extracción de la cuadrilla a la que pertenece el usuario actual, y un true indicando que SI debe restar el gasto registrado del dinero disponible de la cuadrilla del usuario
+                        if (tipoGasto.equalsIgnoreCase("GastoAdmin"))
+                            gast.registrarGasto(nombre, timestamp, rol, cuadrillaTXT, lugarCompra, tipoCompra, descripcion, factura, total, false, true); //Si el gasto lo registra un admin, mandamos "cuadrillaTXT" que es la selección de la cuadrilla en el Spinner, y un "false" indicando que no debe restar el gasto del dinero disponible de la cuadrilla ya que el gasto lo está registrando un admin con un dinero aparte
+                        else if (tipoGasto.equalsIgnoreCase("GastoEmpleado"))
+                            gast.registrarGasto(nombre, timestamp, rol, cuadrillaBDD, lugarCompra, tipoCompra, descripcion, factura, total, true, false); //Si el gasto lo registra un empleado, mandamos "cuadrillaBDD" que es la extracción de la cuadrilla a la que pertenece el usuario actual, y un true indicando que SI debe restar el gasto registrado del dinero disponible de la cuadrilla del usuario
                     }
                     else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
                         Log.w("ObtenerUsuario", "Usuario no encontrado");
