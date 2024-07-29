@@ -90,7 +90,7 @@ public class Ingreso {
 
     //Método que nos permite registrar un Ingreso en Firestore
     public void registrarIngreso(String usuario, Timestamp fechaHora, String cuadrilla, String transferencia, String total) {
-        if (fechaHora != null && !transferencia.isEmpty() && !total.isEmpty()) { //Verificamos que las dos cajas de texto no estén vacías, y que el "Timestamp" no sea nulo para que entre al if
+        if (fechaHora != null && !transferencia.isEmpty() && !total.isEmpty()) { //Verificamos que las dos cajas de texto no estén vacías, y que el Timestamp "fechaHora" no sea nulo para que entre al if (el timestamp sólo será nulo si la pantalla no es "EditarIngreso", y si es "RegistrarIngreso", será nulo cuando el usuario no haya seleccionado una fecha y hora)
             try {
                 Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
 
@@ -98,7 +98,7 @@ public class Ingreso {
                 double totalIngreso = Double.parseDouble(total); //Convertimos la variable String "total" en double y su contenido lo guardamos en "totalIngreso"
                 Map<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos a insertar
 
-                //Insertamos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el valor a insertar
+                //Establecemos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el valor a insertar
                 datos.put("ID", idDocumento);
                 datos.put("Usuario", usuario);
                 datos.put("Fecha", fechaHora);
@@ -126,6 +126,53 @@ public class Ingreso {
         }
         else {
             Toast.makeText(contexto, "TODOS LOS CAMPOS DEBEN LLENARSE", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    //Método que nos permite editar un Ingreso existente en Firestore
+    public void editarIngreso(String id, Timestamp fechaHora, String cuadrilla, String transferencia, String totalViejo, String totalNuevo) {
+        if (fechaHora != null && !transferencia.isEmpty() && !totalNuevo.isEmpty()) { //Verificamos que las dos cajas de texto no estén vacías, y que el Timestamp "fechaHora" no sea nulo para que entre al if (el timestamp sólo será nulo si la pantalla no es "EditarIngreso", y si es "RegistrarIngreso", será nulo cuando el usuario no haya seleccionado una fecha y hora)
+            try {
+                Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
+                Map<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos
+
+                //Convertimos las variables String "totalViejo" y "totalNuevo" en double
+                double primerTotal = Double.parseDouble(totalViejo);
+                double segundoTotal = Double.parseDouble(totalNuevo);
+                double diferenciaTotales = segundoTotal - primerTotal;
+
+                if (diferenciaTotales != 0)
+                    cuad.actualizarDineroCuadrilla(cuadrilla, diferenciaTotales, "Ingreso");
+
+                //Establecemos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el nuevo valor
+                datos.put("Fecha", fechaHora);
+                datos.put("Cuadrilla", cuadrilla);
+                datos.put("Transferencia", transferencia);
+                datos.put("Total", segundoTotal);
+
+                //Llamamos al método "agregarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar, el HashMap con los nuevos campos y datos (o los campos existentes para actualizar su contenido) e invocamos la interfaz "FirestoreInsertCallback"
+                oper.agregarActualizarRegistrosColeccion("ingresos", "ID", id, datos, new FirestoreCallbacks.FirestoreTextCallback() {
+                    @Override
+                    public void onSuccess(String texto) {
+                        //Si "texto" no es null, quiere decir que si se actualizaron los campos necesarios, además, si entró a este "onSuccess" también quiere decir que realizó la modificación
+                        if (texto != null)
+                            Toast.makeText(contexto, "INGRESO ACTUALIZADO EXITOSAMENTE", Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(contexto, "ERROR AL ACTUALIZAR EL INGRESO", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.w("ActualizarIngreso", "No se encontró el ingreso: " + e);
+                    }
+                });
+            }
+            catch (Exception e) {
+                Log.w("ActualizarIngreso", e);
+            }
+        }
+        else {
+            Toast.makeText(contexto, "TODOS LOS CAMPOS DEBEN ESTAR LLENOS", Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -135,6 +135,23 @@ public class Utilidades {
         return fechaHoraString; //Retornamos la fechaHora convertida a String
     }
 
+    //Método que nos permite convertir un String con fecha y hora con el formato "dd/MM/yyyy - HH:mm" a un objeto de tipo "Timestamp"
+    public static Timestamp convertirFechaHoraATimestamp(String fechaHoraStr) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy - HH:mm", Locale.getDefault()); //Con "SimpleDateFormat" creamos el formato que nos ayudará a hacer la conversión
+
+        try {
+            Date date = sdf.parse(fechaHoraStr); //Convertimos el String con la fecha y hora a un objeto "Date" usando la variable de tipo "SimpleDateFormat"
+
+            if (date != null) //Si "date" no es nulo (esto quiere decir que la fechaHora recibida como parámetro si tiene el formato "dd/MM/yyyy - HH:mm" y si se realizó bien la conversión), que entre al if
+                return new Timestamp(date); //Convertimos el objeto "date" a "Timestamp" y retornamos el mismo
+        }
+        catch (Exception e) {
+            Log.w("ConvertirATimestamp", e);
+        }
+
+        return null; //Si no retornó el Timestamp en el if de arriba, quiere decir que hubo un error, entonces que retorne null
+    }
+
     //Método que permite mostrar y ocultar una contraseña
     public static int mostrarOcultarContrasena(int clicks, EditText txtContra, ImageView imgContra) { //Recibe como parámetros la cantidad de clicks, el EditText de la contraseña, y el ImageView de ver y ocultar la contraseña
         //En este if verificamos si la variable "clicks" es divisible entre 2 y si al realizar la división su residuo es 1

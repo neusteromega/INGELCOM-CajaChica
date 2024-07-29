@@ -320,14 +320,12 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
 
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) { //Parte lógica de lo que queremos que haga cada opción del popup menú
-        String mesSeleccionado = menuItem.getTitle().toString();
+        String mesSeleccionado = menuItem.getTitle().toString(); //Obtenemos el "title" de la opción seleccionada en el popupMenu, y lo guardamos en la variable "mesSeleccionado"
 
         switch (menuItem.getItemId()) {
             case R.id.menuMesAnterior:
-                lblFecha.setText(mesSeleccionado);
-                return true;
             case R.id.menuMesActual:
-                lblFecha.setText(mesSeleccionado);
+                lblFecha.setText(mesSeleccionado); //Establecemos el mes y año seleccionado en el "lblFecha"
                 return true;
             default:
                 return false;

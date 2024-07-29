@@ -194,7 +194,7 @@ public class FragCrearCorreoContrasena extends Fragment {
         nuevosCampos.put("Correo", correo); //Asignamos el nombre del campo "Correo" y el dato a guardar que está en la variable "correo"
 
         //Llamamos al método "agregarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar, el HashMap con los nuevos campos y datos (o los campos existentes para actualizar su contenido) e invocamos la interfaz "FirestoreInsertCallback"
-        oper.agregarRegistrosColeccion("usuarios", "Identidad", identidadUsuario, nuevosCampos, new FirestoreCallbacks.FirestoreTextCallback() {
+        oper.agregarActualizarRegistrosColeccion("usuarios", "Identidad", identidadUsuario, nuevosCampos, new FirestoreCallbacks.FirestoreTextCallback() {
             @Override
             public void onSuccess(String texto) {
                 //Si "texto" no es null, quiere decir que si agregó el correo al usuario, además, si entró a este "onSuccess" también quiere decir que lo realizó

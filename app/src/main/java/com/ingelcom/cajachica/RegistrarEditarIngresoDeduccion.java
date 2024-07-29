@@ -153,6 +153,9 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                     lblFecha.setText(fechaHora);
                     txtTransferencia.setText(transferencia);
                     txtTotal.setText(total);
+
+                    //Como la fechaHora se obtiene en formato String, usamos el método utilitario "convertirFechaHoraATimestamp" para convertirlo a Timestamp y el resultado lo guardamos en la variable global "timestamp"
+                    timestamp = Utilidades.convertirFechaHoraATimestamp(fechaHora);
                     break;
 
                 case "EditarDeduccion":
@@ -266,6 +269,19 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                     break;
 
                 case "EditarIngreso":
+
+                    new AlertDialog.Builder(this).setTitle("EDITAR INGRESO").setMessage("¿Está seguro que desea modificar los datos del ingreso?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                editarIngresoDeduccion("Ingreso");
+                            }
+                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                }
+                            }).show();
                     break;
 
                 case "EditarDeduccion":
@@ -308,6 +324,10 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         catch (Exception e) {
             Log.w("ObtenerUsuario", e);
         }
+    }
+
+    private void editarIngresoDeduccion(String tipo) {
+
     }
 
     private void cambioCuadrilla() {
