@@ -98,6 +98,7 @@ public class Gasto {
         if (!lugar.isEmpty() && !descripcion.isEmpty() && !factura.isEmpty() && !total.isEmpty()) { //Verificamos que las cajas de texto no estén vacías
             if ((fechaSeleccionada && fechaHora != null) || (!fechaSeleccionada && fechaHora == null)) { //Si se cumple la primera condición: "(fechaSeleccionada && fechaHora != null)", entrará al if
                 try {
+                    Timestamp timestamp = null;
                     Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
 
                     String idDocumento = UUID.randomUUID().toString(); //Generamos un UUID que es un elemento único y lo guardamos en la variable "idDocumento". Esto nos servirá para que el documento que se cree al insertar los datos, tenga un identificador único
@@ -107,20 +108,24 @@ public class Gasto {
                     if (!fechaSeleccionada) {
                         Calendar calendar = Calendar.getInstance(); //Obtenemos una instancia de la clase "Calendar"
                         Date fechaYHora = calendar.getTime(); //"calendar.getTime()" devuelve un objeto Date que representa la fecha y hora actual contenida en el objeto Calendar, esto lo guardamos en "fechaHora"
-                        Timestamp timestamp = new Timestamp(fechaYHora); //Convertimos "fechaHora" en un objeto "Timestamp" para que sea compatible con Firestore
+                        timestamp = new Timestamp(fechaYHora); //Convertimos "fechaHora" en un objeto "Timestamp" para que sea compatible con Firestore
                     }
 
                     //Insertamos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el valor a insertar
                     datos.put("ID", idDocumento);
                     datos.put("Usuario", usuario);
                     datos.put("RolUsuario", rol);
-                    datos.put("Fecha", fechaHora);
                     datos.put("Cuadrilla", cuadrilla);
                     datos.put("Lugar", lugar);
                     datos.put("TipoCompra", tipo);
                     datos.put("Descripcion", descripcion);
                     datos.put("NumeroFactura", factura);
                     datos.put("Total", totalGasto);
+
+                    if (fechaSeleccionada)
+                        datos.put("Fecha", fechaHora);
+                    else
+                        datos.put("Fecha", timestamp);
 
                     //Llamamos el método "insertarRegistros" de la clase "FirestoreOperaciones" y le mandamos el nombre de la colección, el HashMap con los datos a insertar. También invocamos los métodos "onSuccess" y "onFailure" de la interfaz FirestoreInsertCallback
                     oper.insertarRegistros("gastos", datos, new FirestoreCallbacks.FirestoreTextCallback() {
