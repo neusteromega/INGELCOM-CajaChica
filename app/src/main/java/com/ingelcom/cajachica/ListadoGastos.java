@@ -74,7 +74,7 @@ public class ListadoGastos extends AppCompatActivity {
 
         lblLineaSupervisores.setVisibility(View.INVISIBLE); //Ocultamos la linea bajo la palabra "Supervisores" al iniciar el Activity
 
-        VPGastosAdapter vpAdapter = new VPGastosAdapter(this, nombreCuadrilla); //Creamos un objeto de "VPGastosAdapter" y le mandamos el contexto "this" de este Activity
+        VPGastosAdapter vpAdapter = new VPGastosAdapter(this, nombreCuadrilla, nombreActivity); //Creamos un objeto de "VPGastosAdapter" y le mandamos el contexto "this" de este Activity
         vpGastos.setAdapter(vpAdapter); //Asignamos el adaptador al vpGastos
     }
 

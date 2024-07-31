@@ -38,7 +38,7 @@ public class GastosAdapter extends RecyclerView.Adapter<GastosAdapter.RecyclerHo
         //Haciendo uso del objeto "holder", asignamos los textos a las diferentes variables que se encuentran en la clase estática "RecyclerHolder"
         holder.tvTipoCompra.setText(item.getTipoCompra());
         holder.tvFecha.setText(item.getFechaHora());
-        holder.tvEmpleado.setText(item.getUsuario());
+        holder.tvEmpleadoCuadrilla.setText(item.getUsuario());
         holder.tvTotal.setText("L. " + String.format("%.2f", item.getTotal()));
     }
 
@@ -62,7 +62,7 @@ public class GastosAdapter extends RecyclerView.Adapter<GastosAdapter.RecyclerHo
         //Variables para cada elemento cambiante de las tarjetas del RecyclerView
         private TextView tvTipoCompra;
         private TextView tvFecha;
-        private TextView tvEmpleado;
+        private TextView tvEmpleadoCuadrilla;
         private TextView tvTotal;
 
         public RecyclerHolder(@NonNull View itemView) { //Método Constructor que recibe un View
@@ -71,7 +71,7 @@ public class GastosAdapter extends RecyclerView.Adapter<GastosAdapter.RecyclerHo
             //Referenciamos los elementos de la vista de las tarjetas del RecyclerView a las variables de arriba
             tvTipoCompra = itemView.findViewById(R.id.lblTipoCompraGst);
             tvFecha = itemView.findViewById(R.id.lblFechaGst);
-            tvEmpleado = itemView.findViewById(R.id.lblEmpleadoGst);
+            tvEmpleadoCuadrilla = itemView.findViewById(R.id.lblEmpleadoCuadrillaGst);
             tvTotal = itemView.findViewById(R.id.lblTotalGst);
         }
     }

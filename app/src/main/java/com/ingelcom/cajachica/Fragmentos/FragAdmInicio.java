@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.ingelcom.cajachica.Adaptadores.InicioAdapter;
 import com.ingelcom.cajachica.AdmDatosCuadrilla;
@@ -19,6 +20,7 @@ import com.ingelcom.cajachica.DAO.Ingreso;
 import com.ingelcom.cajachica.DetalleGastoIngreso;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
+import com.ingelcom.cajachica.ListadoGastos;
 import com.ingelcom.cajachica.Modelos.CuadrillasItems;
 import com.ingelcom.cajachica.Modelos.GastosItems;
 import com.ingelcom.cajachica.Modelos.IngresosItems;
@@ -41,6 +43,7 @@ public class FragAdmInicio extends Fragment {
     private String mParam2;
 
     private RecyclerView rvIngresos, rvGastos, rvCuadrillas;
+    private TextView btnVerIngresos, btnVerGastos;
 
     public FragAdmInicio() {
         // Required empty public constructor
@@ -71,6 +74,8 @@ public class FragAdmInicio extends Fragment {
         rvIngresos = view.findViewById(R.id.rvIngresosInicio);
         rvGastos = view.findViewById(R.id.rvGastosInicio);
         rvCuadrillas = view.findViewById(R.id.rvCuadrillasInicio);
+        btnVerIngresos = view.findViewById(R.id.btnVerTodosIngresosInicio);
+        btnVerGastos = view.findViewById(R.id.btnVerTodosGastosInicio);
 
         Ingreso ingr = new Ingreso(getContext());
         Gasto gast = new Gasto(getContext());
@@ -79,6 +84,10 @@ public class FragAdmInicio extends Fragment {
         obtenerIngresos(ingr);
         obtenerGastos(gast);
         obtenerCuadrillas(cuad);
+
+        btnVerGastos.setOnClickListener(v -> {
+            Utilidades.iniciarActivityConString(getContext(), ListadoGastos.class, "ActivityLG", "ListadoGastosTodos", false);
+        });
 
         return view;
     }

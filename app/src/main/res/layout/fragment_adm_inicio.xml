@@ -44,7 +44,7 @@
                     android:id="@+id/imgIngresosInicio"
                     android:layout_width="35dp"
                     android:layout_height="30dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="8dp"
                     app:srcCompat="@mipmap/ico_color_ingreso" />
 
                 <TextView
@@ -63,7 +63,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/lblVerTodosIngresos"
+                        android:id="@+id/btnVerTodosIngresosInicio"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_bold"
@@ -99,7 +99,7 @@
                     android:id="@+id/imgGastosInicio"
                     android:layout_width="35dp"
                     android:layout_height="30dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="8dp"
                     app:srcCompat="@mipmap/ico_color_gasto" />
 
                 <TextView
@@ -118,7 +118,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/lblVerTodosGastos"
+                        android:id="@+id/btnVerTodosGastosInicio"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_bold"
@@ -153,7 +153,7 @@
                     android:id="@+id/imgDineroDispInicio"
                     android:layout_width="35dp"
                     android:layout_height="30dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="8dp"
                     app:srcCompat="@mipmap/ico_color_dinerodisponible" />
 
                 <TextView

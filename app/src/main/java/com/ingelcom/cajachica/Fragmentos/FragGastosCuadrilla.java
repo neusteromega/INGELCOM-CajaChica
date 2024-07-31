@@ -31,9 +31,10 @@ import java.util.Map;
 
 public class FragGastosCuadrilla extends Fragment {
 
+    private static final String ARG_NOMBRE_ACTIVITY = "activity_key";
     private static final String ARG_NOMBRE_CUADRILLA = "cuadrilla_key";
 
-    private String nombreCuadrilla;
+    private String nombreActivity, nombreCuadrilla;
     private RecyclerView rvGastos;
     private TextView lblTotalGastos;
 
@@ -44,10 +45,11 @@ public class FragGastosCuadrilla extends Fragment {
         // Required empty public constructor
     }
 
-    public static FragGastosCuadrilla newInstance(String nombreCuadrilla) {
+    public static FragGastosCuadrilla newInstance(String nombreCuadrilla, String nombreActivity) {
         FragGastosCuadrilla fragment = new FragGastosCuadrilla();
         Bundle args = new Bundle();
         args.putString(ARG_NOMBRE_CUADRILLA, nombreCuadrilla);
+        args.putString(ARG_NOMBRE_ACTIVITY, nombreActivity);
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,6 +59,7 @@ public class FragGastosCuadrilla extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             nombreCuadrilla = getArguments().getString(ARG_NOMBRE_CUADRILLA);
+            nombreActivity = getArguments().getString(ARG_NOMBRE_ACTIVITY);
         }
     }
 
@@ -93,8 +96,10 @@ public class FragGastosCuadrilla extends Fragment {
                             gast.obtenerGastos(cuadrilla, "Empleado", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                                 @Override
                                 public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por cuadrilla y rol
-                                    if (items != null) //Si "items" no es null, que entre al if
+                                    if (items != null) {//Si "items" no es null, que entre al if
+                                        items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                                         inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
+                                    }
                                 }
 
                                 @Override

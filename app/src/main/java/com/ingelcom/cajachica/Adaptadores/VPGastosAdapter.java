@@ -10,12 +10,15 @@ import com.ingelcom.cajachica.Fragmentos.FragGastosSupervisores;
 
 public class VPGastosAdapter extends FragmentStateAdapter {
 
-    private String nombreCuadrilla; //Dato que será recibo en los fragmentos implementados en este ViewPager2 (FragGastosCuadrilla y FragGastosSupervisores)
+    //Datos que serán recibidos en los fragmentos implementados en este ViewPager2 (FragGastosCuadrilla y FragGastosSupervisores)
+    private String nombreCuadrilla;
+    private String nombreActivity;
 
     //Método Constructor que toma como parámetro el contexto (this) del activity donde se encuentra el ViewPager, en este caso, el activity es el "ListadoGastos.java"; y el nombre de la cuadrilla que se recibe para saber cuáles gastos mostrar
-    public VPGastosAdapter(@NonNull FragmentActivity fragmentActivity, String nombreCuadrilla) {
+    public VPGastosAdapter(@NonNull FragmentActivity fragmentActivity, String nombreCuadrilla, String nombreActivity) {
         super(fragmentActivity);
         this.nombreCuadrilla = nombreCuadrilla;
+        this.nombreActivity = nombreActivity;
     }
 
     @NonNull
@@ -24,11 +27,11 @@ public class VPGastosAdapter extends FragmentStateAdapter {
         switch (position) { //Este Switch sirve para determinar qué fragmento crear basado en la posición del ViewPager. Al arrastrar con el dedo el ViewPager, este toma una nueva posición y dependiendo esa posición, retornamos el fragmento correspondiente
             //En estos 3 returns, llamamos el método "newInstance" de los fragmentos y le mandamos el "nombreCuadrilla"
             case 0:
-                return FragGastosCuadrilla.newInstance(nombreCuadrilla);
+                return FragGastosCuadrilla.newInstance(nombreCuadrilla, nombreActivity);
             case 1:
-                return FragGastosSupervisores.newInstance(nombreCuadrilla);
+                return FragGastosSupervisores.newInstance(nombreCuadrilla, nombreActivity);
             default:
-                return FragGastosCuadrilla.newInstance(nombreCuadrilla);
+                return FragGastosCuadrilla.newInstance(nombreCuadrilla, nombreActivity);
         }
     }
 
