@@ -97,9 +97,9 @@ public class Gasto {
     //Método que nos permite registrar un Gasto en Firestore
     public void registrarGasto(String usuario, Timestamp fechaHora, String rol, String cuadrilla, String lugar, String tipo, String descripcion, String factura, String total, boolean actualizarDinero, boolean fechaSeleccionada) {
         if (!lugar.isEmpty() && !descripcion.isEmpty() && !factura.isEmpty() && !total.isEmpty()) { //Verificamos que las cajas de texto no estén vacías
-            if ((fechaSeleccionada && fechaHora != null) || (!fechaSeleccionada && fechaHora == null)) { //Si se cumple la primera condición: "(fechaSeleccionada && fechaHora != null)", entrará al if
+            if ((fechaSeleccionada && fechaHora != null) || (!fechaSeleccionada && fechaHora == null)) { //Si se cumple una de las condiciones "(fechaSeleccionada && fechaHora != null)" o "(!fechaSeleccionada && fechaHora == null)" entrará al if. La primera condición: "(fechaSeleccionada && fechaHora != null)" indica que hará una modificación de un gasto de administrador ya que "fechaSeleccionada" debe ser true y sólo el admin puede seleccionar una fecha. La segunda condición "(!fechaSeleccionada && fechaHora == null)" indica que se modificará un gasto de empleado ya que "fechaSeleccionada" deberá ser false ya que el empleado no puede seleccionar una fecha
                 try {
-                    Timestamp timestamp = null;
+                    Timestamp timestamp = null; //Creamos un timestamp
                     Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
 
                     String idDocumento = UUID.randomUUID().toString(); //Generamos un UUID que es un elemento único y lo guardamos en la variable "idDocumento". Esto nos servirá para que el documento que se cree al insertar los datos, tenga un identificador único
@@ -160,7 +160,7 @@ public class Gasto {
 
     //Método que nos permite editar un Gasto existente en Firestore
     public void editarGasto(String id, Timestamp fechaHora, String cuadrilla, String lugar, String tipo, String descripcion, String factura, String totalViejo, String totalNuevo, boolean actualizarDinero, boolean fechaSeleccionada) {
-        if (!lugar.isEmpty() && !descripcion.isEmpty() && !factura.isEmpty() && !totalNuevo.isEmpty()) {
+        if (!lugar.isEmpty() && !descripcion.isEmpty() && !factura.isEmpty() && !totalNuevo.isEmpty()) { //Verificamos que las cajas de texto no estén vacías
             if ((fechaSeleccionada && fechaHora != null) || (!fechaSeleccionada && fechaHora == null)) {
                 try {
                     Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
@@ -169,7 +169,7 @@ public class Gasto {
                     //Convertimos las variables String "totalViejo" y "totalNuevo" en double
                     double primerTotal = Double.parseDouble(totalViejo);
                     double segundoTotal = Double.parseDouble(totalNuevo);
-                    double diferenciaTotales = segundoTotal - primerTotal;
+                    double diferenciaTotales = segundoTotal - primerTotal; //Restamos el segundoTotal con el primerTotal y la diferencia la guardamos en "diferenciaTotales"
 
                     if (diferenciaTotales != 0 && actualizarDinero) //Si "diferenciaTotales" no es 0, significa que si hay una diferencia de dinero entre ambos totales, y también, si "actualizarDinero" es true; en ese caso, que proceda a actualizar el dinero de la cuadrilla
                         cuad.actualizarDineroCuadrilla(cuadrilla, diferenciaTotales, "Gasto");

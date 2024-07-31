@@ -310,7 +310,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
                 popup.getMenu().findItem(R.id.menuMesActual).setTitle(mesActual);
                 popup.getMenu().findItem(R.id.menuMesAnterior).setTitle(mesAnterior);
 
-                popup.show(); // Mostramos el menú ya inflado
+                popup.show(); //Mostramos el menú ya inflado
             }
             catch (Exception e) {
                 Log.w("ObtenerMes", e);

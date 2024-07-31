@@ -364,6 +364,50 @@ public class Utilidades {
         return items; //Retornamos la lista "items", que ha sido ordenada si ha ido bien, o la lista original si no se realizó ningún ordenamiento
     }
 
+    //Método genérico que permite ordenar una lista genérica por orden alfabético basada en un String
+    public static <T> List<T> ordenarListaPorAlfabetico(List<T> items, String nombreCampo, String orden) {
+        //Si la lista es nula, el nombre del campo o el tipo de orden es nulo o está vacío, se retorna la lista tal como está
+        if (items == null || items.isEmpty() || nombreCampo == null || nombreCampo.isEmpty() || orden == null || orden.isEmpty()) {
+            return items;
+        }
+
+        try {
+            //Hacemos una búsqueda en la lista "items" mediante el "nombreCampo", y tras los resultados, obtenemos el elemento encontrado en la posición 0, la primera y única posición porque el nombre del campo guardado en "nombreCampo" no se repite en la lista (por ejemplo, si buscamos el campo "fechaHora" en la lista items, ese nombre de campo no se repetirá)
+            Field campo = items.get(0).getClass().getDeclaredField(nombreCampo); //Obtenemos el nombre del tipo de dato con "getDeclaredField" y lo guardamos en la variable "campo" de tipo Field
+            campo.setAccessible(true); //Lo utilizamos para permitir el acceso a un campo privado o protegido de una clase
+
+            //Utilizamos el método "Collections.sort" para ordenar la lista "items"
+            Collections.sort(items, new Comparator<T>() { //"Comparator<T>" es una interfaz que se usa para definir la lógica de comparación entre dos objetos del mismo tipo (T)
+                @Override //Implementamos el método "compare" del "Comparator<T>"
+                public int compare(T o1, T o2) { //Este método toma dos objetos "o1" y "o2" de tipo "T" y devuelve un valor entero que indica el orden relativo de los dos objetos. Devuelve un valor negativo si "o1" debe ir antes que "o2". Devuelve 0 si "o1" y "o2" son iguales. Devuelve un valor positivo si "o1" debe ir después que "o2"
+                    try {
+                        //Obtenemos los valores del campo especificado en "nombreCampo", y estos valores son convertidos a String
+                        String valor1 = (String) campo.get(o1);
+                        String valor2 = (String) campo.get(o2);
+
+                        if ("Ascendente".equalsIgnoreCase(orden)) { //Si orden es "Ascendente" (ignorando mayúsculas y minúsculas), que entre al if
+                            return valor1.compareToIgnoreCase(valor2); //Orden ascendente (alfabético)
+                        }
+                        else if ("Descendente".equalsIgnoreCase(orden)) { //Si orden es "Descendente" (ignorando mayúsculas y minúsculas), que entre al if
+                            return valor2.compareToIgnoreCase(valor1); //Orden descendente (alfabético)
+                        }
+                        else {
+                            throw new IllegalArgumentException("Orden no reconocido: " + orden);
+                        }
+                    }
+                    catch (IllegalAccessException e) {
+                        throw new RuntimeException(e); //En caso de error de acceso a campo, lanzamos una excepción de runtime
+                    }
+                }
+            });
+
+        } catch (Exception e) {
+            Log.w("OrdenarListaAlfabetico", e);
+        }
+
+        return items; // Retornamos la lista ordenada o la original si no se realizó ningún ordenamiento
+    }
+
     //Método que utiliza una reflexión para llamar a los métodos getter (por ejemplo, los getter de la clase GastosItems) en los objetos de tipo "T", y retorna un "Object"
     public static Object obtenerCampo(Object obj, String nombreMetodo) { //Recibe un objeto genérico del que se quiere obtener un campo, y el nombre del método getter de la clase modelo
         try {

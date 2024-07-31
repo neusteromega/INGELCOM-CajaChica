@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/menuOrdenAlfabetico"
+        android:title="Orden Alfabético" />
+
+    <item android:id="@+id/menuMenosDinero"
+        android:title="Menos Dinero" />
+
+    <item android:id="@+id/menuMasDinero"
+        android:title="Más Dinero" />
+</menu>

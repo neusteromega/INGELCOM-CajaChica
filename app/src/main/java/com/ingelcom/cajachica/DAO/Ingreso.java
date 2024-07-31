@@ -139,7 +139,7 @@ public class Ingreso {
                 //Convertimos las variables String "totalViejo" y "totalNuevo" en double
                 double primerTotal = Double.parseDouble(totalViejo);
                 double segundoTotal = Double.parseDouble(totalNuevo);
-                double diferenciaTotales = segundoTotal - primerTotal;
+                double diferenciaTotales = segundoTotal - primerTotal; //Restamos el segundoTotal con el primerTotal y la diferencia la guardamos en "diferenciaTotales"
 
                 if (diferenciaTotales != 0) //Si "diferenciaTotales" no es 0, significa que si hay una diferencia de dinero entre ambos totales, en ese caso, que proceda a actualizar el dinero de la cuadrilla
                     cuad.actualizarDineroCuadrilla(cuadrilla, diferenciaTotales, "Ingreso");

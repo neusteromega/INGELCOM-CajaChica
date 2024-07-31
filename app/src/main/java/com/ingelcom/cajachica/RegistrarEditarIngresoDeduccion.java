@@ -164,6 +164,9 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                     txtTotal.setText(total);
 
                     llTransferencia.setVisibility(View.GONE);
+
+                    //Como la fechaHora se obtiene en formato String, usamos el método utilitario "convertirFechaHoraATimestamp" para convertirlo a Timestamp y el resultado lo guardamos en la variable global "timestamp"
+                    timestamp = Utilidades.convertirFechaHoraATimestamp(fechaHora);
                     break;
             }
         }
@@ -275,7 +278,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarIngresoDeduccion()"
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                editarIngresoDeduccion("Ingreso"); //Llamamos el método "editarIngresoDeduccion" de abajo para que se complete la modificación de los datos
+                                editarIngresoDeduccion("Ingreso"); //Llamamos el método "editarIngresoDeduccion" de abajo para que se complete la modificación de los datos, y le mandamos la palabra "Ingreso" para que sepa que modificará un ingreso
                             }
                         }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
                                 @Override
@@ -286,6 +289,20 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                     break;
 
                 case "EditarDeduccion":
+
+                    //Creamos un alertDialog que pregunte si se desea editar la deducción por planilla a la cuadrilla seleccionada
+                    new AlertDialog.Builder(this).setTitle("EDITAR DEDUCCIÓN").setMessage("¿Está seguro que desea modificar los datos de la deducción por planilla?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarIngresoDeduccion()"
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                editarIngresoDeduccion("Deduccion"); //Llamamos el método "editarIngresoDeduccion" de abajo para que se complete la modificación de los datos, y le mandamos la palabra "Deduccion" para que sepa que modificará una deducción por planilla
+                            }
+                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                }
+                            }).show();
                     break;
             }
         }
@@ -334,7 +351,9 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         String totalNuevo = txtTotal.getText().toString();
 
         if (tipo.equalsIgnoreCase("Ingreso")) //Si "tipo" es "Ingreso" que modifique el ingreso en Firestore
-            ingr.editarIngreso(id, timestamp, cuadrilla, transferencia, total, totalNuevo); //Llamamos el método "editarIngreso" de la clase Ingreso donde se hará el proceso de modificación de los datos del ingreso, para ello le mandamos el id, la fecha y hora guardada en "timestamp", la cuadrilla, el número de transferencia, el total anterior (se llama a "this.total") y el total nuevo que se extrae del EditText
+            ingr.editarIngreso(id, timestamp, cuadrilla, transferencia, total, totalNuevo); //Llamamos el método "editarIngreso" de la clase Ingreso donde se hará el proceso de modificación de los datos del ingreso, para ello le mandamos el id, la fecha y hora guardada en "timestamp", la cuadrilla, el número de transferencia, el total anterior guardado en la variable global "total" y el total nuevo que se extrae del EditText
+        else if (tipo.equalsIgnoreCase("Deduccion")) //Si "tipo" es "Deduccion" que modifique la deducción en Firestore
+            deduc.editarDeduccion(id, timestamp, cuadrilla, total, totalNuevo); //Llamamos el método "editarDeduccion" de la clase Deduccion donde se hará el proceso de modificación de los datos de la deducción, para ello le mandamos el id, la fecha y hora guardada en "timestamp", la cuadrilla, el total anterior guardado en la variable global "total" y el total nuevo que se extrae del EditText
     }
 
     private void cambioCuadrilla() {

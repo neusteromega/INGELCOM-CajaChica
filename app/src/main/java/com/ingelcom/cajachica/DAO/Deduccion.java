@@ -106,4 +106,46 @@ public class Deduccion {
             Toast.makeText(contexto, "TODOS LOS CAMPOS DEBEN LLENARSE", Toast.LENGTH_SHORT).show();
         }
     }
+
+    //Método que nos permite editar una deducción por planilla existente en Firestore
+    public void editarDeduccion(String id, Timestamp fechaHora, String cuadrilla, String totalViejo, String totalNuevo) {
+        if (fechaHora != null && !totalNuevo.isEmpty()) { //Verificamos que la caja de texto de "totalNuevo" no esté vacía, y que el Timestamp "fechaHora" no sea nulo para que entre al if (el timestamp sólo será nulo si la pantalla no es "EditarDeduccion", y si es "RegistrarDeduccion", será nulo cuando el usuario no haya seleccionado una fecha y hora)
+            try {
+                Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
+                Map<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos
+
+                //Convertimos las variables String "totalViejo" y "totalNuevo" en double
+                double primerTotal = Double.parseDouble(totalViejo);
+                double segundoTotal = Double.parseDouble(totalNuevo);
+                double diferenciaTotales = segundoTotal - primerTotal; //Restamos el segundoTotal con el primerTotal y la diferencia la guardamos en "diferenciaTotales"
+
+                if (diferenciaTotales != 0) //Si "diferenciaTotales" no es 0, significa que si hay una diferencia de dinero entre ambos totales, en ese caso, que proceda a actualizar el dinero de la cuadrilla
+                    cuad.actualizarDineroCuadrilla(cuadrilla, diferenciaTotales, "Deduccion");
+
+                //Establecemos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el nuevo valor
+                datos.put("Fecha", fechaHora);
+                datos.put("Cuadrilla", cuadrilla);
+                datos.put("Total", segundoTotal);
+
+                //Llamamos al método "agregarActualizarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar, el HashMap con los nuevos campos y datos (o los campos existentes para actualizar su contenido) e invocamos la interfaz "FirestoreInsertCallback"
+                oper.agregarActualizarRegistrosColeccion("deducciones", "ID", id, datos, new FirestoreCallbacks.FirestoreTextCallback() {
+                    @Override
+                    public void onSuccess(String texto) {
+                        Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "DeduccionEditada", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "DeduccionEditada" para indicar que fue una Deducción el que se modificó, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarIngresoDeduccion
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Toast.makeText(contexto, "ERROR AL MODIFICAR LA DEDUCCIÓN", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            catch (Exception e) {
+                Log.w("ActualizarDeduccion", e);
+            }
+        }
+        else {
+            Toast.makeText(contexto, "TODOS LOS CAMPOS DEBEN ESTAR LLENOS", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

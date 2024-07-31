@@ -380,7 +380,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
             gast.editarGasto(id, null, cuadrilla, lugarCompra, tipoCompra, descripcion, factura, total, totalNuevo, true, false);
         }
         else if (tipo.equalsIgnoreCase("Admin")) { //En cambio, si "tipo" es igual (ignorando mayúsculas y minúsculas) a la palabra "Admin", que entre al else if
-            //Llamamos el método "editarGasto" de la clase Gasto donde se hará el proceso de modificación de los datos del gasto; para ello le mandamos el "id", la variable global "timestamp" que guarda la fecha seleccionada, la cuadrilla y el tipoCompra extraídos de los Spinners, el resto de datos de los EditTexts, el total anterior guardado en la variable global "total" y el "totalNuevo" que se extrae del EditText, un "false" indicando que debe actualizar el dinero de la cuadrilla ya que se está editando un gasto de un administrador, y un "true" indicando que se ha seleccionado una nueva fecha
+            //Llamamos el método "editarGasto" de la clase Gasto donde se hará el proceso de modificación de los datos del gasto; para ello le mandamos el "id", la variable global "timestamp" que guarda la fecha seleccionada, la cuadrilla y el tipoCompra extraídos de los Spinners, el resto de datos de los EditTexts, el total anterior guardado en la variable global "total" y el "totalNuevo" que se extrae del EditText, un "false" indicando que no debe actualizar el dinero de la cuadrilla ya que se está editando un gasto de un administrador, y un "true" indicando que se ha seleccionado una nueva fecha
             gast.editarGasto(id, timestamp, cuadrillaNueva, lugarCompra, tipoCompra, descripcion, factura, total, totalNuevo, false, true);
         }
     }
