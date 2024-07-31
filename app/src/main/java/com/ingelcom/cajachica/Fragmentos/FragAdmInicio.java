@@ -21,6 +21,7 @@ import com.ingelcom.cajachica.DetalleGastoIngreso;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.ListadoGastos;
+import com.ingelcom.cajachica.ListadoIngresosDeducciones;
 import com.ingelcom.cajachica.Modelos.CuadrillasItems;
 import com.ingelcom.cajachica.Modelos.GastosItems;
 import com.ingelcom.cajachica.Modelos.IngresosItems;
@@ -84,6 +85,10 @@ public class FragAdmInicio extends Fragment {
         obtenerIngresos(ingr);
         obtenerGastos(gast);
         obtenerCuadrillas(cuad);
+
+        btnVerIngresos.setOnClickListener(v -> {
+            Utilidades.iniciarActivityConString(getContext(), ListadoIngresosDeducciones.class, "ActivityLID", "ListadoIngresosTodos", false);
+        });
 
         btnVerGastos.setOnClickListener(v -> {
             Utilidades.iniciarActivityConString(getContext(), ListadoGastos.class, "ActivityLG", "ListadoGastosTodos", false);

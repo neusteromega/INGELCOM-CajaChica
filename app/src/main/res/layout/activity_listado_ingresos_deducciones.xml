@@ -154,6 +154,7 @@
             android:id="@+id/rvListadoIngrDeduc"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingBottom="10dp"
             tools:listitem="@layout/items_ingresos_deducciones" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

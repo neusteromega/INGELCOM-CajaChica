@@ -84,6 +84,12 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
                 lblTotal.setTextColor(getResources().getColor(R.color.clr_fuente_ingresos));
                 break;
 
+            case "ListadoIngresosTodos":
+                lblTitulo.setText("Todos los Ingresos");
+                lblTotalTitulo.setText("Total de Ingresos");
+                lblTotal.setTextColor(getResources().getColor(R.color.clr_fuente_ingresos));
+                break;
+
             case "ListadoDeducciones":
                 llFecha.setVisibility(View.GONE);
                 lblTitulo.setText(nombreCuadrilla);
@@ -95,13 +101,15 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
 
     private void obtenerDatos(String mes) {
         try {
-            if (nombreActivity.contentEquals("ListadoIngresosAdmin")) {
-                //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla recibida en "nombreCuadrilla" y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores
+            if (nombreActivity.equalsIgnoreCase("ListadoIngresosAdmin")) {
+                //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla recibida en "nombreCuadrilla" y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores a una cuadrilla específica
                 ingr.obtenerIngresos(nombreCuadrilla, mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
                     @Override
                     public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados por cuadrilla
-                        if (items != null) //Si "items" no es null, que entre al if
+                        if (items != null) { //Si "items" no es null, que entre al if
+                            items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                             inicializarRecyclerView(items, "Ingresos"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items"
+                        }
                     }
 
                     @Override
@@ -111,7 +119,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
                     }
                 });
             }
-            else if (nombreActivity.contentEquals("ListadoIngresosEmpleado")) {
+            else if (nombreActivity.equalsIgnoreCase("ListadoIngresosEmpleado")) {
                 //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" que obtiene el usuario actual
                 usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
                     @Override
@@ -119,12 +127,14 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
                         if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
                             String cuadrilla = (String) documento.get("Cuadrilla"); //Obtenemos la cuadrilla de "documento"
 
-                            //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla obtenida de Firestore en "cuadrilla" y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores
+                            //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla obtenida de Firestore en "cuadrilla" y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores a la cuadrilla del usuario actual
                             ingr.obtenerIngresos(cuadrilla, mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
                                 @Override
                                 public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados por cuadrilla
-                                    if (items != null) //Si "items" no es null, que entre al if
+                                    if (items != null) {//Si "items" no es null, que entre al if
+                                        items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                                         inicializarRecyclerView(items, "Ingresos"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items"
+                                    }
                                 }
 
                                 @Override
@@ -145,13 +155,33 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
                     }
                 });
             }
-            else if (nombreActivity.contentEquals("ListadoDeducciones")) {
+            else if (nombreActivity.equalsIgnoreCase("ListadoIngresosTodos")) {
+                //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla vacía para indicar que no queremos filtrar los ingresos, y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores sin ningún filtro
+                ingr.obtenerIngresos("", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
+                    @Override
+                    public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados por cuadrilla
+                        if (items != null) { //Si "items" no es null, que entre al if
+                            items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
+                            inicializarRecyclerView(items, "Ingresos"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items"
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Toast.makeText(ListadoIngresosDeducciones.this, "ERROR AL CARGAR LOS INGRESOS", Toast.LENGTH_SHORT).show();
+                        Log.w("ObtenerIngresos", e);
+                    }
+                });
+            }
+            else if (nombreActivity.equalsIgnoreCase("ListadoDeducciones")) {
                 //Llamamos el método "obtenerDeducciones" de la clase "Deduccion", le mandamos la cuadrilla recibida en "nombreCuadrilla". Con esto se podrán obtener todas las deducciones por planilla hechas por los administradores
                 deduc.obtenerDeducciones(nombreCuadrilla, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<DeduccionesItems>() {
                     @Override
                     public void onCallback(List<DeduccionesItems> items) { //En esta lista "items" están todas las deducciones ya filtradas por cuadrilla
-                        if (items != null) //Si "items" no es null, que entre al if
+                        if (items != null) { //Si "items" no es null, que entre al if
+                            items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                             inicializarRecyclerView(items, "Deducciones"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items"
+                        }
                     }
 
                     @Override
@@ -261,7 +291,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
 
     //Evento Clic del LinearLayout de Fecha, al dar clic en el mismo, se abrirá un "Popup DatePicker" en el que se podrá seleccionar un mes y año y esto servirá para filtrar los gastos
     public void mostrarMesesIngresos(View view) {
-        if (nombreActivity.contentEquals("ListadoIngresosAdmin")) {
+        if (nombreActivity.equalsIgnoreCase("ListadoIngresosAdmin") || nombreActivity.equalsIgnoreCase("ListadoIngresosTodos")) {
             try {
                 //Creamos una instancia de la interfaz "DatePickerDialog.OnDateSetListener" y esta define el método "onDateSet" que se llama cuando el usuario selecciona una fecha en el DatePickerDialog
                 DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
@@ -287,7 +317,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
                 Log.w("ObtenerMes", e);
             }
         }
-        else if (nombreActivity.contentEquals("ListadoIngresosEmpleado")) {
+        else if (nombreActivity.equalsIgnoreCase("ListadoIngresosEmpleado")) {
             try {
                 // Obtener los meses actual y anterior
                 Calendar calendar = Calendar.getInstance();
