@@ -24,7 +24,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
     private TextView sepPrincipal, sepFechaCuad, sepCuadUser, sepCuadLugar, sepLugarTipo, sepTipoDesc, sepDescFact, sepFactTransf;
     private ImageView btnRegresar, btnEditar, imgFoto;
 
-    private String nombreActivity, id, fecha, usuario, cuadrilla, lugarCompra, tipoCompra, descripcion, factura, transferencia, total;
+    private String nombreActivity, id, fecha, usuario, rol, cuadrilla, lugarCompra, tipoCompra, descripcion, factura, transferencia, total;
     private Usuario usu = new Usuario(DetalleGastoIngreso.this);
     private Cuadrilla cuad = new Cuadrilla(DetalleGastoIngreso.this);
 
@@ -78,6 +78,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                     fecha = Utilidades.obtenerStringExtra(this, "FechaHora");
                     cuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
                     usuario = Utilidades.obtenerStringExtra(this, "Usuario");
+                    rol = Utilidades.obtenerStringExtra(this, "Rol");
                     lugarCompra = Utilidades.obtenerStringExtra(this, "LugarCompra");
                     tipoCompra = Utilidades.obtenerStringExtra(this, "TipoCompra");
                     descripcion = Utilidades.obtenerStringExtra(this, "Descripcion");
@@ -198,17 +199,37 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                         double dinero = Utilidades.convertirObjectADouble(valor); //Llamamos el método utilitario "convertirObjectADouble" y le mandamos el objeto "valor", y nos retorna este objeto ya convertido a double y lo guardamos en "dinero"
                         HashMap<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
 
-                        if (nombreActivity.equalsIgnoreCase("DetalleGastoCuadrilla")) {//Si el "nombreActivity" tiene el texto "DetalleGastoCuadrilla", que entre al if
+                        if (rol.equalsIgnoreCase("Empleado")) {//Si el rol tiene como texto "Empleado", que entre al if, con esto sabemos que es un gasto hecho por un empleado
                             //Agregamos las claves y datos al HashMap
                             datos.put("ActivityREG", "EditarGastoEmpleado");
                             datos.put("DineroDisponible", String.format("%.2f", dinero));
+                            datos.put("ID", id);
+                            datos.put("FechaHora", null);
+                            datos.put("Cuadrilla", cuadrilla);
+                            datos.put("LugarCompra", lugarCompra);
+                            datos.put("TipoCompra", tipoCompra);
+                            datos.put("Descripcion", descripcion);
+                            datos.put("NumeroFactura", factura);
+                            datos.put("Usuario", usuario);
+                            datos.put("Rol", rol);
+                            datos.put("Total", total);
 
                             Utilidades.iniciarActivityConDatos(DetalleGastoIngreso.this, RegistrarEditarGasto.class, datos); //Abrimos el activity "RegistrarEditarGasto" y le mandamos el HashMap "datos" con los parámetros
                         }
-                        else if (nombreActivity.equalsIgnoreCase("DetalleGastoSupervisores")) {//Si el "nombreActivity" tiene el texto "DetalleGastoSupervisores", que entre al if
+                        else if (rol.equalsIgnoreCase("Administrador")) {//Si el rol tiene como texto "Administrador", que entre al else if, con esto sabemos que es un gasto hecho por un Administrador
                             //Agregamos las claves y datos al HashMap
                             datos.put("ActivityREG", "EditarGastoAdmin");
                             datos.put("DineroDisponible", String.format("%.2f", dinero));
+                            datos.put("ID", id);
+                            datos.put("FechaHora", fecha);
+                            datos.put("Cuadrilla", cuadrilla);
+                            datos.put("LugarCompra", lugarCompra);
+                            datos.put("TipoCompra", tipoCompra);
+                            datos.put("Descripcion", descripcion);
+                            datos.put("NumeroFactura", factura);
+                            datos.put("Usuario", usuario);
+                            datos.put("Rol", rol);
+                            datos.put("Total", total);
 
                             Utilidades.iniciarActivityConDatos(DetalleGastoIngreso.this, RegistrarEditarGasto.class, datos); //Abrimos el activity "RegistrarEditarGasto" y le mandamos el HashMap "datos" con los parámetros
                         }

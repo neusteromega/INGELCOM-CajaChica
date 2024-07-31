@@ -94,6 +94,7 @@ public class Gasto {
 
     }
 
+    //Método que nos permite registrar un Gasto en Firestore
     public void registrarGasto(String usuario, Timestamp fechaHora, String rol, String cuadrilla, String lugar, String tipo, String descripcion, String factura, String total, boolean actualizarDinero, boolean fechaSeleccionada) {
         if (!lugar.isEmpty() && !descripcion.isEmpty() && !factura.isEmpty() && !total.isEmpty()) { //Verificamos que las cajas de texto no estén vacías
             if ((fechaSeleccionada && fechaHora != null) || (!fechaSeleccionada && fechaHora == null)) { //Si se cumple la primera condición: "(fechaSeleccionada && fechaHora != null)", entrará al if
@@ -122,9 +123,9 @@ public class Gasto {
                     datos.put("NumeroFactura", factura);
                     datos.put("Total", totalGasto);
 
-                    if (fechaSeleccionada)
+                    if (fechaSeleccionada) //Si "fechaSeleccionada" es true, significa que se está seleccionando una fecha de un DatePicker, entonces se inserta esa selección que está guardada en la variable "fechaHora" que viene como parámetro
                         datos.put("Fecha", fechaHora);
-                    else
+                    else //Si "fechaSeleccionada" es false
                         datos.put("Fecha", timestamp);
 
                     //Llamamos el método "insertarRegistros" de la clase "FirestoreOperaciones" y le mandamos el nombre de la colección, el HashMap con los datos a insertar. También invocamos los métodos "onSuccess" y "onFailure" de la interfaz FirestoreInsertCallback
@@ -154,6 +155,57 @@ public class Gasto {
         }
         else {
             Toast.makeText(contexto, "TODOS LOS CAMPOS DEBEN LLENARSE", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    //Método que nos permite editar un Gasto existente en Firestore
+    public void editarGasto(String id, Timestamp fechaHora, String cuadrilla, String lugar, String tipo, String descripcion, String factura, String totalViejo, String totalNuevo, boolean actualizarDinero, boolean fechaSeleccionada) {
+        if (!lugar.isEmpty() && !descripcion.isEmpty() && !factura.isEmpty() && !totalNuevo.isEmpty()) {
+            if ((fechaSeleccionada && fechaHora != null) || (!fechaSeleccionada && fechaHora == null)) {
+                try {
+                    Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
+                    Map<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos
+
+                    //Convertimos las variables String "totalViejo" y "totalNuevo" en double
+                    double primerTotal = Double.parseDouble(totalViejo);
+                    double segundoTotal = Double.parseDouble(totalNuevo);
+                    double diferenciaTotales = segundoTotal - primerTotal;
+
+                    if (diferenciaTotales != 0 && actualizarDinero) //Si "diferenciaTotales" no es 0, significa que si hay una diferencia de dinero entre ambos totales, y también, si "actualizarDinero" es true; en ese caso, que proceda a actualizar el dinero de la cuadrilla
+                        cuad.actualizarDineroCuadrilla(cuadrilla, diferenciaTotales, "Gasto");
+
+                    //Establecemos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el nuevo valor
+                    datos.put("Lugar", lugar);
+                    datos.put("TipoCompra", tipo);
+                    datos.put("Descripcion", descripcion);
+                    datos.put("NumeroFactura", factura);
+                    datos.put("Total", segundoTotal);
+
+                    if (fechaSeleccionada) {
+                        datos.put("Fecha", fechaHora);
+                        datos.put("Cuadrilla", cuadrilla);
+                    }
+
+                    //Llamamos al método "agregarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar, el HashMap con los nuevos campos y datos (o los campos existentes para actualizar su contenido) e invocamos la interfaz "FirestoreInsertCallback"
+                    oper.agregarActualizarRegistrosColeccion("gastos", "ID", id, datos, new FirestoreCallbacks.FirestoreTextCallback() {
+                        @Override
+                        public void onSuccess(String texto) {
+                            Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "GastoEditado", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "GastoEditado" para indicar que fue un Gasto el que se modificó, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarGasto
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            Toast.makeText(contexto, "ERROR AL MODIFICAR EL GASTO", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                catch (Exception e) {
+                    Log.w("ActualizarGasto", e);
+                }
+            }
+        }
+        else {
+            Toast.makeText(contexto, "TODOS LOS CAMPOS DEBEN ESTAR LLENOS", Toast.LENGTH_SHORT).show();
         }
     }
 }

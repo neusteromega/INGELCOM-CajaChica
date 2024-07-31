@@ -40,7 +40,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
     private EditText txtLugar, txtDescripcion, txtFactura, txtTotal;
     private ImageView imgFoto, imgEliminar;
     private Spinner spCuadrillas, spTipoCompras;
-    private String nombreActivity, dineroDisponible;
+    private String nombreActivity, dineroDisponible, id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, total;
     private Timestamp timestamp = null;
 
     private FirestoreOperaciones oper = new FirestoreOperaciones();
@@ -54,15 +54,12 @@ public class RegistrarEditarGasto extends AppCompatActivity {
         setContentView(R.layout.activity_registrar_editar_gasto);
 
         inicializarElementos();
+        obtenerDatos();
         establecerElementos();
         inicializarSpinners();
     }
 
     private void inicializarElementos() {
-        //Obtenemos el nombre del activity y el dinero disponible que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y le mandamos "this" para referenciar esta actividad y los nombres de las claves del putExtra
-        nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityREG");
-        dineroDisponible = Utilidades.obtenerStringExtra(this, "DineroDisponible");
-
         llFecha = findViewById(R.id.LLFechaRG);
         llCuadrilla = findViewById(R.id.LLCuadrillaRG);
         llDinero = findViewById(R.id.LLDineroRG);
@@ -82,6 +79,28 @@ public class RegistrarEditarGasto extends AppCompatActivity {
 
         btnSubirCambiarFoto = findViewById(R.id.btnSubirCambiarFotoRG);
         btnConfirmar = findViewById(R.id.btnConfirmarRG);
+    }
+
+    private void obtenerDatos() {
+        //Obtenemos el nombre del activity y el dinero disponible que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y le mandamos "this" para referenciar esta actividad y los nombres de las claves del putExtra
+        nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityREG");
+        dineroDisponible = Utilidades.obtenerStringExtra(this, "DineroDisponible");
+
+        switch (nombreActivity) {
+            case "EditarGastoEmpleado":
+
+            case "EditarGastoAdmin":
+                id = Utilidades.obtenerStringExtra(this, "ID");
+                fechaHora = Utilidades.obtenerStringExtra(this, "FechaHora");
+                cuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
+                lugarCompra = Utilidades.obtenerStringExtra(this, "LugarCompra");
+                tipoCompra = Utilidades.obtenerStringExtra(this, "TipoCompra");
+                descripcion = Utilidades.obtenerStringExtra(this, "Descripcion");
+                numeroFactura = Utilidades.obtenerStringExtra(this, "NumeroFactura");
+                usuario = Utilidades.obtenerStringExtra(this, "Usuario");
+                total = Utilidades.obtenerStringExtra(this, "Total");
+                break;
+        }
     }
 
     private void establecerElementos() {
@@ -104,6 +123,10 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                 case "EditarGastoEmpleado": //Establecemos los elementos gráficos si la pantalla es "EditarGastoEmpleado"
                     lblTitulo.setText("Editar Gasto");
                     lblDinero.setText("L. " + dineroDisponible);
+                    txtLugar.setText(lugarCompra);
+                    txtDescripcion.setText(descripcion);
+                    txtFactura.setText(numeroFactura);
+                    txtTotal.setText(total);
 
                     //Ocultamos estos dos elementos (Fecha y Cuadrilla) para que el empleado no pueda verlos
                     llFecha.setVisibility(View.GONE);
@@ -113,9 +136,14 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                 case "EditarGastoAdmin":
                     lblTitulo.setText("Editar Gasto");
                     llDinero.setVisibility(View.GONE);
+                    lblFecha.setText(fechaHora);
+                    txtLugar.setText(lugarCompra);
+                    txtDescripcion.setText(descripcion);
+                    txtFactura.setText(numeroFactura);
+                    txtTotal.setText(total);
 
                     //Como la fechaHora se obtiene en formato String, usamos el método utilitario "convertirFechaHoraATimestamp" para convertirlo a Timestamp y el resultado lo guardamos en la variable global "timestamp"
-                    //timestamp = Utilidades.convertirFechaHoraATimestamp(fechaHora);
+                    timestamp = Utilidades.convertirFechaHoraATimestamp(fechaHora);
                     break;
             }
         }
@@ -169,6 +197,11 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                     //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(RegistrarEditarGasto.this, R.layout.spinner_items, lista);
                     spCuadrillas.setAdapter(adapter); //Asignamos el adapter al Spinner "spCuadrillas"
+
+                    if (cuadrilla != null && !cuadrilla.isEmpty()) { //Si "cuadrilla" (la variable global que recibe la cuadrilla del Activity anterior) no es nula y no está vacía, significa que si está recibiendo una Cuadrilla del activity anterior, por lo tanto, que entre al if
+                        int posicionCuadrilla = adapter.getPosition(cuadrilla); //Obtenemos la posición de la cuadrilla recibida en el Spinner, y guardamos dicha posición en una variable int
+                        spCuadrillas.setSelection(posicionCuadrilla); //Una vez obtenemos la posición de la cuadrilla recibida en el Spinner, la asignamos al "spCuadrillas" para que al cargar el activity, ya esté seleccionada la cuadrilla específica en el Spinner
+                    }
                 }
 
                 @Override
@@ -189,6 +222,11 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                     //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(RegistrarEditarGasto.this, R.layout.spinner_items, lista);
                     spTipoCompras.setAdapter(adapter); //Asignamos el adapter al Spinner "spTipoCompras"
+
+                    if (tipoCompra != null && !tipoCompra.isEmpty()) { //Si "tipoCompra" (la variable global que recibe el tipo de compra del Activity anterior) no es nula y no está vacía, significa que si está recibiendo un Tipo de Compra del activity anterior, por lo tanto, que entre al if
+                        int posicionCompra = adapter.getPosition(tipoCompra); //Obtenemos la posición del tipo de compra recibida en el Spinner, y guardamos dicha posición en una variable int
+                        spTipoCompras.setSelection(posicionCompra); //Una vez obtenemos la posición del tipo de compra recibido en el Spinner, la asignamos al "spTipoCompra" para que al cargar el activity, ya esté seleccionada el tipo de compra específico en el Spinner
+                    }
                 }
 
                 @Override
@@ -213,29 +251,63 @@ public class RegistrarEditarGasto extends AppCompatActivity {
 
                     //Creamos un alertDialog que pregunte si se desea registrar el gasto de dinero a la cuadrilla seleccionada
                     new AlertDialog.Builder(this).setTitle("REGISTRAR GASTO").setMessage("¿Está seguro que desea registrar el gasto de dinero a la cuadrilla seleccionada")
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "registrarGasto()"
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    insertarGasto("GastoAdmin");
-                                }
-                            }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
-                                }
-                            }).show();
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "registrarGasto()"
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                insertarGasto("GastoAdmin");
+                            }
+                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                            }
+                        }).show();
                     break;
 
                 case "RegistrarGastoEmpleado":
 
                     //Creamos un alertDialog que pregunte si se desea registrar el gasto de dinero
                     new AlertDialog.Builder(this).setTitle("REGISTRAR GASTO").setMessage("¿Está seguro que desea registrar el gasto de dinero")
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "registrarGasto()"
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    insertarGasto("GastoEmpleado");
-                                }
-                            }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "registrarGasto()"
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                insertarGasto("GastoEmpleado");
+                            }
+                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                            }
+                        }).show();
+                    break;
+
+                case "EditarGastoEmpleado":
+
+                    //Creamos un alertDialog que pregunte si se desea editar el ingreso de dinero
+                    new AlertDialog.Builder(this).setTitle("EDITAR GASTO").setMessage("¿Está seguro que desea modificar los datos del gasto?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarGasto()"
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                editarGasto("Empleado"); //Llamamos el método "editarGasto" de abajo para que se complete la modificación de los datos, y le mandamos la palabra "Empleado" para que sepa que modificará un gasto hecho por un empleado
+                            }
+                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                            }
+                        }).show();
+                    break;
+
+                case "EditarGastoAdmin":
+
+                    //Creamos un alertDialog que pregunte si se desea editar el gasto de dinero a la cuadrilla seleccionada
+                    new AlertDialog.Builder(this).setTitle("EDITAR GASTO").setMessage("¿Está seguro que desea modificar los datos del gasto?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarGasto()"
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                editarGasto("Admin"); //Llamamos el método "editarGasto" de abajo para que se complete la modificación de los datos, y le mandamos la palabra "Admin" para que sepa que modificará un gasto hecho por un administrador
+                            }
+                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
@@ -288,15 +360,28 @@ public class RegistrarEditarGasto extends AppCompatActivity {
         catch (Exception e) {
             Log.w("ObtenerUsuario", e);
         }
+    }
 
-        /*switch (tipoGasto) {
-            case "GastoEmpleado":
+    //Método que permite editar un gasto para un empleado o un administrador
+    private void editarGasto(String tipo) {
+        //Enlazamos los EditText con las siguientes variables String
+        String lugarCompra = txtLugar.getText().toString();
+        String descripcion = txtDescripcion.getText().toString();
+        String factura = txtFactura.getText().toString();
+        String totalNuevo = txtTotal.getText().toString();
 
+        //Obtenemos la selección hecha en los Spinners
+        String cuadrillaNueva = spCuadrillas.getSelectedItem().toString();
+        String tipoCompra = spTipoCompras.getSelectedItem().toString();
 
-                break;
-
-            case "GastoAdmin":
-                break;
-        }*/
+        //Si "tipo" es igual (ignorando mayúsculas y minúsculas) a la palabra "Empleado", que entre al if
+        if (tipo.equalsIgnoreCase("Empleado")) {
+            //Llamamos el método "editarGasto" de la clase Gasto donde se hará el proceso de modificación de los datos del gasto; para ello le mandamos el "id", un "null" para indicar que la fecha no se cambiará, la cuadrilla no se cambia así que se coloca la misma que se recibe del activity anterior (DetalleGastoIngreso), el resto de datos de los EditTexts, el Spinner de tipoCompra, el total anterior guardado en la variable global "total" y el "totalNuevo" que se extrae del EditText, un "true" indicando que debe actualizar el dinero de la cuadrilla ya que se está editando un gasto de un empleado, y un "false" indicando que no se ha seleccionado una nueva fecha
+            gast.editarGasto(id, null, cuadrilla, lugarCompra, tipoCompra, descripcion, factura, total, totalNuevo, true, false);
+        }
+        else if (tipo.equalsIgnoreCase("Admin")) { //En cambio, si "tipo" es igual (ignorando mayúsculas y minúsculas) a la palabra "Admin", que entre al else if
+            //Llamamos el método "editarGasto" de la clase Gasto donde se hará el proceso de modificación de los datos del gasto; para ello le mandamos el "id", la variable global "timestamp" que guarda la fecha seleccionada, la cuadrilla y el tipoCompra extraídos de los Spinners, el resto de datos de los EditTexts, el total anterior guardado en la variable global "total" y el "totalNuevo" que se extrae del EditText, un "false" indicando que debe actualizar el dinero de la cuadrilla ya que se está editando un gasto de un administrador, y un "true" indicando que se ha seleccionado una nueva fecha
+            gast.editarGasto(id, timestamp, cuadrillaNueva, lugarCompra, tipoCompra, descripcion, factura, total, totalNuevo, false, true);
+        }
     }
 }

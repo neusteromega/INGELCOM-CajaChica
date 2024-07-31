@@ -141,7 +141,7 @@ public class Ingreso {
                 double segundoTotal = Double.parseDouble(totalNuevo);
                 double diferenciaTotales = segundoTotal - primerTotal;
 
-                if (diferenciaTotales != 0)
+                if (diferenciaTotales != 0) //Si "diferenciaTotales" no es 0, significa que si hay una diferencia de dinero entre ambos totales, en ese caso, que proceda a actualizar el dinero de la cuadrilla
                     cuad.actualizarDineroCuadrilla(cuadrilla, diferenciaTotales, "Ingreso");
 
                 //Establecemos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el nuevo valor
@@ -150,7 +150,7 @@ public class Ingreso {
                 datos.put("Transferencia", transferencia);
                 datos.put("Total", segundoTotal);
 
-                //Llamamos al método "agregarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar, el HashMap con los nuevos campos y datos (o los campos existentes para actualizar su contenido) e invocamos la interfaz "FirestoreInsertCallback"
+                //Llamamos al método "agregarActualizarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar, el HashMap con los nuevos campos y datos (o los campos existentes para actualizar su contenido) e invocamos la interfaz "FirestoreInsertCallback"
                 oper.agregarActualizarRegistrosColeccion("ingresos", "ID", id, datos, new FirestoreCallbacks.FirestoreTextCallback() {
                     @Override
                     public void onSuccess(String texto) {
@@ -159,7 +159,8 @@ public class Ingreso {
 
                     @Override
                     public void onFailure(Exception e) {
-                        Toast.makeText(contexto, "ERROR AL MODIFICAR EL INGRESO", Toast.LENGTH_SHORT).show();                    }
+                        Toast.makeText(contexto, "ERROR AL MODIFICAR EL INGRESO", Toast.LENGTH_SHORT).show();
+                    }
                 });
             }
             catch (Exception e) {

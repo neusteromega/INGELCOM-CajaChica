@@ -116,8 +116,8 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                     spCuadrillas.setAdapter(adapter); //Asignamos el adapter al Spinner "spCuadrillas"
 
                     if (cuadrilla != null && !cuadrilla.isEmpty()) { //Si "cuadrilla" (la variable global que recibe la cuadrilla del Activity anterior) no es nula y no está vacía, significa que si está recibiendo una Cuadrilla del activity anterior, por lo tanto, que entre al if
-                        int posiciónCuadrilla = adapter.getPosition(cuadrilla); //Obtenemos la posición de la cuadrilla recibida en el Spinner, y guardamos dicha posición en una variable int
-                        spCuadrillas.setSelection(posiciónCuadrilla); //Una vez obtenemos la posición de la cuadrilla recibida en el Spinner, la asignamos al "spCuadrillas" para que al cargar el activity, ya esté seleccionada la cuadrilla específica en el Spinner
+                        int posicionCuadrilla = adapter.getPosition(cuadrilla); //Obtenemos la posición de la cuadrilla recibida en el Spinner, y guardamos dicha posición en una variable int
+                        spCuadrillas.setSelection(posicionCuadrilla); //Una vez obtenemos la posición de la cuadrilla recibida en el Spinner, la asignamos al "spCuadrillas" para que al cargar el activity, ya esté seleccionada la cuadrilla específica en el Spinner
                     }
                 }
 
@@ -334,7 +334,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         String totalNuevo = txtTotal.getText().toString();
 
         if (tipo.equalsIgnoreCase("Ingreso")) //Si "tipo" es "Ingreso" que modifique el ingreso en Firestore
-            ingr.editarIngreso(id, timestamp, cuadrilla, transferencia, this.total, totalNuevo); //Llamamos el método "editarIngreso" de la clase Ingreso donde se hará el proceso de modificación de los datos del ingreso, para ello le mandamos el id, la fecha y hora guardada en "timestamp", la cuadrilla, el número de transferencia, el total anterior (se llama a "this.total") y el total nuevo que se extrae del EditText
+            ingr.editarIngreso(id, timestamp, cuadrilla, transferencia, total, totalNuevo); //Llamamos el método "editarIngreso" de la clase Ingreso donde se hará el proceso de modificación de los datos del ingreso, para ello le mandamos el id, la fecha y hora guardada en "timestamp", la cuadrilla, el número de transferencia, el total anterior (se llama a "this.total") y el total nuevo que se extrae del EditText
     }
 
     private void cambioCuadrilla() {
