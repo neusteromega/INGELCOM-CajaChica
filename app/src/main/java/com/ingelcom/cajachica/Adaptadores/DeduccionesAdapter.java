@@ -42,7 +42,10 @@ public class DeduccionesAdapter extends RecyclerView.Adapter<DeduccionesAdapter.
         holder.tvFecha.setText(item.getFechaHora());
         holder.tvTotal.setText("L. " + String.format("%.2f", item.getTotal()));
         holder.tvUsuarioTitulo.setText("Usuario:");
+
         holder.imgEditar.setImageResource(R.mipmap.ico_azul_editar);
+        holder.tvCuadrillaTitulo.setVisibility(View.GONE);
+        holder.tvCuadrilla.setVisibility(View.GONE);
     }
 
     @Override
@@ -63,9 +66,11 @@ public class DeduccionesAdapter extends RecyclerView.Adapter<DeduccionesAdapter.
 
     public static class RecyclerHolder extends RecyclerView.ViewHolder {
         //Variables para cada elemento cambiante de las tarjetas del RecyclerView
+        private TextView tvCuadrilla;
         private TextView tvUsuario;
         private TextView tvFecha;
         private TextView tvTotal;
+        private TextView tvCuadrillaTitulo;
         private TextView tvUsuarioTitulo;
         private ImageView imgEditar;
 
@@ -73,9 +78,11 @@ public class DeduccionesAdapter extends RecyclerView.Adapter<DeduccionesAdapter.
             super(itemView);
 
             //Referenciamos los elementos de la vista de las tarjetas del RecyclerView a las variables de arriba
+            tvCuadrilla = itemView.findViewById(R.id.lblCuadrillaIng);
             tvUsuario = itemView.findViewById(R.id.lblTransfUserIng);
             tvFecha = itemView.findViewById(R.id.lblFechaIng);
             tvTotal = itemView.findViewById(R.id.lblTotalIng);
+            tvCuadrillaTitulo = itemView.findViewById(R.id.lblCuadrillaTituloIng);
             tvUsuarioTitulo = itemView.findViewById(R.id.lblTransfUserTituloIng);
             imgEditar = itemView.findViewById(R.id.imgExpandirEditarIng);
         }

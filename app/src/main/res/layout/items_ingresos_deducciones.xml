@@ -39,14 +39,41 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/lblTransfUserTituloIng"
+                        android:id="@+id/lblCuadrillaTituloIng"
                         android:layout_width="wrap_content"
                         android:layout_height="25dp"
                         android:layout_marginRight="4dp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center|left"
+                        android:text="Cuadrilla:"
+                        android:textColor="@color/clr_fuente_primario"
+                        android:textSize="14dp" />
+
+                    <TextView
+                        android:id="@+id/lblCuadrillaIng"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
                         android:ellipsize="end"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center|left"
                         android:maxLines="1"
+                        android:text="Nombre Cuadrilla"
+                        android:textColor="@color/clr_fuente_primario"
+                        android:textSize="14dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/lblTransfUserTituloIng"
+                        android:layout_width="wrap_content"
+                        android:layout_height="25dp"
+                        android:layout_marginRight="4dp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center|left"
                         android:text="No. Transferencia:"
                         android:textColor="@color/clr_fuente_primario"
                         android:textSize="13dp" />
@@ -70,7 +97,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/lblFechaTituloing"
+                        android:id="@+id/lblFechaTituloIng"
                         android:layout_width="wrap_content"
                         android:layout_height="25dp"
                         android:layout_marginRight="4dp"

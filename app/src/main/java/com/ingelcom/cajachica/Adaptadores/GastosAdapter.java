@@ -17,9 +17,11 @@ public class GastosAdapter extends RecyclerView.Adapter<GastosAdapter.RecyclerHo
 
     private List<GastosItems> items; //Creamos una lista de tipo "GastosItems"
     private View.OnClickListener listener; //Creamos un escuchador (listener) de tipo "View.OnClickListener" que nos servirá para el onClick de cada tarjeta del RecyclerView
+    private String tipoListado; //Variable que nos ayudará a saber si el listado mostrado tiene todos los gastos o si está filtrado por una cuadrilla
 
-    public GastosAdapter(List<GastosItems> items) { //Método Constructor en el cual inicializamos la lista "items"
+    public GastosAdapter(List<GastosItems> items, String tipoListado) { //Método Constructor en el cual inicializamos la lista "items"
         this.items = items;
+        this.tipoListado = tipoListado;
     }
 
     @NonNull
@@ -36,10 +38,23 @@ public class GastosAdapter extends RecyclerView.Adapter<GastosAdapter.RecyclerHo
         GastosItems item = items.get(position); //Creamos un objeto de tipo "GastosItems" llamado "item" el cual igualamos a la lista "items" extrayendo posición por posición
 
         //Haciendo uso del objeto "holder", asignamos los textos a las diferentes variables que se encuentran en la clase estática "RecyclerHolder"
-        holder.tvTipoCompra.setText(item.getTipoCompra());
-        holder.tvFecha.setText(item.getFechaHora());
-        holder.tvEmpleadoCuadrilla.setText(item.getUsuario());
-        holder.tvTotal.setText("L. " + String.format("%.2f", item.getTotal()));
+        if (tipoListado.equalsIgnoreCase("ListadoGastosTodos")) { //Que ingrese a este if si estamos visualizando todos los gastos sin filtro
+            holder.tvTipoCompra.setText(item.getTipoCompra());
+            holder.tvFecha.setText(item.getFechaHora());
+            holder.tvUsuario.setText(item.getUsuario());
+            holder.tvCuadrilla.setText(item.getCuadrilla());
+            holder.tvTotal.setText("L. " + String.format("%.2f", item.getTotal()));
+        }
+        else if (tipoListado.equalsIgnoreCase("ListadoGastosAdmin") || tipoListado.equalsIgnoreCase("ListadoGastosEmpleado")) { //Que ingrese a este else if si estamos visualizando todos los gastos filtrados por una cuadrilla
+            holder.tvTipoCompra.setText(item.getTipoCompra());
+            holder.tvFecha.setText(item.getFechaHora());
+            holder.tvUsuario.setText(item.getUsuario());
+            holder.tvTotal.setText("L. " + String.format("%.2f", item.getTotal()));
+
+            //Ocultamos estos elementos
+            holder.tvCuadrillaTitulo.setVisibility(View.GONE);
+            holder.tvCuadrilla.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -62,8 +77,10 @@ public class GastosAdapter extends RecyclerView.Adapter<GastosAdapter.RecyclerHo
         //Variables para cada elemento cambiante de las tarjetas del RecyclerView
         private TextView tvTipoCompra;
         private TextView tvFecha;
-        private TextView tvEmpleadoCuadrilla;
+        private TextView tvCuadrilla;
+        private TextView tvUsuario;
         private TextView tvTotal;
+        private TextView tvCuadrillaTitulo;
 
         public RecyclerHolder(@NonNull View itemView) { //Método Constructor que recibe un View
             super(itemView);
@@ -71,8 +88,10 @@ public class GastosAdapter extends RecyclerView.Adapter<GastosAdapter.RecyclerHo
             //Referenciamos los elementos de la vista de las tarjetas del RecyclerView a las variables de arriba
             tvTipoCompra = itemView.findViewById(R.id.lblTipoCompraGst);
             tvFecha = itemView.findViewById(R.id.lblFechaGst);
-            tvEmpleadoCuadrilla = itemView.findViewById(R.id.lblEmpleadoCuadrillaGst);
+            tvCuadrilla = itemView.findViewById(R.id.lblCuadrillaGst);
+            tvUsuario = itemView.findViewById(R.id.lblEmpleadoCuadrillaGst);
             tvTotal = itemView.findViewById(R.id.lblTotalGst);
+            tvCuadrillaTitulo = itemView.findViewById(R.id.lblCuadrillaTituloGst);
         }
     }
 }

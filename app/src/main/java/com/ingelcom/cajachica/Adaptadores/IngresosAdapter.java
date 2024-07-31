@@ -18,9 +18,11 @@ public class IngresosAdapter extends RecyclerView.Adapter<IngresosAdapter.Recycl
 
     private List<IngresosItems> items; //Creamos una lista de tipo "IngresosItems"
     private View.OnClickListener listener; //Creamos un escuchador (listener) de tipo "View.OnClickListener" que nos servirá para el onClick de cada tarjeta del RecyclerView
+    private String tipoListado; //Variable que nos ayudará a saber si el listado mostrado tiene todos los ingresos o si está filtrado por una cuadrilla
 
-    public IngresosAdapter(List<IngresosItems> items) {
+    public IngresosAdapter(List<IngresosItems> items, String tipoListado) {
         this.items = items;
+        this.tipoListado = tipoListado;
     }
 
     @NonNull
@@ -37,11 +39,27 @@ public class IngresosAdapter extends RecyclerView.Adapter<IngresosAdapter.Recycl
         IngresosItems item = items.get(position); //Creamos un objeto de tipo "IngresosItems" llamado "item" el cual igualamos a la lista "items" extrayendo posición por posición
 
         //Haciendo uso del objeto "holder", asignamos los textos a las diferentes variables que se encuentran en la clase estática "RecyclerHolder"
-        holder.tvTransferencia.setText(item.getTransferencia());
-        holder.tvFecha.setText(item.getFechaHora());
-        holder.tvTotal.setText("L. " + String.format("%.2f", item.getTotal()));
-        holder.tvTransfTitulo.setText("No. Transferencia:");
-        holder.imgExpandir.setImageResource(R.mipmap.ico_azul_expandir);
+        if (tipoListado.equalsIgnoreCase("ListadoIngresosTodos")) { //Que ingrese a este if si estamos visualizando todos los ingresos sin filtro
+            holder.tvCuadrilla.setText(item.getCuadrilla());
+            holder.tvFecha.setText(item.getFechaHora());
+            holder.tvTotal.setText("L. " + String.format("%.2f", item.getTotal()));
+            holder.imgExpandir.setImageResource(R.mipmap.ico_azul_expandir);
+
+            //Ocultamos estos dos elementos
+            holder.tvTransfTitulo.setVisibility(View.GONE);
+            holder.tvTransferencia.setVisibility(View.GONE);
+        }
+        else if (tipoListado.equalsIgnoreCase("ListadoIngresosAdmin") || tipoListado.equalsIgnoreCase("ListadoIngresosEmpleado")) { //Que ingrese a este else if si estamos visualizando todos los ingresos filtrados por una cuadrilla
+            holder.tvTransferencia.setText(item.getTransferencia());
+            holder.tvFecha.setText(item.getFechaHora());
+            holder.tvTotal.setText("L. " + String.format("%.2f", item.getTotal()));
+            holder.tvTransfTitulo.setText("No. Transferencia:");
+            holder.imgExpandir.setImageResource(R.mipmap.ico_azul_expandir);
+
+            //Ocultamos estos dos elementos
+            holder.tvCuadrillaTitulo.setVisibility(View.GONE);
+            holder.tvCuadrilla.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -62,9 +80,11 @@ public class IngresosAdapter extends RecyclerView.Adapter<IngresosAdapter.Recycl
 
     public static class RecyclerHolder extends RecyclerView.ViewHolder {
         //Variables para cada elemento cambiante de las tarjetas del RecyclerView
+        private TextView tvCuadrilla;
         private TextView tvTransferencia;
         private TextView tvFecha;
         private TextView tvTotal;
+        private TextView tvCuadrillaTitulo;
         private TextView tvTransfTitulo;
         private ImageView imgExpandir;
 
@@ -72,9 +92,11 @@ public class IngresosAdapter extends RecyclerView.Adapter<IngresosAdapter.Recycl
             super(itemView);
 
             //Referenciamos los elementos de la vista de las tarjetas del RecyclerView a las variables de arriba
+            tvCuadrilla = itemView.findViewById(R.id.lblCuadrillaIng);
             tvTransferencia = itemView.findViewById(R.id.lblTransfUserIng);
             tvFecha = itemView.findViewById(R.id.lblFechaIng);
             tvTotal = itemView.findViewById(R.id.lblTotalIng);
+            tvCuadrillaTitulo = itemView.findViewById(R.id.lblCuadrillaTituloIng);
             tvTransfTitulo = itemView.findViewById(R.id.lblTransfUserTituloIng);
             imgExpandir = itemView.findViewById(R.id.imgExpandirEditarIng);
         }

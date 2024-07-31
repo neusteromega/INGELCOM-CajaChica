@@ -166,7 +166,7 @@ public class FragGastosSupervisores extends Fragment {
     private void inicializarRecyclerView(List<GastosItems> items) { //Recibe una lista de tipo "GastosItems" con los gastos a mostrar en el RecyclerView
         rvGastos.setLayoutManager(new LinearLayoutManager(getContext())); //Creamos un nuevo LinearLayoutManager para que el RecyclerView se vea en forma de tarjetas
 
-        GastosAdapter adapter = new GastosAdapter(items); //Creamos un nuevo objeto de tipo GastosAdapter en el cual enviamos la lista "items"
+        GastosAdapter adapter = new GastosAdapter(items, nombreActivity); //Creamos un nuevo objeto de tipo GastosAdapter en el cual enviamos la lista "items"
         rvGastos.setAdapter(adapter); //Asignamos el adapter al recyclerView de Gastos
         double totalGastos = 0; //Variable que nos servirá para calcular el total de los gastos que se muestren en el RecyclerView
 

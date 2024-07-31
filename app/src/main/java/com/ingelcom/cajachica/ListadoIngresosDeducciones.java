@@ -203,7 +203,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
 
         if (tipo.contentEquals("Ingresos")) {
             List<IngresosItems> ingresosItems = (List<IngresosItems>) items;
-            IngresosAdapter adapter = new IngresosAdapter(ingresosItems); //Creamos un nuevo objeto de tipo IngresosAdapter en el cual enviamos la lista "items"
+            IngresosAdapter adapter = new IngresosAdapter(ingresosItems, nombreActivity); //Creamos un nuevo objeto de tipo IngresosAdapter en el cual enviamos la lista "items"
             rvIngrDeduc.setAdapter(adapter); //Asignamos el adapter al recyclerView de Ingresos
             double totalIngresos = 0; //Variable que nos servirá para calcular el total de los ingresos que se muestren en el RecyclerView
 
