@@ -141,17 +141,17 @@ public class FragAdmCuadrillas extends Fragment implements PopupMenu.OnMenuItemC
     public boolean onMenuItemClick(MenuItem menuItem) { //Parte lógica de lo que queremos que haga cada opción del popup menú
         switch (menuItem.getItemId()) {
             case R.id.menuOrdenAlfabetico:
-                items = Utilidades.ordenarListaPorAlfabetico(items, "cuadrilla", "Ascendente");
+                items = Utilidades.ordenarListaPorAlfabetico(items, "cuadrilla", "Ascendente"); //Llamamos el método utilitario "ordenarListaPorAlfabetico". Le mandamos la lista "items", el nombre del campo String "cuadrilla", y el tipo de orden "Ascendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                 customAdapter.notifyDataSetChanged();
                 return true;
 
             case R.id.menuMenosDinero:
-                items = Utilidades.ordenarListaPorDouble(items, "dinero", "Ascendente"); //Llamamos el método utilitario "ordenarListaPorDouble". Le mandamos la lista "items", el nombre del campo double "Dinero", y el tipo de orden "Menor" para que lo ordene de forma ascendente. Este método retorna la lista ya ordenada y la guardamos en "items"
+                items = Utilidades.ordenarListaPorDouble(items, "dinero", "Ascendente"); //Llamamos el método utilitario "ordenarListaPorDouble". Le mandamos la lista "items", el nombre del campo double "dinero", y el tipo de orden "Ascendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                 customAdapter.notifyDataSetChanged();
                 return true;
 
             case R.id.menuMasDinero:
-                items = Utilidades.ordenarListaPorDouble(items, "dinero", "Descendente"); //Llamamos el método utilitario "ordenarListaPorDouble". Le mandamos la lista "items", el nombre del campo double "Dinero", y el tipo de orden "Menor" para que lo ordene de forma ascendente. Este método retorna la lista ya ordenada y la guardamos en "items"
+                items = Utilidades.ordenarListaPorDouble(items, "dinero", "Descendente"); //Llamamos el método utilitario "ordenarListaPorDouble". Le mandamos la lista "items", el nombre del campo double "dinero", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                 customAdapter.notifyDataSetChanged();
                 return true;
 

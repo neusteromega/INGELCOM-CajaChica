@@ -91,7 +91,7 @@ public class FragAdmInicio extends Fragment {
                 @Override
                 public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos
                     if (items != null) //Si "items" no es null, que entre al if
-                        items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente");
+                        items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                         inicializarRecyclerView(items, "Ingreso"); //Llamamos el método "inicializarRecyclerView" de abajo, le mandamos la lista "items" y el tipo "Ingreso" indicando que debe inicializar el rvIngresos
                 }
 
@@ -114,7 +114,7 @@ public class FragAdmInicio extends Fragment {
                 @Override
                 public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos
                     if (items != null) //Si "items" no es null, que entre al if
-                        items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente");
+                        items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                         inicializarRecyclerView(items, "Gasto"); //Llamamos el método "inicializarRecyclerView" de abajo, le mandamos la lista "items" y el tipo "Gastos" indicando que debe inicializar el rvGastos
                 }
 
@@ -137,7 +137,7 @@ public class FragAdmInicio extends Fragment {
                 @Override
                 public void onCallback(List<CuadrillasItems> items) { //En esta lista "items" están todas las cuadrillas
                     if (items != null) //Si "items" no es null, que entre al if
-                        items = Utilidades.ordenarListaPorDouble(items, "dinero", "Ascendente"); //Llamamos el método utilitario "ordenarListaPorDouble". Le mandamos la lista "items", el nombre del campo double "Dinero", y el tipo de orden "Menor" para que lo ordene de forma ascendente. Este método retorna la lista ya ordenada y la guardamos en "items"
+                        items = Utilidades.ordenarListaPorDouble(items, "dinero", "Ascendente"); //Llamamos el método utilitario "ordenarListaPorDouble". Le mandamos la lista "items", el nombre del campo double "dinero", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                         inicializarRecyclerView(items, "Cuadrilla"); //Llamamos el método "inicializarRecyclerView" de abajo, le mandamos la lista "items" ya ordenada y el tipo "Cuadrilla" indicando que debe inicializar el rvCuadrillas
                 }
 
