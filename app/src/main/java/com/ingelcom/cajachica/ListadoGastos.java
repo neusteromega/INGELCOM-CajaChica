@@ -70,11 +70,15 @@ public class ListadoGastos extends AppCompatActivity {
             case "ListadoGastosAdmin":
                 lblTitulo.setText(nombreCuadrilla); //Establecemos el nombre de la cuadrilla en el titulo
                 break;
+
+            case "ListadoGastosTodos":
+                lblTitulo.setText("Todos los Gastos");
+                break;
         }
 
         lblLineaSupervisores.setVisibility(View.INVISIBLE); //Ocultamos la linea bajo la palabra "Supervisores" al iniciar el Activity
 
-        VPGastosAdapter vpAdapter = new VPGastosAdapter(this, nombreCuadrilla, nombreActivity); //Creamos un objeto de "VPGastosAdapter" y le mandamos el contexto "this" de este Activity
+        VPGastosAdapter vpAdapter = new VPGastosAdapter(this, nombreCuadrilla, nombreActivity); //Creamos un objeto de "VPGastosAdapter" y le mandamos el contexto "this" de este Activity, el nombre de la cuadrilla y el nombre del Activity
         vpGastos.setAdapter(vpAdapter); //Asignamos el adaptador al vpGastos
     }
 

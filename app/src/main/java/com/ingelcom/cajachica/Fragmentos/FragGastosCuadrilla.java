@@ -31,10 +31,10 @@ import java.util.Map;
 
 public class FragGastosCuadrilla extends Fragment {
 
-    private static final String ARG_NOMBRE_ACTIVITY = "activity_key";
     private static final String ARG_NOMBRE_CUADRILLA = "cuadrilla_key";
+    private static final String ARG_NOMBRE_ACTIVITY = "activity_key";
 
-    private String nombreActivity, nombreCuadrilla;
+    private String nombreCuadrilla, nombreActivity;
     private RecyclerView rvGastos;
     private TextView lblTotalGastos;
 
@@ -91,7 +91,7 @@ public class FragGastosCuadrilla extends Fragment {
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
                         String cuadrilla = (String) documento.get("Cuadrilla"); //Obtenemos la cuadrilla de "documento"
 
-                        if (!cuadrilla.isEmpty()) { //Si "cuadrilla", que se extrae del documento con los datos del usuario actual, NO está vacía, por lo tanto, es un empleado quién inició sesión, así que se utilizará la misma variable "cuadrilla" para la obtención de los gastos
+                        if (nombreActivity.equalsIgnoreCase("ListadoGastosEmpleado")) { //Si "nombreActivity" contiene el texto "ListadoGastosEmpleado", quiere decir que un empleado está solicitando ver sus gastos, por lo tanto, que mande la cuadrilla obtenida del usuario actual al método "obtenerGastos"
                             //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla del usuario actual, el rol "Empleado" (ya que queremos ver los gastos hechos por la cuadrilla y en la cuadrilla todos los usuarios tienen rol "Empleado") y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de la cuadrilla del usuario actual
                             gast.obtenerGastos(cuadrilla, "Empleado", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                                 @Override
@@ -109,11 +109,29 @@ public class FragGastosCuadrilla extends Fragment {
                                 }
                             });
                         }
-                        else { //En cambio, si "cuadrilla", que se extrae del documento con los datos del usuario actual, SI está vacía, quiere decir que es un administrador quien inició sesión, y los administradores no pertenecen a una cuadrilla; en este caso, para la obtención de los datos de la cuadrilla a la que se está visualizando sus gastos, se utiliza la variable "nombreCuadrilla" que se recibe como parámetro en este fragment
+                        else if (nombreActivity.equalsIgnoreCase("ListadoGastosAdmin")) { //En cambio, si "nombreActivity" contiene el texto "ListadoGastosAdmin" significa que es un admin que desea ver los gastos de una cuadrilla específica, en este caso, que mande la cuadrilla recibida como parámetro en este fragment al método "obtenerGastos"
                             //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla recibida como parámetro en este fragment, el rol "Empleado" (ya que queremos ver los gastos hechos por la cuadrilla y en la cuadrilla todos los usuarios tienen rol "Empleado") y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de la cuadrilla
                             gast.obtenerGastos(nombreCuadrilla, "Empleado", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                                 @Override
                                 public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por cuadrilla y rol
+                                    if (items != null) {//Si "items" no es null, que entre al if
+                                        items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
+                                        inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Exception e) {
+                                    Toast.makeText(getContext(), "ERROR AL CARGAR LOS GASTOS", Toast.LENGTH_SHORT).show();
+                                    Log.w("ObtenerGastos", e);
+                                }
+                            });
+                        }
+                        else if (nombreActivity.equalsIgnoreCase("ListadoGastosTodos")) { //Por último, si "nombreActivity" tiene el texto "ListadoGastosTodos", significa que un administrador quiere ver todos los gastos de todas las cuadrillas, y en este caso, también se manda el nombre de la cuadrilla que se recibe como parámetro al método "obtenerGastos"
+                            //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla recibida como parámetro en este fragment, el rol "Empleado" (ya que queremos ver los gastos hechos por las cuadrillas y en las cuadrillas todos los usuarios tienen rol "Empleado") y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de todas las cuadrillas
+                            gast.obtenerGastos("", "Empleado", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                                @Override
+                                public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por rol
                                     if (items != null) {//Si "items" no es null, que entre al if
                                         items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                                         inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"

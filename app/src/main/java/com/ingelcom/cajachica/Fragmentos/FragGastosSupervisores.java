@@ -31,10 +31,10 @@ import java.util.Map;
 
 public class FragGastosSupervisores extends Fragment {
 
-    private static final String ARG_NOMBRE_ACTIVITY = "activity_key";
     private static final String ARG_NOMBRE_CUADRILLA = "cuadrilla_key";
+    private static final String ARG_NOMBRE_ACTIVITY = "activity_key";
 
-    private String nombreActivity, nombreCuadrilla;
+    private String nombreCuadrilla, nombreActivity;
     private RecyclerView rvGastos;
     private TextView lblTotalGastos;
 
@@ -75,7 +75,6 @@ public class FragGastosSupervisores extends Fragment {
         lblTotalGastos = view.findViewById(R.id.lblTotalGastosSup);
         rvGastos = view.findViewById(R.id.rvGastosSupervisores);
 
-        rvGastos.setLayoutManager(new LinearLayoutManager(getContext())); //Creamos un nuevo LinearLayoutManager para que el RecyclerView se vea en forma de tarjetas
         obtenerGastos(usu, gast, ""); //Llamamos al método "obtenerGastos" y le mandamos la instancias de las clases Usuario y Gasto, y el "mes" vacío, ya que al crear el fragment no se realiza un filtrado de gastos por mes
         obtenerMes(usu, gast); //Llamamos al método "obtenerMes" para recibir la selección del mes hecha por el usuario
 
@@ -92,7 +91,7 @@ public class FragGastosSupervisores extends Fragment {
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
                         String cuadrilla = (String) documento.get("Cuadrilla"); //Obtenemos la cuadrilla de "documento"
 
-                        if (!cuadrilla.isEmpty()) { //Si "cuadrilla", que se extrae del documento con los datos del usuario actual, NO está vacía, por lo tanto, es un empleado quién inició sesión, así que se utilizará la misma variable "cuadrilla" para la obtención de los gastos
+                        if (nombreActivity.equalsIgnoreCase("ListadoGastosEmpleado")) { //Si "nombreActivity" contiene el texto "ListadoGastosEmpleado", quiere decir que un empleado está solicitando ver sus gastos, por lo tanto, que mande la cuadrilla obtenida del usuario actual al método "obtenerGastos"
                             //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla del usuario actual, el rol "Administrador" (ya que queremos ver los gastos hechos por los administrador a la cuadrilla) y el "mes". Con esto se podrán obtener todos los gastos hechos por los administradores a la cuadrilla del usuario actual
                             gast.obtenerGastos(cuadrilla, "Administrador", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                                 @Override
@@ -110,11 +109,29 @@ public class FragGastosSupervisores extends Fragment {
                                 }
                             });
                         }
-                        else { //En cambio, si "cuadrilla", que se extrae del documento con los datos del usuario actual, SI está vacía, quiere decir que es un administrador quien inició sesión, y los administradores no pertenecen a una cuadrilla; en este caso, para la obtención de los datos de la cuadrilla a la que se está visualizando sus gastos, se utiliza la variable "nombreCuadrilla" que se recibe como parámetro en este fragment
-                            //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla del usuario actual, el rol "Administrador" (ya que queremos ver los gastos hechos por los administrador a la cuadrilla) y el "mes". Con esto se podrán obtener todos los gastos hechos por los administradores a la cuadrilla del usuario actual
+                        else if (nombreActivity.equalsIgnoreCase("ListadoGastosAdmin")) { //En cambio, si "nombreActivity" contiene el texto "ListadoGastosAdmin" significa que es un admin que desea ver los gastos de una cuadrilla específica, en este caso, que mande la cuadrilla recibida como parámetro en este fragment al método "obtenerGastos"
+                            //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla recibida como parámetro en este fragment, el rol "Administrador" (ya que queremos ver los gastos hechos por los administradores a la cuadrilla) y el "mes". Con esto se podrán obtener todos los gastos hechos por los administradores a la cuadrilla recibida como parámetro
                             gast.obtenerGastos(nombreCuadrilla, "Administrador", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                                 @Override
                                 public void onCallback(List<GastosItems> items) { //En esta lista "items" están los gastos ya filtrados por cuadrilla y rol
+                                    if (items != null) {//Si "items" no es null, que entre al if
+                                        items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
+                                        inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Exception e) {
+                                    Toast.makeText(getContext(), "ERROR AL CARGAR LOS GASTOS", Toast.LENGTH_SHORT).show();
+                                    Log.w("ObtenerGastos", e);
+                                }
+                            });
+                        }
+                        else if (nombreActivity.equalsIgnoreCase("ListadoGastosTodos")) { //Por último, si "nombreActivity" tiene el texto "ListadoGastosTodos", significa que un administrador quiere ver todos los gastos de todas las cuadrillas, y en este caso, también se manda el nombre de la cuadrilla que se recibe como parámetro al método "obtenerGastos"
+                            //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla recibida como parámetro en este fragment, el rol "Administrador" (ya que queremos ver todos los gastos hechos por los administradores) y el "mes". Con esto se podrán obtener todos los gastos hechos por los administradores a la cuadrilla recibida como parámetro
+                            gast.obtenerGastos("", "Administrador", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                                @Override
+                                public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por rol
                                     if (items != null) {//Si "items" no es null, que entre al if
                                         items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                                         inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
@@ -147,6 +164,8 @@ public class FragGastosSupervisores extends Fragment {
 
     //Método que nos ayuda a inicializar el RecyclerView de gastos
     private void inicializarRecyclerView(List<GastosItems> items) { //Recibe una lista de tipo "GastosItems" con los gastos a mostrar en el RecyclerView
+        rvGastos.setLayoutManager(new LinearLayoutManager(getContext())); //Creamos un nuevo LinearLayoutManager para que el RecyclerView se vea en forma de tarjetas
+
         GastosAdapter adapter = new GastosAdapter(items); //Creamos un nuevo objeto de tipo GastosAdapter en el cual enviamos la lista "items"
         rvGastos.setAdapter(adapter); //Asignamos el adapter al recyclerView de Gastos
         double totalGastos = 0; //Variable que nos servirá para calcular el total de los gastos que se muestren en el RecyclerView
