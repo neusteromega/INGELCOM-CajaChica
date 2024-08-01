@@ -91,7 +91,7 @@ public class Perfil extends AppCompatActivity {
     private void perfilAdmin() {
         lblTitulo.setText("Mi Perfil"); //Asignamos el titulo
 
-        //POSIBLE CAMBIO SÓLO SI UN ADMIN PUEDE PERTENECER A UNA CUADRILLA. Ocultamos el separador entre Teléfono y Cuadrilla, y el LinearLayout de Cuadrilla
+        //Ocultamos el separador entre Teléfono y Cuadrilla, y el LinearLayout de Cuadrilla
         lblSeparadorTelCua.setVisibility(View.GONE);
         llCuadrilla.setVisibility(View.GONE);
 

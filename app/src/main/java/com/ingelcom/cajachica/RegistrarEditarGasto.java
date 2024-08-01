@@ -38,7 +38,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
     private LinearLayout llFecha, llCuadrilla, llDinero;
     private TextView lblTitulo, lblDinero, lblFecha, btnSubirCambiarFoto, btnConfirmar;
     private EditText txtLugar, txtDescripcion, txtFactura, txtTotal;
-    private ImageView imgFoto, imgEliminar;
+    private ImageView imgFoto, btnEliminar;
     private Spinner spCuadrillas, spTipoCompras;
     private String nombreActivity, dineroDisponible, id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, total;
     private Timestamp timestamp = null;
@@ -75,8 +75,8 @@ public class RegistrarEditarGasto extends AppCompatActivity {
         spCuadrillas = findViewById(R.id.spCuadrillaRG);
         spTipoCompras = findViewById(R.id.spTipoCompraRG);
         imgFoto = findViewById(R.id.imgFotoEvidenciaRG);
-        imgEliminar = findViewById(R.id.imgEliminarFotoRG);
 
+        btnEliminar = findViewById(R.id.imgEliminarFotoRG);
         btnSubirCambiarFoto = findViewById(R.id.btnSubirCambiarFotoRG);
         btnConfirmar = findViewById(R.id.btnConfirmarRG);
     }
@@ -251,7 +251,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
 
                     //Creamos un alertDialog que pregunte si se desea registrar el gasto de dinero a la cuadrilla seleccionada
                     new AlertDialog.Builder(this).setTitle("REGISTRAR GASTO").setMessage("¿Está seguro que desea registrar el gasto de dinero a la cuadrilla seleccionada")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "registrarGasto()"
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "insertarGasto()"
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 insertarGasto("GastoAdmin");
@@ -268,7 +268,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
 
                     //Creamos un alertDialog que pregunte si se desea registrar el gasto de dinero
                     new AlertDialog.Builder(this).setTitle("REGISTRAR GASTO").setMessage("¿Está seguro que desea registrar el gasto de dinero")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "registrarGasto()"
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "insertarGasto()"
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 insertarGasto("GastoEmpleado");

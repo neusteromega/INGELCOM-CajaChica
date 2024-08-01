@@ -159,21 +159,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "insertarUsuario()"
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                //Enlazamos los EditText con las siguientes variables String
-                                String nombre = txtNombreApellido.getText().toString();
-                                String identidad = txtIdentidad.getText().toString();
-                                String telefono = txtTelefono.getText().toString();
-
-                                //Obtenemos la selección hecha en los Spinners de Roles y Cuadrillas
-                                String rol = spRoles.getSelectedItem().toString();
-
-                                if (rol.equalsIgnoreCase("Empleado")) { //Si el rol seleccionado fue "Empleado", que agarre la cuadrilla del "spCuadrillas"
-                                    String cuadrilla = spCuadrillas.getSelectedItem().toString();
-                                    usu.insertarUsuario(nombre, identidad, telefono, rol, cuadrilla); //Llamamos el método "insertarUsuario" de la clase "Usuario" donde se hará el proceso de inserción a Firestore y le mandamos los textboxes y selecciones de los spinners de esta pantalla
-                                }
-                                else if (rol.equalsIgnoreCase("Administrador")) //En cambio, si el rol seleccionado fue "Administrador", que mande la cuadrilla vacía
-                                    usu.insertarUsuario(nombre, identidad, telefono, rol, ""); //Llamamos el método "insertarUsuario" de la clase "Usuario" donde se hará el proceso de inserción a Firestore y le mandamos los textboxes y selecciones de los spinners de esta pantalla
-
+                                agregarUsuario();
                             }
                         }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
                                 @Override
@@ -181,10 +167,55 @@ public class AgregarEditarPerfil extends AppCompatActivity {
                                     Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
                                 }
                             }).show();
+                    break;
+
+                case "EditarAdmin":
+
+                    //Creamos un alertDialog que pregunte si se desea editar el perfil del Administrador
+                    new AlertDialog.Builder(this).setTitle("EDITAR PERFIL").setMessage("¿Está seguro que desea modificar los datos de su perfil")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarPerfilAdmin()"
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    editarPerfilAdmin();
+                                }
+                            }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                }
+                            }).show();
+                    break;
+
+                case "EditarEmpleado":
+
+                    break;
+
+                case "EditarEmpleadoAdmin":
 
                     break;
             }
         }
+    }
+
+    private void agregarUsuario() {
+        //Enlazamos los EditText con las siguientes variables String
+        String nombre = txtNombreApellido.getText().toString();
+        String identidad = txtIdentidad.getText().toString();
+        String telefono = txtTelefono.getText().toString();
+
+        //Obtenemos la selección hecha en los Spinners de Roles y Cuadrillas
+        String rol = spRoles.getSelectedItem().toString();
+
+        if (rol.equalsIgnoreCase("Empleado")) { //Si el rol seleccionado fue "Empleado", que agarre la cuadrilla del "spCuadrillas"
+            String cuadrilla = spCuadrillas.getSelectedItem().toString();
+            usu.insertarUsuario(nombre, identidad, telefono, rol, cuadrilla); //Llamamos el método "insertarUsuario" de la clase "Usuario" donde se hará el proceso de inserción a Firestore y le mandamos los textboxes y selecciones de los spinners de esta pantalla
+        }
+        else if (rol.equalsIgnoreCase("Administrador")) //En cambio, si el rol seleccionado fue "Administrador", que mande la cuadrilla vacía
+            usu.insertarUsuario(nombre, identidad, telefono, rol, ""); //Llamamos el método "insertarUsuario" de la clase "Usuario" donde se hará el proceso de inserción a Firestore y le mandamos los textboxes y selecciones de los spinners de esta pantalla
+    }
+
+    private void editarPerfilAdmin() {
+
     }
 
     private void ocultarCuadrillas() {

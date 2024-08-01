@@ -4,11 +4,16 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.ingelcom.cajachica.AdmPantallas;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.Modelos.EmpleadosItems;
+import com.ingelcom.cajachica.Perfil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -141,6 +146,70 @@ public class Usuario {
         }
         catch (Exception e) {
             Log.w("InsertarUsuario", e);
+        }
+    }
+
+    //Método que nos permite editar los datos de un usuario
+    public void editarUsuario(String activity, String nombre, String identidadVieja, String identidadNueva, String telefono, String correoViejo, String correoNuevo, String cuadrilla, String rol, Boolean estado) {
+        if (!nombre.isEmpty() && !identidadNueva.isEmpty() && !telefono.isEmpty() && !correoNuevo.isEmpty()) {
+            try {
+                Map<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos
+
+                datos.put("Nombre", nombre);
+                datos.put("Identidad", identidadNueva);
+                datos.put("Telefono", telefono);
+
+                if (!cuadrilla.isEmpty())
+                    datos.put("Cuadrilla", cuadrilla);
+                if (!rol.isEmpty())
+                    datos.put("Rol", rol);
+                if (!correoViejo.equalsIgnoreCase(correoNuevo)) {
+                    datos.put("Correo", correoNuevo);
+                    actualizarCorreoAuthentication(correoNuevo);
+                }
+                if (estado != null)
+                    datos.put("Estado", estado);
+
+                oper.agregarActualizarRegistrosColeccion("usuarios", "Identidad", identidadVieja, datos, new FirestoreCallbacks.FirestoreTextCallback() {
+                    @Override
+                    public void onSuccess(String texto) {
+                        Utilidades.iniciarActivityConString(contexto, Perfil.class, "ActivityPerfil", activity, true);
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Toast.makeText(contexto, "ERROR AL MODIFICAR EL USUARIO", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+            catch (Exception e) {
+                Log.w("ActualizarUsuario", e);
+            }
+        }
+        else {
+            Toast.makeText(contexto, "TODOS LOS CAMPOS DEBEN ESTAR LLENOS", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void actualizarCorreoAuthentication(String correoNuevo) {
+        FirebaseUser user = Utilidades.obtenerUsuario(); //Obtenemos el usuario actual llamando el método utilitario "obtenerUsuario"
+        String correoActual = user.getEmail(); //Obtenemos el correo del usuario actual
+
+        if (user != null) {
+            user.updateEmail(correoNuevo)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("ActualizarCorreo", "Correo actualizado.");
+                        }
+                        else {
+                            Log.e("ActualizarCorreo", "Error al actualizar el correo.", task.getException());
+                            Toast.makeText(contexto, "Error al actualizar el correo", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
         }
     }
 

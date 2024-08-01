@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -38,8 +39,9 @@ import java.util.Map;
 public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
 
     private LinearLayout llFecha, llDinero, llTransferencia;
-    private TextView lblTitulo, lblFecha, lblDinero;
+    private TextView lblTitulo, lblFecha, lblDinero, btnSubirCambiarFoto;
     private EditText txtTransferencia, txtTotal;
+    private ImageView imgFoto, btnEliminar;
     private Spinner spCuadrillas;
     private int day, month, year;
     private String nombreActivity, id, fechaHora, cuadrilla, usuario, transferencia, total;
@@ -78,6 +80,11 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         txtTransferencia = findViewById(R.id.txtTransferenciaRI);
         txtTotal = findViewById(R.id.txtTotalRI);
         spCuadrillas = findViewById(R.id.spCuadrillaRI);
+
+        imgFoto = findViewById(R.id.imgFotoEvidenciaRI);
+
+        btnEliminar = findViewById(R.id.imgEliminarFotoRI);
+        btnSubirCambiarFoto = findViewById(R.id.btnSubirCambiarFotoRI);
     }
 
     private void obtenerDatos() {
@@ -144,8 +151,11 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
 
                 case "RegistrarDeduccion":
                     lblTitulo.setText("Registrar Deducción"); //Asignamos el titulo
-                    //lblFecha.setText(String.format("%02d/%02d/%04d", day, month + 1, year));
+
                     llTransferencia.setVisibility(View.GONE);
+                    btnEliminar.setVisibility(View.GONE);
+                    btnSubirCambiarFoto.setVisibility(View.GONE);
+                    imgFoto.setVisibility(View.GONE);
                     break;
 
                 case "EditarIngreso":
@@ -164,6 +174,9 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                     txtTotal.setText(total);
 
                     llTransferencia.setVisibility(View.GONE);
+                    btnEliminar.setVisibility(View.GONE);
+                    btnSubirCambiarFoto.setVisibility(View.GONE);
+                    imgFoto.setVisibility(View.GONE);
 
                     //Como la fechaHora se obtiene en formato String, usamos el método utilitario "convertirFechaHoraATimestamp" para convertirlo a Timestamp y el resultado lo guardamos en la variable global "timestamp"
                     timestamp = Utilidades.convertirFechaHoraATimestamp(fechaHora);

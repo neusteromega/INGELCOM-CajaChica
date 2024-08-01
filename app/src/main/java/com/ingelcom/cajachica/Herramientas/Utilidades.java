@@ -28,6 +28,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -406,6 +407,20 @@ public class Utilidades {
         }
 
         return items; // Retornamos la lista ordenada o la original si no se realizó ningún ordenamiento
+    }
+
+    //Método genérico que recibe una lista y devuelve los últimos elementos de la lista (la cantidad de elementos que devulve están en la variable "cantidadItems")
+    public static <T> List<T> obtenerUltimosItemsLista(List<T> itemsOriginal, int cantidadItems) {
+        //Verificamos que "itemsOriginal" no sea nula y que tenga menos o la misma cantidad de elementos de "cantidadItems"; si no se cumplen estas condiciones, se retorna la lista sin cambios
+        if (itemsOriginal == null || itemsOriginal.size() <= cantidadItems) {
+            return itemsOriginal;
+        }
+
+        //Calculamos el índice inicial para los últimos elementos de la lista que se retornarán
+        int indiceInicio = itemsOriginal.size() - cantidadItems;
+
+        //Retornamos una sublista de "itemsOriginal" que contiene los últimos elementos (la cantidad de elementos específica que retornará está en la variable "cantidadItems")
+        return new ArrayList<>(itemsOriginal.subList(indiceInicio, itemsOriginal.size()));
     }
 
     //Método que utiliza una reflexión para llamar a los métodos getter (por ejemplo, los getter de la clase GastosItems) en los objetos de tipo "T", y retorna un "Object"
