@@ -1,11 +1,14 @@
 package com.ingelcom.cajachica;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -46,6 +49,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
     private int day, month, year;
     private String nombreActivity, id, fechaHora, cuadrilla, usuario, transferencia, total;
     private Timestamp timestamp = null;
+    private Uri imageUri;
 
     private FirestoreOperaciones oper = new FirestoreOperaciones();
     private Cuadrilla cuad = new Cuadrilla(RegistrarEditarIngresoDeduccion.this);
@@ -249,6 +253,28 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
         datePickerDialog.show(); //Mostramos el DatePickerDialog
+    }
+
+    public void subirFoto(View view) {
+
+    }
+
+    private void seleccionarImagen() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 100);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 100 && data != null & data.getData() != null) {
+            imageUri = data.getData();
+            imgFoto.setImageURI(imageUri);
+
+        }
     }
 
     //Evento Clic del botón "Confirmar"

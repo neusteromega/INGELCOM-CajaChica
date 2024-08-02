@@ -268,7 +268,6 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="15dp"
-                android:visibility="gone"
                 app:srcCompat="@mipmap/foto_evidencia" />
 
             <LinearLayout
