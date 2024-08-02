@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
+import com.ingelcom.cajachica.DAO.Usuario;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 
@@ -26,6 +27,8 @@ public class Perfil extends AppCompatActivity {
     private TextView lblTitulo, lblSeparadorTelCua, lblNombre, lblCorreo, lblIdentidad, lblTelefono, lblCuadrilla, btnEditarPerfil;
     private LinearLayout llCuadrilla;
     private String emailActual, nombreActivity, nombre, correo, identidad, telefono, cuadrilla, rol, estado;
+
+    private Usuario usu = new Usuario(Perfil.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +100,28 @@ public class Perfil extends AppCompatActivity {
 
         try {
             //Llamamos el método "obtenerUnRegistro" de la clase "FirestoreOperaciones", este nos ayudará a buscar el usuario dependiendo su correo
-            oper.obtenerUnRegistro("usuarios", "Correo", emailActual, new FirestoreCallbacks.FirestoreDocumentCallback() {
+            /*oper.obtenerUnRegistro("usuarios", "Correo", emailActual, new FirestoreCallbacks.FirestoreDocumentCallback() {
+                @Override
+                public void onCallback(Map<String, Object> documento) {
+                    if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                        //Asignamos la información del usuario en los elementos gráficos de la pantalla. Esta información se extrae del hashMap "documento"
+                        lblNombre.setText((String) documento.get("Nombre"));
+                        lblCorreo.setText((String) documento.get("Correo"));
+                        lblIdentidad.setText((String) documento.get("Identidad"));
+                        lblTelefono.setText((String) documento.get("Telefono"));
+                    }
+                    else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
+                        Toast.makeText(Perfil.this, "USUARIO NO ENCONTRADO", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Log.w("BuscarDocumento", "Error al obtener el documento", e);
+                }
+            });*/
+
+            usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
                 public void onCallback(Map<String, Object> documento) {
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
@@ -138,8 +162,30 @@ public class Perfil extends AppCompatActivity {
         //Asignamos el titulo
         lblTitulo.setText("Mi Perfil");
 
-        //Llamamos el método "obtenerUnRegistro" de la clase "FirestoreOperaciones", este nos ayudará a buscar el usuario dependiendo su correo
+        /*//Llamamos el método "obtenerUnRegistro" de la clase "FirestoreOperaciones", este nos ayudará a buscar el usuario dependiendo su correo
         oper.obtenerUnRegistro("usuarios", "Correo", emailActual, new FirestoreCallbacks.FirestoreDocumentCallback() {
+            @Override
+            public void onCallback(Map<String, Object> documento) {
+                if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                    //Asignamos la información del usuario en los elementos gráficos de la pantalla. Esta información se extrae del hashMap
+                    lblNombre.setText((String) documento.get("Nombre"));
+                    lblCorreo.setText((String) documento.get("Correo"));
+                    lblIdentidad.setText((String) documento.get("Identidad"));
+                    lblTelefono.setText((String) documento.get("Telefono"));
+                    lblCuadrilla.setText((String) documento.get("Cuadrilla"));
+                }
+                else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
+                    Toast.makeText(Perfil.this, "USUARIO NO ENCONTRADO", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.w("Buscar Documento", "Error al obtener el documento", e);
+            }
+        });*/
+
+        usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
             @Override
             public void onCallback(Map<String, Object> documento) {
                 if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo

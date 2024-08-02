@@ -159,13 +159,18 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                     break;
 
                 case "EditarIngreso":
-                    lblTitulo.setText("Editar Ingreso"); //Asignamos el titulo
-                    lblFecha.setText(fechaHora);
-                    txtTransferencia.setText(transferencia);
-                    txtTotal.setText(total);
+                    try {
+                        lblTitulo.setText("Editar Ingreso"); //Asignamos el titulo
+                        lblFecha.setText(fechaHora);
+                        txtTransferencia.setText(transferencia);
+                        txtTotal.setText(total);
 
-                    //Como la fechaHora se obtiene en formato String, usamos el método utilitario "convertirFechaHoraATimestamp" para convertirlo a Timestamp y el resultado lo guardamos en la variable global "timestamp"
-                    timestamp = Utilidades.convertirFechaHoraATimestamp(fechaHora);
+                        //Como la fechaHora se obtiene en formato String, usamos el método utilitario "convertirFechaHoraATimestamp" para convertirlo a Timestamp y el resultado lo guardamos en la variable global "timestamp"
+                        timestamp = Utilidades.convertirFechaHoraATimestamp(fechaHora);
+                    }
+                    catch (Exception e) {
+                        Log.w("ObtenerIngreso", e);
+                    }
                     break;
 
                 case "EditarDeduccion":

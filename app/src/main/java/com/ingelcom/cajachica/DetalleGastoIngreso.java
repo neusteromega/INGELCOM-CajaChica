@@ -199,7 +199,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                         double dinero = Utilidades.convertirObjectADouble(valor); //Llamamos el método utilitario "convertirObjectADouble" y le mandamos el objeto "valor", y nos retorna este objeto ya convertido a double y lo guardamos en "dinero"
                         HashMap<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
 
-                        if (rol.equalsIgnoreCase("Empleado")) {//Si el rol tiene como texto "Empleado", que entre al if, con esto sabemos que es un gasto hecho por un empleado
+                        if (rol != null && rol.equalsIgnoreCase("Empleado")) {//Si el rol tiene como texto "Empleado", que entre al if, con esto sabemos que es un gasto hecho por un empleado
                             //Agregamos las claves y datos al HashMap
                             datos.put("ActivityREG", "EditarGastoEmpleado");
                             datos.put("DineroDisponible", String.format("%.2f", dinero));
@@ -216,7 +216,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
 
                             Utilidades.iniciarActivityConDatos(DetalleGastoIngreso.this, RegistrarEditarGasto.class, datos); //Abrimos el activity "RegistrarEditarGasto" y le mandamos el HashMap "datos" con los parámetros
                         }
-                        else if (rol.equalsIgnoreCase("Administrador")) {//Si el rol tiene como texto "Administrador", que entre al else if, con esto sabemos que es un gasto hecho por un Administrador
+                        else if (rol != null && rol.equalsIgnoreCase("Administrador")) {//Si el rol tiene como texto "Administrador", que entre al else if, con esto sabemos que es un gasto hecho por un Administrador
                             //Agregamos las claves y datos al HashMap
                             datos.put("ActivityREG", "EditarGastoAdmin");
                             datos.put("DineroDisponible", String.format("%.2f", dinero));

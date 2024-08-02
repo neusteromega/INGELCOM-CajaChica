@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.DAO.Usuario;
@@ -23,6 +24,7 @@ import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class AgregarEditarPerfil extends AppCompatActivity {
 
@@ -41,10 +43,8 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agregar_editar_perfil);
 
-        //Obtenemos el nombre del activity que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y le mandamos "this" para referenciar esta actividad y "Activity" como clave del putExtra
-        nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityAEP");
-
         inicializarElementos();
+        obtenerDatos();
         establecerElementos();
         inicializarSpinners();
         ocultarCuadrillas();
@@ -73,6 +73,19 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         spEstado = findViewById(R.id.spEstadoAEP);
     }
 
+    private void obtenerDatos() {
+        //Obtenemos el nombre del activity que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y le mandamos "this" para referenciar esta actividad y "Activity" como clave del putExtra
+        nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityAEP");
+
+        switch (nombreActivity) {
+            case "EditarAdmin":
+
+            case "EditarEmpleado":
+
+                break;
+        }
+    }
+
     private void establecerElementos() {
         //Que entre al if si "nombreActivity" no es nulo
         if (nombreActivity != null) {
@@ -90,9 +103,30 @@ public class AgregarEditarPerfil extends AppCompatActivity {
 
                 //Establecemos los elementos gráficos si la pantalla es "EditarAdmin"
                 case "EditarAdmin":
-
                 //Establecemos los elementos gráficos si la pantalla es "EditarEmpleado"
                 case "EditarEmpleado":
+                    try {
+                        usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
+                            @Override
+                            public void onCallback(Map<String, Object> documento) {
+                                if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                                    txtNombreApellido.setText((String) documento.get("Nombre"));
+                                    txtIdentidad.setText((String) documento.get("Identidad"));
+                                    txtTelefono.setText((String) documento.get("Telefono"));
+                                    txtCorreo.setText((String) documento.get("Correo"));
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                Log.w("BuscarDocumento", "Error al obtener el documento", e);
+                            }
+                        });
+                    }
+                    catch (Exception e) {
+                        Log.w("ObtenerUsuario", e);
+                    }
+
                     llCuadrilla.setVisibility(View.GONE);
                     llRol.setVisibility(View.GONE);
                     llEstado.setVisibility(View.GONE);
@@ -215,7 +249,33 @@ public class AgregarEditarPerfil extends AppCompatActivity {
     }
 
     private void editarPerfilAdmin() {
+        //Enlazamos los EditText con las siguientes variables String
+        String nombre = txtNombreApellido.getText().toString();
+        String identidadNueva = txtIdentidad.getText().toString();
+        String telefono = txtTelefono.getText().toString();
+        String correoNuevo = txtCorreo.getText().toString();
 
+        try {
+            usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
+                @Override
+                public void onCallback(Map<String, Object> documento) {
+                    if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                        String correoViejo = (String) documento.get("Correo");
+                        String identidadVieja = (String) documento.get("Identidad");
+
+                        usu.editarUsuario("PerfilAdmin", nombre, identidadVieja, identidadNueva, telefono, correoViejo, correoNuevo, "", "", null);
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Log.w("BuscarDocumento", "Error al obtener el documento", e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerUsuario", e);
+        }
     }
 
     private void ocultarCuadrillas() {

@@ -150,7 +150,7 @@ public class Usuario {
     }
 
     //Método que nos permite editar los datos de un usuario
-    public void editarUsuario(String activity, String nombre, String identidadVieja, String identidadNueva, String telefono, String correoViejo, String correoNuevo, String cuadrilla, String rol, Boolean estado) {
+    public void editarUsuario(String activityPerfil, String nombre, String identidadVieja, String identidadNueva, String telefono, String correoViejo, String correoNuevo, String cuadrilla, String rol, Boolean estado) {
         if (!nombre.isEmpty() && !identidadNueva.isEmpty() && !telefono.isEmpty() && !correoNuevo.isEmpty()) {
             try {
                 Map<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos
@@ -173,7 +173,11 @@ public class Usuario {
                 oper.agregarActualizarRegistrosColeccion("usuarios", "Identidad", identidadVieja, datos, new FirestoreCallbacks.FirestoreTextCallback() {
                     @Override
                     public void onSuccess(String texto) {
-                        Utilidades.iniciarActivityConString(contexto, Perfil.class, "ActivityPerfil", activity, true);
+                        if (!correoViejo.equalsIgnoreCase(correoNuevo)) {
+                            actualizarCorreoAuthentication(correoNuevo);
+                        }
+                        Toast.makeText(contexto, "USUARIO MODIFICADO EXITOSAMENTE", Toast.LENGTH_SHORT).show();
+                        Utilidades.iniciarActivityConString(contexto, Perfil.class, "ActivityPerfil", activityPerfil, true);
                     }
 
                     @Override
@@ -197,19 +201,19 @@ public class Usuario {
         String correoActual = user.getEmail(); //Obtenemos el correo del usuario actual
 
         if (user != null) {
-            user.updateEmail(correoNuevo)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("ActualizarCorreo", "Correo actualizado.");
+            user.verifyBeforeUpdateEmail(correoNuevo)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d("ActualizarCorreo", "Correo de verificación enviado al nuevo correo.");
+                                Toast.makeText(contexto, "Por favor, verifica tu nuevo correo para completar la actualización.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Log.e("ActualizarCorreo", "Error al enviar el correo de verificación.", task.getException());
+                                Toast.makeText(contexto, "Error al enviar el correo de verificación", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                        else {
-                            Log.e("ActualizarCorreo", "Error al actualizar el correo.", task.getException());
-                            Toast.makeText(contexto, "Error al actualizar el correo", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                    });
         }
     }
 
