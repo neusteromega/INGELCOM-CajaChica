@@ -5,13 +5,22 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -32,6 +41,7 @@ import com.ingelcom.cajachica.DAO.Usuario;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -44,12 +54,12 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
     private LinearLayout llFecha, llDinero, llTransferencia;
     private TextView lblTitulo, lblFecha, lblDinero, btnSubirCambiarFoto;
     private EditText txtTransferencia, txtTotal;
-    private ImageView imgFoto, btnEliminar;
+    private ImageView imgFoto, btnEliminarFoto;
     private Spinner spCuadrillas;
     private int day, month, year;
     private String nombreActivity, id, fechaHora, cuadrilla, usuario, transferencia, total;
     private Timestamp timestamp = null;
-    private Uri imageUri;
+    private Uri imageUri = null;
 
     private FirestoreOperaciones oper = new FirestoreOperaciones();
     private Cuadrilla cuad = new Cuadrilla(RegistrarEditarIngresoDeduccion.this);
@@ -87,7 +97,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
 
         imgFoto = findViewById(R.id.imgFotoEvidenciaRI);
 
-        btnEliminar = findViewById(R.id.imgEliminarFotoRI);
+        btnEliminarFoto = findViewById(R.id.imgEliminarFotoRI);
         btnSubirCambiarFoto = findViewById(R.id.btnSubirCambiarFotoRI);
     }
 
@@ -157,7 +167,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                     lblTitulo.setText("Registrar Deducción"); //Asignamos el titulo
 
                     llTransferencia.setVisibility(View.GONE);
-                    btnEliminar.setVisibility(View.GONE);
+                    btnEliminarFoto.setVisibility(View.GONE);
                     btnSubirCambiarFoto.setVisibility(View.GONE);
                     imgFoto.setVisibility(View.GONE);
                     break;
@@ -183,7 +193,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                     txtTotal.setText(total);
 
                     llTransferencia.setVisibility(View.GONE);
-                    btnEliminar.setVisibility(View.GONE);
+                    btnEliminarFoto.setVisibility(View.GONE);
                     btnSubirCambiarFoto.setVisibility(View.GONE);
                     imgFoto.setVisibility(View.GONE);
 
@@ -256,7 +266,38 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
     }
 
     public void subirFoto(View view) {
+        mostrarDialogBottomSheet();
+    }
 
+    private void mostrarDialogBottomSheet() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.bottomsheet_foto); //Asignamos la vista que tendrá el bottomSheet, en este caso, es el elemento layout "bottomsheet_foto"
+
+        LinearLayout tomarFoto = dialog.findViewById(R.id.LLTomarFotoBSFoto);
+        LinearLayout seleccionarFoto = dialog.findViewById(R.id.LLSeleccionarFotoBSFoto);
+
+        tomarFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                abrirCamara();
+            }
+        });
+
+        seleccionarFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                seleccionarImagen();
+            }
+        });
+
+        dialog.show();
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
     }
 
     private void seleccionarImagen() {
@@ -266,15 +307,67 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         startActivityForResult(intent, 100);
     }
 
+    private void abrirCamara() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "Nueva Imagen");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "Desde la Cámara");
+        imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        startActivityForResult(intent, 101);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 100 && data != null & data.getData() != null) {
-            imageUri = data.getData();
-            imgFoto.setImageURI(imageUri);
-
+        try {
+            if (requestCode == 100 && data != null & data.getData() != null) {
+                imageUri = data.getData();
+                imgFoto.setVisibility(View.VISIBLE);
+                btnEliminarFoto.setVisibility(View.VISIBLE);
+                btnSubirCambiarFoto.setText("Cambiar Fotografía");
+                imgFoto.setImageURI(imageUri);
+            }
+            else if (requestCode == 101 && resultCode == RESULT_OK) {
+                imgFoto.setVisibility(View.VISIBLE);
+                btnEliminarFoto.setVisibility(View.VISIBLE);
+                btnSubirCambiarFoto.setText("Cambiar Fotografía");
+                imgFoto.setImageURI(imageUri);
+            }
         }
+        catch (Exception e) {
+            Log.w("SeleccionarImagen", e);
+        }
+    }
+
+    private Uri getImageUriFromBitmap(Bitmap bitmap) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public void eliminarFoto(View view) {
+        //Creamos un alertDialog que pregunte si se desea eliminar la imagen seleccionada
+        new AlertDialog.Builder(this).setTitle("ELIMINAR IMAGEN").setMessage("¿Está seguro que desea eliminar la imagen?")
+            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    imageUri = null; //Establecemos el "imageUri" en null
+
+                    //Ocultamos el imageView con la foto, el botón de eliminar Foto, y le cambiamos el texto al botón de subir y cambiar foto
+                    imgFoto.setVisibility(View.GONE);
+                    btnEliminarFoto.setVisibility(View.GONE);
+                    btnSubirCambiarFoto.setText("Subir Fotografía");
+                }
+            }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                    }
+                }).show();
     }
 
     //Evento Clic del botón "Confirmar"
@@ -368,7 +461,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                         String nombre = (String) documento.get("Nombre"); //Obtenemos el nombre del usuario actual
 
                         if (tipo.equalsIgnoreCase("Ingreso")) //Si "tipo" es "Ingreso" que registre el ingreso en Firestore
-                            ingr.registrarIngreso(nombre, timestamp, cuadrilla, transferencia, total); //Llamamos el método "registrarIngreso" donde se hará el proceso de inserción a Firestore y le mandamos el nombre del usuario actual (el usuario que está registrando el ingreso de dinero), la fecha y hora seleccionada, los textboxes y selecciones de los spinners de esta pantalla
+                            ingr.registrarIngreso(nombre, timestamp, cuadrilla, transferencia, total, imageUri); //Llamamos el método "registrarIngreso" donde se hará el proceso de inserción a Firestore y le mandamos el nombre del usuario actual (el usuario que está registrando el ingreso de dinero), la fecha y hora seleccionada, los textboxes y selecciones de los spinners de esta pantalla
                         else if (tipo.equalsIgnoreCase("Deduccion")) //En cambio, si "tipo" es "Deduccion" que registra la deducción en Firestore
                             deduc.registrarDeduccion(nombre, timestamp, cuadrilla, total); //Llamamos el método "registrarDeduccion" donde se hará el proceso de inserción a Firestore y le mandamos el nombre del usuario actual (el usuario que está registrando la deducción por planilla), la fecha y hora seleccionada, los textboxes y selecciones de los spinners de esta pantalla
                     }

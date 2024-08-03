@@ -1,12 +1,15 @@
 package com.ingelcom.cajachica.DAO;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.Timestamp;
 import com.ingelcom.cajachica.GastoIngresoRegistrado;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
+import com.ingelcom.cajachica.Herramientas.StorageCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.Modelos.GastosItems;
 import com.ingelcom.cajachica.Modelos.IngresosItems;
@@ -23,6 +26,8 @@ public class Ingreso {
 
     public Context contexto;
     private FirestoreOperaciones oper = new FirestoreOperaciones();
+    private StorageOperaciones stor = new StorageOperaciones();
+    ProgressDialog progressDialog;
 
     public Ingreso(Context contexto) {
         this.contexto = contexto;
@@ -42,7 +47,7 @@ public class Ingreso {
                         //Extraemos los campos del HashMap "documento", los campos necesarios en "IngresosItems"
                         String id = (String) documento.get("ID");
                         String usuario = (String) documento.get("Usuario");
-                        String fechaHora = Utilidades.convertirTimestampAString((Timestamp) documento.get("Fecha")); //En este campo, al ser un Timestamp y no un String, llamamos al método utilitario "convertirTimestampAString" que convierte un objeto Timestamp y retorna un string
+                        String fechaHora = Utilidades.convertirTimestampAString((Timestamp) documento.get("Fecha"), "dd/MM/yyyy - HH:mm"); //En este campo, al ser un Timestamp y no un String, llamamos al método utilitario "convertirTimestampAString" que convierte un objeto Timestamp y retorna un string. Aquí mandamos el formato "dd/MM/yyyy - HH:mm" para que nos retorne la fecha y hora de esa forma
                         String cuadrilla = (String) documento.get("Cuadrilla");
                         String transferencia = (String) documento.get("Transferencia");
                         double total = Utilidades.convertirObjectADouble(documento.get("Total")); //En este campo, al ser un number (o double) y no un String, llamamos al método utilitario "convertirObjectADouble" que convierte un object de Firestore y retorna un double
@@ -98,39 +103,63 @@ public class Ingreso {
     }
 
     //Método que nos permite registrar un Ingreso en Firestore
-    public void registrarIngreso(String usuario, Timestamp fechaHora, String cuadrilla, String transferencia, String total) {
+    public void registrarIngreso(String usuario, Timestamp fechaHora, String cuadrilla, String transferencia, String total, Uri uri) {
         if (fechaHora != null && !transferencia.isEmpty() && !total.isEmpty()) { //Verificamos que las dos cajas de texto no estén vacías, y que el Timestamp "fechaHora" no sea nulo para que entre al if (el timestamp sólo será nulo si la pantalla no es "EditarIngreso", y si es "RegistrarIngreso", será nulo cuando el usuario no haya seleccionado una fecha y hora)
-            try {
-                Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
+            if (uri != null) {
+                try {
+                    Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
 
-                String idDocumento = UUID.randomUUID().toString(); //Generamos un UUID que es un elemento único y lo guardamos en la variable "idDocumento". Esto nos servirá para que el documento que se cree al insertar los datos, tenga un identificador único
-                double totalIngreso = Double.parseDouble(total); //Convertimos la variable String "total" en double y su contenido lo guardamos en "totalIngreso"
-                Map<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos a insertar
+                    String idDocumento = UUID.randomUUID().toString(); //Generamos un UUID que es un elemento único y lo guardamos en la variable "idDocumento". Esto nos servirá para que el documento que se cree al insertar los datos, tenga un identificador único
+                    double totalIngreso = Double.parseDouble(total); //Convertimos la variable String "total" en double y su contenido lo guardamos en "totalIngreso"
+                    Map<String, Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos a insertar
 
-                //Establecemos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el valor a insertar
-                datos.put("ID", idDocumento);
-                datos.put("Usuario", usuario);
-                datos.put("Fecha", fechaHora);
-                datos.put("Cuadrilla", cuadrilla);
-                datos.put("Transferencia", transferencia);
-                datos.put("Total", totalIngreso);
+                    //Establecemos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el valor a insertar
+                    datos.put("ID", idDocumento);
+                    datos.put("Usuario", usuario);
+                    datos.put("Fecha", fechaHora);
+                    datos.put("Cuadrilla", cuadrilla);
+                    datos.put("Transferencia", transferencia);
+                    datos.put("Total", totalIngreso);
 
-                //Llamamos el método "insertarRegistros" de la clase "FirestoreOperaciones" y le mandamos el nombre de la colección, el HashMap con los datos a insertar. También invocamos los métodos "onSuccess" y "onFailure" de la interfaz FirestoreInsertCallback
-                oper.insertarRegistros("ingresos", datos, new FirestoreCallbacks.FirestoreTextCallback() {
-                    @Override
-                    public void onSuccess(String texto) {
-                        cuad.actualizarDineroCuadrilla(cuadrilla, totalIngreso, "Ingreso"); //Llamamos el método "actualizarDineroCuadrilla" de la clase "Cuadrilla" y le mandamos el nombre de la cuadrilla, el total ingresado y la palabra "Ingreso" para indicar que se hizo un Ingreso y no un Gasto
-                        Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "IngresoRegistrado", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "IngresoRegistrado" para indicar que fue un Ingreso el que se registró, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarIngresoDeduccion
-                    }
+                    //Llamamos el método "insertarRegistros" de la clase "FirestoreOperaciones" y le mandamos el nombre de la colección, el HashMap con los datos a insertar. También invocamos los métodos "onSuccess" y "onFailure" de la interfaz FirestoreInsertCallback
+                    oper.insertarRegistros("ingresos", datos, new FirestoreCallbacks.FirestoreTextCallback() {
+                        @Override
+                        public void onSuccess(String texto) {
+                            progressDialog = new ProgressDialog(contexto);
+                            progressDialog.setTitle("Confirmando Ingreso de Dinero...");
+                            progressDialog.show();
 
-                    @Override
-                    public void onFailure(Exception e) {
-                        Toast.makeText(contexto, "ERROR AL REGISTRAR EL INGRESO", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                            cuad.actualizarDineroCuadrilla(cuadrilla, totalIngreso, "Ingreso"); //Llamamos el método "actualizarDineroCuadrilla" de la clase "Cuadrilla" y le mandamos el nombre de la cuadrilla, el total ingresado y la palabra "Ingreso" para indicar que se hizo un Ingreso y no un Gasto
+                            stor.subirFoto(uri, "Ingresos/", fechaHora, new StorageCallbacks.StorageCallback() {
+                                @Override
+                                public void onCallback(String texto) {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+
+                                    Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "IngresoRegistrado", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "IngresoRegistrado" para indicar que fue un Ingreso el que se registró, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarIngresoDeduccion
+                                }
+
+                                @Override
+                                public void onFailure(Exception e) {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+
+                                    Log.w("SubirFotoStorage", e);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            Toast.makeText(contexto, "ERROR AL REGISTRAR EL INGRESO", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.w("RegistrarIngreso", e);
+                }
             }
-            catch (Exception e) {
-                Log.w("RegistrarIngreso", e);
+            else {
+                Toast.makeText(contexto, "DEBE SUBIR UNA FOTO DE LA TRANSFERENCIA", Toast.LENGTH_SHORT).show();
             }
         }
         else {

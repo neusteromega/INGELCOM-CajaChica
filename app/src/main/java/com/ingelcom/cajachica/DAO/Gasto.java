@@ -43,7 +43,7 @@ public class Gasto {
                     for (Map<String,Object> documento : documentos) {
                         //Extraemos los campos del HashMap "documento", los campos necesarios en "GastosItems"
                         String id = (String) documento.get("ID");
-                        String fechaHora = Utilidades.convertirTimestampAString((Timestamp) documento.get("Fecha")); //En este campo, al ser un Timestamp y no un String, llamamos al método utilitario "convertirTimestampAString" que convierte un objeto Timestamp y retorna un string
+                        String fechaHora = Utilidades.convertirTimestampAString((Timestamp) documento.get("Fecha"), "dd/MM/yyyy - HH:mm"); //En este campo, al ser un Timestamp y no un String, llamamos al método utilitario "convertirTimestampAString" que convierte un objeto Timestamp y retorna un string. Aquí mandamos el formato "dd/MM/yyyy - HH:mm" para que nos retorne la fecha y hora de esa forma
                         String cuadrilla = (String) documento.get("Cuadrilla");
                         String lugarCompra = (String) documento.get("Lugar");
                         String tipoCompra = (String) documento.get("TipoCompra");

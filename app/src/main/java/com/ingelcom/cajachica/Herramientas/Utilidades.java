@@ -121,12 +121,12 @@ public class Utilidades {
     }
 
     //Método que permite convertir una variable de tipo "Timestamp" a un "String" en el que se muestre la fecha y hora
-    public static String convertirTimestampAString(Timestamp valor) {
+    public static String convertirTimestampAString(Timestamp valor, String formato) {
         String fechaHoraString = "";
 
         try {
             Date fechaHora = valor.toDate(); //Convertimos "valor" a tipo "Date"
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy - HH:mm", Locale.getDefault()); //Creamos una instancia de SimpleDateFormat con el formato deseado (dd/MM/yyyy HH:mm:ss)
+            SimpleDateFormat sdf = new SimpleDateFormat(formato, Locale.getDefault()); //Creamos una instancia de SimpleDateFormat con el formato deseado guardado en el parámetro "formato"
             fechaHoraString = sdf.format(fechaHora); //Convertimos la fecha y hora a un String estableciendo el formato especificado anteriormente
         }
         catch (Exception e) {
@@ -410,17 +410,14 @@ public class Utilidades {
     }
 
     //Método genérico que recibe una lista y devuelve los últimos elementos de la lista (la cantidad de elementos que devulve están en la variable "cantidadItems")
-    public static <T> List<T> obtenerUltimosItemsLista(List<T> itemsOriginal, int cantidadItems) {
-        //Verificamos que "itemsOriginal" no sea nula y que tenga menos o la misma cantidad de elementos de "cantidadItems"; si no se cumplen estas condiciones, se retorna la lista sin cambios
-        if (itemsOriginal == null || itemsOriginal.size() <= cantidadItems) {
+    public static <T> List<T> obtenerPrimerosItemsLista(List<T> itemsOriginal, int cantidadItems) {
+        //Verificamos que "itemsOriginal" no sea nula, que no esté vacía y que tenga menos o la misma cantidad de elementos de "cantidadItems"; si no se cumplen estas condiciones, se retorna la lista sin cambios
+        if (itemsOriginal == null || itemsOriginal.isEmpty() || itemsOriginal.size() <= cantidadItems) {
             return itemsOriginal;
         }
 
-        //Calculamos el índice inicial para los últimos elementos de la lista que se retornarán
-        int indiceInicio = itemsOriginal.size() - cantidadItems;
-
         //Retornamos una sublista de "itemsOriginal" que contiene los últimos elementos (la cantidad de elementos específica que retornará está en la variable "cantidadItems")
-        return new ArrayList<>(itemsOriginal.subList(indiceInicio, itemsOriginal.size()));
+        return new ArrayList<>(itemsOriginal.subList(0, cantidadItems));
     }
 
     //Método que utiliza una reflexión para llamar a los métodos getter (por ejemplo, los getter de la clase GastosItems) en los objetos de tipo "T", y retorna un "Object"

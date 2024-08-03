@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ingelcom.cajachica.Adaptadores.InicioAdapter;
 import com.ingelcom.cajachica.AdmDatosCuadrilla;
@@ -106,7 +107,7 @@ public class FragAdmInicio extends Fragment {
                 public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos
                     if (items != null) {//Si "items" no es null, que entre al if
                         items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
-                        items = Utilidades.obtenerUltimosItemsLista(items, 8); //Llamamos el método utilitario "obtenerUltimosItemsLista" que nos devolverá los últimos elementos de la lista "items" y también le pasamos la cantidad de los últimos elementos que devolverá, en este caso son 8
+                        items = Utilidades.obtenerPrimerosItemsLista(items, 8); //Llamamos el método utilitario "obtenerPrimerosItemsLista" que nos devolverá los primeros elementos de la lista "items" (esta lista ya está ordenada por la fecha más reciente) y también le pasamos la cantidad de los primeros elementos que devolverá, en este caso son 8
                         inicializarRecyclerView(items, "Ingreso"); //Llamamos el método "inicializarRecyclerView" de abajo, le mandamos la lista "items" y el tipo "Ingreso" indicando que debe inicializar el rvIngresos
                     }
                 }
@@ -131,7 +132,7 @@ public class FragAdmInicio extends Fragment {
                 public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos
                     if (items != null) {//Si "items" no es null, que entre al if
                         items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
-                        items = Utilidades.obtenerUltimosItemsLista(items, 8); //Llamamos el método utilitario "obtenerUltimosItemsLista" que nos devolverá los últimos elementos de la lista "items" y también le pasamos la cantidad de los últimos elementos que devolverá, en este caso son 8
+                        items = Utilidades.obtenerPrimerosItemsLista(items, 8); //Llamamos el método utilitario "obtenerPrimerosItemsLista" que nos devolverá los primeros elementos de la lista "items" (esta lista ya está ordenada por la fecha más reciente) y también le pasamos la cantidad de los primeros elementos que devolverá, en este caso son 8
                         inicializarRecyclerView(items, "Gasto"); //Llamamos el método "inicializarRecyclerView" de abajo, le mandamos la lista "items" y el tipo "Gastos" indicando que debe inicializar el rvGastos
                     }
                 }

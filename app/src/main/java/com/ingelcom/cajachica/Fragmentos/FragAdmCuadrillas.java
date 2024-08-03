@@ -142,17 +142,17 @@ public class FragAdmCuadrillas extends Fragment implements PopupMenu.OnMenuItemC
         switch (menuItem.getItemId()) {
             case R.id.menuOrdenAlfabetico:
                 items = Utilidades.ordenarListaPorAlfabetico(items, "cuadrilla", "Ascendente"); //Llamamos el método utilitario "ordenarListaPorAlfabetico". Le mandamos la lista "items", el nombre del campo String "cuadrilla", y el tipo de orden "Ascendente". Este método retorna la lista ya ordenada y la guardamos en "items"
-                customAdapter.notifyDataSetChanged();
+                customAdapter.notifyDataSetChanged(); //Esto indica al "customAdapter" que sus datos han sido cambiados
                 return true;
 
             case R.id.menuMenosDinero:
                 items = Utilidades.ordenarListaPorDouble(items, "dinero", "Ascendente"); //Llamamos el método utilitario "ordenarListaPorDouble". Le mandamos la lista "items", el nombre del campo double "dinero", y el tipo de orden "Ascendente". Este método retorna la lista ya ordenada y la guardamos en "items"
-                customAdapter.notifyDataSetChanged();
+                customAdapter.notifyDataSetChanged(); //Esto indica al "customAdapter" que sus datos han sido cambiados
                 return true;
 
             case R.id.menuMasDinero:
                 items = Utilidades.ordenarListaPorDouble(items, "dinero", "Descendente"); //Llamamos el método utilitario "ordenarListaPorDouble". Le mandamos la lista "items", el nombre del campo double "dinero", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
-                customAdapter.notifyDataSetChanged();
+                customAdapter.notifyDataSetChanged(); //Esto indica al "customAdapter" que sus datos han sido cambiados
                 return true;
 
             default:
