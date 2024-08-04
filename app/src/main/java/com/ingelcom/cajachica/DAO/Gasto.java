@@ -1,12 +1,15 @@
 package com.ingelcom.cajachica.DAO;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.Timestamp;
 import com.ingelcom.cajachica.GastoIngresoRegistrado;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
+import com.ingelcom.cajachica.Herramientas.StorageCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.Modelos.GastosItems;
 
@@ -25,6 +28,8 @@ public class Gasto {
 
     public Context contexto;
     private FirestoreOperaciones oper = new FirestoreOperaciones();
+    private StorageOperaciones stor = new StorageOperaciones();
+    private ProgressDialog progressDialog;
 
     public Gasto(Context contexto) {
         this.contexto = contexto;
@@ -108,62 +113,101 @@ public class Gasto {
     }
 
     //Método que nos permite registrar un Gasto en Firestore
-    public void registrarGasto(String usuario, Timestamp fechaHora, String rol, String cuadrilla, String lugar, String tipo, String descripcion, String factura, String total, boolean actualizarDinero, boolean fechaSeleccionada) {
+    public void registrarGasto(String usuario, Timestamp fechaHora, String rol, String cuadrilla, String lugar, String tipo, String descripcion, String factura, String total, Uri uri, boolean actualizarDinero, boolean fechaSeleccionada) {
         if (!lugar.isEmpty() && !descripcion.isEmpty() && !factura.isEmpty() && !total.isEmpty()) { //Verificamos que las cajas de texto no estén vacías
             if ((fechaSeleccionada && fechaHora != null) || (!fechaSeleccionada && fechaHora == null)) { //Si se cumple una de las condiciones "(fechaSeleccionada && fechaHora != null)" o "(!fechaSeleccionada && fechaHora == null)" entrará al if. La primera condición: "(fechaSeleccionada && fechaHora != null)" indica que hará una modificación de un gasto de administrador ya que "fechaSeleccionada" debe ser true y sólo el admin puede seleccionar una fecha. La segunda condición "(!fechaSeleccionada && fechaHora == null)" indica que se modificará un gasto de empleado ya que "fechaSeleccionada" deberá ser false ya que el empleado no puede seleccionar una fecha
-                try {
-                    Timestamp timestamp = null; //Creamos un timestamp
-                    Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
+                if (uri != null) { //Si el "uri" de la imagen recibida no es nulo, significa que si se ha cargado una imagen, por lo tanto, que entre al if
+                    try {
+                        Timestamp timestamp = null; //Creamos un timestamp para la fecha y hora cuando el gasto lo crea un empleado
+                        Timestamp fechaHoraFoto; //Creamos un timestamp para la foto a subir
+                        Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
 
-                    String idDocumento = UUID.randomUUID().toString(); //Generamos un UUID que es un elemento único y lo guardamos en la variable "idDocumento". Esto nos servirá para que el documento que se cree al insertar los datos, tenga un identificador único
-                    double totalGasto = Double.parseDouble(total); //Convertimos la variable String "total" en double y su contenido lo guardamos en "totalGasto"
-                    Map<String, Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos a insertar
+                        String idDocumento = UUID.randomUUID().toString(); //Generamos un UUID que es un elemento único y lo guardamos en la variable "idDocumento". Esto nos servirá para que el documento que se cree al insertar los datos, tenga un identificador único
+                        double totalGasto = Double.parseDouble(total); //Convertimos la variable String "total" en double y su contenido lo guardamos en "totalGasto"
+                        Map<String, Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos a insertar
 
-                    if (!fechaSeleccionada) {
-                        Calendar calendar = Calendar.getInstance(); //Obtenemos una instancia de la clase "Calendar"
-                        Date fechaYHora = calendar.getTime(); //"calendar.getTime()" devuelve un objeto Date que representa la fecha y hora actual contenida en el objeto Calendar, esto lo guardamos en "fechaHora"
-                        timestamp = new Timestamp(fechaYHora); //Convertimos "fechaHora" en un objeto "Timestamp" para que sea compatible con Firestore
-                    }
+                        if (!fechaSeleccionada) {
+                            Calendar calendar = Calendar.getInstance(); //Obtenemos una instancia de la clase "Calendar"
+                            Date fechaYHora = calendar.getTime(); //"calendar.getTime()" devuelve un objeto Date que representa la fecha y hora actual contenida en el objeto Calendar, esto lo guardamos en "fechaHora"
+                            timestamp = new Timestamp(fechaYHora); //Convertimos "fechaHora" en un objeto "Timestamp" para que sea compatible con Firestore
+                        }
 
-                    //Insertamos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el valor a insertar
-                    datos.put("ID", idDocumento);
-                    datos.put("Usuario", usuario);
-                    datos.put("RolUsuario", rol);
-                    datos.put("Cuadrilla", cuadrilla);
-                    datos.put("Lugar", lugar);
-                    datos.put("TipoCompra", tipo);
-                    datos.put("Descripcion", descripcion);
-                    datos.put("NumeroFactura", factura);
-                    datos.put("Total", totalGasto);
+                        //Insertamos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el valor a insertar
+                        datos.put("ID", idDocumento);
+                        datos.put("Usuario", usuario);
+                        datos.put("RolUsuario", rol);
+                        datos.put("Cuadrilla", cuadrilla);
+                        datos.put("Lugar", lugar);
+                        datos.put("TipoCompra", tipo);
+                        datos.put("Descripcion", descripcion);
+                        datos.put("NumeroFactura", factura);
+                        datos.put("Total", totalGasto);
 
-                    if (fechaSeleccionada) //Si "fechaSeleccionada" es true, significa que se está seleccionando una fecha de un DatePicker, entonces se inserta esa selección que está guardada en la variable "fechaHora" que viene como parámetro
-                        datos.put("Fecha", fechaHora);
-                    else //Si "fechaSeleccionada" es false
-                        datos.put("Fecha", timestamp);
+                        if (fechaSeleccionada) { //Si "fechaSeleccionada" es true, significa que se está seleccionando una fecha de un DatePicker, entonces se inserta esa selección que está guardada en la variable "fechaHora" que viene como parámetro
+                            datos.put("Fecha", fechaHora);
+                            fechaHoraFoto = fechaHora; //Asignamos el timestamp al "fechaHoraFoto"
+                        }
+                        else {//Si "fechaSeleccionada" es false
+                            datos.put("Fecha", timestamp);
+                            fechaHoraFoto = timestamp; //Asignamos el timestamp al "fechaHoraFoto"
+                        }
 
-                    //Llamamos el método "insertarRegistros" de la clase "FirestoreOperaciones" y le mandamos el nombre de la colección, el HashMap con los datos a insertar. También invocamos los métodos "onSuccess" y "onFailure" de la interfaz FirestoreInsertCallback
-                    oper.insertarRegistros("gastos", datos, new FirestoreCallbacks.FirestoreTextCallback() {
-                        @Override
-                        public void onSuccess(String texto) {
-                            if (actualizarDinero) {//Entrará al if si "actualizarDinero" es true, esto significa que el gasto está siendo efectuado por un usuario con rol "Empleado". Si fuera un usuario Administrador, no se actualizará el dinero de la cuadrilla ya que los admins usan un dinero aparte
-                                cuad.actualizarDineroCuadrilla(cuadrilla, totalGasto, "Gasto"); //Llamamos el método "actualizarDineroCuadrilla" de la clase "Cuadrilla" y le mandamos el nombre de la cuadrilla, el total gastado y la palabra "Gasto" para indicar que se hizo un Gasto y no un Ingreso
-                                Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "GastoRegistradoEmpleado", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "GastoRegistradoEmpleado" para indicar que fue un Gasto hecho por un Empleado y no un Ingreso el que se registró, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarGasto
-                            } else {
-                                Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "GastoRegistradoAdmin", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "GastoRegistradoAdmin" para indicar que fue un Gasto hecho por un Administrador y no un Ingreso el que se registró, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarGasto
+                        //Llamamos el método "insertarRegistros" de la clase "FirestoreOperaciones" y le mandamos el nombre de la colección, el HashMap con los datos a insertar. También invocamos los métodos "onSuccess" y "onFailure" de la interfaz FirestoreInsertCallback
+                        oper.insertarRegistros("gastos", datos, new FirestoreCallbacks.FirestoreTextCallback() {
+                            @Override
+                            public void onSuccess(String texto) {
+                                //Creamos un "ProgressDialog" por mientras se están subiendo los datos a Firebase
+                                progressDialog = new ProgressDialog(contexto);
+                                progressDialog.setTitle("Confirmando Gasto de Dinero...");
+                                progressDialog.show();
+
+                                boolean activityEmpleado; //Variable booleana que nos ayudará a saber si el activity es de Empleado o Administrador
+
+                                if (actualizarDinero) {//Entrará al if si "actualizarDinero" es true, esto significa que el gasto está siendo efectuado por un usuario con rol "Empleado". Si fuera un usuario Administrador, no se actualizará el dinero de la cuadrilla ya que los admins usan un dinero aparte
+                                    cuad.actualizarDineroCuadrilla(cuadrilla, totalGasto, "Gasto"); //Llamamos el método "actualizarDineroCuadrilla" de la clase "Cuadrilla" y le mandamos el nombre de la cuadrilla, el total gastado y la palabra "Gasto" para indicar que se hizo un Gasto y no un Ingreso
+                                    activityEmpleado = true; //Establecemos el "activityEmpleado" en true que indique que es un Empleado quien está registrando el gasto
+                                }
+                                else {
+                                    activityEmpleado = false; //Establecemos el "activityEmpleado" en false que indique que es un Administrador quien está registrando el gasto
+                                }
+
+                                stor.subirFoto(uri, "Gastos/", fechaHoraFoto, new StorageCallbacks.StorageCallback() { //Llamamos el método "subirFoto" de la clase "StorageOperaciones", donde le mandamos el URI de la imagen, el nombre de la carpeta donde se almacenerá la foto (en este caso, "Ingresos/"), el Timestamp "fechaHora" que nos ayudará para establecer el nombre a la imagen subida a Storage, e invocamos la interfaz "StorageCallback" para hacer la tarea asíncrona
+                                    @Override
+                                    public void onCallback(String texto) {
+                                        if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
+                                            progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de inserción de la imagen a Storage ha sido exitoso
+
+                                        if (activityEmpleado) //Dependiendo del contenido de "activityEmpleado", redireccionamos al empleado al activity "GastoIngresoRegistrado" con el "valor" correspondiente
+                                            Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "GastoRegistradoEmpleado", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "GastoRegistradoEmpleado" para indicar que fue un Gasto hecho por un Empleado y no un Ingreso el que se registró, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarGasto
+                                        else
+                                            Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "GastoRegistradoAdmin", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "GastoRegistradoAdmin" para indicar que fue un Gasto hecho por un Administrador y no un Ingreso el que se registró, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarGasto
+                                    }
+
+                                    @Override
+                                    public void onFailure(Exception e) {
+                                        if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
+                                            progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de inserción de la imagen a Storage haya fallado
+
+                                        Log.w("SubirFotoStorage", e);
+                                    }
+                                });
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Exception e) {
-                            Toast.makeText(contexto, "ERROR AL REGISTRAR EL GASTO", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } catch (Exception e) {
-                    Log.w("RegistrarGasto", e);
+                            @Override
+                            public void onFailure(Exception e) {
+                                Toast.makeText(contexto, "ERROR AL REGISTRAR EL GASTO", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } catch (Exception e) {
+                        Log.w("RegistrarGasto", e);
+                    }
+                }
+                else {
+                    Toast.makeText(contexto, "DEBE SUBIR UNA FOTO DEL RECIBO O FACTURA DEL GASTO", Toast.LENGTH_SHORT).show();
                 }
             }
             else {
-                Toast.makeText(contexto, "TODOS LOS CAMPOS DEBEN LLENARSE", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "DEBE SELECCIONAR UNA FECHA", Toast.LENGTH_SHORT).show();
             }
         }
         else {

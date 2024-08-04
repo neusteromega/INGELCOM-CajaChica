@@ -352,6 +352,9 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginRight="15dp"
+                android:contentDescription="@string/descripcion"
+                android:onClick="mostrarImagenCompleta"
+                android:visibility="gone"
                 app:srcCompat="@mipmap/foto_evidencia" />
 
             <LinearLayout
@@ -367,6 +370,8 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="30dp"
                     android:layout_marginBottom="30dp"
+                    android:onClick="eliminarFoto"
+                    android:visibility="gone"
                     app:srcCompat="@mipmap/ico_degradado_eliminar" />
 
                 <TextView
@@ -381,6 +386,7 @@
                     android:elevation="5dp"
                     android:fontFamily="@font/montserrat_bold"
                     android:gravity="center"
+                    android:onClick="subirFoto"
                     android:paddingLeft="25dp"
                     android:paddingTop="10dp"
                     android:paddingRight="25dp"

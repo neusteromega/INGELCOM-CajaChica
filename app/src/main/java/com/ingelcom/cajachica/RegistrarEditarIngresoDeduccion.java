@@ -159,8 +159,6 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                 //Establecemos los elementos gráficos dependiendo de la pantalla
                 case "RegistrarIngreso":
                     lblTitulo.setText("Registrar Ingreso");//Asignamos el titulo
-                    //lblFecha.setText(String.format("%02d/%02d/%04d", day, month + 1, year)); //Asignamos la fecha seleccionada con el formato "00/00/0000" al TextView "lblFecha"
-                    //llDinero.setVisibility(View.GONE);
                     break;
 
                 case "RegistrarDeduccion":
@@ -300,13 +298,6 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         dialog.getWindow().setGravity(Gravity.BOTTOM); //Asignamos un "Gravity.BOTTOM" para que el dialog se muestre en la parte inferior
     }
 
-    private void seleccionarImagen() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT); //Asignamos que la acción del Intent será "Obtener Contenido" (Get Content)
-        startActivityForResult(intent, 100);
-    }
-
     private void abrirCamara() {
         /*ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, "Nueva Imagen");
@@ -319,7 +310,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); //Creamos un nuevo intent con la acción de "Capturar Imagen" (Image Capture) de "MediaStore"
 
-        // Verificar si el intent de la cámara puede manejar la captura de la imagen
+        //Verificamos si el intent de la cámara puede manejar la captura de la imagen
         if (intent.resolveActivity(getPackageManager()) != null) {
             //Creamos un ContentValues para almacenar los metadatos de la imagen
             ContentValues values = new ContentValues();
@@ -331,6 +322,13 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
             intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri); //Pasamos el URI al intent de la cámara
             startActivityForResult(intent, 101); //Iniciamos la actividad de la cámara
         }
+    }
+
+    private void seleccionarImagen() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT); //Asignamos que la acción del Intent será "Obtener Contenido" (Get Content)
+        startActivityForResult(intent, 100);
     }
 
     @Override
@@ -346,6 +344,10 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                 btnEliminarFoto.setVisibility(View.VISIBLE);
                 btnSubirCambiarFoto.setText("Cambiar Fotografía");
                 imgFoto.setImageURI(imageUri);
+
+                if (getCurrentFocus() != null) { //Si "getCurrentFocus" no es nulo, significa que el focus está ubicado en algún elemento como un EditText
+                    getCurrentFocus().clearFocus(); //Limpiamos el focus para que al cargar la imagen, el focus no se muestre en ningún EditText y muestre el teclado
+                }
             }
             else if (requestCode == 101 && resultCode == RESULT_OK) { //En cambio, si el "requestCode" es 101, significa que se está tomando una fotografía
                 //Mostramos el imageView con la foto recién seleccionada, el botón de eliminar foto y asignamos el texto "Cambiar Fotografía" al botón de subir y cambiar foto
@@ -353,6 +355,10 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                 btnEliminarFoto.setVisibility(View.VISIBLE);
                 btnSubirCambiarFoto.setText("Cambiar Fotografía");
                 imgFoto.setImageURI(imageUri);
+
+                if (getCurrentFocus() != null) { //Si "getCurrentFocus" no es nulo, significa que el focus está ubicado en algún elemento como un EditText
+                    getCurrentFocus().clearFocus(); //Limpiamos el focus para que al cargar la imagen, el focus no se muestre en ningún EditText y muestre el teclado
+                }
             }
         }
         catch (Exception e) {

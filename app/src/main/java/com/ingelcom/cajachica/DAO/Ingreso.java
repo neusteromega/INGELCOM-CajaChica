@@ -27,7 +27,7 @@ public class Ingreso {
     public Context contexto;
     private FirestoreOperaciones oper = new FirestoreOperaciones();
     private StorageOperaciones stor = new StorageOperaciones();
-    ProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
 
     public Ingreso(Context contexto) {
         this.contexto = contexto;
@@ -105,7 +105,7 @@ public class Ingreso {
     //Método que nos permite registrar un Ingreso en Firestore
     public void registrarIngreso(String usuario, Timestamp fechaHora, String cuadrilla, String transferencia, String total, Uri uri) {
         if (fechaHora != null && !transferencia.isEmpty() && !total.isEmpty()) { //Verificamos que las dos cajas de texto no estén vacías, y que el Timestamp "fechaHora" no sea nulo para que entre al if (el timestamp sólo será nulo si la pantalla no es "EditarIngreso", y si es "RegistrarIngreso", será nulo cuando el usuario no haya seleccionado una fecha y hora)
-            if (uri != null) {
+            if (uri != null) { //Si el "uri" de la imagen recibida no es nulo, significa que si se ha cargado una imagen, por lo tanto, que entre al if
                 try {
                     Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
 
@@ -125,24 +125,26 @@ public class Ingreso {
                     oper.insertarRegistros("ingresos", datos, new FirestoreCallbacks.FirestoreTextCallback() {
                         @Override
                         public void onSuccess(String texto) {
+                            //Creamos un "ProgressDialog" por mientras se están subiendo los datos a Firebase
                             progressDialog = new ProgressDialog(contexto);
                             progressDialog.setTitle("Confirmando Ingreso de Dinero...");
                             progressDialog.show();
 
                             cuad.actualizarDineroCuadrilla(cuadrilla, totalIngreso, "Ingreso"); //Llamamos el método "actualizarDineroCuadrilla" de la clase "Cuadrilla" y le mandamos el nombre de la cuadrilla, el total ingresado y la palabra "Ingreso" para indicar que se hizo un Ingreso y no un Gasto
-                            stor.subirFoto(uri, "Ingresos/", fechaHora, new StorageCallbacks.StorageCallback() {
+
+                            stor.subirFoto(uri, "Ingresos/", fechaHora, new StorageCallbacks.StorageCallback() { //Llamamos el método "subirFoto" de la clase "StorageOperaciones", donde le mandamos el URI de la imagen, el nombre de la carpeta donde se almacenerá la foto (en este caso, "Ingresos/"), el Timestamp "fechaHora" que nos ayudará para establecer el nombre a la imagen subida a Storage, e invocamos la interfaz "StorageCallback" para hacer la tarea asíncrona
                                 @Override
                                 public void onCallback(String texto) {
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
+                                    if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
+                                        progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de inserción de la imagen a Storage ha sido exitoso
 
                                     Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "IngresoRegistrado", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "IngresoRegistrado" para indicar que fue un Ingreso el que se registró, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarIngresoDeduccion
                                 }
 
                                 @Override
                                 public void onFailure(Exception e) {
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
+                                    if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
+                                        progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de inserción de la imagen a Storage haya fallado
 
                                     Log.w("SubirFotoStorage", e);
                                 }

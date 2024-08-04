@@ -1,14 +1,25 @@
 package com.ingelcom.cajachica;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -38,10 +49,11 @@ public class RegistrarEditarGasto extends AppCompatActivity {
     private LinearLayout llFecha, llCuadrilla, llDinero;
     private TextView lblTitulo, lblDinero, lblFecha, btnSubirCambiarFoto, btnConfirmar;
     private EditText txtLugar, txtDescripcion, txtFactura, txtTotal;
-    private ImageView imgFoto, btnEliminar;
+    private ImageView imgFoto, btnEliminarFoto;
     private Spinner spCuadrillas, spTipoCompras;
     private String nombreActivity, dineroDisponible, id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, total;
     private Timestamp timestamp = null;
+    private Uri imageUri = null;
 
     private FirestoreOperaciones oper = new FirestoreOperaciones();
     private Cuadrilla cuad = new Cuadrilla(RegistrarEditarGasto.this);
@@ -76,7 +88,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
         spTipoCompras = findViewById(R.id.spTipoCompraRG);
         imgFoto = findViewById(R.id.imgFotoEvidenciaRG);
 
-        btnEliminar = findViewById(R.id.imgEliminarFotoRG);
+        btnEliminarFoto = findViewById(R.id.imgEliminarFotoRG);
         btnSubirCambiarFoto = findViewById(R.id.btnSubirCambiarFotoRG);
         btnConfirmar = findViewById(R.id.btnConfirmarRG);
     }
@@ -241,7 +253,124 @@ public class RegistrarEditarGasto extends AppCompatActivity {
     }
 
     public void subirFoto(View view) {
+        mostrarDialogBottomSheet();
+    }
 
+    private void mostrarDialogBottomSheet() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.bottomsheet_foto); //Asignamos la vista que tendrá el bottomSheet, en este caso, es el elemento layout "bottomsheet_foto"
+
+        LinearLayout tomarFoto = dialog.findViewById(R.id.LLTomarFotoBSFoto);
+        LinearLayout seleccionarFoto = dialog.findViewById(R.id.LLSeleccionarFotoBSFoto);
+
+        tomarFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                abrirCamara();
+            }
+        });
+
+        seleccionarFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                seleccionarImagen();
+            }
+        });
+
+        dialog.show(); //Mostramos el "dialog" con ".show();"
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT); //Asignamos el "Layout" que tendrá el dialog
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); //Asignamos el color transparente para el background del dialog
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation; //Asignamos las animaciones para el dialog, dichas animaciones están asignadas en "R.style.DialogAnimation"
+        dialog.getWindow().setGravity(Gravity.BOTTOM); //Asignamos un "Gravity.BOTTOM" para que el dialog se muestre en la parte inferior
+    }
+
+    private void abrirCamara() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); //Creamos un nuevo intent con la acción de "Capturar Imagen" (Image Capture) de "MediaStore"
+
+        //Verificamos si el intent de la cámara puede manejar la captura de la imagen
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            //Creamos un ContentValues para almacenar los metadatos de la imagen
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.TITLE, "Nueva Imagen");
+            values.put(MediaStore.Images.Media.DESCRIPTION, "Desde la cámara");
+
+            imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values); //Insertamos la imagen en el MediaStore y obtenemos el URI
+
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri); //Pasamos el URI al intent de la cámara
+            startActivityForResult(intent, 101); //Iniciamos la actividad de la cámara
+        }
+    }
+
+    private void seleccionarImagen() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT); //Asignamos que la acción del Intent será "Obtener Contenido" (Get Content)
+        startActivityForResult(intent, 100);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        try {
+            if (requestCode == 100 && data != null & data.getData() != null) { //Si el "requestCode" es 100, significa que se está seleccionando una imagen de la galería
+                imageUri = data.getData(); //Obtenemos el URI de la imagen seleccionada y lo guardamos en la variable "imageUri" de tipo URI
+
+                //Mostramos el imageView con la foto recién seleccionada, el botón de eliminar foto y asignamos el texto "Cambiar Fotografía" al botón de subir y cambiar foto
+                imgFoto.setVisibility(View.VISIBLE);
+                btnEliminarFoto.setVisibility(View.VISIBLE);
+                btnSubirCambiarFoto.setText("Cambiar Fotografía");
+                imgFoto.setImageURI(imageUri);
+
+                if (getCurrentFocus() != null) { //Si "getCurrentFocus" no es nulo, significa que el focus está ubicado en algún elemento como un EditText
+                    getCurrentFocus().clearFocus(); //Limpiamos el focus para que al cargar la imagen, el focus no se muestre en ningún EditText y muestre el teclado
+                }
+            }
+            else if (requestCode == 101 && resultCode == RESULT_OK) { //En cambio, si el "requestCode" es 101, significa que se está tomando una fotografía
+                //Mostramos el imageView con la foto recién seleccionada, el botón de eliminar foto y asignamos el texto "Cambiar Fotografía" al botón de subir y cambiar foto
+                imgFoto.setVisibility(View.VISIBLE);
+                btnEliminarFoto.setVisibility(View.VISIBLE);
+                btnSubirCambiarFoto.setText("Cambiar Fotografía");
+                imgFoto.setImageURI(imageUri);
+
+                if (getCurrentFocus() != null) { //Si "getCurrentFocus" no es nulo, significa que el focus está ubicado en algún elemento como un EditText
+                    getCurrentFocus().clearFocus(); //Limpiamos el focus para que al cargar la imagen, el focus no se muestre en ningún EditText y muestre el teclado
+                }
+            }
+        }
+        catch (Exception e) {
+            Log.w("SeleccionarImagen", e);
+        }
+    }
+
+    public void mostrarImagenCompleta(View view) {
+        Intent intent = new Intent(this, ImagenCompleta.class);
+        intent.putExtra("imageUri", imageUri); // Enviar el URI de la imagen
+        startActivity(intent);
+    }
+
+    public void eliminarFoto(View view) {
+        //Creamos un alertDialog que pregunte si se desea eliminar la imagen seleccionada
+        new AlertDialog.Builder(this).setTitle("ELIMINAR IMAGEN").setMessage("¿Está seguro que desea eliminar la imagen?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        imageUri = null; //Establecemos el "imageUri" en null
+
+                        //Ocultamos el imageView con la foto, el botón de eliminar Foto, y le cambiamos el texto al botón de subir y cambiar foto
+                        imgFoto.setVisibility(View.GONE);
+                        btnEliminarFoto.setVisibility(View.GONE);
+                        btnSubirCambiarFoto.setText("Subir Fotografía");
+                    }
+                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                    }
+                }).show();
     }
 
     public void confirmar(View view) {
@@ -342,9 +471,9 @@ public class RegistrarEditarGasto extends AppCompatActivity {
 
                         //Dentro de ambas condiciones, llamamos el método "registrarGasto" donde se hará el proceso de inserción a Firestore, le mandamos los textboxes y selecciones de los spinners de esta pantalla
                         if (tipoGasto.equalsIgnoreCase("GastoAdmin"))
-                            gast.registrarGasto(nombre, timestamp, rol, cuadrillaTXT, lugarCompra, tipoCompra, descripcion, factura, total, false, true); //Si el gasto lo registra un admin, mandamos "cuadrillaTXT" que es la selección de la cuadrilla en el Spinner, y un "false" indicando que no debe restar el gasto del dinero disponible de la cuadrilla ya que el gasto lo está registrando un admin con un dinero aparte
+                            gast.registrarGasto(nombre, timestamp, rol, cuadrillaTXT, lugarCompra, tipoCompra, descripcion, factura, total, imageUri, false, true); //Si el gasto lo registra un admin, mandamos "cuadrillaTXT" que es la selección de la cuadrilla en el Spinner, y un "false" indicando que no debe restar el gasto del dinero disponible de la cuadrilla ya que el gasto lo está registrando un admin con un dinero aparte
                         else if (tipoGasto.equalsIgnoreCase("GastoEmpleado"))
-                            gast.registrarGasto(nombre, timestamp, rol, cuadrillaBDD, lugarCompra, tipoCompra, descripcion, factura, total, true, false); //Si el gasto lo registra un empleado, mandamos "cuadrillaBDD" que es la extracción de la cuadrilla a la que pertenece el usuario actual, y un true indicando que SI debe restar el gasto registrado del dinero disponible de la cuadrilla del usuario
+                            gast.registrarGasto(nombre, timestamp, rol, cuadrillaBDD, lugarCompra, tipoCompra, descripcion, factura, total, imageUri, true, false); //Si el gasto lo registra un empleado, mandamos "cuadrillaBDD" que es la extracción de la cuadrilla a la que pertenece el usuario actual, y un true indicando que SI debe restar el gasto registrado del dinero disponible de la cuadrilla del usuario
                     }
                     else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
                         Log.w("ObtenerUsuario", "Usuario no encontrado");
