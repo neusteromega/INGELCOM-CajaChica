@@ -226,6 +226,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
                     datosIngreso.put("FechaHora", ingresosItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getFechaHora());
                     datosIngreso.put("Cuadrilla", ingresosItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getCuadrilla());
                     datosIngreso.put("Transferencia", ingresosItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getTransferencia());
+                    datosIngreso.put("Imagen", ingresosItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getImagen());
                     datosIngreso.put("Total", String.format("%.2f", ingresosItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getTotal()));
 
                     //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar

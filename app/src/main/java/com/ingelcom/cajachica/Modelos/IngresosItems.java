@@ -7,14 +7,16 @@ public class IngresosItems {
     private String fechaHora;
     private String cuadrilla;
     private String transferencia;
+    private String imagen;
     private double total;
 
-    public IngresosItems(String id, String usuario, String fechaHora, String cuadrilla, String transferencia, double total) {
+    public IngresosItems(String id, String usuario, String fechaHora, String cuadrilla, String transferencia, String imagen, double total) {
         this.id = id;
         this.usuario = usuario;
         this.fechaHora = fechaHora;
         this.cuadrilla = cuadrilla;
         this.transferencia = transferencia;
+        this.imagen = imagen;
         this.total = total;
     }
 
@@ -56,6 +58,14 @@ public class IngresosItems {
 
     public void setTransferencia(String transferencia) {
         this.transferencia = transferencia;
+    }
+
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
     }
 
     public double getTotal() {

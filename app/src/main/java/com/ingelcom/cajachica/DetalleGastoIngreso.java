@@ -3,15 +3,21 @@ package com.ingelcom.cajachica;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.ingelcom.cajachica.DAO.Cuadrilla;
+import com.ingelcom.cajachica.DAO.StorageOperaciones;
 import com.ingelcom.cajachica.DAO.Usuario;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
+import com.ingelcom.cajachica.Herramientas.StorageCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 
 import java.util.HashMap;
@@ -23,10 +29,13 @@ public class DetalleGastoIngreso extends AppCompatActivity {
     private TextView lblFecha, lblUsuario, lblCuadrilla, lblLugar, lblTipoCompra, lblDescripcion, lblFactura, lblTransferencia;
     private TextView sepPrincipal, sepFechaCuad, sepCuadUser, sepCuadLugar, sepLugarTipo, sepTipoDesc, sepDescFact, sepFactTransf;
     private ImageView btnRegresar, btnEditar, imgFoto;
+    private ProgressBar pbCargar;
 
-    private String nombreActivity, id, fecha, usuario, rol, cuadrilla, lugarCompra, tipoCompra, descripcion, factura, transferencia, total;
+    private String nombreActivity, id, fecha, usuario, rol, cuadrilla, lugarCompra, tipoCompra, descripcion, factura, transferencia, imagen, total;
+    private Uri imageUri;
     private Usuario usu = new Usuario(DetalleGastoIngreso.this);
     private Cuadrilla cuad = new Cuadrilla(DetalleGastoIngreso.this);
+    private StorageOperaciones stor = new StorageOperaciones();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +70,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
         sepDescFact = findViewById(R.id.lblSepDescripcionFacturaDGI);
         sepFactTransf = findViewById(R.id.lblSepFacturaTransferenciaDGI);
 
+        pbCargar = findViewById(R.id.pbCargarDGI);
         btnRegresar = findViewById(R.id.imgRegresarDGI);
         btnEditar = findViewById(R.id.imgEditarDGI);
         imgFoto = findViewById(R.id.imgFotoEvidenciaDGI);
@@ -92,6 +102,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                     cuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
                     usuario = Utilidades.obtenerStringExtra(this, "Usuario");
                     transferencia = Utilidades.obtenerStringExtra(this, "Transferencia");
+                    imagen = Utilidades.obtenerStringExtra(this, "Imagen");
                     total = Utilidades.obtenerStringExtra(this, "Total");
                     break;
             }
@@ -183,6 +194,26 @@ public class DetalleGastoIngreso extends AppCompatActivity {
             lblUsuario.setText(Utilidades.obtenerStringDosColores("Usuario: ", usuario, colorInicial, colorFinal));
             lblCuadrilla.setText(Utilidades.obtenerStringDosColores("Cuadrilla: ", cuadrilla, colorInicial, colorFinal));
             lblTransferencia.setText(Utilidades.obtenerStringDosColores("No. Transferencia: ", transferencia, colorInicial, colorFinal));
+            pbCargar.setVisibility(View.VISIBLE);
+
+            try {
+                stor.obtenerImagen(imagen, new StorageCallbacks.StorageURICallback() {
+                    @Override
+                    public void onCallback(Uri uri) {
+                        pbCargar.setVisibility(View.GONE);
+                        imageUri = uri;
+                        Glide.with(DetalleGastoIngreso.this).load(uri).into(imgFoto);
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.w("ObtenerImagen", "Error al obtener el URI de la imagen: " + e);
+                    }
+                });
+            }
+            catch (Exception e) {
+                Log.w("ObtenerImagenStorage", e);
+            }
         }
     }
 
@@ -256,6 +287,12 @@ public class DetalleGastoIngreso extends AppCompatActivity {
         catch (Exception e) {
             Log.w("ObtenerCuadrilla", e);
         }
+    }
+
+    public void mostrarImagenCompleta(View view) {
+        Intent intent = new Intent(this, ImagenCompleta.class);
+        intent.putExtra("imageUri", imageUri); // Enviar el URI de la imagen
+        startActivity(intent);
     }
 
     //Método que ocultar el botón de Editar cuando el rol del Usuario es "Empleado"

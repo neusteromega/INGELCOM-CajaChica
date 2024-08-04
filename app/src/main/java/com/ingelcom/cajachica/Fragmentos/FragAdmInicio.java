@@ -199,6 +199,7 @@ public class FragAdmInicio extends Fragment {
                         datosIngreso.put("FechaHora", Utilidades.obtenerCampo(item, "getFechaHora"));
                         datosIngreso.put("Cuadrilla", Utilidades.obtenerCampo(item, "getCuadrilla"));
                         datosIngreso.put("Transferencia", Utilidades.obtenerCampo(item, "getTransferencia"));
+                        datosIngreso.put("Imagen", Utilidades.obtenerCampo(item, "getImagen"));
                         datosIngreso.put("Total", String.format("%.2f", Utilidades.obtenerCampo(item, "getTotal")));
 
                         //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
