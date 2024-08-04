@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+
 public class ImagenCompleta extends AppCompatActivity {
 
     private ImageView imgCompleta;
@@ -20,7 +22,7 @@ public class ImagenCompleta extends AppCompatActivity {
         Uri imageUri = getIntent().getParcelableExtra("imageUri"); //Obtenemos el URI de la imagen desde el intent
 
         if (imageUri != null) { //Si el URI obtenido no es nulo, que entre al if
-            imgCompleta.setImageURI(imageUri); //Asignamos el URI al ImageView "imgCompleta"
+            Glide.with(ImagenCompleta.this).load(imageUri).into(imgCompleta);
         }
     }
 }

@@ -368,7 +368,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
 
     public void mostrarImagenCompleta(View view) {
         Intent intent = new Intent(this, ImagenCompleta.class);
-        intent.putExtra("imageUri", imageUri); // Enviar el URI de la imagen
+        intent.putExtra("imageUri", imageUri); //Enviar el URI de la imagen
         startActivity(intent);
     }
 
