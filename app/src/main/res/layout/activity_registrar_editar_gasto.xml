@@ -349,6 +349,7 @@
                 android:id="@+id/imgFotoEvidenciaRG"
                 android:layout_width="wrap_content"
                 android:layout_height="167dp"
+                android:layout_gravity="center"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginRight="15dp"

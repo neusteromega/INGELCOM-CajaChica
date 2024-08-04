@@ -11,10 +11,10 @@ public class GastosItems {
     private String numeroFactura;
     private String usuario;
     private String rol;
+    private String imagen;
     private double total;
-    //private String foto;
 
-    public GastosItems(String id, String fechaHora, String cuadrilla, String lugarCompra, String tipoCompra, String descripcion, String numeroFactura, String usuario, String rol, double total) {
+    public GastosItems(String id, String fechaHora, String cuadrilla, String lugarCompra, String tipoCompra, String descripcion, String numeroFactura, String usuario, String rol, String imagen, double total) {
         this.id = id;
         this.fechaHora = fechaHora;
         this.cuadrilla = cuadrilla;
@@ -24,6 +24,7 @@ public class GastosItems {
         this.numeroFactura = numeroFactura;
         this.usuario = usuario;
         this.rol = rol;
+        this.imagen = imagen;
         this.total = total;
     }
 
@@ -97,6 +98,14 @@ public class GastosItems {
 
     public void setRol(String rol) {
         this.rol = rol;
+    }
+
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
     }
 
     public double getTotal() {

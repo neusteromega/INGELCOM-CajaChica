@@ -93,6 +93,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                     tipoCompra = Utilidades.obtenerStringExtra(this, "TipoCompra");
                     descripcion = Utilidades.obtenerStringExtra(this, "Descripcion");
                     factura = Utilidades.obtenerStringExtra(this, "NumeroFactura");
+                    imagen = Utilidades.obtenerStringExtra(this, "Imagen");
                     total = Utilidades.obtenerStringExtra(this, "Total");
                     break;
 
@@ -187,6 +188,28 @@ public class DetalleGastoIngreso extends AppCompatActivity {
             lblTipoCompra.setText(Utilidades.obtenerStringDosColores("Compra: ", tipoCompra, colorInicial, colorFinal));
             lblDescripcion.setText(Utilidades.obtenerStringDosColores("Descripción: ", descripcion, colorInicial, colorFinal));
             lblFactura.setText(Utilidades.obtenerStringDosColores("No. Factura: ", factura, colorInicial, colorFinal));
+
+            pbCargar.setVisibility(View.VISIBLE); //Ponemos visible el progressBar
+
+            try {
+                //Llamamos el método "obtenerImagen" de la clase StorageOperaciones al cual le mandamos la ruta de la imagen a obtener guardada en la variable global "imagen", y realizamos una invocación a la interfaz "StorageURICallback"
+                stor.obtenerImagen(imagen, new StorageCallbacks.StorageURICallback() {
+                    @Override
+                    public void onCallback(Uri uri) { //En este "Uri" se encuentra el URI de la imagen obtenida de Firebase Storage
+                        pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen se ha cargado
+                        imageUri = uri; //Como la imagen ya se cargó, asignamos el URI de la imagen obtenido a la variable global "imageUri"
+                        Glide.with(DetalleGastoIngreso.this).load(uri).into(imgFoto); //Asignamos el URI de la imagen obtenida al "imgFoto", pero usando la biblioteca "Glide" para evitar errores
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.w("ObtenerImagen", "Error al obtener el URI de la imagen: " + e);
+                    }
+                });
+            }
+            catch (Exception e) {
+                Log.w("ObtenerImagenStorage", e);
+            }
         }
         else if (tipo.contentEquals("Ingreso")) {
             //Para cada TextView, llamámos al método utilitario "obtenerStringDosColores" que nos devuelve un "SpannableString" con el texto a asignar el TextView ya convertido a dos colores. Por ejemplo, "Fecha: 00/00/0000 00:00", la parte de "Fecha: " será de un color, y la parte de "00/00/0000 00:00" será de otro color
@@ -194,15 +217,17 @@ public class DetalleGastoIngreso extends AppCompatActivity {
             lblUsuario.setText(Utilidades.obtenerStringDosColores("Usuario: ", usuario, colorInicial, colorFinal));
             lblCuadrilla.setText(Utilidades.obtenerStringDosColores("Cuadrilla: ", cuadrilla, colorInicial, colorFinal));
             lblTransferencia.setText(Utilidades.obtenerStringDosColores("No. Transferencia: ", transferencia, colorInicial, colorFinal));
-            pbCargar.setVisibility(View.VISIBLE);
+
+            pbCargar.setVisibility(View.VISIBLE); //Ponemos visible el progressBar
 
             try {
+                //Llamamos el método "obtenerImagen" de la clase StorageOperaciones al cual le mandamos la ruta de la imagen a obtener guardada en la variable global "imagen", y realizamos una invocación a la interfaz "StorageURICallback"
                 stor.obtenerImagen(imagen, new StorageCallbacks.StorageURICallback() {
                     @Override
-                    public void onCallback(Uri uri) {
-                        pbCargar.setVisibility(View.GONE);
-                        imageUri = uri;
-                        Glide.with(DetalleGastoIngreso.this).load(uri).into(imgFoto);
+                    public void onCallback(Uri uri) { //En este "Uri" se encuentra el URI de la imagen obtenida de Firebase Storage
+                        pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen se ha cargado
+                        imageUri = uri; //Como la imagen ya se cargó, asignamos el URI de la imagen obtenido a la variable global "imageUri"
+                        Glide.with(DetalleGastoIngreso.this).load(uri).into(imgFoto); //Asignamos el URI de la imagen obtenida al "imgFoto", pero usando la biblioteca "Glide" para evitar errores
                     }
 
                     @Override
@@ -289,6 +314,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
         }
     }
 
+    //Método Click que al dar clic en la imagen cargada, nos manda al Activity "ImagenCompleta" donde también envía el URI de la imagen cargada para mostrarla en pantalla completa
     public void mostrarImagenCompleta(View view) {
         /*try {
             stor.obtenerImagen(imagen, new StorageCallbacks.StorageURICallback() {
@@ -310,8 +336,8 @@ public class DetalleGastoIngreso extends AppCompatActivity {
         }*/
 
         Intent intent = new Intent(DetalleGastoIngreso.this, ImagenCompleta.class);
-        intent.putExtra("imageUri", imageUri); // Enviar el URI de la imagen
-        startActivity(intent);
+        intent.putExtra("imageUri", imageUri); //Enviamos el URI de la imagen
+        startActivity(intent); //Iniciamos el activity
     }
 
     //Método que ocultar el botón de Editar cuando el rol del Usuario es "Empleado"

@@ -256,6 +256,7 @@
                 android:id="@+id/imgFotoEvidenciaRI"
                 android:layout_width="match_parent"
                 android:layout_height="167dp"
+                android:layout_gravity="center"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="15dp"

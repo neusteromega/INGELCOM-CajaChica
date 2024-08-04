@@ -22,7 +22,7 @@ public class ImagenCompleta extends AppCompatActivity {
         Uri imageUri = getIntent().getParcelableExtra("imageUri"); //Obtenemos el URI de la imagen desde el intent
 
         if (imageUri != null) { //Si el URI obtenido no es nulo, que entre al if
-            Glide.with(ImagenCompleta.this).load(imageUri).into(imgCompleta);
+            Glide.with(ImagenCompleta.this).load(imageUri).into(imgCompleta); //Asignamos el URI de la imagen obtenida al "imgCompleta", pero usando la biblioteca "Glide" para evitar errores
         }
     }
 }

@@ -366,10 +366,11 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         }
     }
 
+    //Método Click que al dar clic en la imagen cargada, nos manda al Activity "ImagenCompleta" donde también envía el URI de la imagen cargada para mostrarla en pantalla completa
     public void mostrarImagenCompleta(View view) {
         Intent intent = new Intent(this, ImagenCompleta.class);
-        intent.putExtra("imageUri", imageUri); //Enviar el URI de la imagen
-        startActivity(intent);
+        intent.putExtra("imageUri", imageUri); //Enviamos el URI de la imagen
+        startActivity(intent); //Iniciamos el activity
     }
 
     public void eliminarFoto(View view) {
