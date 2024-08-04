@@ -111,6 +111,9 @@ public class Ingreso {
 
                     String idDocumento = UUID.randomUUID().toString(); //Generamos un UUID que es un elemento único y lo guardamos en la variable "idDocumento". Esto nos servirá para que el documento que se cree al insertar los datos, tenga un identificador único
                     double totalIngreso = Double.parseDouble(total); //Convertimos la variable String "total" en double y su contenido lo guardamos en "totalIngreso"
+
+                    String fechaHoraString = Utilidades.convertirTimestampAString(fechaHora, "dd-MM-yyyy - HH:mm"); //Llamamos el método utilitario "convertirTimestampAString" donde mandamos el Timestamp "fechaHora" y el formato para convertirlo a String (dd-MM-yyyy - HH:mm)
+                    String carpetaImagen = "Imagenes/Ingresos/" + fechaHoraString; //Creamos el nombre de la carpeta y lo concatenamos con el nombre de la imagen (fechaHoraString) a subir en Firebase Storage
                     Map<String, Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos a insertar
 
                     //Establecemos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el valor a insertar
@@ -120,6 +123,7 @@ public class Ingreso {
                     datos.put("Cuadrilla", cuadrilla);
                     datos.put("Transferencia", transferencia);
                     datos.put("Total", totalIngreso);
+                    datos.put("Imagen", carpetaImagen);
 
                     //Llamamos el método "insertarRegistros" de la clase "FirestoreOperaciones" y le mandamos el nombre de la colección, el HashMap con los datos a insertar. También invocamos los métodos "onSuccess" y "onFailure" de la interfaz FirestoreInsertCallback
                     oper.insertarRegistros("ingresos", datos, new FirestoreCallbacks.FirestoreTextCallback() {
@@ -132,7 +136,7 @@ public class Ingreso {
 
                             cuad.actualizarDineroCuadrilla(cuadrilla, totalIngreso, "Ingreso"); //Llamamos el método "actualizarDineroCuadrilla" de la clase "Cuadrilla" y le mandamos el nombre de la cuadrilla, el total ingresado y la palabra "Ingreso" para indicar que se hizo un Ingreso y no un Gasto
 
-                            stor.subirFoto(uri, "Ingresos/", fechaHora, new StorageCallbacks.StorageCallback() { //Llamamos el método "subirFoto" de la clase "StorageOperaciones", donde le mandamos el URI de la imagen, el nombre de la carpeta donde se almacenerá la foto (en este caso, "Ingresos/"), el Timestamp "fechaHora" que nos ayudará para establecer el nombre a la imagen subida a Storage, e invocamos la interfaz "StorageCallback" para hacer la tarea asíncrona
+                            stor.subirFoto(uri, carpetaImagen, new StorageCallbacks.StorageCallback() { //Llamamos el método "subirFoto" de la clase "StorageOperaciones", donde le mandamos el URI de la imagen, el nombre de la carpeta donde se almacenerá la foto concatenado con el nombre de la imagen a subir, y este texto está guardado en la variable "carpetaImagen" (por ejemplo, "Imagenes/Ingresos/04-08-2024 - 12:00"), e invocamos la interfaz "StorageCallback" para hacer la tarea asíncrona
                                 @Override
                                 public void onCallback(String texto) {
                                     if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if

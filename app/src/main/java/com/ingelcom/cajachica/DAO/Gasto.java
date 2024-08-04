@@ -152,6 +152,11 @@ public class Gasto {
                             fechaHoraFoto = timestamp; //Asignamos el timestamp al "fechaHoraFoto"
                         }
 
+                        String fechaHoraString = Utilidades.convertirTimestampAString(fechaHoraFoto, "dd-MM-yyyy - HH:mm"); //Llamamos el método utilitario "convertirTimestampAString" donde mandamos el Timestamp "fechaHora" y el formato para convertirlo a String (dd-MM-yyyy - HH:mm)
+                        String carpetaImagen = "Imagenes/Gastos/" + fechaHoraString; //Creamos el nombre de la carpeta y lo concatenamos con el nombre de la imagen (fechaHoraString) a subir en Firebase Storage
+
+                        datos.put("Imagen", carpetaImagen);
+
                         //Llamamos el método "insertarRegistros" de la clase "FirestoreOperaciones" y le mandamos el nombre de la colección, el HashMap con los datos a insertar. También invocamos los métodos "onSuccess" y "onFailure" de la interfaz FirestoreInsertCallback
                         oper.insertarRegistros("gastos", datos, new FirestoreCallbacks.FirestoreTextCallback() {
                             @Override
@@ -171,7 +176,7 @@ public class Gasto {
                                     activityEmpleado = false; //Establecemos el "activityEmpleado" en false que indique que es un Administrador quien está registrando el gasto
                                 }
 
-                                stor.subirFoto(uri, "Gastos/", fechaHoraFoto, new StorageCallbacks.StorageCallback() { //Llamamos el método "subirFoto" de la clase "StorageOperaciones", donde le mandamos el URI de la imagen, el nombre de la carpeta donde se almacenerá la foto (en este caso, "Ingresos/"), el Timestamp "fechaHora" que nos ayudará para establecer el nombre a la imagen subida a Storage, e invocamos la interfaz "StorageCallback" para hacer la tarea asíncrona
+                                stor.subirFoto(uri, carpetaImagen, new StorageCallbacks.StorageCallback() { //Llamamos el método "subirFoto" de la clase "StorageOperaciones", donde le mandamos el URI de la imagen, el nombre de la carpeta donde se almacenerá la foto concatenado con el nombre de la imagen a subir, y este texto está guardado en la variable "carpetaImagen" (por ejemplo, "Imagenes/Gastos/04-08-2024 - 12:00"), e invocamos la interfaz "StorageCallback" para hacer la tarea asíncrona
                                     @Override
                                     public void onCallback(String texto) {
                                         if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
