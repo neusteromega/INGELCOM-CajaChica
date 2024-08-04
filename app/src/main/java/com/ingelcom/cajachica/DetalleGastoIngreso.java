@@ -127,7 +127,6 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                     lblDinero.setTextColor(this.getColor(R.color.clr_fuente_gastos));
 
                     //Ocultamos estos elementos
-
                     lblTransferencia.setVisibility(View.GONE);
                     sepPrincipal.setVisibility(View.GONE);
                     sepFactTransf.setVisibility(View.GONE);
@@ -153,7 +152,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                     sepTipoDesc.setVisibility(View.GONE);
                     sepDescFact.setVisibility(View.GONE);
                     sepFactTransf.setVisibility(View.GONE);
-                    imgFoto.setVisibility(View.GONE);
+                    //imgFoto.setVisibility(View.GONE);
 
                     ocultarBotonEditar();
                     asignarDatos("Ingreso"); //Llamamos al método "asignarDatos" de abajo y le mandamos "Ingreso" para indicar que asigne los datos al ingreso

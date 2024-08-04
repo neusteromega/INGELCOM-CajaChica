@@ -53,15 +53,6 @@
                         android:textSize="25dp" />
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/lblSeparadorRI"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:background="@drawable/clr_casillaazul_separador"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center"
-                    android:textSize="2dp" />
             </LinearLayout>
 
             <LinearLayout

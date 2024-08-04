@@ -19,9 +19,8 @@ public class StorageOperaciones {
     private StorageReference storageReference; //Creamos un objeto de tipo "StorageReference" que nos ayudará en el proceso de subir una imagen a Firebase Storage
 
     //Método que nos permite subir una imagen a Firebase Storage. Recibe el URI de la imagen a subir, el nombre de la carpeta, un Timestamp con la fecha y hora que servirá para establecer un nombre único a la imagen, una invocación a la interfaz "StorageCallback" que permitirá hacer esta operación de una manera asíncrona
-    public void subirFoto(Uri imageUri, String carpeta, final StorageCallbacks.StorageCallback callback) {
-        //String fechaHoraString = Utilidades.convertirTimestampAString(fechaHora, "dd-MM-yyyy - HH:mm"); //Llamamos el método utilitario "convertirTimestampAString" donde mandamos el Timestamp "fechaHora" y el formato para convertirlo a String (dd-MM-yyyy - HH:mm)
-        storageReference = FirebaseStorage.getInstance().getReference(carpeta); //Creamos una instancia de Firebase Storage donde indicamos el nombre de la carpeta "Imagenes/", la subcarpeta que se recibe en la variable "carpeta", y el nombre de la imagen a subir el cual será la fecha y hora seleccionada por el usuario y que se encuentra guardada en "fechaHoraString"
+    public void subirFoto(Uri imageUri, String rutaImagen, final StorageCallbacks.StorageCallback callback) {
+        storageReference = FirebaseStorage.getInstance().getReference(rutaImagen); //Creamos una instancia de Firebase Storage donde indicamos el nombre de la carpeta "Imagenes/", la subcarpeta que se recibe en la variable "carpeta", y el nombre de la imagen a subir el cual será la fecha y hora seleccionada por el usuario y que se encuentra guardada en "fechaHoraString"
 
         //Utilizando el método "putFile" de Firebase Storage, en donde indicamos el "imageUri" de la imagen a subir
         storageReference.putFile(imageUri)
@@ -37,5 +36,23 @@ public class StorageOperaciones {
                     callback.onFailure(e); //Invocamos el callback "onFailure" de la interfaz "StorageCallback" donde mandamos la excepción obtenida por si fallo el proceso de subida de la imagen
                 }
             });
+    }
+
+    public void obtenerImagen(String rutaImagen, final StorageCallbacks.StorageURICallback callback) {
+        storageReference = FirebaseStorage.getInstance().getReference();
+        StorageReference imagenRef = storageReference.child(rutaImagen);
+
+        imagenRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                callback.onCallback(uri);
+            }
+        })
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                callback.onFailure(e);
+            }
+        });
     }
 }
