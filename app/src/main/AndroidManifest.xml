@@ -16,6 +16,9 @@
         android:theme="@style/Theme.INGELCOM_CajaChica"
         tools:targetApi="31">
         <activity
+            android:name=".ImagenCompleta"
+            android:exported="false" />
+        <activity
             android:name=".ListadoEmpleados"
             android:exported="false" />
         <activity

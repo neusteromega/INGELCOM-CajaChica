@@ -293,29 +293,44 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
             }
         });
 
-        dialog.show();
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-        dialog.getWindow().setGravity(Gravity.BOTTOM);
+        dialog.show(); //Mostramos el "dialog" con ".show();"
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT); //Asignamos el "Layout" que tendrá el dialog
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); //Asignamos el color transparente para el background del dialog
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation; //Asignamos las animaciones para el dialog, dichas animaciones están asignadas en "R.style.DialogAnimation"
+        dialog.getWindow().setGravity(Gravity.BOTTOM); //Asignamos un "Gravity.BOTTOM" para que el dialog se muestre en la parte inferior
     }
 
     private void seleccionarImagen() {
         Intent intent = new Intent();
         intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.setAction(Intent.ACTION_GET_CONTENT); //Asignamos que la acción del Intent será "Obtener Contenido" (Get Content)
         startActivityForResult(intent, 100);
     }
 
     private void abrirCamara() {
-        ContentValues values = new ContentValues();
+        /*ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, "Nueva Imagen");
         values.put(MediaStore.Images.Media.DESCRIPTION, "Desde la Cámara");
         imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-        startActivityForResult(intent, 101);
+        startActivityForResult(intent, 101);*/
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); //Creamos un nuevo intent con la acción de "Capturar Imagen" (Image Capture) de "MediaStore"
+
+        // Verificar si el intent de la cámara puede manejar la captura de la imagen
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            //Creamos un ContentValues para almacenar los metadatos de la imagen
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.TITLE, "Nueva Imagen");
+            values.put(MediaStore.Images.Media.DESCRIPTION, "Desde la cámara");
+
+            imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values); //Insertamos la imagen en el MediaStore y obtenemos el URI
+
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri); //Pasamos el URI al intent de la cámara
+            startActivityForResult(intent, 101); //Iniciamos la actividad de la cámara
+        }
     }
 
     @Override
@@ -323,14 +338,17 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         try {
-            if (requestCode == 100 && data != null & data.getData() != null) {
-                imageUri = data.getData();
+            if (requestCode == 100 && data != null & data.getData() != null) { //Si el "requestCode" es 100, significa que se está seleccionando una imagen de la galería
+                imageUri = data.getData(); //Obtenemos el URI de la imagen seleccionada y lo guardamos en la variable "imageUri" de tipo URI
+
+                //Mostramos el imageView con la foto recién seleccionada, el botón de eliminar foto y asignamos el texto "Cambiar Fotografía" al botón de subir y cambiar foto
                 imgFoto.setVisibility(View.VISIBLE);
                 btnEliminarFoto.setVisibility(View.VISIBLE);
                 btnSubirCambiarFoto.setText("Cambiar Fotografía");
                 imgFoto.setImageURI(imageUri);
             }
-            else if (requestCode == 101 && resultCode == RESULT_OK) {
+            else if (requestCode == 101 && resultCode == RESULT_OK) { //En cambio, si el "requestCode" es 101, significa que se está tomando una fotografía
+                //Mostramos el imageView con la foto recién seleccionada, el botón de eliminar foto y asignamos el texto "Cambiar Fotografía" al botón de subir y cambiar foto
                 imgFoto.setVisibility(View.VISIBLE);
                 btnEliminarFoto.setVisibility(View.VISIBLE);
                 btnSubirCambiarFoto.setText("Cambiar Fotografía");
@@ -342,11 +360,10 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         }
     }
 
-    private Uri getImageUriFromBitmap(Bitmap bitmap) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "Title", null);
-        return Uri.parse(path);
+    public void mostrarImagenCompleta(View view) {
+        Intent intent = new Intent(this, ImagenCompleta.class);
+        intent.putExtra("imageUri", imageUri); // Enviar el URI de la imagen
+        startActivity(intent);
     }
 
     public void eliminarFoto(View view) {
