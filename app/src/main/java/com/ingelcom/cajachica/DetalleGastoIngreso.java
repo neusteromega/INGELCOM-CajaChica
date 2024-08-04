@@ -201,7 +201,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                     @Override
                     public void onCallback(Uri uri) {
                         pbCargar.setVisibility(View.GONE);
-                        //imageUri = uri;
+                        imageUri = uri;
                         Glide.with(DetalleGastoIngreso.this).load(uri).into(imgFoto);
                     }
 
@@ -290,7 +290,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
     }
 
     public void mostrarImagenCompleta(View view) {
-        try {
+        /*try {
             stor.obtenerImagen(imagen, new StorageCallbacks.StorageURICallback() {
                 @Override
                 public void onCallback(Uri uri) {
@@ -302,13 +302,16 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                 @Override
                 public void onFailure(Exception e) {
                     Log.w("ObtenerImagen", "Error al obtener el URI de la imagen: " + e);
-
                 }
             });
         }
         catch (Exception e) {
             Log.w("ObtenerImagenStorage", e);
-        }
+        }*/
+
+        Intent intent = new Intent(DetalleGastoIngreso.this, ImagenCompleta.class);
+        intent.putExtra("imageUri", imageUri); // Enviar el URI de la imagen
+        startActivity(intent);
     }
 
     //Método que ocultar el botón de Editar cuando el rol del Usuario es "Empleado"
