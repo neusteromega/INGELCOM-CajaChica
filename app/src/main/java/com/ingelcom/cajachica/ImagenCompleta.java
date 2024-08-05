@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -24,5 +25,9 @@ public class ImagenCompleta extends AppCompatActivity {
         if (imageUri != null) { //Si el URI obtenido no es nulo, que entre al if
             Glide.with(ImagenCompleta.this).load(imageUri).into(imgCompleta); //Asignamos el URI de la imagen obtenida al "imgCompleta", pero usando la biblioteca "Glide" para evitar errores
         }
+    }
+
+    public void retroceder(View view) {
+        onBackPressed();
     }
 }

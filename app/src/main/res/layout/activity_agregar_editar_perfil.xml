@@ -29,7 +29,10 @@
                 android:id="@+id/imgRegresarAEP"
                 android:layout_width="25dp"
                 android:layout_height="match_parent"
-                app:srcCompat="@mipmap/ico_azul_regresar" />
+                android:contentDescription="@string/descripcion"
+                android:onClick="retroceder"
+                app:srcCompat="@mipmap/ico_azul_regresar"
+                tools:ignore="TouchTargetSizeCheck" />
 
             <TextView
                 android:id="@+id/lblTituloAEP"
@@ -53,8 +56,7 @@
             android:background="@drawable/clr_casillaazul_separador"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center"
-            android:textSize="2dp"
-            android:visibility="gone" />
+            android:textSize="2dp" />
 
     </LinearLayout>
 
@@ -186,7 +188,8 @@
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingLeft="12dp"
-            android:paddingRight="15dp">
+            android:paddingRight="15dp"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/imgCorreoAEP"
@@ -261,36 +264,6 @@
 
             <Spinner
                 android:id="@+id/spCuadrillaAEP"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:contentDescription="@string/descripcion"
-                android:paddingLeft="10dp"
-                tools:listitem="@layout/spinner_items" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/LLEstadoAEP"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="15dp"
-            android:background="@drawable/clr_casillablanca_cuadrada"
-            android:elevation="5dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingLeft="12dp"
-            android:paddingRight="5dp">
-
-            <ImageView
-                android:id="@+id/imgEstadoAEP"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                app:srcCompat="@mipmap/ico_azul_estado" />
-
-            <Spinner
-                android:id="@+id/spEstadoAEP"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:contentDescription="@string/descripcion"

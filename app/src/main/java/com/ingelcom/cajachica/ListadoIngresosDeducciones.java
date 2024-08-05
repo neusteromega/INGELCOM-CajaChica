@@ -367,4 +367,8 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
     public void eliminarMesIngresos(View view) {
         lblFecha.setText("Seleccionar Mes");
     }
+
+    public void retroceder(View view) {
+        onBackPressed();
+    }
 }

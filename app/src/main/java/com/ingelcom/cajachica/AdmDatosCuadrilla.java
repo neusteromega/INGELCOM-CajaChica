@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ingelcom.cajachica.DAO.Gasto;
@@ -105,19 +106,6 @@ public class AdmDatosCuadrilla extends AppCompatActivity {
             Log.w("ObtenerIngresos", e);
         }
     }
-
-    /*private <T> void calcularTotales(List<T> items, String tipo) {
-        if (tipo.contentEquals("Ingreso")) {
-            double totalIngresos = 0; //Variable que nos servirá para calcular el total de los ingresos que se muestren en el RecyclerView
-
-            //Recorremos la lista "items" y cada elemento de ella se guardará en la variable temporal "item" de tipo "IngresosItems"
-            for (IngresosItems item : items) {
-                totalIngresos += item.getTotal(); //Obtenemos el "total" de cada elemento de la lista "items" y lo vamos sumando en la variable "totalIngresos"
-            }
-
-            lblIngresos.setText("L. " + String.format("%.2f", totalIngresos)); //Asignamos el totalIngresos al TextView "lblIngresos" y formateamos la variable "totalIngresos" para que se muestre con dos digitos después del punto decimal
-        }
-    }*/
 
     //Método que calcula los totales de los gastos de la cuadrilla
     private void calcularTotalGastos(List<GastosItems> items) {
@@ -232,5 +220,9 @@ public class AdmDatosCuadrilla extends AppCompatActivity {
         datos.put("Cuadrilla", nombreCuadrilla);
 
         Utilidades.iniciarActivityConDatos(AdmDatosCuadrilla.this, ListadoIngresosDeducciones.class, datos); //Mandamos el hashMap con los datos a la clase "ListadoIngresosDeducciones"
+    }
+
+    public void retroceder(View view) {
+        onBackPressed();
     }
 }

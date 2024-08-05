@@ -33,7 +33,6 @@ public class IniciarSesion extends AppCompatActivity {
 
     private int clicks = 0; //Se utilizará en la parte de mostrar y ocultar la contraseña
     private FirebaseAuth mAuth; //Objeto que verifica la autenticación del usuario con Firebase
-    private Utilidades util = new Utilidades();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

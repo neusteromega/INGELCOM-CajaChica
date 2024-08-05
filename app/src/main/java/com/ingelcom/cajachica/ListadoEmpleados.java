@@ -26,7 +26,7 @@ public class ListadoEmpleados extends AppCompatActivity {
     private Usuario usuario = new Usuario(ListadoEmpleados.this);
     private EmpleadosAdapter adapter;
     private RecyclerView rvEmpleados;
-    private List<EmpleadosItems> items;
+    //private List<EmpleadosItems> items;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +36,11 @@ public class ListadoEmpleados extends AppCompatActivity {
         rvEmpleados = findViewById(R.id.rvListadoEmpleados);
 
         obtenerValores();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Utilidades.iniciarActivity(ListadoEmpleados.this, AdmPantallas.class, true);
     }
 
     private void obtenerValores() {
@@ -85,5 +90,9 @@ public class ListadoEmpleados extends AppCompatActivity {
                 Utilidades.iniciarActivityConDatos(ListadoEmpleados.this, Perfil.class, datosPerfil);
             }
         });
+    }
+
+    public void retroceder(View view) {
+        onBackPressed();
     }
 }

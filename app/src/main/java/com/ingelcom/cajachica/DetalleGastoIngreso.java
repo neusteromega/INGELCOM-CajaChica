@@ -316,25 +316,6 @@ public class DetalleGastoIngreso extends AppCompatActivity {
 
     //Método Click que al dar clic en la imagen cargada, nos manda al Activity "ImagenCompleta" donde también envía el URI de la imagen cargada para mostrarla en pantalla completa
     public void mostrarImagenCompleta(View view) {
-        /*try {
-            stor.obtenerImagen(imagen, new StorageCallbacks.StorageURICallback() {
-                @Override
-                public void onCallback(Uri uri) {
-                    Intent intent = new Intent(DetalleGastoIngreso.this, ImagenCompleta.class);
-                    intent.putExtra("imageUri", uri); // Enviar el URI de la imagen
-                    startActivity(intent);
-                }
-
-                @Override
-                public void onFailure(Exception e) {
-                    Log.w("ObtenerImagen", "Error al obtener el URI de la imagen: " + e);
-                }
-            });
-        }
-        catch (Exception e) {
-            Log.w("ObtenerImagenStorage", e);
-        }*/
-
         Intent intent = new Intent(DetalleGastoIngreso.this, ImagenCompleta.class);
         intent.putExtra("imageUri", imageUri); //Enviamos el URI de la imagen
         startActivity(intent); //Iniciamos el activity
@@ -364,5 +345,9 @@ public class DetalleGastoIngreso extends AppCompatActivity {
         catch (Exception e) {
             Log.w("ObtenerUsuario", e);
         }
+    }
+
+    public void retroceder(View view) {
+        onBackPressed();
     }
 }

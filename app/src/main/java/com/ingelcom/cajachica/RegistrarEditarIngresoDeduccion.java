@@ -537,4 +537,8 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
             Log.w("DetectarCuadrilla", e);
         }
     }
+
+    public void retroceder(View view) {
+        onBackPressed();
+    }
 }

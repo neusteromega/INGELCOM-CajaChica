@@ -177,4 +177,8 @@ public class ListadoGastos extends AppCompatActivity {
     public void eliminarMesGastos(View view) {
         lblFecha.setText("Seleccionar Mes");
     }
+
+    public void retroceder(View view) {
+        onBackPressed();
+    }
 }

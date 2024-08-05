@@ -513,4 +513,8 @@ public class RegistrarEditarGasto extends AppCompatActivity {
             gast.editarGasto(id, timestamp, cuadrillaNueva, lugarCompra, tipoCompra, descripcion, factura, total, totalNuevo, false, true);
         }
     }
+
+    public void retroceder(View view) {
+        onBackPressed();
+    }
 }

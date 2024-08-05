@@ -8,10 +8,13 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.SignInMethodQueryResult;
 import com.ingelcom.cajachica.AdmPantallas;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
+import com.ingelcom.cajachica.ListadoEmpleados;
 import com.ingelcom.cajachica.Modelos.EmpleadosItems;
 import com.ingelcom.cajachica.Perfil;
 
@@ -150,39 +153,36 @@ public class Usuario {
     }
 
     //Método que nos permite editar los datos de un usuario
-    public void editarUsuario(String activityPerfil, String nombre, String identidadVieja, String identidadNueva, String telefono, String correoViejo, String correoNuevo, String cuadrilla, String rol, Boolean estado) {
-        if (!nombre.isEmpty() && !identidadNueva.isEmpty() && !telefono.isEmpty() && !correoNuevo.isEmpty()) {
+    public void editarUsuario(String activityPerfil, String nombre, String identidadVieja, String identidadNueva, String telefono, String cuadrilla, String rol) {
+        if (!nombre.isEmpty() && !identidadNueva.isEmpty() && !telefono.isEmpty()) {
             try {
                 Map<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos
 
+                //Guardamos las claves y datos en el HashMap
                 datos.put("Nombre", nombre);
                 datos.put("Identidad", identidadNueva);
                 datos.put("Telefono", telefono);
 
-                if (!cuadrilla.isEmpty())
+                if (!cuadrilla.isEmpty()) //Si "cuadrilla" no está vacía, significa que un administrador está modificando un usuario, entonces que entre al if y guarde el dato de la cuadrilla en el HashMap
                     datos.put("Cuadrilla", cuadrilla);
-                if (!rol.isEmpty())
+                if (!rol.isEmpty()) //Lo mismo que con la cuadrilla, si "rol" no está vacío, significa que un administrador está modificando un usuario, entonces que entre al if y guarde el dato del rol en el HashMap
                     datos.put("Rol", rol);
-                if (!correoViejo.equalsIgnoreCase(correoNuevo)) {
-                    datos.put("Correo", correoNuevo);
-                    actualizarCorreoAuthentication(correoNuevo);
-                }
-                if (estado != null)
-                    datos.put("Estado", estado);
 
+                //Llamamos al método "agregarActualizarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar, el HashMap con los nuevos campos y datos (o los campos existentes para actualizar su contenido) e invocamos la interfaz "FirestoreInsertCallback"
                 oper.agregarActualizarRegistrosColeccion("usuarios", "Identidad", identidadVieja, datos, new FirestoreCallbacks.FirestoreTextCallback() {
                     @Override
                     public void onSuccess(String texto) {
-                        if (!correoViejo.equalsIgnoreCase(correoNuevo)) {
-                            actualizarCorreoAuthentication(correoNuevo);
-                        }
-                        Toast.makeText(contexto, "USUARIO MODIFICADO EXITOSAMENTE", Toast.LENGTH_SHORT).show();
-                        Utilidades.iniciarActivityConString(contexto, Perfil.class, "ActivityPerfil", activityPerfil, true);
+                        Toast.makeText(contexto, "USUARIO MODIFICADO EXITOSAMENTE", Toast.LENGTH_SHORT).show(); //Si la actualización de los datos del usuario fue exitosa, que muestre un Toast
+
+                        if (activityPerfil.isEmpty())
+                            Utilidades.iniciarActivity(contexto, ListadoEmpleados.class, true);
+                        else
+                            Utilidades.iniciarActivityConString(contexto, Perfil.class, "ActivityPerfil", activityPerfil, true); //Redireccionamos al usuario al activity "Perfil" y mandamos el contenido de la variable "activityPerfil" que indica el tipo de usuario que está en la sesión actual (Empleado o administrador)
                     }
 
                     @Override
                     public void onFailure(Exception e) {
-                        Toast.makeText(contexto, "ERROR AL MODIFICAR EL USUARIO", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(contexto, "ERROR AL MODIFICAR EL USUARIO", Toast.LENGTH_SHORT).show(); //Mostramos un mensaje de error en un Toast si la actualización de los datos del usuario fue errónea
                     }
                 });
 
@@ -196,7 +196,7 @@ public class Usuario {
         }
     }
 
-    public void actualizarCorreoAuthentication(String correoNuevo) {
+    /*public void actualizarCorreoAuthentication(String correoNuevo) {
         FirebaseUser user = Utilidades.obtenerUsuario(); //Obtenemos el usuario actual llamando el método utilitario "obtenerUsuario"
         String correoActual = user.getEmail(); //Obtenemos el correo del usuario actual
 
@@ -215,7 +215,7 @@ public class Usuario {
                         }
                     });
         }
-    }
+    }*/
 
     //Método que permite validar si la identidad del usuario a ingresar ya está usada por otro usuario o si está disponible
     public void validarIdentidadOriginal(String identidad, FirestoreCallbacks.FirestoreValidationCallback callback) { //Recibe la identidad e invoca la interfaz "FirestoreValidationCallback"

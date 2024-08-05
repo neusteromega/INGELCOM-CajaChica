@@ -28,12 +28,12 @@ import java.util.Map;
 
 public class AgregarEditarPerfil extends AppCompatActivity {
 
-    private LinearLayout llNombreApellido, llIdentidad, llTelefono, llCorreo, llRol, llCuadrilla, llEstado;
+    private LinearLayout llNombreApellido, llIdentidad, llTelefono, llCorreo, llRol, llCuadrilla;
     private EditText txtNombreApellido, txtIdentidad, txtTelefono, txtCorreo;
     private TextView lblTitulo, btnConfirmar;
-    private Spinner spRoles, spCuadrillas, spEstado;
+    private Spinner spRoles, spCuadrillas;
     private ImageView btnRegresar;
-    private String nombreActivity;
+    private String nombreActivity, nombre, identidadVieja, telefono, cuadrilla, rol;
 
     private FirestoreOperaciones oper = new FirestoreOperaciones();
     private Usuario usu = new Usuario(AgregarEditarPerfil.this);
@@ -57,7 +57,6 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         llCorreo = findViewById(R.id.LLCorreoAEP);
         llRol = findViewById(R.id.LLRolAEP);
         llCuadrilla = findViewById(R.id.LLCuadrillaAEP);
-        llEstado = findViewById(R.id.LLEstadoAEP);
 
         txtNombreApellido = findViewById(R.id.txtNombreApellidoAEP);
         txtIdentidad = findViewById(R.id.txtIdentidadAEP);
@@ -70,7 +69,6 @@ public class AgregarEditarPerfil extends AppCompatActivity {
 
         spRoles = findViewById(R.id.spRolAEP);
         spCuadrillas = findViewById(R.id.spCuadrillaAEP);
-        spEstado = findViewById(R.id.spEstadoAEP);
     }
 
     private void obtenerDatos() {
@@ -78,10 +76,12 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityAEP");
 
         switch (nombreActivity) {
-            case "EditarAdmin":
-
-            case "EditarEmpleado":
-
+            case "EditarEmpleadoAdmin":
+                nombre = Utilidades.obtenerStringExtra(this, "Nombre");
+                identidadVieja = Utilidades.obtenerStringExtra(this, "Identidad");
+                telefono = Utilidades.obtenerStringExtra(this, "Telefono");
+                cuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
+                rol = Utilidades.obtenerStringExtra(this, "Rol");
                 break;
         }
     }
@@ -95,10 +95,6 @@ public class AgregarEditarPerfil extends AppCompatActivity {
                 case "AgregarUsuario":
                     //Asignamos el título
                     lblTitulo.setText("Agregar Usuario");
-
-                    //Ocultamos con "GONE" los elementos que no son necesarios
-                    llCorreo.setVisibility(View.GONE);
-                    llEstado.setVisibility(View.GONE);
                     break;
 
                 //Establecemos los elementos gráficos si la pantalla es "EditarAdmin"
@@ -113,7 +109,6 @@ public class AgregarEditarPerfil extends AppCompatActivity {
                                     txtNombreApellido.setText((String) documento.get("Nombre"));
                                     txtIdentidad.setText((String) documento.get("Identidad"));
                                     txtTelefono.setText((String) documento.get("Telefono"));
-                                    txtCorreo.setText((String) documento.get("Correo"));
                                 }
                             }
 
@@ -127,14 +122,16 @@ public class AgregarEditarPerfil extends AppCompatActivity {
                         Log.w("ObtenerUsuario", e);
                     }
 
+                    llCorreo.setVisibility(View.GONE);
                     llCuadrilla.setVisibility(View.GONE);
                     llRol.setVisibility(View.GONE);
-                    llEstado.setVisibility(View.GONE);
                     break;
 
                 //Establecemos los elementos gráficos si la pantalla es "EditarEmpleadoAdmin"
                 case "EditarEmpleadoAdmin":
-                    //Aquí no ponemos nada ya que esta pantalla tiene todos los elementos gráficos
+                    txtNombreApellido.setText(nombre);
+                    txtIdentidad.setText(identidadVieja);
+                    txtTelefono.setText(telefono);
                     break;
             }
         }
@@ -149,6 +146,11 @@ public class AgregarEditarPerfil extends AppCompatActivity {
                 //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(AgregarEditarPerfil.this, R.layout.spinner_items, lista);
                 spRoles.setAdapter(adapter); //Asignamos el adapter al Spinner "spRoles"
+
+                if (rol != null && !rol.isEmpty()) { //Si "rol" (la variable global que recibe el rol del Activity anterior) no es nulo y no está vacío, significa que si está recibiendo un Rol del activity anterior, por lo tanto, que entre al if
+                    int posicionRol = adapter.getPosition(rol); //Obtenemos la posición del rol recibido en el Spinner, y guardamos dicha posición en una variable int
+                    spRoles.setSelection(posicionRol); //Una vez obtenemos la posición del rol recibido en el Spinner, la asignamos al "spRoles" para que al cargar el activity, ya esté seleccionado el rol específico en el Spinner
+                }
             }
 
             @Override
@@ -161,14 +163,14 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         oper.obtenerRegistrosCampo("cuadrillas", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
             @Override
             public void onCallback(List<String> lista) {
-                /*List<String> listaCuadrillas = new ArrayList<>(); //Lista que tendrá todas las cuadrillas, más la opción de "No Pertenece"
-                listaCuadrillas.add("No Pertenece"); //Agregamos la opción de "No Pertenece"
-                listaCuadrillas.addAll(lista); //Anexamos la lista de cuadrillas de Firestore que está en la variable "lista"*/
-
                 //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(AgregarEditarPerfil.this, R.layout.spinner_items, lista);
                 spCuadrillas.setAdapter(adapter); //Asignamos el adapter a "spCuadrillas"
-                //Utilidades.spinnerConHint(AgregarEditarPerfil.this, spCuadrillas, lista, "Cuadrillas");
+
+                if (cuadrilla != null && !cuadrilla.isEmpty()) { //Si "cuadrilla" (la variable global que recibe la cuadrilla del Activity anterior) no es nula y no está vacía, significa que si está recibiendo una Cuadrilla del activity anterior, por lo tanto, que entre al if
+                    int posicionCuadrilla = adapter.getPosition(cuadrilla); //Obtenemos la posición de la cuadrilla recibida en el Spinner, y guardamos dicha posición en una variable int
+                    spCuadrillas.setSelection(posicionCuadrilla); //Una vez obtenemos la posición de la cuadrilla recibida en el Spinner, la asignamos al "spCuadrillas" para que al cargar el activity, ya esté seleccionada la cuadrilla específica en el Spinner
+                }
             }
 
             @Override
@@ -176,11 +178,6 @@ public class AgregarEditarPerfil extends AppCompatActivity {
                 Log.w("Activity", "Error al obtener las cuadrillas.", e);
             }
         });
-
-        //ESTADO
-        List<String> estados = new ArrayList<>(Arrays.asList("Activo", "Inactivo"));
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(AgregarEditarPerfil.this, R.layout.spinner_items, estados);
-        spEstado.setAdapter(adapter);
     }
 
     public void confirmar(View view) {
@@ -210,7 +207,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarPerfilAdmin()"
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    editarPerfilAdmin();
+                                    editarPerfilAdminEmpleado("Administrador"); //Llamamos el método "editarPerfilAdminEmpleado" y le mandamos el texto "Administrador" para indicar que es un administrador quien está editando su perfil
                                 }
                             }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
                                 @Override
@@ -222,10 +219,36 @@ public class AgregarEditarPerfil extends AppCompatActivity {
 
                 case "EditarEmpleado":
 
+                    //Creamos un alertDialog que pregunte si se desea editar el perfil del Empleado
+                    new AlertDialog.Builder(this).setTitle("EDITAR PERFIL").setMessage("¿Está seguro que desea modificar los datos de su perfil")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarPerfilAdmin()"
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                editarPerfilAdminEmpleado("Empleado"); //Llamamos el método "editarPerfilAdminEmpleado" y le mandamos el texto "Empleado" para indicar que es un empleado quien está editando su perfil
+                            }
+                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                            }
+                        }).show();
                     break;
 
                 case "EditarEmpleadoAdmin":
 
+                    //Creamos un alertDialog que pregunte si se desea editar el perfil del Empleado por un Administrador
+                    new AlertDialog.Builder(this).setTitle("EDITAR PERFIL").setMessage("¿Está seguro que desea modificar los datos del perfil")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarPerfilAdmin()"
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                editarPerfilEmpleadoPorAdmin(); //Llamamos el método "editarPerfilEmpleadoPorAdmin"
+                            }
+                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                            }
+                        }).show();
                     break;
             }
         }
@@ -248,22 +271,23 @@ public class AgregarEditarPerfil extends AppCompatActivity {
             usu.insertarUsuario(nombre, identidad, telefono, rol, ""); //Llamamos el método "insertarUsuario" de la clase "Usuario" donde se hará el proceso de inserción a Firestore y le mandamos los textboxes y selecciones de los spinners de esta pantalla
     }
 
-    private void editarPerfilAdmin() {
+    private void editarPerfilAdminEmpleado(String tipo) {
         //Enlazamos los EditText con las siguientes variables String
         String nombre = txtNombreApellido.getText().toString();
         String identidadNueva = txtIdentidad.getText().toString();
         String telefono = txtTelefono.getText().toString();
-        String correoNuevo = txtCorreo.getText().toString();
 
         try {
             usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
                 public void onCallback(Map<String, Object> documento) {
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
-                        String correoViejo = (String) documento.get("Correo");
                         String identidadVieja = (String) documento.get("Identidad");
 
-                        usu.editarUsuario("PerfilAdmin", nombre, identidadVieja, identidadNueva, telefono, correoViejo, correoNuevo, "", "", null);
+                        if (tipo.equalsIgnoreCase("Administrador"))
+                            usu.editarUsuario("PerfilAdmin", nombre, identidadVieja, identidadNueva, telefono, "", "");
+                        else if (tipo.equalsIgnoreCase("Empleado"))
+                            usu.editarUsuario("PerfilEmpleado", nombre, identidadVieja, identidadNueva, telefono, "", "");
                     }
                 }
 
@@ -276,6 +300,17 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         catch (Exception e) {
             Log.w("ObtenerUsuario", e);
         }
+    }
+
+    private void editarPerfilEmpleadoPorAdmin() {
+        //Enlazamos los EditText y Spinners con las siguientes variables String
+        String nombre = txtNombreApellido.getText().toString();
+        String identidadNueva = txtIdentidad.getText().toString();
+        String telefono = txtTelefono.getText().toString();
+        String cuadrilla = spCuadrillas.getSelectedItem().toString();
+        String rol = spRoles.getSelectedItem().toString();
+
+        usu.editarUsuario("", nombre, identidadVieja, identidadNueva, telefono, cuadrilla, rol);
     }
 
     private void ocultarCuadrillas() {
@@ -301,5 +336,9 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         catch (Exception e) {
             Log.w("DetectarRol", e);
         }
+    }
+
+    public void retroceder(View view) {
+        onBackPressed();
     }
 }
