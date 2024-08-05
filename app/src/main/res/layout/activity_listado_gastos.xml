@@ -25,7 +25,7 @@
             android:gravity="center|left"
             android:orientation="horizontal"
             android:paddingLeft="20dp"
-            android:paddingRight="40dp">
+            android:paddingRight="20dp">
 
             <ImageView
                 android:id="@+id/imgRegresarLG"
@@ -36,15 +36,31 @@
                 app:srcCompat="@mipmap/ico_azul_regresar"
                 tools:ignore="TouchTargetSizeCheck" />
 
-            <TextView
-                android:id="@+id/lblTituloLG"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:fontFamily="@font/montserrat_bold"
-                android:gravity="center"
-                android:text="Listado de Gastos"
-                android:textColor="@color/clr_fuente_primario"
-                android:textSize="25dp" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/lblTituloLG"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:text="Listado de Gastos"
+                    android:textColor="@color/clr_fuente_primario"
+                    android:textSize="25dp" />
+
+                <ImageView
+                    android:id="@+id/imgRegresarLG2"
+                    android:layout_width="25dp"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/descripcion"
+                    android:onClick="retroceder"
+                    app:srcCompat="@mipmap/ico_azul_exportar"
+                    tools:ignore="TouchTargetSizeCheck" />
+            </LinearLayout>
 
         </LinearLayout>
 

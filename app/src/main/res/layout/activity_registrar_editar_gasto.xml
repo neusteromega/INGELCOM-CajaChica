@@ -374,9 +374,10 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="30dp"
                     android:layout_marginBottom="30dp"
+                    android:contentDescription="@string/descripcion"
                     android:onClick="eliminarFoto"
-                    android:visibility="gone"
-                    app:srcCompat="@mipmap/ico_degradado_eliminar" />
+                    app:srcCompat="@mipmap/ico_degradado_eliminar"
+                    tools:ignore="TouchTargetSizeCheck" />
 
                 <TextView
                     android:id="@+id/btnSubirCambiarFotoRG"
