@@ -79,9 +79,9 @@ public class FragAdmCuadrillas extends Fragment implements PopupMenu.OnMenuItemC
 
         btnOrdenar.setOnClickListener(v -> {
             try {
-                PopupMenu popup = new PopupMenu(getActivity(), v); // Objeto de tipo "PopupMenu"
-                popup.setOnMenuItemClickListener(this); // Indicamos que asigne el evento "OnMenuItemClick" para que haga algo cada vez que se dé click a una opción del menú
-                popup.inflate(R.menu.popupmenu_filtradocuadrillas); // Inflamos la vista del menú indicando la ruta de dicha vista gráfica
+                PopupMenu popup = new PopupMenu(getActivity(), v); //Objeto de tipo "PopupMenu"
+                popup.setOnMenuItemClickListener(this); //Indicamos que asigne el evento "OnMenuItemClick" para que haga algo cada vez que se dé click a una opción del menú
+                popup.inflate(R.menu.popupmenu_filtradocuadrillas); //Inflamos la vista del menú indicando la ruta de dicha vista gráfica
 
                 popup.show(); //Mostramos el menú ya inflado
             }

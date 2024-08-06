@@ -11,9 +11,11 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.ingelcom.cajachica.Adaptadores.VPGastosAdapter;
@@ -27,7 +29,7 @@ import com.ingelcom.cajachica.Modelos.GastosItems;
 import java.util.Calendar;
 import java.util.List;
 
-public class ListadoGastos extends AppCompatActivity {
+public class ListadoGastos extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
     private TextView lblTitulo, lblFecha, lblLineaCuadrilla, lblLineaSupervisores;
     private String nombreActivity, nombreCuadrilla;
@@ -176,6 +178,30 @@ public class ListadoGastos extends AppCompatActivity {
     //Método para eliminar la selección del Mes - Año
     public void eliminarMesGastos(View view) {
         lblFecha.setText("Seleccionar Mes");
+    }
+
+    public void exportar(View view) {
+        PopupMenu popup = new PopupMenu(this, view); //Objeto de tipo "PopupMenu"
+        popup.setOnMenuItemClickListener(this); //Indicamos que asigne el evento "OnMenuItemClick" para que haga algo cada vez que se dé click a una opción del menú
+        popup.inflate(R.menu.popupmenu_opcionesexportar); //Inflamos la vista del menú indicando la ruta de dicha vista gráfica
+
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.menuExportarExcel:
+
+                return true;
+
+            case R.id.menuExportarPDF:
+
+                return true;
+
+            default:
+                return false;
+        }
     }
 
     public void retroceder(View view) {
