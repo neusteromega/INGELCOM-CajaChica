@@ -1,6 +1,8 @@
 package com.ingelcom.cajachica.Herramientas;
 
 import android.content.Context;
+import android.os.Environment;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.ingelcom.cajachica.Modelos.GastosItems;
@@ -50,18 +52,30 @@ public class Exportaciones {
             row.createCell(7).setCellValue(gasto.getTotal());
         }
 
-        // Guardar el archivo Excel en el almacenamiento del dispositivo
+        //Guardar el archivo Excel en el almacenamiento del dispositivo
         try {
-            File file = new File(contexto.getExternalFilesDir(null), "Gastos" + cuadrillaMes + ".xlsx");
+            // Obtener la ruta de la carpeta Documents
+            File documentsDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM - Reportes");
+
+            // Crear la carpeta si no existe
+            if (!documentsDir.exists()) {
+                documentsDir.mkdirs();
+            }
+
+            // Crear el archivo en la subcarpeta
+            File file = new File(documentsDir, "Gastos" + cuadrillaMes + ".xlsx");
             FileOutputStream fos = new FileOutputStream(file);
             workbook.write(fos);
             fos.close();
             workbook.close();
 
-            // Mostrar mensaje de éxito
-            Toast.makeText(contexto, "Archivo Excel guardado en: " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
+            //Mostrar mensaje de éxito
+            Toast.makeText(contexto, "Archivo guardado en: " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
+            Log.w("Guardado", file.getAbsolutePath());
+        }
+        catch (Exception e) {
             e.printStackTrace();
+            Log.w("CrearExcel", e);
             Toast.makeText(contexto, "Error al guardar el archivo Excel", Toast.LENGTH_LONG).show();
         }
     }

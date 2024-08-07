@@ -193,11 +193,13 @@ public class ListadoGastos extends AppCompatActivity implements PopupMenu.OnMenu
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.menuExportarExcel:
-                Toast.makeText(this, "EXCEL", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "EXCEL", Toast.LENGTH_SHORT).show();
+                svmGastos.setExportar("EXCEL");
                 return true;
 
             case R.id.menuExportarPDF:
-                Toast.makeText(this, "PDF", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "PDF", Toast.LENGTH_SHORT).show();
+                svmGastos.setExportar("PDF");
                 return true;
 
             default:

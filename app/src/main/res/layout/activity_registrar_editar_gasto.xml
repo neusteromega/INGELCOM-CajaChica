@@ -376,6 +376,7 @@
                     android:layout_marginBottom="30dp"
                     android:contentDescription="@string/descripcion"
                     android:onClick="eliminarFoto"
+                    android:visibility="gone"
                     app:srcCompat="@mipmap/ico_degradado_eliminar"
                     tools:ignore="TouchTargetSizeCheck" />
 
