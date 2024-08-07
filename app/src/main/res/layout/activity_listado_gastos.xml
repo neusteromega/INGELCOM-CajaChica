@@ -57,7 +57,7 @@
                     android:layout_width="25dp"
                     android:layout_height="match_parent"
                     android:contentDescription="@string/descripcion"
-                    android:onClick="retroceder"
+                    android:onClick="exportar"
                     app:srcCompat="@mipmap/ico_azul_exportar"
                     tools:ignore="TouchTargetSizeCheck" />
             </LinearLayout>

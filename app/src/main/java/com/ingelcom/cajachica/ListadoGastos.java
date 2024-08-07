@@ -17,6 +17,7 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ingelcom.cajachica.Adaptadores.VPGastosAdapter;
 import com.ingelcom.cajachica.DAO.Gasto;
@@ -192,11 +193,11 @@ public class ListadoGastos extends AppCompatActivity implements PopupMenu.OnMenu
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.menuExportarExcel:
-
+                Toast.makeText(this, "EXCEL", Toast.LENGTH_SHORT).show();
                 return true;
 
             case R.id.menuExportarPDF:
-
+                Toast.makeText(this, "PDF", Toast.LENGTH_SHORT).show();
                 return true;
 
             default:
