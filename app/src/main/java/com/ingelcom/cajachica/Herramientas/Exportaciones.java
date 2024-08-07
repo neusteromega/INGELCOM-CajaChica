@@ -26,6 +26,11 @@ public class Exportaciones {
     }
 
     public void exportarGastosExcel(List<GastosItems> listaGastos, String cuadrillaMes) {
+        if (listaGastos == null || listaGastos.isEmpty()) {
+            Toast.makeText(contexto, "NO HAY GASTOS DISPONIBLES PARA EXPORTAR", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Gastos");
 
@@ -62,21 +67,25 @@ public class Exportaciones {
                 documentsDir.mkdirs();
             }
 
+            File gastosDir = new File(documentsDir, "Gastos");
+            if (!gastosDir.exists()) {
+                gastosDir.mkdirs();
+            }
+
             // Crear el archivo en la subcarpeta
-            File file = new File(documentsDir, "Gastos" + cuadrillaMes + ".xlsx");
+            File file = new File(gastosDir, "Gastos.xlsx");
             FileOutputStream fos = new FileOutputStream(file);
             workbook.write(fos);
             fos.close();
             workbook.close();
 
             //Mostrar mensaje de éxito
-            Toast.makeText(contexto, "Archivo guardado en: " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
-            Log.w("Guardado", file.getAbsolutePath());
+            Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show();
         }
         catch (Exception e) {
             e.printStackTrace();
             Log.w("CrearExcel", e);
-            Toast.makeText(contexto, "Error al guardar el archivo Excel", Toast.LENGTH_LONG).show();
+            Toast.makeText(contexto, "ERROR AL GUARDAR EL ARCHIVO DE EXCEL", Toast.LENGTH_LONG).show();
         }
     }
 }
