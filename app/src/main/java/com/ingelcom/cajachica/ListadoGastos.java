@@ -197,9 +197,9 @@ public class ListadoGastos extends AppCompatActivity implements PopupMenu.OnMenu
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.menuExportarExcel:
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                /*if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions((ListadoGastos) this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
-                }
+                }*/
 
                 svmGastos.setExportar("EXCEL");
                 return true;

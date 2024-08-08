@@ -106,7 +106,7 @@ public class FragGastosCuadrilla extends Fragment {
                                         else if (tipo.equalsIgnoreCase("Exportar")) {
                                             if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) {
                                                 if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                                    exp.exportarGastosExcel(items, " - " + cuadrilla);
+                                                    exp.exportarGastosExcel(items, "_" + cuadrilla);
                                                 else if (tipoExportar.equalsIgnoreCase("PDF"))
                                                     Toast.makeText(getContext(), "PDF", Toast.LENGTH_SHORT).show();
                                             }
@@ -140,13 +140,13 @@ public class FragGastosCuadrilla extends Fragment {
                                         else if (tipo.equalsIgnoreCase("Exportar")) {
                                             if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) {
                                                 if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                                    exp.exportarGastosExcel(items, " - " + nombreCuadrilla);
+                                                    exp.exportarGastosExcel(items, "_" + nombreCuadrilla);
                                                 else if (tipoExportar.equalsIgnoreCase("PDF"))
                                                     Toast.makeText(getContext(), "PDF", Toast.LENGTH_SHORT).show();
                                             }
                                             else {
                                                 if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                                    exp.exportarGastosExcel(items, " - " + nombreCuadrilla + " - " + mes);
+                                                    exp.exportarGastosExcel(items, "_" + nombreCuadrilla + "_" + mes);
                                                 else if (tipoExportar.equalsIgnoreCase("PDF"))
                                                     Toast.makeText(getContext(), "PDF", Toast.LENGTH_SHORT).show();
                                             }
@@ -174,13 +174,13 @@ public class FragGastosCuadrilla extends Fragment {
                                         else if (tipo.equalsIgnoreCase("Exportar")) {
                                             if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) {
                                                 if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                                    exp.exportarGastosExcel(items, " Generales");
+                                                    exp.exportarGastosExcel(items, "Generales");
                                                 else if (tipoExportar.equalsIgnoreCase("PDF"))
                                                     Toast.makeText(getContext(), "PDF", Toast.LENGTH_SHORT).show();
                                             }
                                             else {
                                                 if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                                    exp.exportarGastosExcel(items, " Generales - " + mes);
+                                                    exp.exportarGastosExcel(items, "Generales_" + mes);
                                                 else if (tipoExportar.equalsIgnoreCase("PDF"))
                                                     Toast.makeText(getContext(), "PDF", Toast.LENGTH_SHORT).show();
                                             }
