@@ -36,7 +36,7 @@ public class Exportaciones {
 
         // Crear fila para los encabezados
         Row headerRow = sheet.createRow(0);
-        String[] encabezados = {"Cuadrilla", "Fecha y Hora", "Lugar de Compra", "Número de Factura", "Tipo de Compra", "Descripción", "Usuario", "Total"};
+        String[] encabezados = {"Cuadrilla", "Fecha y Hora", "Lugar de Compra", "Usuario", "Número de Factura", "Tipo de Compra", "Descripción", "Total"};
         for (int i = 0; i < encabezados.length; i++) {
             Cell cell = headerRow.createCell(i);
             cell.setCellValue(encabezados[i]);
@@ -50,10 +50,10 @@ public class Exportaciones {
             row.createCell(0).setCellValue(gasto.getCuadrilla());
             row.createCell(1).setCellValue(gasto.getFechaHora());
             row.createCell(2).setCellValue(gasto.getLugarCompra());
-            row.createCell(3).setCellValue(gasto.getNumeroFactura());
-            row.createCell(4).setCellValue(gasto.getTipoCompra());
-            row.createCell(5).setCellValue(gasto.getDescripcion());
-            row.createCell(6).setCellValue(gasto.getUsuario());
+            row.createCell(3).setCellValue(gasto.getUsuario());
+            row.createCell(4).setCellValue(gasto.getNumeroFactura());
+            row.createCell(5).setCellValue(gasto.getTipoCompra());
+            row.createCell(6).setCellValue(gasto.getDescripcion());
             row.createCell(7).setCellValue(gasto.getTotal());
         }
 
