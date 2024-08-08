@@ -105,10 +105,17 @@ public class FragGastosCuadrilla extends Fragment {
                                             inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
                                         else if (tipo.equalsIgnoreCase("Exportar")) {
                                             if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) {
-                                                exp.exportarGastosExcel(items, " - " + cuadrilla);
+                                                if (tipoExportar.equalsIgnoreCase("EXCEL"))
+                                                    exp.exportarGastosExcel(items, " - " + cuadrilla);
+                                                else if (tipoExportar.equalsIgnoreCase("PDF"))
+                                                    Toast.makeText(getContext(), "PDF", Toast.LENGTH_SHORT).show();
                                             }
-                                            else
-                                                exp.exportarGastosExcel(items, " - " + cuadrilla + " - " + mes);
+                                            else {
+                                                if (tipoExportar.equalsIgnoreCase("EXCEL"))
+                                                    exp.exportarGastosExcel(items, " - " + cuadrilla + " - " + mes);
+                                                else if (tipoExportar.equalsIgnoreCase("PDF"))
+                                                    Toast.makeText(getContext(), "PDF", Toast.LENGTH_SHORT).show();
+                                            }
                                         }
                                     }
                                 }
@@ -131,10 +138,18 @@ public class FragGastosCuadrilla extends Fragment {
                                         if (tipo.equalsIgnoreCase("Mostrar"))
                                             inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
                                         else if (tipo.equalsIgnoreCase("Exportar")) {
-                                            if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes"))
-                                                exp.exportarGastosExcel(items, " - " + nombreCuadrilla);
-                                            else
-                                                exp.exportarGastosExcel(items, " - " + nombreCuadrilla + " - " + mes);
+                                            if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) {
+                                                if (tipoExportar.equalsIgnoreCase("EXCEL"))
+                                                    exp.exportarGastosExcel(items, " - " + nombreCuadrilla);
+                                                else if (tipoExportar.equalsIgnoreCase("PDF"))
+                                                    Toast.makeText(getContext(), "PDF", Toast.LENGTH_SHORT).show();
+                                            }
+                                            else {
+                                                if (tipoExportar.equalsIgnoreCase("EXCEL"))
+                                                    exp.exportarGastosExcel(items, " - " + nombreCuadrilla + " - " + mes);
+                                                else if (tipoExportar.equalsIgnoreCase("PDF"))
+                                                    Toast.makeText(getContext(), "PDF", Toast.LENGTH_SHORT).show();
+                                            }
                                         }
                                     }
                                 }
@@ -157,10 +172,18 @@ public class FragGastosCuadrilla extends Fragment {
                                         if (tipo.equalsIgnoreCase("Mostrar"))
                                             inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
                                         else if (tipo.equalsIgnoreCase("Exportar")) {
-                                            if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes"))
-                                                exp.exportarGastosExcel(items, " Generales");
-                                            else
-                                                exp.exportarGastosExcel(items, " Generales - " + mes);
+                                            if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) {
+                                                if (tipoExportar.equalsIgnoreCase("EXCEL"))
+                                                    exp.exportarGastosExcel(items, " Generales");
+                                                else if (tipoExportar.equalsIgnoreCase("PDF"))
+                                                    Toast.makeText(getContext(), "PDF", Toast.LENGTH_SHORT).show();
+                                            }
+                                            else {
+                                                if (tipoExportar.equalsIgnoreCase("EXCEL"))
+                                                    exp.exportarGastosExcel(items, " Generales - " + mes);
+                                                else if (tipoExportar.equalsIgnoreCase("PDF"))
+                                                    Toast.makeText(getContext(), "PDF", Toast.LENGTH_SHORT).show();
+                                            }
                                         }
                                     }
                                 }

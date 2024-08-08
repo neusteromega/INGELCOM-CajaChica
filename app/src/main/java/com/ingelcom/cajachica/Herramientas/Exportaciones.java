@@ -72,8 +72,10 @@ public class Exportaciones {
                 gastosDir.mkdirs();
             }
 
+            String nombreArchivo = "Gastos" + cuadrillaMes + ".xlsx";
+
             // Crear el archivo en la subcarpeta
-            File file = new File(gastosDir, "Gastos.xlsx");
+            File file = new File(gastosDir, nombreArchivo);
             FileOutputStream fos = new FileOutputStream(file);
             workbook.write(fos);
             fos.close();
