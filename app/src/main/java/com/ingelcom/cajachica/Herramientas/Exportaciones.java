@@ -61,8 +61,6 @@ public class Exportaciones {
         try {
             // Obtener la ruta de la carpeta Documents
             File documentsDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM - Reportes");
-
-            // Crear la carpeta si no existe
             if (!documentsDir.exists()) {
                 documentsDir.mkdirs();
             }
@@ -86,8 +84,24 @@ public class Exportaciones {
         }
         catch (Exception e) {
             e.printStackTrace();
-            Log.w("CrearExcel", e);
-            Toast.makeText(contexto, "ERROR AL GUARDAR EL ARCHIVO DE EXCEL", Toast.LENGTH_LONG).show();
+            Log.e("CrearExcel", "Error al crear el Excel", e);
+            Toast.makeText(contexto, "ERROR AL CREAR EL ARCHIVO DE EXCEL", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void exportarGastosPDF(List<GastosItems> listaGastos, String cuadrillaMes) {
+        if (listaGastos == null || listaGastos.isEmpty()) {
+            Toast.makeText(contexto, "NO HAY GASTOS DISPONIBLES PARA EXPORTAR", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        try {
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            Log.e("CrearPDF", "Error al crear el PDF", e);
+            Toast.makeText(contexto, "ERROR AL CREAR EL ARCHIVO PDF", Toast.LENGTH_LONG).show();
         }
     }
 }
