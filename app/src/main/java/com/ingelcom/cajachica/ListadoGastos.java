@@ -185,7 +185,7 @@ public class ListadoGastos extends AppCompatActivity implements PopupMenu.OnMenu
         lblFecha.setText("Seleccionar Mes");
     }
 
-    public void exportar(View view) {
+    public void exportarGastos(View view) {
         PopupMenu popup = new PopupMenu(this, view); //Objeto de tipo "PopupMenu"
         popup.setOnMenuItemClickListener(this); //Indicamos que asigne el evento "OnMenuItemClick" para que haga algo cada vez que se dé click a una opción del menú
         popup.inflate(R.menu.popupmenu_opcionesexportar); //Inflamos la vista del menú indicando la ruta de dicha vista gráfica
@@ -197,15 +197,10 @@ public class ListadoGastos extends AppCompatActivity implements PopupMenu.OnMenu
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.menuExportarExcel:
-                /*if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions((ListadoGastos) this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
-                }*/
-
                 svmGastos.setExportar("EXCEL");
                 return true;
 
             case R.id.menuExportarPDF:
-                //Toast.makeText(this, "PDF", Toast.LENGTH_SHORT).show();
                 svmGastos.setExportar("PDF");
                 return true;
 

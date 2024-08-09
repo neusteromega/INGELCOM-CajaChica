@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ import com.ingelcom.cajachica.Adaptadores.IngresosAdapter;
 import com.ingelcom.cajachica.DAO.Deduccion;
 import com.ingelcom.cajachica.DAO.Ingreso;
 import com.ingelcom.cajachica.DAO.Usuario;
+import com.ingelcom.cajachica.Herramientas.Exportaciones;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.Modelos.DeduccionesItems;
@@ -39,12 +41,14 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
 
     private LinearLayout llFecha;
     private TextView lblTitulo, lblFecha, lblTotal, lblTotalTitulo;
-    private String nombreActivity, nombreCuadrilla;
+    private String nombreActivity, nombreCuadrilla, nombreMes = "", tipoExportar;
     private RecyclerView rvIngrDeduc;
+    private ImageView btnExportar;
 
     private Ingreso ingr = new Ingreso(ListadoIngresosDeducciones.this);
     private Deduccion deduc = new Deduccion(ListadoIngresosDeducciones.this);
     private Usuario usu = new Usuario(ListadoIngresosDeducciones.this);
+    private Exportaciones exp = new Exportaciones(ListadoIngresosDeducciones.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +57,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
 
         inicializarElementos();
         establecerElementos();
-        obtenerDatos("");
+        obtenerDatos("", "Mostrar");
         cambioFecha();
     }
 
@@ -68,6 +72,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
         lblTotal = findViewById(R.id.lblCantIngresosLI);
         lblTotalTitulo = findViewById(R.id.lblTotalIngresosLI);
         rvIngrDeduc = findViewById(R.id.rvListadoIngrDeduc);
+        btnExportar = findViewById(R.id.imgExportarLI);
     }
 
     private void establecerElementos() {
@@ -82,6 +87,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
                 lblTitulo.setText("Listado de Ingresos");
                 lblTotalTitulo.setText("Total de Ingresos");
                 lblTotal.setTextColor(getResources().getColor(R.color.clr_fuente_ingresos));
+                btnExportar.setVisibility(View.GONE);
                 break;
 
             case "ListadoIngresosTodos":
@@ -95,11 +101,12 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
                 lblTitulo.setText(nombreCuadrilla);
                 lblTotalTitulo.setText("Total de Deducciones");
                 lblTotal.setTextColor(getResources().getColor(R.color.clr_fuente_secundario));
+                btnExportar.setVisibility(View.GONE);
                 break;
         }
     }
 
-    private void obtenerDatos(String mes) {
+    private void obtenerDatos(String mes, String tipo) {
         try {
             if (nombreActivity.equalsIgnoreCase("ListadoIngresosAdmin")) {
                 //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla recibida en "nombreCuadrilla" y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores a una cuadrilla específica
@@ -108,7 +115,23 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
                     public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados por cuadrilla
                         if (items != null) { //Si "items" no es null, que entre al if
                             items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
-                            inicializarRecyclerView(items, "Ingresos"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items"
+
+                            if (tipo.equalsIgnoreCase("Mostrar"))
+                                inicializarRecyclerView(items, "Ingresos"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items"
+                            else if (tipo.equalsIgnoreCase("Exportar")) {
+                                if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) {
+                                    if (tipoExportar.equalsIgnoreCase("EXCEL"))
+                                        exp.exportarIngresosExcel(items, "_" + nombreCuadrilla);
+                                    else if (tipoExportar.equalsIgnoreCase("PDF"))
+                                        Toast.makeText(ListadoIngresosDeducciones.this, "PDF", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    if (tipoExportar.equalsIgnoreCase("EXCEL"))
+                                        exp.exportarIngresosExcel(items, "_" + nombreCuadrilla + "_" + mes);
+                                    else if (tipoExportar.equalsIgnoreCase("PDF"))
+                                        Toast.makeText(ListadoIngresosDeducciones.this, "PDF", Toast.LENGTH_SHORT).show();
+                                }
+                            }
                         }
                     }
 
@@ -162,7 +185,23 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
                     public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados por cuadrilla
                         if (items != null) { //Si "items" no es null, que entre al if
                             items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
-                            inicializarRecyclerView(items, "Ingresos"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items"
+
+                            if (tipo.equalsIgnoreCase("Mostrar"))
+                                inicializarRecyclerView(items, "Ingresos"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items"
+                            else if (tipo.equalsIgnoreCase("Exportar")) {
+                                if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) {
+                                    if (tipoExportar.equalsIgnoreCase("EXCEL"))
+                                        exp.exportarIngresosExcel(items, "Generales");
+                                    else if (tipoExportar.equalsIgnoreCase("PDF"))
+                                        Toast.makeText(ListadoIngresosDeducciones.this, "PDF", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    if (tipoExportar.equalsIgnoreCase("EXCEL"))
+                                        exp.exportarIngresosExcel(items, "Generales_" + mes);
+                                    else if (tipoExportar.equalsIgnoreCase("PDF"))
+                                        Toast.makeText(ListadoIngresosDeducciones.this, "PDF", Toast.LENGTH_SHORT).show();
+                                }
+                            }
                         }
                     }
 
@@ -276,7 +315,8 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
 
                 @Override //Durante el texto del lblFecha está cambiando
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    obtenerDatos(lblFecha.getText().toString()); //Llamamos el método "obtenerIngresos" de arriba y le mandamos el contenido del lblFecha
+                    nombreMes = lblFecha.getText().toString();
+                    obtenerDatos(nombreMes, "Mostrar"); //Llamamos el método "obtenerIngresos" de arriba y le mandamos el contenido del lblFecha
                 }
 
                 @Override //Después de que el texto del lblFecha cambie
@@ -356,8 +396,20 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
         switch (menuItem.getItemId()) {
             case R.id.menuMesAnterior:
             case R.id.menuMesActual:
+                nombreMes = mesSeleccionado;
                 lblFecha.setText(mesSeleccionado); //Establecemos el mes y año seleccionado en el "lblFecha"
                 return true;
+
+            case R.id.menuExportarExcel:
+                tipoExportar = "EXCEL";
+                obtenerDatos(nombreMes, "Exportar");
+                return true;
+
+            case R.id.menuExportarPDF:
+                tipoExportar = "PDF";
+                obtenerDatos(nombreMes, "Exportar");
+                return true;
+
             default:
                 return false;
         }
@@ -366,6 +418,14 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
     //Método para eliminar la selección del Mes - Año
     public void eliminarMesIngresos(View view) {
         lblFecha.setText("Seleccionar Mes");
+    }
+
+    public void exportarIngresos(View view) {
+        PopupMenu popup = new PopupMenu(this, view); //Objeto de tipo "PopupMenu"
+        popup.setOnMenuItemClickListener(this); //Indicamos que asigne el evento "OnMenuItemClick" para que haga algo cada vez que se dé click a una opción del menú
+        popup.inflate(R.menu.popupmenu_opcionesexportar); //Inflamos la vista del menú indicando la ruta de dicha vista gráfica
+
+        popup.show();
     }
 
     public void retroceder(View view) {

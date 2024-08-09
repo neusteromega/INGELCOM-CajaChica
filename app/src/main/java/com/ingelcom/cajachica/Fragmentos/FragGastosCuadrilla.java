@@ -252,7 +252,7 @@ public class FragGastosCuadrilla extends Fragment {
         });
     }
 
-    //Método que nos permite obtener el mes y el año seleccionado por el usuario. Aquí se obtiene literalmente el contenido del TextView lblFecha del Activity ListadoGastos, y se obtiene cada vez que el contenido de dicho TextView cambia
+    //Método que nos permite obtener el mes y el año seleccionado por el usuario. Aquí se obtiene literalmente el contenido del TextView lblFecha del Activity ListadoGastos, y se obtiene cada vez que el contenido de dicho TextView cambia. También obtenemos el tipo de exportación que quiere hacer el usuario al dar clic en el botón de Exportar de "ListadoGastos"
     private void obtenerDatos(Usuario usu, Gasto gast, Exportaciones exp) { //Recibe las instancias de las clases "Usuario" y "Gasto"
         try {
             svmGastos = new ViewModelProvider(getActivity()).get(SharedViewGastosModel.class); //Obtenemos el ViewModel compartido, haciendo referencia a la clase "SharedViewGastosModel"
@@ -261,16 +261,17 @@ public class FragGastosCuadrilla extends Fragment {
             svmGastos.getFecha().observe(getViewLifecycleOwner(), new Observer<String>() { //Configuramos un observador del "LiveData<String>" que devuelve "getFecha()". "getViewLifecycleOwner()" se usa para obtener el ciclo de vida del fragmento actual, asegurando que las actualizaciones solo se envíen cuando el fragmento esté en un estado activo (es decir, no cuando está destruido o detenido)
                 @Override
                 public void onChanged(String mes) { //Este método se llamará cada vez que el valor "fecha" cambie en el "LiveData<String>"
-                    nombreMes = mes;
-                    obtenerGastos(usu, gast, exp, mes, "Mostrar"); //Llamamos el método "obtenerGastos" de arriba y le mandamos las instancias de las clases "Usuario" y "Gasto", y "mes" que contiene el "lblFecha" del activity ListadoGastos
+                    nombreMes = mes; //Guardamos el mes recibido en la variable global "nombreMes"
+                    obtenerGastos(usu, gast, exp, mes, "Mostrar"); //Llamamos el método "obtenerGastos" de arriba y le mandamos las instancias de las clases "Usuario" y "Gasto", y "mes" que contiene el "lblFecha" del activity ListadoGastos, y el tipo "Mostrar" para indicar que muestre los datos en el RecyclerView
                 }
             });
 
-            svmGastos.getExportar().observe(getViewLifecycleOwner(), new Observer<String>() {
+            //Llamamos el método "getExportar" del usando la instancia "svmGastos" de la clase "SharedViewGastosModel" que devuelve un "LiveData<String>", esto proporciona una referencia observable al valor de exportar
+            svmGastos.getExportar().observe(getViewLifecycleOwner(), new Observer<String>() { //Configuramos un observador del "LiveData<String>" que devuelve "getExportar()". "getViewLifecycleOwner()" se usa para obtener el ciclo de vida del fragmento actual, asegurando que las actualizaciones solo se envíen cuando el fragmento esté en un estado activo (es decir, no cuando está destruido o detenido)
                 @Override
-                public void onChanged(String exportar) {
-                    tipoExportar = exportar;
-                    obtenerGastos(usu, gast, exp, nombreMes, "Exportar");
+                public void onChanged(String exportar) { //Este método se llamará cada vez que el valor "exportar" cambie en el "LiveData<String>"
+                    tipoExportar = exportar; //Guardamos el texto recibido de "exportar" en la variable global "tipoExportar"
+                    obtenerGastos(usu, gast, exp, nombreMes, "Exportar"); //Llamamos el método "obtenerGastos" de arriba y le mandamos las instancias de las clases "Usuario" y "Gasto", y "nombreMes" que contiene el "lblFecha" del activity ListadoGastos, y el tipo "Exportar" para indicar que exporte los datos a PDF o Excel dependiendo de la selección del usuario en el popupMenu de Exportar en ListadoGastos
                 }
             });
         }

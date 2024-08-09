@@ -53,11 +53,11 @@
                     android:textSize="25dp" />
 
                 <ImageView
-                    android:id="@+id/imgRegresarLG2"
+                    android:id="@+id/imgExportarLG"
                     android:layout_width="25dp"
                     android:layout_height="match_parent"
                     android:contentDescription="@string/descripcion"
-                    android:onClick="exportar"
+                    android:onClick="exportarGastos"
                     app:srcCompat="@mipmap/ico_azul_exportar"
                     tools:ignore="TouchTargetSizeCheck" />
             </LinearLayout>
