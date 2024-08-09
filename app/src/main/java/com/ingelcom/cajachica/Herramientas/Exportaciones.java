@@ -6,6 +6,14 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.ingelcom.cajachica.Modelos.GastosItems;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -100,8 +108,68 @@ public class Exportaciones {
             return;
         }
 
-        try {
+        Document document = new Document(PageSize.LETTER.rotate());
 
+        try {
+            // Crear la carpeta "INGELCOM - Reportes/Gastos"
+            File carpeta = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM - Reportes/Gastos/PDF");
+            if (!carpeta.exists()) {
+                carpeta.mkdirs();
+            }
+
+            String nombreArchivo = "Gastos" + cuadrillaMes.replaceAll("[- ]", "") + ".pdf";
+
+            // Crear el archivo PDF
+            File archivo = new File(carpeta, nombreArchivo);
+            FileOutputStream fos = new FileOutputStream(archivo);
+
+            // Inicializar el PDFWriter
+            PdfWriter.getInstance(document, fos);
+            document.open();
+
+            // Crear la fuente para el encabezado de la tabla
+            Font font = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
+
+            // Crear la tabla con el número de columnas
+            PdfPTable table = new PdfPTable(8);
+            table.setWidthPercentage(100);
+
+            // Definir los anchos relativos de las columnas
+            float[] columnWidths = {1.5f, 1.2f, 1.5f, 1.5f, 1.5f, 1.3f, 2f, 0.8f};
+            table.setWidths(columnWidths);
+
+            // Crear el encabezado de la tabla
+            String[] encabezados = {"Cuadrilla", "Fecha", "Lugar de Compra", "Usuario", "Número de Factura", "Tipo de Compra", "Descripción", "Total"};
+            for (String encabezado : encabezados) {
+                PdfPCell cell = new PdfPCell(new Phrase(encabezado, font));
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                table.addCell(cell);
+            }
+
+            // Fuente para los datos de la tabla
+            Font fuenteDatos = new Font(Font.FontFamily.HELVETICA, 10);
+
+            // Llenar la tabla con los datos
+            for (GastosItems gasto : listaGastos) {
+                table.addCell(Utilidades.crearCelda(gasto.getCuadrilla(), fuenteDatos, "Centro"));
+                table.addCell(Utilidades.crearCelda(gasto.getFechaHora(), fuenteDatos, "Centro"));
+                table.addCell(Utilidades.crearCelda(gasto.getLugarCompra(), fuenteDatos, "Centro"));
+                table.addCell(Utilidades.crearCelda(gasto.getUsuario(), fuenteDatos, "Centro"));
+                table.addCell(Utilidades.crearCelda(gasto.getNumeroFactura(), fuenteDatos, "Centro"));
+                table.addCell(Utilidades.crearCelda(gasto.getTipoCompra(), fuenteDatos, "Centro"));
+                table.addCell(Utilidades.crearCelda(gasto.getDescripcion(), fuenteDatos, "Izquierda"));
+                table.addCell(Utilidades.crearCelda(String.valueOf(gasto.getTotal()), fuenteDatos, "Centro"));
+            }
+
+            // Añadir la tabla al documento
+            document.add(table);
+
+            // Cerrar el documento
+            document.close();
+
+            // Mostrar mensaje de éxito
+            Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
         catch (Exception e) {
             e.printStackTrace();

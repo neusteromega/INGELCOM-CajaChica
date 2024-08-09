@@ -23,6 +23,10 @@ import com.ingelcom.cajachica.AdmPantallas;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.EmpMenuPrincipal;
 import com.ingelcom.cajachica.R;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -447,5 +451,19 @@ public class Utilidades {
         spannable.setSpan(colorFin, textoInicial.length(), spannable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); //Indicamos que aplique el segundo color desde "textoInicial.Length()" (aquí es donde terminó de aplicar el primer color), hasta "spannable.length()" (el tamaño del "spannable") que sería el final del texto en el SpannableString
 
         return spannable; //Retornamos el "spannable" ya con los colores establecidos
+    }
+
+    //Método auxiliar para crear celdas alineadas a la izquierda y centradas verticalmente. Devuelve una celda de tipo "PdfCell"
+    public static PdfPCell crearCelda(String texto, Font font, String alineacion) {
+        PdfPCell cell = new PdfPCell(new Phrase(texto, font));
+
+        if (alineacion.equalsIgnoreCase("Izquierda"))
+            cell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alineación horizontal a la izquierda
+        else if (alineacion.equalsIgnoreCase("Centro"))
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER); // Alineación horizontal al centro
+
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE); // Alineación vertical centrada
+
+        return cell;
     }
 }
