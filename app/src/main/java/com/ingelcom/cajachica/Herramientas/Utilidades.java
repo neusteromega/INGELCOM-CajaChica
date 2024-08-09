@@ -454,16 +454,16 @@ public class Utilidades {
     }
 
     //Método auxiliar para crear celdas alineadas a la izquierda y centradas verticalmente. Devuelve una celda de tipo "PdfCell"
-    public static PdfPCell crearCelda(String texto, Font font, String alineacion) {
-        PdfPCell cell = new PdfPCell(new Phrase(texto, font));
+    public static PdfPCell crearCelda(String texto, Font fuente, String alineacion) {
+        PdfPCell cell = new PdfPCell(new Phrase(texto, fuente)); //Creamos la celda y le establecemos el "texto" y la "fuente"
 
-        if (alineacion.equalsIgnoreCase("Izquierda"))
-            cell.setHorizontalAlignment(Element.ALIGN_LEFT); // Alineación horizontal a la izquierda
-        else if (alineacion.equalsIgnoreCase("Centro"))
-            cell.setHorizontalAlignment(Element.ALIGN_CENTER); // Alineación horizontal al centro
+        if (alineacion.equalsIgnoreCase("Izquierda")) //Si "alineación" contiene el texto "Izquierda" establecemos el texto de la celda a la izquierda
+            cell.setHorizontalAlignment(Element.ALIGN_LEFT); //Alineación horizontal a la izquierda
+        else if (alineacion.equalsIgnoreCase("Centro")) //En cambio, si "alineación" contiene el texto "Centro" establecemos el texto de la celda al centro
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER); //Alineación horizontal al centro
 
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE); // Alineación vertical centrada
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE); //Alineación vertical centrada
 
-        return cell;
+        return cell; //Retornamos la celda
     }
 }

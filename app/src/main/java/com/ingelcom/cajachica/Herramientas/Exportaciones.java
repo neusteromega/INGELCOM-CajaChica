@@ -34,12 +34,12 @@ public class Exportaciones {
     }
 
     public void exportarGastosExcel(List<GastosItems> listaGastos, String cuadrillaMes) {
-        if (listaGastos == null || listaGastos.isEmpty()) {
+        if (listaGastos == null || listaGastos.isEmpty()) { //Antes de crear el archivo Excel, verificamos que la lista de gastos no es nula o está vacía
             Toast.makeText(contexto, "NO HAY GASTOS DISPONIBLES PARA EXPORTAR", Toast.LENGTH_LONG).show();
             return;
         }
 
-        Workbook workbook = new XSSFWorkbook();
+        Workbook workbook = new XSSFWorkbook(); //Creamos una instancia de "Workbook" utilizando la clase "XSSFWorkbook", que es la implementación de Apache POI para archivos ".xlsx"
         Sheet hoja = workbook.createSheet("Gastos"); //Creamos una nueva sheet (hoja de excel) llamada "Gastos"
 
         Row filaEncabezado = hoja.createRow(0); //Creamos una fila para los encabezados en la posición 0
@@ -53,7 +53,7 @@ public class Exportaciones {
             celda.setCellValue(encabezados[i]); //A la celda recién creada le asignamos el texto guardado en el arreglo "encabezados" en la posición "i"
         }
 
-        int numFila = 1;
+        int numFila = 1; //Inicializamos "numFila" en 1 para comenzar a llenar los datos desde la segunda fila (ya que la primera fila está ocupada por los encabezados)
 
         //Foreach que recorre cada elemento de la "listaGastos" y lo va guardando en la variable temporal "gasto"
         for (GastosItems gasto : listaGastos) {
@@ -94,10 +94,10 @@ public class Exportaciones {
             String nombreArchivo = "Gastos" + cuadrillaMes.replaceAll("[- ]", "") + ".xlsx";
 
             File archivo = new File(excelDir, nombreArchivo); //Usando otra variable de tipo "File" creamos el archivo en el directorio guardado en "excelDir" y le pasamos el nombre del Excel que está guardado en "nombreArchivo"
-            FileOutputStream fos = new FileOutputStream(archivo);
-            workbook.write(fos);
-            fos.close();
-            workbook.close();
+            FileOutputStream fos = new FileOutputStream(archivo); //Inicializamos un "FileOutputStream" para escribir en "archivo"
+            workbook.write(fos); //Escribimos el contenido del "Workbook" usando el "FileOutputStream"
+            fos.close(); //Cerramos el "FileOutputStream"
+            workbook.close(); //Cerramos el "Workbook"
 
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
@@ -109,55 +109,53 @@ public class Exportaciones {
     }
 
     public void exportarGastosPDF(List<GastosItems> listaGastos, String cuadrillaMes) {
-        if (listaGastos == null || listaGastos.isEmpty()) {
+        if (listaGastos == null || listaGastos.isEmpty()) { //Antes de crear el archivo PDF, verificamos que la lista de gastos no es nula o está vacía
             Toast.makeText(contexto, "NO HAY GASTOS DISPONIBLES PARA EXPORTAR", Toast.LENGTH_LONG).show();
             return;
         }
 
-        Document document = new Document(PageSize.LETTER.rotate());
+        Document document = new Document(PageSize.LETTER.rotate()); //Creamos una instancia de "Document" de iText, con un tamaño de página de carta (Letter) en orientación horizontal (rotate())
 
         try {
-            // Crear la carpeta "INGELCOM - Reportes/Gastos"
+            //Obtenemos la ruta de la carpeta "Documentos", y en ella creamos la carpeta "INGELCOM - Reportes/Gastos/PDF", esto lo guardamos en una variable de tipo "File" ("Archivo" en español) llamada "carpeta"
             File carpeta = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM - Reportes/Gastos/PDF");
-            if (!carpeta.exists()) {
+            if (!carpeta.exists()) { //Si "carpeta" no existe, que entre al if y lo cree
                 carpeta.mkdirs();
             }
 
+            //Creamos el nombre del archivo PDF, el cual empieza con la palabra "Gastos", recibe el resto del nombre en la variable "cuadrillaMes" en el cual, con una expresión regular, se le eliminan los guiones y espacios para evitar conflictos en la creación del archivo. Y esto se concatena a ".pdf" que es la extensión del archivo de PDF
             String nombreArchivo = "Gastos" + cuadrillaMes.replaceAll("[- ]", "") + ".pdf";
 
-            // Crear el archivo PDF
-            File archivo = new File(carpeta, nombreArchivo);
-            FileOutputStream fos = new FileOutputStream(archivo);
+            File archivo = new File(carpeta, nombreArchivo); //Usando otra variable de tipo "File" creamos el archivo en el directorio guardado en "carpeta" y le pasamos el nombre del PDF que está guardado en "nombreArchivo"
+            FileOutputStream fos = new FileOutputStream(archivo); //Inicializamos un "FileOutputStream" para escribir en "archivo"
 
-            // Inicializar el PDFWriter
-            PdfWriter.getInstance(document, fos);
-            document.open();
+            PdfWriter.getInstance(document, fos); //Asociamos el "PdfWriter" con el "Document" y el "FileOutputStream" para escribir en el archivo
+            document.open(); //Abrimos el "document"
 
-            // Crear la fuente para el encabezado de la tabla
-            Font font = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
+            Font fuenteEncabezado = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD); //Definimos una fuente (Font) para los encabezados de la tabla, utilizando la familia de fuentes Helvetica, un tamaño de 12 puntos y un estilo en negrita (BOLD)
 
-            // Crear la tabla con el número de columnas
-            PdfPTable table = new PdfPTable(8);
-            table.setWidthPercentage(100);
+            PdfPTable table = new PdfPTable(8); //Creamos una tabla con "PdfPTable" y le establecemos 8 columnas
+            table.setWidthPercentage(100); //Establecemos que la tabla ocupará el 100% del ancho de la página
 
-            // Definir los anchos relativos de las columnas
-            float[] columnWidths = {1.5f, 1.2f, 1.5f, 1.5f, 1.5f, 1.3f, 2f, 0.8f};
-            table.setWidths(columnWidths);
+            float[] columnWidths = {1.5f, 1.2f, 1.5f, 1.5f, 1.5f, 1.3f, 2f, 0.8f}; //Establecemos los anchos relativos de las columnas. Los valores en el arreglo "columnWidths" representan la proporción del ancho total de la tabla que cada columna debe ocupar
+            table.setWidths(columnWidths); //Asignamos los anchos a la tabla
 
-            // Crear el encabezado de la tabla
-            String[] encabezados = {"Cuadrilla", "Fecha", "Lugar de Compra", "Usuario", "Número de Factura", "Tipo de Compra", "Descripción", "Total"};
+            //Guardamos los encabezados en un arreglo
+            String[] encabezados = {"Cuadrilla", "Fecha y Hora", "Lugar de Compra", "Usuario", "Número de Factura", "Tipo de Compra", "Descripción", "Total"};
+
+            //Foreach que recorre todos los elementos del arreglo "encabezados" y los va guardando en la variable temporal "encabezado"
             for (String encabezado : encabezados) {
-                PdfPCell cell = new PdfPCell(new Phrase(encabezado, font));
-                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                table.addCell(cell);
+                PdfPCell cell = new PdfPCell(new Phrase(encabezado, fuenteEncabezado)); //Creamos una celda para cada encabezado al recorrer este foreach, y a esta celda establecemos el texto guardado en la variable temporal "encabezado" y la fuente guardada en "fuenteEncabezado"
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER); //Centramos horizontalmente el texto de la celda
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE); //Centramos verticalmente el texto de la celda
+                table.addCell(cell); //Agregamos la celda a la tabla
             }
 
-            // Fuente para los datos de la tabla
-            Font fuenteDatos = new Font(Font.FontFamily.HELVETICA, 10);
+            Font fuenteDatos = new Font(Font.FontFamily.HELVETICA, 10); //Definimos una fuente (Font) para los datos de la tabla, utilizando la familia de fuentes Helvetica, un tamaño de 10 puntos
 
-            // Llenar la tabla con los datos
+            //Foreach que recorre cada elemento de la "listaGastos" y lo va guardando en la variable temporal "gasto"
             for (GastosItems gasto : listaGastos) {
+                //Llenamos las celdas de la tabla con los valores correspondientes, usando un método crearCelda de una clase Utilidades para configurar la alineación del texto (centrado o alineado a la izquierda según el contenido)
                 table.addCell(Utilidades.crearCelda(gasto.getCuadrilla(), fuenteDatos, "Centro"));
                 table.addCell(Utilidades.crearCelda(gasto.getFechaHora(), fuenteDatos, "Centro"));
                 table.addCell(Utilidades.crearCelda(gasto.getLugarCompra(), fuenteDatos, "Centro"));
@@ -168,19 +166,15 @@ public class Exportaciones {
                 table.addCell(Utilidades.crearCelda(String.valueOf(gasto.getTotal()), fuenteDatos, "Centro"));
             }
 
-            // Añadir la tabla al documento
-            document.add(table);
+            document.add(table); //Añadimos la tabla completa al documento PDF
+            document.close(); //Cerramos el documento PDF finalizando la escritura del archivo
 
-            // Cerrar el documento
-            document.close();
-
-            // Mostrar mensaje de éxito
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
         catch (Exception e) {
             e.printStackTrace();
             Log.e("CrearPDF", "Error al crear el PDF", e);
-            Toast.makeText(contexto, "ERROR AL CREAR EL ARCHIVO PDF", Toast.LENGTH_LONG).show();
+            Toast.makeText(contexto, "ERROR AL CREAR EL ARCHIVO PDF", Toast.LENGTH_LONG).show(); //Mostramos mensaje de error
         }
     }
 }
