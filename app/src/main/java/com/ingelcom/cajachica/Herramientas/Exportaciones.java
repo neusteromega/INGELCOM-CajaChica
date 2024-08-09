@@ -70,7 +70,7 @@ public class Exportaciones {
                 gastosDir.mkdirs();
             }
 
-            String nombreArchivo = "Gastos" + cuadrillaMes + ".xlsx";
+            String nombreArchivo = "Gastos" + cuadrillaMes.replaceAll("[- ]", "") + ".xlsx";
 
             // Crear el archivo en la subcarpeta
             File file = new File(gastosDir, nombreArchivo);
