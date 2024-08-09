@@ -112,7 +112,7 @@ public class FragGastosCuadrilla extends Fragment {
                                             }
                                             else {
                                                 if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                                    exp.exportarGastosExcel(items, " - " + cuadrilla + " - " + mes);
+                                                    exp.exportarGastosExcel(items, "_" + cuadrilla + "_" + mes);
                                                 else if (tipoExportar.equalsIgnoreCase("PDF"))
                                                     Toast.makeText(getContext(), "PDF", Toast.LENGTH_SHORT).show();
                                             }

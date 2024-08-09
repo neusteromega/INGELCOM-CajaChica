@@ -32,60 +32,65 @@ public class Exportaciones {
         }
 
         Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("Gastos");
+        Sheet hoja = workbook.createSheet("Gastos"); //Creamos una nueva sheet (hoja de excel) llamada "Gastos"
 
-        // Crear fila para los encabezados
-        Row headerRow = sheet.createRow(0);
+        Row filaEncabezado = hoja.createRow(0); //Creamos una fila para los encabezados en la posición 0
+
+        //Guardamos los encabezados en un arreglo
         String[] encabezados = {"Cuadrilla", "Fecha y Hora", "Lugar de Compra", "Usuario", "Número de Factura", "Tipo de Compra", "Descripción", "Total"};
+
+        //For que recorre todos los nombres de los encabezados guardados en el arreglo
         for (int i = 0; i < encabezados.length; i++) {
-            Cell cell = headerRow.createCell(i);
-            cell.setCellValue(encabezados[i]);
+            Cell celda = filaEncabezado.createCell(i); //Creamos una celda, la posición de la fila es la 0 (la posición 0 está guardada en la variable "filaEncabezado"), y la de la columna será el número "i" (que empieza en 0 y va aumentando hasta que salga del ciclo for)
+            celda.setCellValue(encabezados[i]); //A la celda recién creada le asignamos el texto guardado en el arreglo "encabezados" en la posición "i"
         }
 
-        // Crear filas para los datos
-        int rowNum = 1;
-        for (GastosItems gasto : listaGastos) {
-            Row row = sheet.createRow(rowNum++);
+        int numFila = 1;
 
-            row.createCell(0).setCellValue(gasto.getCuadrilla());
-            row.createCell(1).setCellValue(gasto.getFechaHora());
-            row.createCell(2).setCellValue(gasto.getLugarCompra());
-            row.createCell(3).setCellValue(gasto.getUsuario());
-            row.createCell(4).setCellValue(gasto.getNumeroFactura());
-            row.createCell(5).setCellValue(gasto.getTipoCompra());
-            row.createCell(6).setCellValue(gasto.getDescripcion());
-            row.createCell(7).setCellValue(gasto.getTotal());
+        //Foreach que recorre cada elemento de la "listaGastos" y lo va guardando en la variable temporal "gasto"
+        for (GastosItems gasto : listaGastos) {
+            Row fila = hoja.createRow(numFila++); //Por cada elemento de "listaGastos" creamos una nueva fila en la posición guardada en "numFila" la cual empieza en 1 (no empieza en 0, porque la fila 0 la tienen los encabezados) y va aumentando hasta que termine el ciclo foreach
+
+            //Creamos las celdas para los datos a guardar en el archivo de Excel, la columna irá del 0 al 7 y en cada celda guardará los elementos que deseamos de la "listaGastos" y para acceder a esos elementos usamos la variable temporal "gasto"
+            fila.createCell(0).setCellValue(gasto.getCuadrilla());
+            fila.createCell(1).setCellValue(gasto.getFechaHora());
+            fila.createCell(2).setCellValue(gasto.getLugarCompra());
+            fila.createCell(3).setCellValue(gasto.getUsuario());
+            fila.createCell(4).setCellValue(gasto.getNumeroFactura());
+            fila.createCell(5).setCellValue(gasto.getTipoCompra());
+            fila.createCell(6).setCellValue(gasto.getDescripcion());
+            fila.createCell(7).setCellValue(gasto.getTotal());
         }
 
         //Guardar el archivo Excel en el almacenamiento del dispositivo
         try {
-            // Obtener la ruta de la carpeta Documents
-            File documentsDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM - Reportes");
-            if (!documentsDir.exists()) {
-                documentsDir.mkdirs();
+            //Obtenemos la ruta de la carpeta "Documentos", y en ella creamos la carpeta "INGELCOM - Reportes", esto lo guardamos en una variable de tipo "File" ("Archivo" en español) llamada "DocumentosDir"
+            File documentosDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM - Reportes");
+            if (!documentosDir.exists()) { //Si "documentsDir" no existe, que entre al if y lo cree
+                documentosDir.mkdirs();
             }
 
-            File gastosDir = new File(documentsDir, "Gastos");
-            if (!gastosDir.exists()) {
+            //La ruta guardada en "documentosDir" la utilizamos para crear en ella la carpeta "Gastos", esto lo guardamos en otra variable de tipo "File" ("Archivo" en español) llamada "GastosDir"
+            File gastosDir = new File(documentosDir, "Gastos");
+            if (!gastosDir.exists()) { //Si "gastosDir" no existe, que entre al if y lo cree
                 gastosDir.mkdirs();
             }
 
+            //Creamos el nombre del archivo de excel, el cual empieza con la palabra "Gastos", recibe el resto del nombre en la variable "cuadrillaMes" en el cual, con una expresión regular, se le eliminan los guiones y espacios para evitar conflictos en la creación del archivo. Y esto se concatena a ".xlsx" que es la extensión del archivo de excel
             String nombreArchivo = "Gastos" + cuadrillaMes.replaceAll("[- ]", "") + ".xlsx";
 
-            // Crear el archivo en la subcarpeta
-            File file = new File(gastosDir, nombreArchivo);
-            FileOutputStream fos = new FileOutputStream(file);
+            File archivo = new File(gastosDir, nombreArchivo); //Usando otra variable de tipo "File" creamos el archivo en el directorio guardado en "gastosDir" y le pasamos el nombre del Excel que está guardado en "nombreArchivo"
+            FileOutputStream fos = new FileOutputStream(archivo);
             workbook.write(fos);
             fos.close();
             workbook.close();
 
-            //Mostrar mensaje de éxito
-            Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show();
+            Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
         catch (Exception e) {
             e.printStackTrace();
             Log.e("CrearExcel", "Error al crear el Excel", e);
-            Toast.makeText(contexto, "ERROR AL CREAR EL ARCHIVO DE EXCEL", Toast.LENGTH_LONG).show();
+            Toast.makeText(contexto, "ERROR AL CREAR EL ARCHIVO DE EXCEL", Toast.LENGTH_LONG).show(); //Mostramos mensaje de error
         }
     }
 
