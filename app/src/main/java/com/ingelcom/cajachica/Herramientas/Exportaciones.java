@@ -78,16 +78,22 @@ public class Exportaciones {
                 documentosDir.mkdirs();
             }
 
-            //La ruta guardada en "documentosDir" la utilizamos para crear en ella la carpeta "Gastos", esto lo guardamos en otra variable de tipo "File" ("Archivo" en español) llamada "GastosDir"
+            //La ruta guardada en "documentosDir" la utilizamos para crear en ella la carpeta "Gastos", esto lo guardamos en otra variable de tipo "File" ("Archivo" en español) llamada "gastosDir"
             File gastosDir = new File(documentosDir, "Gastos");
             if (!gastosDir.exists()) { //Si "gastosDir" no existe, que entre al if y lo cree
                 gastosDir.mkdirs();
             }
 
+            //La ruta guardada en "gastosDir" la utilizamos para crear en ella la carpeta "EXCEL", esto lo guardamos en otra variable de tipo "File" ("Archivo" en español) llamada "excelDir"
+            File excelDir = new File(gastosDir, "EXCEL");
+            if (!excelDir.exists()) { //Si "excelDir" no existe, que entre al if y lo cree
+                excelDir.mkdirs();
+            }
+
             //Creamos el nombre del archivo de excel, el cual empieza con la palabra "Gastos", recibe el resto del nombre en la variable "cuadrillaMes" en el cual, con una expresión regular, se le eliminan los guiones y espacios para evitar conflictos en la creación del archivo. Y esto se concatena a ".xlsx" que es la extensión del archivo de excel
             String nombreArchivo = "Gastos" + cuadrillaMes.replaceAll("[- ]", "") + ".xlsx";
 
-            File archivo = new File(gastosDir, nombreArchivo); //Usando otra variable de tipo "File" creamos el archivo en el directorio guardado en "gastosDir" y le pasamos el nombre del Excel que está guardado en "nombreArchivo"
+            File archivo = new File(excelDir, nombreArchivo); //Usando otra variable de tipo "File" creamos el archivo en el directorio guardado en "excelDir" y le pasamos el nombre del Excel que está guardado en "nombreArchivo"
             FileOutputStream fos = new FileOutputStream(archivo);
             workbook.write(fos);
             fos.close();
