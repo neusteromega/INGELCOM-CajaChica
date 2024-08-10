@@ -1,5 +1,6 @@
 package com.ingelcom.cajachica;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -402,12 +403,20 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
 
             case R.id.menuExportarExcel:
                 tipoExportar = "EXCEL";
-                obtenerDatos(nombreMes, "Exportar");
+
+                if (Utilidades.verificarPermisosAlmacenamiento(this)) {
+                    obtenerDatos(nombreMes, "Exportar");
+                }
+
                 return true;
 
             case R.id.menuExportarPDF:
                 tipoExportar = "PDF";
-                obtenerDatos(nombreMes, "Exportar");
+
+                if (Utilidades.verificarPermisosAlmacenamiento(this)) {
+                    obtenerDatos(nombreMes, "Exportar");
+                }
+
                 return true;
 
             default:
@@ -426,6 +435,18 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
         popup.inflate(R.menu.popupmenu_opcionesexportar); //Inflamos la vista del menú indicando la ruta de dicha vista gráfica
 
         popup.show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (Utilidades.manejarResultadoPermisos(requestCode, permissions, grantResults, this)) {
+            if (tipoExportar.equalsIgnoreCase("EXCEL"))
+                obtenerDatos(nombreMes, "Exportar");
+            else if (tipoExportar.equalsIgnoreCase("PDF"))
+                obtenerDatos(nombreMes, "Exportar");
+        }
     }
 
     public void retroceder(View view) {

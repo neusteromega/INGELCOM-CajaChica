@@ -1,8 +1,10 @@
 package com.ingelcom.cajachica.Herramientas;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -14,6 +16,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.Timestamp;
@@ -465,5 +469,28 @@ public class Utilidades {
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE); //Alineación vertical centrada
 
         return cell; //Retornamos la celda
+    }
+
+    public static boolean verificarPermisosAlmacenamiento(Activity activity) {
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 112);
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean manejarResultadoPermisos(int requestCode, String[] permissions, int[] grantResults, Context context) {
+        if (requestCode == 112) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            }
+            else {
+                Toast.makeText(context, "PERMISO DENEGADO", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+
+        return false;
     }
 }
