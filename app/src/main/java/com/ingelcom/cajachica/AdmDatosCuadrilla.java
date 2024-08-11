@@ -93,7 +93,6 @@ public class AdmDatosCuadrilla extends AppCompatActivity {
                 public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados por cuadrilla
                     if (items != null) //Si "items" no es null, que entre al if
                         calcularTotalIngresos(items); //Llamamos el método "calculaTotalIngresos" y le mandamos la lista "items"
-                        //calcularTotales(items, "Ingreso");
                 }
 
                 @Override

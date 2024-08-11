@@ -1,5 +1,6 @@
 package com.ingelcom.cajachica;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -25,7 +26,9 @@ import android.widget.Toast;
 
 import com.ingelcom.cajachica.Adaptadores.VPGastosAdapter;
 import com.ingelcom.cajachica.DAO.Gasto;
+import com.ingelcom.cajachica.DAO.Usuario;
 import com.ingelcom.cajachica.Fragmentos.FragGastosCuadrilla;
+import com.ingelcom.cajachica.Herramientas.Exportaciones;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.SharedViewGastosModel;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
@@ -33,15 +36,20 @@ import com.ingelcom.cajachica.Modelos.GastosItems;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 public class ListadoGastos extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
     private TextView lblTitulo, lblFecha, lblLineaCuadrilla, lblLineaSupervisores;
-    private String nombreActivity, nombreCuadrilla;
+    private String nombreActivity, nombreCuadrilla, nombreMes = "", tipoExportar;
     private ViewPager2 vpGastos;
 
     //Instancia de la clase "SharedViewGastosModel" que nos ayuda a compartir datos con diferentes componentes de la interfaz de usuario, como ser fragmentos y actividades y que estos datos sobreviven a cambios de configuración como las rotaciones de pantalla
     private SharedViewGastosModel svmGastos;
+
+    private Gasto gast = new Gasto(ListadoGastos.this);
+    private Usuario usu = new Usuario(ListadoGastos.this);
+    private Exportaciones exp = new Exportaciones(ListadoGastos.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +97,120 @@ public class ListadoGastos extends AppCompatActivity implements PopupMenu.OnMenu
         vpGastos.setAdapter(vpAdapter); //Asignamos el adaptador al vpGastos
     }
 
+    private void obtenerDatosExportar(String mes) {
+        try {
+            switch (nombreActivity) {
+                case "ListadoGastosEmpleado":
+                    //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" que obtiene el usuario actual
+                    usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
+                        @Override
+                        public void onCallback(Map<String, Object> documento) {
+                            if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                                String cuadrilla = (String) documento.get("Cuadrilla"); //Obtenemos la cuadrilla de "documento"
+
+                                //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla del usuario actual, el rol vacío ya que no queremos filtrar por rol y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de la cuadrilla y por los supervisores a la cuadrilla
+                                gast.obtenerGastos(cuadrilla, "", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                                    @Override
+                                    public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por cuadrilla
+                                        if (items != null) {//Si "items" no es null, que entre al if
+                                            items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
+
+                                            if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) {
+                                                if (tipoExportar.equalsIgnoreCase("EXCEL"))
+                                                    exp.exportarGastosExcel(items, "_" + cuadrilla);
+                                                else if (tipoExportar.equalsIgnoreCase("PDF"))
+                                                    exp.exportarGastosPDF(items, "_" + cuadrilla);
+                                            }
+                                            else {
+                                                if (tipoExportar.equalsIgnoreCase("EXCEL"))
+                                                    exp.exportarGastosExcel(items, "_" + cuadrilla + "_" + mes);
+                                                else if (tipoExportar.equalsIgnoreCase("PDF"))
+                                                    exp.exportarGastosPDF(items, "_" + cuadrilla + "_" + mes);
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Exception e) {
+                                        Log.w("ObtenerGastos", e);
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            Log.w("ObtenerUsuario", e);
+                        }
+                    });
+                    break;
+
+                case "ListadoGastosAdmin":
+                    //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla recibida del activity anterior, el rol vacío ya que no queremos filtrar por rol y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de la cuadrilla y por los supervisores a la cuadrilla
+                    gast.obtenerGastos(nombreCuadrilla, "", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                        @Override
+                        public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por cuadrilla
+                            if (items != null) {//Si "items" no es null, que entre al if
+                                items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
+
+                                if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) {
+                                    if (tipoExportar.equalsIgnoreCase("EXCEL"))
+                                        exp.exportarGastosExcel(items, "_" + nombreCuadrilla);
+                                    else if (tipoExportar.equalsIgnoreCase("PDF"))
+                                        exp.exportarGastosPDF(items, "_" + nombreCuadrilla);
+                                }
+                                else {
+                                    if (tipoExportar.equalsIgnoreCase("EXCEL"))
+                                        exp.exportarGastosExcel(items, "_" + nombreCuadrilla + "_" + mes);
+                                    else if (tipoExportar.equalsIgnoreCase("PDF"))
+                                        exp.exportarGastosPDF(items, "_" + nombreCuadrilla + "_" + mes);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            Log.w("ObtenerGastos", e);
+                        }
+                    });
+                    break;
+
+                case "ListadoGastosTodos":
+                    //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla vacía porque queremos obtener todos los gastos, el rol vacío ya que no queremos filtrar por rol y el "mes". Con esto se podrán obtener todos los gastos hechos en todas las cuadrillas por los empleados y supervisores
+                    gast.obtenerGastos("", "", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                        @Override
+                        public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos sin filtro
+                            if (items != null) {//Si "items" no es null, que entre al if
+                                items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
+
+                                if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) {
+                                    if (tipoExportar.equalsIgnoreCase("EXCEL"))
+                                        exp.exportarGastosExcel(items, "Generales");
+                                    else if (tipoExportar.equalsIgnoreCase("PDF"))
+                                        exp.exportarGastosPDF(items, "Generales");
+                                }
+                                else {
+                                    if (tipoExportar.equalsIgnoreCase("EXCEL"))
+                                        exp.exportarGastosExcel(items, "Generales_" + mes);
+                                    else if (tipoExportar.equalsIgnoreCase("PDF"))
+                                        exp.exportarGastosPDF(items, "Generales_" + mes);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            Log.w("ObtenerGastos", e);
+                        }
+                    });
+                    break;
+            }
+        }
+        catch (Exception e) {
+            Log.w("ObtenerGastos", e);
+        }
+    }
+
     //Método que detecta cuando el lblFecha cambia su valor
     private void cambioFecha() {
         try {
@@ -101,6 +223,7 @@ public class ListadoGastos extends AppCompatActivity implements PopupMenu.OnMenu
 
                 @Override //Durante el texto del lblFecha está cambiando
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    nombreMes = charSequence.toString(); //Pasamos la fecha a la variable global "nombreMes"
                     svmGastos.setFecha(charSequence.toString()); //Llamamos el método "setFecha" de la clase "SharedViewGastosModel" y le mandamos el "charSequence" que es el texto del TextView "lblFecha" y lo convertimos a String
                 }
 
@@ -197,15 +320,37 @@ public class ListadoGastos extends AppCompatActivity implements PopupMenu.OnMenu
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.menuExportarExcel:
-                svmGastos.setExportar("EXCEL");
+                tipoExportar = "EXCEL";
+
+                if (Utilidades.verificarPermisosAlmacenamiento(this)) {
+                    obtenerDatosExportar(nombreMes);
+                }
+
                 return true;
 
             case R.id.menuExportarPDF:
-                svmGastos.setExportar("PDF");
+                tipoExportar = "PDF";
+
+                if (Utilidades.verificarPermisosAlmacenamiento(this)) {
+                    obtenerDatosExportar(nombreMes);
+                }
+
                 return true;
 
             default:
                 return false;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (Utilidades.manejarResultadoPermisos(requestCode, permissions, grantResults, this)) {
+            if (tipoExportar.equalsIgnoreCase("EXCEL"))
+                obtenerDatosExportar(nombreMes);
+            else if (tipoExportar.equalsIgnoreCase("PDF"))
+                obtenerDatosExportar(nombreMes);
         }
     }
 

@@ -14,7 +14,7 @@ public class VPGastosAdapter extends FragmentStateAdapter {
     private String nombreCuadrilla;
     private String nombreActivity;
 
-    //Método Constructor que toma como parámetro el contexto (this) del activity donde se encuentra el ViewPager, en este caso, el activity es el "ListadoGastos.java"; y el nombre de la cuadrilla que se recibe para saber cuáles gastos mostrar
+    //Método Constructor que toma como parámetro el contexto (this) del activity donde se encuentra el ViewPager, en este caso, el activity es el "ListadoGastos.java"; el nombre de la cuadrilla que se recibe para saber cuáles gastos mostrar y el nombre del activity
     public VPGastosAdapter(@NonNull FragmentActivity fragmentActivity, String nombreCuadrilla, String nombreActivity) {
         super(fragmentActivity);
         this.nombreCuadrilla = nombreCuadrilla;

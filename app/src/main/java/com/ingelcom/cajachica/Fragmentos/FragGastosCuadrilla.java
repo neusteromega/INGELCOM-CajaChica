@@ -81,14 +81,14 @@ public class FragGastosCuadrilla extends Fragment {
         lblTotalGastos = view.findViewById(R.id.lblTotalGastosCua);
         rvGastos = view.findViewById(R.id.rvGastosCuadrilla);
 
-        obtenerGastos("", "Mostrar"); //Llamamos al método "obtenerGastos" y le mandamos la instancias de las clases Usuario y Gasto, y el "mes" vacío, ya que al crear el fragment no se realiza un filtrado de gastos por mes
+        obtenerGastos(""); //Llamamos al método "obtenerGastos" y le mandamos la instancias de las clases Usuario y Gasto, y el "mes" vacío, ya que al crear el fragment no se realiza un filtrado de gastos por mes
         obtenerDatos(); //Llamamos al método "obtenerMes" para recibir la selección del mes hecha por el usuario
 
         return view;
     }
 
     //Método que nos ayuda a obtener los gastos de la colección "gastos" de Firestore y asignarlos al RecyclerView
-    private void obtenerGastos(String mes, String tipo) { //Recibe las instancias de las clases "Usuario" y "Gasto", y el String con el mes y año (por ejemplo, "Julio - 2024") para hacer el filtrado de gastos
+    private void obtenerGastos(String mes) { //Recibe las instancias de las clases "Usuario" y "Gasto", y el String con el mes y año (por ejemplo, "Julio - 2024") para hacer el filtrado de gastos
         try {
             //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" que obtiene el usuario actual
             usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() { //Invocamos a la interfaz "FirestoreAllSpecialDocumentsCallback" y le decimos que debe recibir un "GastosItems"
@@ -104,23 +104,7 @@ public class FragGastosCuadrilla extends Fragment {
                                 public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por cuadrilla y rol
                                     if (items != null) {//Si "items" no es null, que entre al if
                                         items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
-
-                                        if (tipo.equalsIgnoreCase("Mostrar"))
-                                            inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
-                                        else if (tipo.equalsIgnoreCase("Exportar")) {
-                                            if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) {
-                                                if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                                    exp.exportarGastosExcel(items, "_" + cuadrilla);
-                                                else if (tipoExportar.equalsIgnoreCase("PDF"))
-                                                    exp.exportarGastosPDF(items, "_" + cuadrilla);
-                                            }
-                                            else {
-                                                if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                                    exp.exportarGastosExcel(items, "_" + cuadrilla + "_" + mes);
-                                                else if (tipoExportar.equalsIgnoreCase("PDF"))
-                                                    exp.exportarGastosPDF(items, "_" + cuadrilla + "_" + mes);
-                                            }
-                                        }
+                                        inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
                                     }
                                 }
 
@@ -138,23 +122,7 @@ public class FragGastosCuadrilla extends Fragment {
                                 public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por cuadrilla y rol
                                     if (items != null) {//Si "items" no es null, que entre al if
                                         items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
-
-                                        if (tipo.equalsIgnoreCase("Mostrar"))
-                                            inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
-                                        else if (tipo.equalsIgnoreCase("Exportar")) {
-                                            if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) {
-                                                if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                                    exp.exportarGastosExcel(items, "_" + nombreCuadrilla);
-                                                else if (tipoExportar.equalsIgnoreCase("PDF"))
-                                                    exp.exportarGastosPDF(items, "_" + nombreCuadrilla);
-                                            }
-                                            else {
-                                                if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                                    exp.exportarGastosExcel(items, "_" + nombreCuadrilla + "_" + mes);
-                                                else if (tipoExportar.equalsIgnoreCase("PDF"))
-                                                    exp.exportarGastosPDF(items, "_" + nombreCuadrilla + "_" + mes);
-                                            }
-                                        }
+                                        inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
                                     }
                                 }
 
@@ -166,29 +134,13 @@ public class FragGastosCuadrilla extends Fragment {
                             });
                         }
                         else if (nombreActivity.equalsIgnoreCase("ListadoGastosTodos")) { //Por último, si "nombreActivity" tiene el texto "ListadoGastosTodos", significa que un administrador quiere ver todos los gastos de todas las cuadrillas, y en este caso, también se manda el nombre de la cuadrilla que se recibe como parámetro al método "obtenerGastos"
-                            //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla recibida como parámetro en este fragment, el rol "Empleado" (ya que queremos ver los gastos hechos por las cuadrillas y en las cuadrillas todos los usuarios tienen rol "Empleado") y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de todas las cuadrillas
+                            //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla vacía porque queremos obtener todos los gastos, el rol "Empleado" (ya que queremos ver los gastos hechos por las cuadrillas y en las cuadrillas todos los usuarios tienen rol "Empleado") y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de todas las cuadrillas
                             gast.obtenerGastos("", "Empleado", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                                 @Override
                                 public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por rol
                                     if (items != null) {//Si "items" no es null, que entre al if
                                         items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
-
-                                        if (tipo.equalsIgnoreCase("Mostrar"))
-                                            inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
-                                        else if (tipo.equalsIgnoreCase("Exportar")) {
-                                            if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) {
-                                                if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                                    exp.exportarGastosExcel(items, "Generales");
-                                                else if (tipoExportar.equalsIgnoreCase("PDF"))
-                                                    exp.exportarGastosPDF(items, "Generales");
-                                            }
-                                            else {
-                                                if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                                    exp.exportarGastosExcel(items, "Generales_" + mes);
-                                                else if (tipoExportar.equalsIgnoreCase("PDF"))
-                                                    exp.exportarGastosPDF(items, "Generales_" + mes);
-                                            }
-                                        }
+                                        inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
                                     }
                                 }
 
@@ -266,35 +218,12 @@ public class FragGastosCuadrilla extends Fragment {
                 @Override
                 public void onChanged(String mes) { //Este método se llamará cada vez que el valor "fecha" cambie en el "LiveData<String>"
                     nombreMes = mes; //Guardamos el mes recibido en la variable global "nombreMes"
-                    obtenerGastos(mes, "Mostrar"); //Llamamos el método "obtenerGastos" de arriba y le mandamos las instancias de las clases "Usuario" y "Gasto", y "mes" que contiene el "lblFecha" del activity ListadoGastos, y el tipo "Mostrar" para indicar que muestre los datos en el RecyclerView
-                }
-            });
-
-            //Llamamos el método "getExportar" del usando la instancia "svmGastos" de la clase "SharedViewGastosModel" que devuelve un "LiveData<String>", esto proporciona una referencia observable al valor de exportar
-            svmGastos.getExportar().observe(getViewLifecycleOwner(), new Observer<String>() { //Configuramos un observador del "LiveData<String>" que devuelve "getExportar()". "getViewLifecycleOwner()" se usa para obtener el ciclo de vida del fragmento actual, asegurando que las actualizaciones solo se envíen cuando el fragmento esté en un estado activo (es decir, no cuando está destruido o detenido)
-                @Override
-                public void onChanged(String exportar) { //Este método se llamará cada vez que el valor "exportar" cambie en el "LiveData<String>"
-                    tipoExportar = exportar; //Guardamos el texto recibido de "exportar" en la variable global "tipoExportar"
-
-                    if (Utilidades.verificarPermisosAlmacenamiento(getActivity()))
-                        obtenerGastos(nombreMes, "Exportar"); //Llamamos el método "obtenerGastos" de arriba y le mandamos las instancias de las clases "Usuario" y "Gasto", y "nombreMes" que contiene el "lblFecha" del activity ListadoGastos, y el tipo "Exportar" para indicar que exporte los datos a PDF o Excel dependiendo de la selección del usuario en el popupMenu de Exportar en ListadoGastos
+                    obtenerGastos(mes); //Llamamos el método "obtenerGastos" de arriba y le mandamos las instancias de las clases "Usuario" y "Gasto", y "mes" que contiene el "lblFecha" del activity ListadoGastos, y el tipo "Mostrar" para indicar que muestre los datos en el RecyclerView
                 }
             });
         }
         catch (Exception e) {
             Log.w("ObtenerDatos", e);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (Utilidades.manejarResultadoPermisos(requestCode, permissions, grantResults, getActivity())) {
-            if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                obtenerGastos(nombreMes, "Exportar");
-            else if (tipoExportar.equalsIgnoreCase("PDF"))
-                obtenerGastos(nombreMes, "Exportar");
         }
     }
 }

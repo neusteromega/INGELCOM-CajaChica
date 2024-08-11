@@ -88,9 +88,33 @@ public class Gasto {
                                 }
                             }
                         }
+                        else if (cuadrilla.equalsIgnoreCase(datoCuadrilla) && datoRol.isEmpty()) { //Si "datoRol" está vacío y "datoCuadrilla" no lo está, significa que queremos obtener todos los gastos hechos por los empleados de la cuadrilla y por los supervisores
+                            if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si el "mes" está vacío o si contiene el texto "Seleccionar Mes", significa que no se hará ningún filtrado de gastos por mes, y se obtendrán todos los gastos por cuadrilla para ambos los roles (Administrador y Empleado)
+                                GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, imagen, total); //Creamos un objeto de tipo "GastosItems" en el cual guardamos los datos extraídos arriba
+                                listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
+                            }
+                            else { //Si "mes" no está vacío, ni contiene el texto "Seleccionar Mes", significa que está recibiendo un mes (por ejemplo, "Julio - 2024"), por lo tanto, se está deseando filtrar los gastos del RecyclerView por mes
+                                String fechaFormateada = Utilidades.convertirFechaAFormatoMonthYear(fechaHora); //Creamos un String donde se guarda el retorno del método utilitario "convertirFechaAFormatoMonthYear" al que le mandamos la variable "fechaHora". Este método retorna un String con el formato deseado (Mes - Año) de la fecha extraída de Firestore
+
+                                if (mes.equalsIgnoreCase(fechaFormateada)) { //Si el contenido de "mes" es igual al contenido de "fechaFormateada" (ignorando mayúsculas y minúsculas), significa que la selección del "Mes - Año" hecha por el usuario en el activity ListadoGastos se encuentra entre las fechas de los gastos obtenidos, por lo tanto que entre al if y pueda obtener el gasto correspondiente al "Mes - Año" seleccionado
+                                    GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, imagen, total); //Creamos un objeto de tipo "GastosItems" en el cual guardamos los datos extraídos arriba
+                                    listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
+                                }
+                            }
+                        }
                         else if (datoCuadrilla.isEmpty() && datoRol.isEmpty()) { //Si "datoCuadrilla" y "datoRol" están vacíos, significa que queremos obtener todos los gastos sin filtrar
-                            GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, imagen, total); //Creamos un objeto de tipo "GastosItems" en el cual guardamos los datos extraídos arriba
-                            listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
+                            if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si el "mes" está vacío o si contiene el texto "Seleccionar Mes", significa que no se hará ningún filtrado de gastos por mes, y se obtendrán todos los gastos sin filtro
+                                GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, imagen, total); //Creamos un objeto de tipo "GastosItems" en el cual guardamos los datos extraídos arriba
+                                listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
+                            }
+                            else { //Si "mes" no está vacío, ni contiene el texto "Seleccionar Mes", significa que está recibiendo un mes (por ejemplo, "Julio - 2024"), por lo tanto, se está deseando filtrar los gastos del RecyclerView por mes
+                                String fechaFormateada = Utilidades.convertirFechaAFormatoMonthYear(fechaHora); //Creamos un String donde se guarda el retorno del método utilitario "convertirFechaAFormatoMonthYear" al que le mandamos la variable "fechaHora". Este método retorna un String con el formato deseado (Mes - Año) de la fecha extraída de Firestore
+
+                                if (mes.equalsIgnoreCase(fechaFormateada)) { //Si el contenido de "mes" es igual al contenido de "fechaFormateada" (ignorando mayúsculas y minúsculas), significa que la selección del "Mes - Año" hecha por el usuario en el activity ListadoGastos se encuentra entre las fechas de los gastos obtenidos, por lo tanto que entre al if y pueda obtener el gasto correspondiente al "Mes - Año" seleccionado
+                                    GastosItems gasto = new GastosItems(id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, imagen, total); //Creamos un objeto de tipo "GastosItems" en el cual guardamos los datos extraídos arriba
+                                    listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
+                                }
+                            }
                         }
                     }
                     //Cuando salga del "for", ya tendremos todos los gastos en la "listaGastos", y esta lista es la que mandamos al método "onCallback" de la interfaz
