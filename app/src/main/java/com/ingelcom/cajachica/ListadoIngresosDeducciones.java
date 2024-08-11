@@ -124,13 +124,13 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
                                     if (tipoExportar.equalsIgnoreCase("EXCEL"))
                                         exp.exportarIngresosExcel(items, "_" + nombreCuadrilla);
                                     else if (tipoExportar.equalsIgnoreCase("PDF"))
-                                        Toast.makeText(ListadoIngresosDeducciones.this, "PDF", Toast.LENGTH_SHORT).show();
+                                        exp.exportarIngresosPDF(items, "_" + nombreCuadrilla);
                                 }
                                 else {
                                     if (tipoExportar.equalsIgnoreCase("EXCEL"))
                                         exp.exportarIngresosExcel(items, "_" + nombreCuadrilla + "_" + mes);
                                     else if (tipoExportar.equalsIgnoreCase("PDF"))
-                                        Toast.makeText(ListadoIngresosDeducciones.this, "PDF", Toast.LENGTH_SHORT).show();
+                                        exp.exportarIngresosPDF(items, "_" + nombreCuadrilla + "_" + mes);
                                 }
                             }
                         }
@@ -194,13 +194,13 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
                                     if (tipoExportar.equalsIgnoreCase("EXCEL"))
                                         exp.exportarIngresosExcel(items, "Generales");
                                     else if (tipoExportar.equalsIgnoreCase("PDF"))
-                                        Toast.makeText(ListadoIngresosDeducciones.this, "PDF", Toast.LENGTH_SHORT).show();
+                                        exp.exportarIngresosPDF(items, "Generales");
                                 }
                                 else {
                                     if (tipoExportar.equalsIgnoreCase("EXCEL"))
                                         exp.exportarIngresosExcel(items, "Generales_" + mes);
                                     else if (tipoExportar.equalsIgnoreCase("PDF"))
-                                        Toast.makeText(ListadoIngresosDeducciones.this, "PDF", Toast.LENGTH_SHORT).show();
+                                        exp.exportarIngresosPDF(items, "Generales_" + mes);
                                 }
                             }
                         }
