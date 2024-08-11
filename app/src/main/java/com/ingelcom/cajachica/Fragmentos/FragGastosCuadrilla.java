@@ -2,6 +2,7 @@ package com.ingelcom.cajachica.Fragmentos;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -38,6 +39,9 @@ public class FragGastosCuadrilla extends Fragment {
     private String nombreCuadrilla, nombreActivity, nombreMes = "", tipoExportar;
     private RecyclerView rvGastos;
     private TextView lblTotalGastos;
+    private Gasto gast;
+    private Usuario usu;
+    private Exportaciones exp;
 
     //Instancia de la clase "SharedViewGastosModel" que nos ayuda a compartir datos con diferentes componentes de la interfaz de usuario, como ser fragmentos y actividades y que estos datos sobreviven a cambios de configuración como las rotaciones de pantalla
     private SharedViewGastosModel svmGastos;
@@ -69,22 +73,22 @@ public class FragGastosCuadrilla extends Fragment {
         View view = inflater.inflate(R.layout.fragment_gastos_cuadrilla, container, false);
 
         //Ponemos las instancias de las clases aquí y no de forma global ya que el "getContext()" se genera cuando se crea el fragment, aquí en "onCreateView"
-        Gasto gast = new Gasto(getContext());
-        Usuario usu = new Usuario(getContext());
-        Exportaciones exp = new Exportaciones(getContext());
+        gast = new Gasto(getContext());
+        usu = new Usuario(getContext());
+        exp = new Exportaciones(getContext());
 
         //Enlazamos los componentes gráficos del fragment a sus respectivas variables
         lblTotalGastos = view.findViewById(R.id.lblTotalGastosCua);
         rvGastos = view.findViewById(R.id.rvGastosCuadrilla);
 
-        obtenerGastos(usu, gast, exp, "", "Mostrar"); //Llamamos al método "obtenerGastos" y le mandamos la instancias de las clases Usuario y Gasto, y el "mes" vacío, ya que al crear el fragment no se realiza un filtrado de gastos por mes
-        obtenerDatos(usu, gast, exp); //Llamamos al método "obtenerMes" para recibir la selección del mes hecha por el usuario
+        obtenerGastos("", "Mostrar"); //Llamamos al método "obtenerGastos" y le mandamos la instancias de las clases Usuario y Gasto, y el "mes" vacío, ya que al crear el fragment no se realiza un filtrado de gastos por mes
+        obtenerDatos(); //Llamamos al método "obtenerMes" para recibir la selección del mes hecha por el usuario
 
         return view;
     }
 
     //Método que nos ayuda a obtener los gastos de la colección "gastos" de Firestore y asignarlos al RecyclerView
-    private void obtenerGastos(Usuario usu, Gasto gast, Exportaciones exp, String mes, String tipo) { //Recibe las instancias de las clases "Usuario" y "Gasto", y el String con el mes y año (por ejemplo, "Julio - 2024") para hacer el filtrado de gastos
+    private void obtenerGastos(String mes, String tipo) { //Recibe las instancias de las clases "Usuario" y "Gasto", y el String con el mes y año (por ejemplo, "Julio - 2024") para hacer el filtrado de gastos
         try {
             //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" que obtiene el usuario actual
             usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() { //Invocamos a la interfaz "FirestoreAllSpecialDocumentsCallback" y le decimos que debe recibir un "GastosItems"
@@ -253,7 +257,7 @@ public class FragGastosCuadrilla extends Fragment {
     }
 
     //Método que nos permite obtener el mes y el año seleccionado por el usuario. Aquí se obtiene literalmente el contenido del TextView lblFecha del Activity ListadoGastos, y se obtiene cada vez que el contenido de dicho TextView cambia. También obtenemos el tipo de exportación que quiere hacer el usuario al dar clic en el botón de Exportar de "ListadoGastos"
-    private void obtenerDatos(Usuario usu, Gasto gast, Exportaciones exp) { //Recibe las instancias de las clases "Usuario" y "Gasto"
+    private void obtenerDatos() { //Recibe las instancias de las clases "Usuario" y "Gasto"
         try {
             svmGastos = new ViewModelProvider(getActivity()).get(SharedViewGastosModel.class); //Obtenemos el ViewModel compartido, haciendo referencia a la clase "SharedViewGastosModel"
 
@@ -262,7 +266,7 @@ public class FragGastosCuadrilla extends Fragment {
                 @Override
                 public void onChanged(String mes) { //Este método se llamará cada vez que el valor "fecha" cambie en el "LiveData<String>"
                     nombreMes = mes; //Guardamos el mes recibido en la variable global "nombreMes"
-                    obtenerGastos(usu, gast, exp, mes, "Mostrar"); //Llamamos el método "obtenerGastos" de arriba y le mandamos las instancias de las clases "Usuario" y "Gasto", y "mes" que contiene el "lblFecha" del activity ListadoGastos, y el tipo "Mostrar" para indicar que muestre los datos en el RecyclerView
+                    obtenerGastos(mes, "Mostrar"); //Llamamos el método "obtenerGastos" de arriba y le mandamos las instancias de las clases "Usuario" y "Gasto", y "mes" que contiene el "lblFecha" del activity ListadoGastos, y el tipo "Mostrar" para indicar que muestre los datos en el RecyclerView
                 }
             });
 
@@ -271,12 +275,26 @@ public class FragGastosCuadrilla extends Fragment {
                 @Override
                 public void onChanged(String exportar) { //Este método se llamará cada vez que el valor "exportar" cambie en el "LiveData<String>"
                     tipoExportar = exportar; //Guardamos el texto recibido de "exportar" en la variable global "tipoExportar"
-                    obtenerGastos(usu, gast, exp, nombreMes, "Exportar"); //Llamamos el método "obtenerGastos" de arriba y le mandamos las instancias de las clases "Usuario" y "Gasto", y "nombreMes" que contiene el "lblFecha" del activity ListadoGastos, y el tipo "Exportar" para indicar que exporte los datos a PDF o Excel dependiendo de la selección del usuario en el popupMenu de Exportar en ListadoGastos
+
+                    if (Utilidades.verificarPermisosAlmacenamiento(getActivity()))
+                        obtenerGastos(nombreMes, "Exportar"); //Llamamos el método "obtenerGastos" de arriba y le mandamos las instancias de las clases "Usuario" y "Gasto", y "nombreMes" que contiene el "lblFecha" del activity ListadoGastos, y el tipo "Exportar" para indicar que exporte los datos a PDF o Excel dependiendo de la selección del usuario en el popupMenu de Exportar en ListadoGastos
                 }
             });
         }
         catch (Exception e) {
             Log.w("ObtenerDatos", e);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (Utilidades.manejarResultadoPermisos(requestCode, permissions, grantResults, getActivity())) {
+            if (tipoExportar.equalsIgnoreCase("EXCEL"))
+                obtenerGastos(nombreMes, "Exportar");
+            else if (tipoExportar.equalsIgnoreCase("PDF"))
+                obtenerGastos(nombreMes, "Exportar");
         }
     }
 }
