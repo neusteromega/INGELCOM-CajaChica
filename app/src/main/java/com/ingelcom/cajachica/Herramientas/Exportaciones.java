@@ -16,10 +16,17 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
@@ -40,17 +47,17 @@ public class Exportaciones {
             return;
         }
 
-        Workbook workbook = new XSSFWorkbook(); //Creamos una instancia de "Workbook" utilizando la clase "XSSFWorkbook", que es la implementación de Apache POI para archivos ".xlsx"
-        Sheet hoja = workbook.createSheet("Gastos"); //Creamos una nueva sheet (hoja de excel) llamada "Gastos"
+        XSSFWorkbook workbook = new XSSFWorkbook(); //Creamos una instancia de "Workbook" utilizando la clase "XSSFWorkbook", que es la implementación de Apache POI para archivos ".xlsx"
+        XSSFSheet hoja = workbook.createSheet("Gastos"); //Creamos una nueva sheet (hoja de excel) llamada "Gastos"
 
-        Row filaEncabezado = hoja.createRow(0); //Creamos una fila para los encabezados en la posición 0
+        XSSFRow filaEncabezado = hoja.createRow(0); //Creamos una fila para los encabezados en la posición 0
 
         //Guardamos los encabezados en un arreglo
         String[] encabezados = {"Cuadrilla", "Fecha y Hora", "Lugar de Compra", "Usuario", "Número de Factura", "Tipo de Compra", "Descripción", "Total"};
 
         //For que recorre todos los nombres de los encabezados guardados en el arreglo
         for (int i = 0; i < encabezados.length; i++) {
-            Cell celda = filaEncabezado.createCell(i); //Creamos una celda, la posición de la fila es la 0 (la posición 0 está guardada en la variable "filaEncabezado"), y la de la columna será el número "i" (que empieza en 0 y va aumentando hasta que salga del ciclo for)
+            XSSFCell celda = filaEncabezado.createCell(i); //Creamos una celda, la posición de la fila es la 0 (la posición 0 está guardada en la variable "filaEncabezado"), y la de la columna será el número "i" (que empieza en 0 y va aumentando hasta que salga del ciclo for)
             celda.setCellValue(encabezados[i]); //A la celda recién creada le asignamos el texto guardado en el arreglo "encabezados" en la posición "i"
         }
 
@@ -58,7 +65,7 @@ public class Exportaciones {
 
         //Foreach que recorre cada elemento de la "listaGastos" y lo va guardando en la variable temporal "gasto"
         for (GastosItems gasto : listaGastos) {
-            Row fila = hoja.createRow(numFila++); //Por cada elemento de "listaGastos" creamos una nueva fila en la posición guardada en "numFila" la cual empieza en 1 (no empieza en 0, porque la fila 0 la tienen los encabezados) y va aumentando hasta que termine el ciclo foreach
+            XSSFRow fila = hoja.createRow(numFila++); //Por cada elemento de "listaGastos" creamos una nueva fila en la posición guardada en "numFila" la cual empieza en 1 (no empieza en 0, porque la fila 0 la tienen los encabezados) y va aumentando hasta que termine el ciclo foreach
 
             //Creamos las celdas para los datos a guardar en el archivo de Excel, la columna irá del 0 al 7 y en cada celda guardará los elementos que deseamos de la "listaGastos" y para acceder a esos elementos usamos la variable temporal "gasto"
             fila.createCell(0).setCellValue(gasto.getCuadrilla());
@@ -73,38 +80,32 @@ public class Exportaciones {
 
         try {
             //Obtenemos la ruta de la carpeta "Documentos", y en ella creamos la carpeta "INGELCOM - Reportes", esto lo guardamos en una variable de tipo "File" ("Archivo" en español) llamada "DocumentosDir"
-            File documentosDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM - Reportes");
-            if (!documentosDir.exists()) { //Si "documentsDir" no existe, que entre al if y lo cree
-                documentosDir.mkdirs();
-            }
-
-            //La ruta guardada en "documentosDir" la utilizamos para crear en ella la carpeta "Gastos", esto lo guardamos en otra variable de tipo "File" ("Archivo" en español) llamada "gastosDir"
-            File gastosDir = new File(documentosDir, "Gastos");
-            if (!gastosDir.exists()) { //Si "gastosDir" no existe, que entre al if y lo cree
-                gastosDir.mkdirs();
-            }
-
-            //La ruta guardada en "gastosDir" la utilizamos para crear en ella la carpeta "EXCEL", esto lo guardamos en otra variable de tipo "File" ("Archivo" en español) llamada "excelDir"
-            File excelDir = new File(gastosDir, "EXCEL");
-            if (!excelDir.exists()) { //Si "excelDir" no existe, que entre al if y lo cree
-                excelDir.mkdirs();
+            File directorio = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM_Reportes/Gastos/EXCEL");
+            if (!directorio.exists()) { //Si "documentsDir" no existe, que entre al if y lo cree
+                directorio.mkdirs();
             }
 
             //Creamos el nombre del archivo de excel, el cual empieza con la palabra "Gastos", recibe el resto del nombre en la variable "cuadrillaMes" en el cual, con una expresión regular, se le eliminan los guiones y espacios para evitar conflictos en la creación del archivo. Y esto se concatena a ".xlsx" que es la extensión del archivo de excel
-            String nombreArchivo = "Gastos" + cuadrillaMes.replaceAll("[- ]", "") + ".xlsx";
+            String rutaArchivo = directorio.getPath() + ("/Gastos" + cuadrillaMes.replaceAll("[- ]", "") + ".xlsx");
 
-            File archivo = new File(excelDir, nombreArchivo); //Usando otra variable de tipo "File" creamos el archivo en el directorio guardado en "excelDir" y le pasamos el nombre del Excel que está guardado en "nombreArchivo"
-            FileOutputStream fos = new FileOutputStream(archivo); //Inicializamos un "FileOutputStream" para escribir en "archivo"
-            workbook.write(fos); //Escribimos el contenido del "Workbook" usando el "FileOutputStream"
-            fos.close(); //Cerramos el "FileOutputStream"
-            workbook.close(); //Cerramos el "Workbook"
+            FileOutputStream fileOut = new FileOutputStream(new File(rutaArchivo));
+            workbook.write(fileOut); //Escribimos el contenido del "Workbook" usando el "FileOutputStream"
+            fileOut.flush();
 
-            Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
+            Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito*//*
         }
         catch (Exception e) {
             e.printStackTrace();
             Log.e("CrearExcel", "Error al crear el Excel", e);
             Toast.makeText(contexto, "ERROR AL CREAR EL ARCHIVO DE EXCEL", Toast.LENGTH_LONG).show(); //Mostramos mensaje de error
+        }
+        finally {
+            try {
+                workbook.close();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -118,7 +119,7 @@ public class Exportaciones {
 
         try {
             //Obtenemos la ruta de la carpeta "Documentos", y en ella creamos la carpeta "INGELCOM - Reportes/Gastos/PDF", esto lo guardamos en una variable de tipo "File" ("Archivo" en español) llamada "carpeta"
-            File carpeta = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM - Reportes/Gastos/PDF");
+            File carpeta = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM_Reportes/Gastos/PDF");
             if (!carpeta.exists()) { //Si "carpeta" no existe, que entre al if y lo cree
                 carpeta.mkdirs();
             }
