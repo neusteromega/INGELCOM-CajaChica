@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/clr_fondo_primario"
+    tools:context=".EstadisticasGastosIngresos">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/descripcion"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/LLEncabezadoEstGI"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="30dp"
+                android:gravity="center|left"
+                android:orientation="horizontal"
+                android:paddingLeft="20dp"
+                android:paddingRight="45dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/imgRegresarEstGI"
+                    android:layout_width="25dp"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/descripcion"
+                    app:srcCompat="@mipmap/ico_azul_regresar"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+                <TextView
+                    android:id="@+id/lblTituloEstGI"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:text="Gastos"
+                    android:textColor="@color/clr_fuente_primario"
+                    android:textSize="24dp"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/LLTiempoEstGI"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/clr_casillablanca_redonda"
+                android:elevation="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/lblMesEstGI"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/clr_casilladegradadoazul_redonda"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:text="Mes"
+                    android:textColor="@color/clr_fuente_terciario"
+                    android:textSize="20sp"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+                <TextView
+                    android:id="@+id/lblAnioEstGI"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:text="Año"
+                    android:textColor="@color/clr_fuente_primario"
+                    android:textSize="20sp"
+                    tools:ignore="TouchTargetSizeCheck" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/LLFechaEstGI"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/clr_casillablanca_cuadrada"
+                android:elevation="5dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp">
+
+                <ImageView
+                    android:id="@+id/imgFechaEstGI"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:srcCompat="@mipmap/ico_azul_fecha" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|right"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/lblFechaEstGI"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:gravity="center|left"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="10dp"
+                            android:text="Seleccionar..."
+                            android:textColor="@color/clr_fuente_secundario"
+                            android:textSize="17dp" />
+
+                        <ImageView
+                            android:id="@+id/imgAbrirFechaEstGI"
+                            android:layout_width="11dp"
+                            android:layout_height="20dp"
+                            android:layout_marginRight="10dp"
+                            android:contentDescription="@string/descripcion"
+                            app:srcCompat="@mipmap/ico_gris_expandirabajo" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/btnEliminarFechaEstGI"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="15dp"
+                        android:contentDescription="@string/descripcion"
+                        app:srcCompat="@mipmap/ico_azul_eliminar"
+                        tools:ignore="TouchTargetSizeCheck" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/LLTotalGastosEstGI"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/clr_casillablanca_cuadrada"
+                android:orientation="vertical"
+                android:paddingTop="12dp"
+                android:paddingBottom="10dp">
+
+                <TextView
+                    android:id="@+id/lblTituloTotalGastosEstGI"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:text="Total de Gastos"
+                    android:textColor="@color/clr_fuente_primario"
+                    android:textSize="17dp" />
+
+                <TextView
+                    android:id="@+id/lblTotalGastosEstGI"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:text="L. 0.00"
+                    android:textColor="@color/clr_fuente_gastos"
+                    android:textSize="40dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

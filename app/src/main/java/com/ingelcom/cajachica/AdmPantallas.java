@@ -8,28 +8,24 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.ingelcom.cajachica.Fragmentos.FragAdmCuadrillas;
+import com.ingelcom.cajachica.Fragmentos.FragAdmEstadisticas;
 import com.ingelcom.cajachica.Fragmentos.FragAdmInicio;
 import com.ingelcom.cajachica.Fragmentos.FragAdmRegistrar;
 import com.ingelcom.cajachica.Fragmentos.FragAdmUsuarios;
 
 public class AdmPantallas extends AppCompatActivity {
 
-    private LinearLayout llInicio, llRegistrar, llCuadrillas, llUsuarios;
-    private ImageView imgInicio, imgRegistrar, imgCuadrillas, imgUsuarios;
+    private ImageView imgInicio, imgEstadisticas, imgRegistrar, imgCuadrillas, imgUsuarios;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_adm_pantallas);
 
-        llInicio = findViewById(R.id.LLInicio);
-        llRegistrar = findViewById(R.id.LLRegistrar);
-        llCuadrillas = findViewById(R.id.LLCuadrillas);
-        llUsuarios = findViewById(R.id.LLUsuarios);
         imgInicio = findViewById(R.id.imgInicio);
+        imgEstadisticas = findViewById(R.id.imgEstadisticas);
         imgRegistrar = findViewById(R.id.imgRegistrar);
         imgCuadrillas = findViewById(R.id.imgCuadrillas);
         imgUsuarios = findViewById(R.id.imgUsuarios);
@@ -40,6 +36,18 @@ public class AdmPantallas extends AppCompatActivity {
         //Cambios de iconos de la barra inferior llamando a "asignarIconos"
         asignarIconos(
                 R.mipmap.ico_azul_iniciolleno,
+                R.mipmap.ico_azul_estadisticasvacio,
+                R.mipmap.ico_azul_registrarvacio,
+                R.mipmap.ico_azul_cuadrillasvacio,
+                R.mipmap.ico_azul_usuariovacio);
+    }
+
+    public void verEstadisticas(View view) {
+        replaceFragment(new FragAdmEstadisticas()); //Llamamos al método "replaceFragment" y le mandamos el "FragAdmEstadisticas"
+        //Cambios de iconos de la barra inferior llamando a "asignarIconos"
+        asignarIconos(
+                R.mipmap.ico_azul_iniciovacio,
+                R.mipmap.ico_azul_estadisticaslleno,
                 R.mipmap.ico_azul_registrarvacio,
                 R.mipmap.ico_azul_cuadrillasvacio,
                 R.mipmap.ico_azul_usuariovacio);
@@ -50,6 +58,7 @@ public class AdmPantallas extends AppCompatActivity {
         //Cambios de iconos de la barra inferior llamando a "asignarIconos"
         asignarIconos(
                 R.mipmap.ico_azul_iniciovacio,
+                R.mipmap.ico_azul_estadisticasvacio,
                 R.mipmap.ico_azul_registrarlleno,
                 R.mipmap.ico_azul_cuadrillasvacio,
                 R.mipmap.ico_azul_usuariovacio);
@@ -60,6 +69,7 @@ public class AdmPantallas extends AppCompatActivity {
         //Cambios de iconos de la barra inferior llamando a "asignarIconos"
         asignarIconos(
                 R.mipmap.ico_azul_iniciovacio,
+                R.mipmap.ico_azul_estadisticasvacio,
                 R.mipmap.ico_azul_registrarvacio,
                 R.mipmap.ico_azul_cuadrillaslleno,
                 R.mipmap.ico_azul_usuariovacio);
@@ -70,6 +80,7 @@ public class AdmPantallas extends AppCompatActivity {
         //Cambios de iconos de la barra inferior llamando a "asignarIconos"
         asignarIconos(
                 R.mipmap.ico_azul_iniciovacio,
+                R.mipmap.ico_azul_estadisticasvacio,
                 R.mipmap.ico_azul_registrarvacio,
                 R.mipmap.ico_azul_cuadrillasvacio,
                 R.mipmap.ico_azul_usuariolleno);
@@ -87,14 +98,16 @@ public class AdmPantallas extends AppCompatActivity {
             //Cambios de iconos de la barra inferior llamando a "asignarIconos"
             asignarIconos(
                     R.mipmap.ico_azul_iniciolleno,
+                    R.mipmap.ico_azul_estadisticasvacio,
                     R.mipmap.ico_azul_registrarvacio,
                     R.mipmap.ico_azul_cuadrillasvacio,
                     R.mipmap.ico_azul_usuariovacio);
         }
     }
 
-    private void asignarIconos(int resInicio, int resRegistrar, int resCuadrillas, int resUsuarios) {
+    private void asignarIconos(int resInicio, int resEstadisticas, int resRegistrar, int resCuadrillas, int resUsuarios) {
         imgInicio.setImageResource(resInicio);
+        imgEstadisticas.setImageResource(resEstadisticas);
         imgRegistrar.setImageResource(resRegistrar);
         imgCuadrillas.setImageResource(resCuadrillas);
         imgUsuarios.setImageResource(resUsuarios);
