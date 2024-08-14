@@ -26,6 +26,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.ingelcom.cajachica.AdmPantallas;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.EmpMenuPrincipal;
+import com.ingelcom.cajachica.Modelos.EstadisticasItems;
 import com.ingelcom.cajachica.R;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
@@ -410,7 +411,8 @@ public class Utilidades {
                 }
             });
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Log.w("OrdenarListaAlfabetico", e);
         }
 
@@ -455,6 +457,45 @@ public class Utilidades {
         spannable.setSpan(colorFin, textoInicial.length(), spannable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); //Indicamos que aplique el segundo color desde "textoInicial.Length()" (aquí es donde terminó de aplicar el primer color), hasta "spannable.length()" (el tamaño del "spannable") que sería el final del texto en el SpannableString
 
         return spannable; //Retornamos el "spannable" ya con los colores establecidos
+    }
+
+    public static <T> List<EstadisticasItems> sumarTotalesCuadrillas(List<T> items, String campoCuadrilla, String campoTotal) {
+        Map<String, Double> mapaCuadrillaTotales = new HashMap<>();
+
+        for (T item : items) {
+            try {
+                // Obtener los campos mediante reflección
+                Field fieldCuadrilla = item.getClass().getDeclaredField(campoCuadrilla);
+                Field fieldTotal = item.getClass().getDeclaredField(campoTotal);
+
+                // Hacer accesibles los campos si son privados
+                fieldCuadrilla.setAccessible(true);
+                fieldTotal.setAccessible(true);
+
+                // Obtener los valores de los campos
+                String cuadrilla = (String) fieldCuadrilla.get(item);
+                double total = fieldTotal.getDouble(item);
+
+                // Sumar los totales de las cuadrillas repetidas
+                mapaCuadrillaTotales.put(cuadrilla, mapaCuadrillaTotales.getOrDefault(cuadrilla, 0.0) + total);
+
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                e.printStackTrace(); // Manejo de excepciones en caso de error de reflección
+            }
+        }
+
+        // Crear la lista de EstadisticasItems sin cuadrillas repetidas
+        List<EstadisticasItems> listaEstadisticas = new ArrayList<>();
+        for (Map.Entry<String, Double> entry : mapaCuadrillaTotales.entrySet()) {
+            String cuadrilla = entry.getKey();
+            double totalSumado = entry.getValue();
+
+            // Crear un nuevo objeto EstadisticasItems
+            EstadisticasItems estadisticasItem = new EstadisticasItems(cuadrilla, totalSumado);
+            listaEstadisticas.add(estadisticasItem);
+        }
+
+        return listaEstadisticas;
     }
 
     //Método auxiliar para crear celdas alineadas a la izquierda y centradas verticalmente. Devuelve una celda de tipo "PdfCell"

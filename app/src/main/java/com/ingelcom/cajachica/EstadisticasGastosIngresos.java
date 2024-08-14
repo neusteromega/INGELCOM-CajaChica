@@ -39,6 +39,7 @@ import com.ingelcom.cajachica.DAO.Gasto;
 import com.ingelcom.cajachica.DAO.Ingreso;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
+import com.ingelcom.cajachica.Modelos.EstadisticasItems;
 import com.ingelcom.cajachica.Modelos.GastosItems;
 import com.ingelcom.cajachica.Modelos.IngresosItems;
 
@@ -94,32 +95,33 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
 
     private void obtenerDatos(String mes, String tipoGrafico) {
         if (tipoDatos.equalsIgnoreCase("Gastos")) {
-            gast.obtenerGastos("", "", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+            gast.obtenerGastos("", "Empleado", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                 @Override
                 public void onCallback(List<GastosItems> items) {
                     if (items != null) {//Si "items" no es null, que entre al if
-                        items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente");
+                        //items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente");
+                        List<EstadisticasItems> listaEstadisticas = Utilidades.sumarTotalesCuadrillas(items, "cuadrilla", "total");
 
                         if (tipoGrafico.equalsIgnoreCase("Barras")) {
                             graficoBarras.setVisibility(View.VISIBLE);
                             graficoAnillo.setVisibility(View.GONE);
                             graficoLineas.setVisibility(View.GONE);
 
-                            establecerGraficoHorizontal(items);
+                            establecerGraficoHorizontal(listaEstadisticas);
                         }
-                        else if (tipoGrafico.equalsIgnoreCase("Pastel")) {
+                        else if (tipoGrafico.equalsIgnoreCase("Anillo")) {
                             graficoAnillo.setVisibility(View.VISIBLE);
                             graficoBarras.setVisibility(View.GONE);
                             graficoLineas.setVisibility(View.GONE);
 
-                            establecerGraficoPastel(items);
+                            establecerGraficoPastel(listaEstadisticas);
                         }
                         else if (tipoGrafico.equalsIgnoreCase("Lineas")) {
                             graficoLineas.setVisibility(View.VISIBLE);
                             graficoBarras.setVisibility(View.GONE);
                             graficoAnillo.setVisibility(View.GONE);
 
-                            establecerGraficoLineas(items);
+                            establecerGraficoLineas(listaEstadisticas);
                         }
                     }
                 }
@@ -135,26 +137,28 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
                 @Override
                 public void onCallback(List<IngresosItems> items) {
                     if (items != null) {//Si "items" no es null, que entre al if
-                        items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente");
+                        //items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente");
+                        List<EstadisticasItems> listaEstadisticas = Utilidades.sumarTotalesCuadrillas(items, "cuadrilla", "total");
 
                         if (tipoGrafico.equalsIgnoreCase("Barras")) {
                             graficoBarras.setVisibility(View.VISIBLE);
                             graficoAnillo.setVisibility(View.GONE);
                             graficoLineas.setVisibility(View.GONE);
-                            establecerGraficoHorizontal(items);
+                            establecerGraficoHorizontal(listaEstadisticas);
                         }
                         else if (tipoGrafico.equalsIgnoreCase("Anillo")) {
                             graficoAnillo.setVisibility(View.VISIBLE);
                             graficoBarras.setVisibility(View.GONE);
                             graficoLineas.setVisibility(View.GONE);
 
-                            establecerGraficoPastel(items);
+                            establecerGraficoPastel(listaEstadisticas);
                         }
                         else if (tipoGrafico.equalsIgnoreCase("Lineas")) {
                             graficoLineas.setVisibility(View.VISIBLE);
                             graficoBarras.setVisibility(View.GONE);
                             graficoAnillo.setVisibility(View.GONE);
-                            establecerGraficoLineas(items);
+
+                            establecerGraficoLineas(listaEstadisticas);
                         }
                     }
                 }
@@ -167,25 +171,16 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         }
     }
 
-    private <T> void establecerGraficoHorizontal(List<T> items) {
-        Toast.makeText(this, "BARCHART", Toast.LENGTH_SHORT).show();
+    private void establecerGraficoHorizontal(List<EstadisticasItems> items) {
         // Crear las entradas para el gráfico de barras
         ArrayList<BarEntry> barEntries = new ArrayList<>();
         ArrayList<String> labels = new ArrayList<>();
 
-        for (int i = 0; i < items.size(); i++) {
-            T item = items.get(i);
-
-            if (item instanceof GastosItems) {
-                GastosItems gasto = (GastosItems) item;
-                barEntries.add(new BarEntry(i, (float) gasto.getTotal()));
-                labels.add(gasto.getCuadrilla());
-            }
-            else if (item instanceof IngresosItems) {
-                IngresosItems ingreso = (IngresosItems) item;
-                barEntries.add(new BarEntry(i, (float) ingreso.getTotal()));
-                labels.add(ingreso.getCuadrilla());
-            }
+        int i = 0;
+        for (EstadisticasItems item : items) {
+            barEntries.add(new BarEntry(i, (float) item.getTotal()));
+            labels.add(item.getCuadrilla());
+            i++;
         }
 
         // Crear el conjunto de datos del gráfico
@@ -241,20 +236,11 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         graficoBarras.invalidate(); // Refrescar el gráfico
     }
 
-    private <T> void establecerGraficoPastel(List<T> items) {
-        Toast.makeText(this, "PIECHART", Toast.LENGTH_SHORT).show();
-
+    private void establecerGraficoPastel(List<EstadisticasItems> items) {
         ArrayList<PieEntry> pieEntries = new ArrayList<>();
 
-        for (T item : items) {
-            if (item instanceof GastosItems) {
-                GastosItems gasto = (GastosItems) item;
-                pieEntries.add(new PieEntry((float) gasto.getTotal(), gasto.getCuadrilla()));
-            }
-            else if (item instanceof IngresosItems) {
-                IngresosItems ingreso = (IngresosItems) item;
-                pieEntries.add(new PieEntry((float) ingreso.getTotal(), ingreso.getCuadrilla()));
-            }
+        for (EstadisticasItems item : items) {
+            pieEntries.add(new PieEntry((float) item.getTotal(), item.getCuadrilla()));
         }
 
         // Crear el conjunto de datos del gráfico
@@ -291,26 +277,16 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         graficoAnillo.invalidate();
     }
 
-    private <T> void establecerGraficoLineas(List<T> items) {
-        Toast.makeText(this, "LINECHART", Toast.LENGTH_SHORT).show();
-
+    private void establecerGraficoLineas(List<EstadisticasItems> items) {
         // Crear las entradas para el gráfico de líneas
         ArrayList<Entry> lineEntries = new ArrayList<>();
         ArrayList<String> labels = new ArrayList<>();
 
-        for (int i = 0; i < items.size(); i++) {
-            T item = items.get(i);
-
-            if (item instanceof GastosItems) {
-                GastosItems gasto = (GastosItems) item;
-                lineEntries.add(new Entry(i, (float) gasto.getTotal()));
-                labels.add(gasto.getCuadrilla());
-            }
-            else if (item instanceof IngresosItems) {
-                IngresosItems ingreso = (IngresosItems) item;
-                lineEntries.add(new Entry(i, (float) ingreso.getTotal()));
-                labels.add(ingreso.getCuadrilla());
-            }
+        int i = 0;
+        for (EstadisticasItems item : items) {
+            lineEntries.add(new Entry(i, (float) item.getTotal()));
+            labels.add(item.getCuadrilla());
+            i++;
         }
 
         // Crear el conjunto de datos del gráfico
@@ -390,6 +366,25 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
             catch (Exception e) {
                 Log.w("ObtenerMes", e);
             }
+        }
+        else if (tipoFecha.equalsIgnoreCase("Año")) {
+            DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() { //Creamos una variable de tipo DatePickerDialog, y creamos el evento "OnDateSetListener" para que responda cuando se selecciona una fecha del AlertDialog o Popup DatePicker de sólo mes y año
+                @Override
+                public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                    lblFecha.setText(String.valueOf(year)); //Asignamos el año ya convertido a String al lblFechaSeleccionada
+                }
+            };
+
+            Calendar cal = Calendar.getInstance(); //Creamos un objeto de tipo Calendar que representa la fecha y hora actuales en el dispositivo donde se está ejecutando el código
+            int year = cal.get(Calendar.YEAR); //Obtenemos el año actual
+            int month = cal.get(Calendar.MONTH); //Obtenemos el mes actual
+            int day = cal.get(Calendar.DAY_OF_MONTH); //Obtenemos el día actual
+            int style = AlertDialog.THEME_HOLO_LIGHT; //En una variable entera guardamos el estilo que tendrá la ventana emergente
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(EstadisticasGastosIngresos.this, style, dateSetListener, year, month, day); //Creamos un nuevo objeto de tipo DatePickerDialog y le mandamos como parámetros al constructor, un contexto, la variable "style" que guarda el estilo, el "dateSetListener", el año, mes y día, estos últimos para que al abrir el AlertDialog, se muestre el mes actual
+            datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("day", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de días asignando "GONE" en su visibilidad
+            datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("month", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de meses asignando "GONE" en su visibilidad
+            datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo mes y año
         }
     }
 
