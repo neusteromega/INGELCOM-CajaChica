@@ -5,8 +5,8 @@
         android:title="Gráfico de Barras"
         android:id="@+id/menuGraficoBarras"/>
     <item
-        android:title="Gráfico de Pastel"
-        android:id="@+id/menuGraficoPastel"/>
+        android:id="@+id/menuGraficoAnillo"
+        android:title="Gráfico de Anillo" />
     <item
         android:title="Gráfico de Líneas"
         android:id="@+id/menuGraficoLineas"/>

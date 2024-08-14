@@ -3,21 +3,35 @@ package com.ingelcom.cajachica;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
@@ -29,13 +43,17 @@ import com.ingelcom.cajachica.Modelos.GastosItems;
 import com.ingelcom.cajachica.Modelos.IngresosItems;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class EstadisticasGastosIngresos extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
+    private TextView lblTitulo, btnMes, btnAnio, lblFecha, lblTotal;
     private ImageView imgGrafico;
     private HorizontalBarChart graficoBarras;
-    private String tipoDatos;
+    private PieChart graficoAnillo;
+    private LineChart graficoLineas;
+    private String tipoDatos, tipoFecha = "Mes";
 
     private Gasto gast = new Gasto(EstadisticasGastosIngresos.this);
     private Ingreso ingr = new Ingreso(EstadisticasGastosIngresos.this);
@@ -45,21 +63,64 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_estadisticas_gastosingresos);
 
+        lblTitulo = findViewById(R.id.lblTituloEstGI);
+        btnMes = findViewById(R.id.lblMesEstGI);
+        btnAnio = findViewById(R.id.lblAnioEstGI);
+        lblFecha = findViewById(R.id.lblFechaEstGI);
+        lblTotal = findViewById(R.id.lblTotalEstGI);
         imgGrafico = findViewById(R.id.imgTipoGraficoEstGI);
         graficoBarras = findViewById(R.id.graficoBarrasEstGI);
+        graficoAnillo = findViewById(R.id.graficoPastelEstGI);
+        graficoLineas = findViewById(R.id.graficoLineasEstGI);
         tipoDatos = Utilidades.obtenerStringExtra(this, "ActivityEGI");
 
-        obtenerDatos("");
+        establecerElementos();
+        obtenerDatos("", "Barras");
     }
 
-    private void obtenerDatos(String mes) {
+    private void establecerElementos() {
+        switch (tipoDatos) {
+            case "Gastos":
+                lblTitulo.setText("Gastos");
+                lblTotal.setTextColor(getColor(R.color.clr_fuente_gastos));
+                break;
+
+            case "Ingresos":
+                lblTitulo.setText("Ingresos");
+                lblTotal.setTextColor(getColor(R.color.clr_fuente_ingresos));
+                break;
+        }
+    }
+
+    private void obtenerDatos(String mes, String tipoGrafico) {
         if (tipoDatos.equalsIgnoreCase("Gastos")) {
             gast.obtenerGastos("", "", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                 @Override
                 public void onCallback(List<GastosItems> items) {
                     if (items != null) {//Si "items" no es null, que entre al if
                         items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente");
-                        establecerGraficoHorizontal(items);
+
+                        if (tipoGrafico.equalsIgnoreCase("Barras")) {
+                            graficoBarras.setVisibility(View.VISIBLE);
+                            graficoAnillo.setVisibility(View.GONE);
+                            graficoLineas.setVisibility(View.GONE);
+
+                            establecerGraficoHorizontal(items);
+                        }
+                        else if (tipoGrafico.equalsIgnoreCase("Pastel")) {
+                            graficoAnillo.setVisibility(View.VISIBLE);
+                            graficoBarras.setVisibility(View.GONE);
+                            graficoLineas.setVisibility(View.GONE);
+
+                            establecerGraficoPastel(items);
+                        }
+                        else if (tipoGrafico.equalsIgnoreCase("Lineas")) {
+                            graficoLineas.setVisibility(View.VISIBLE);
+                            graficoBarras.setVisibility(View.GONE);
+                            graficoAnillo.setVisibility(View.GONE);
+
+                            establecerGraficoLineas(items);
+                        }
                     }
                 }
 
@@ -75,7 +136,26 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
                 public void onCallback(List<IngresosItems> items) {
                     if (items != null) {//Si "items" no es null, que entre al if
                         items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente");
-                        establecerGraficoHorizontal(items);
+
+                        if (tipoGrafico.equalsIgnoreCase("Barras")) {
+                            graficoBarras.setVisibility(View.VISIBLE);
+                            graficoAnillo.setVisibility(View.GONE);
+                            graficoLineas.setVisibility(View.GONE);
+                            establecerGraficoHorizontal(items);
+                        }
+                        else if (tipoGrafico.equalsIgnoreCase("Anillo")) {
+                            graficoAnillo.setVisibility(View.VISIBLE);
+                            graficoBarras.setVisibility(View.GONE);
+                            graficoLineas.setVisibility(View.GONE);
+
+                            establecerGraficoPastel(items);
+                        }
+                        else if (tipoGrafico.equalsIgnoreCase("Lineas")) {
+                            graficoLineas.setVisibility(View.VISIBLE);
+                            graficoBarras.setVisibility(View.GONE);
+                            graficoAnillo.setVisibility(View.GONE);
+                            establecerGraficoLineas(items);
+                        }
                     }
                 }
 
@@ -88,6 +168,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
     }
 
     private <T> void establecerGraficoHorizontal(List<T> items) {
+        Toast.makeText(this, "BARCHART", Toast.LENGTH_SHORT).show();
         // Crear las entradas para el gráfico de barras
         ArrayList<BarEntry> barEntries = new ArrayList<>();
         ArrayList<String> labels = new ArrayList<>();
@@ -160,6 +241,163 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         graficoBarras.invalidate(); // Refrescar el gráfico
     }
 
+    private <T> void establecerGraficoPastel(List<T> items) {
+        Toast.makeText(this, "PIECHART", Toast.LENGTH_SHORT).show();
+
+        ArrayList<PieEntry> pieEntries = new ArrayList<>();
+
+        for (T item : items) {
+            if (item instanceof GastosItems) {
+                GastosItems gasto = (GastosItems) item;
+                pieEntries.add(new PieEntry((float) gasto.getTotal(), gasto.getCuadrilla()));
+            }
+            else if (item instanceof IngresosItems) {
+                IngresosItems ingreso = (IngresosItems) item;
+                pieEntries.add(new PieEntry((float) ingreso.getTotal(), ingreso.getCuadrilla()));
+            }
+        }
+
+        // Crear el conjunto de datos del gráfico
+        PieDataSet pieDataSet = new PieDataSet(pieEntries, "Totales por Cuadrilla");
+        pieDataSet.setColors(ColorTemplate.MATERIAL_COLORS);  // Asignar colores
+
+        // Crear los datos para el gráfico
+        PieData pieData = new PieData(pieDataSet);
+        pieData.setValueTextSize(12f);
+        pieData.setValueTextColor(Color.WHITE);
+
+        // Configurar el gráfico
+        graficoAnillo.setData(pieData);
+        graficoAnillo.setUsePercentValues(true);
+        graficoAnillo.getDescription().setEnabled(false);
+        graficoAnillo.setDrawHoleEnabled(true);
+        graficoAnillo.setHoleColor(Color.TRANSPARENT);
+        graficoAnillo.setTransparentCircleRadius(61f);
+        graficoAnillo.setEntryLabelTextSize(12f);
+        graficoAnillo.setEntryLabelColor(Color.BLACK);
+
+        // Configurar la leyenda
+        /*Legend legend = graficoPastel.getLegend();
+        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        legend.setOrientation(Legend.LegendOrientation.VERTICAL);
+        legend.setDrawInside(false);
+        legend.setTextSize(12f);*/
+
+        // Animación del gráfico
+        graficoAnillo.animateY(1000, Easing.EaseInOutQuad);
+
+        // Refrescar el gráfico
+        graficoAnillo.invalidate();
+    }
+
+    private <T> void establecerGraficoLineas(List<T> items) {
+        Toast.makeText(this, "LINECHART", Toast.LENGTH_SHORT).show();
+
+        // Crear las entradas para el gráfico de líneas
+        ArrayList<Entry> lineEntries = new ArrayList<>();
+        ArrayList<String> labels = new ArrayList<>();
+
+        for (int i = 0; i < items.size(); i++) {
+            T item = items.get(i);
+
+            if (item instanceof GastosItems) {
+                GastosItems gasto = (GastosItems) item;
+                lineEntries.add(new Entry(i, (float) gasto.getTotal()));
+                labels.add(gasto.getCuadrilla());
+            }
+            else if (item instanceof IngresosItems) {
+                IngresosItems ingreso = (IngresosItems) item;
+                lineEntries.add(new Entry(i, (float) ingreso.getTotal()));
+                labels.add(ingreso.getCuadrilla());
+            }
+        }
+
+        // Crear el conjunto de datos del gráfico
+        LineDataSet lineDataSet = new LineDataSet(lineEntries, "Total Gastos por Cuadrilla");
+        lineDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        lineDataSet.setCircleColors(ColorTemplate.MATERIAL_COLORS);
+        lineDataSet.setLineWidth(2f);
+        lineDataSet.setValueTextSize(10f);
+
+        // Crear los datos para el gráfico
+        LineData lineData = new LineData(lineDataSet);
+
+        // Configurar el gráfico
+        graficoLineas.setData(lineData);
+        graficoLineas.getDescription().setEnabled(false);
+        graficoLineas.animateX(1000);
+
+        // Configurar el eje X para mostrar las etiquetas de "Cuadrilla"
+        XAxis xAxis = graficoLineas.getXAxis();
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        xAxis.setGranularity(1f);
+        xAxis.setLabelCount(labels.size());
+        xAxis.setLabelRotationAngle(-45); // Rotar las etiquetas si son largas
+
+        // Refrescar el gráfico
+        graficoLineas.invalidate();
+    }
+
+    //Método Click del botón "Mes"
+    public void elegirMes(View view) {
+        //Establecemos el color del fondo y de la fuente para los botones de Mes y Año
+        btnMes.setBackground(getDrawable(R.drawable.clr_casilladegradadoazul_redonda));
+        btnMes.setTextColor(getColor(R.color.clr_fuente_terciario));
+        btnAnio.setBackgroundColor(Color.TRANSPARENT);
+        btnAnio.setTextColor(getColor(R.color.clr_fuente_secundario));
+
+        tipoFecha = "Mes"; //Asignamos la palabra "Mes" a la variable global "tipoFecha"
+    }
+
+    //Método Click del botón "Año"
+    public void elegirAnio(View view) {
+        //Establecemos el color del fondo y de la fuente para los botones de Mes y Año
+        btnAnio.setBackground(getDrawable(R.drawable.clr_casilladegradadoazul_redonda));
+        btnAnio.setTextColor(getColor(R.color.clr_fuente_terciario));
+        btnMes.setBackgroundColor(Color.TRANSPARENT);
+        btnMes.setTextColor(getColor(R.color.clr_fuente_secundario));
+
+        tipoFecha = "Año"; //Asignamos la palabra "Año" a la variable global "tipoFecha"
+    }
+
+    //Evento Clic del LinearLayout de Fecha, al dar clic en el mismo, se abrirá un "Popup DatePicker" en el que se podrá seleccionar un mes o un año, y esto servirá para filtrar los gráficos
+    public void mostrarMesesAnios(View view) {
+        if (tipoFecha.equalsIgnoreCase("Mes")) {
+            try {
+                //Creamos una instancia de la interfaz "DatePickerDialog.OnDateSetListener" y esta define el método "onDateSet" que se llama cuando el usuario selecciona una fecha en el DatePickerDialog
+                DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int month, int day) { //Se ejecuta cuando el usuario ha seleccionado una fecha
+                        month = month + 1; //Al mes le sumamos +1 porque los meses por defecto empiezan en 0 y no en 1
+                        String fecha = Utilidades.convertirMonthYearString(month, year); //Guardamos el mes y año convertidos a String llamando al método "convertirMonthYearString" con los parámetros de mes y año, y esto retorna el String
+                        lblFecha.setText(fecha); //Asignamos la fecha ya convertida a String al TextView lblFecha
+                    }
+                };
+
+                Calendar cal = Calendar.getInstance(); //Creamos un objeto de tipo Calendar que representa la fecha y hora actuales en el dispositivo donde se está ejecutando el código
+                int year = cal.get(Calendar.YEAR); //Obtenemos el año actual
+                int month = cal.get(Calendar.MONTH); //Obtenemos el mes actual
+                int day = cal.get(Calendar.DAY_OF_MONTH); //Obtenemos el día actual
+                int style = AlertDialog.THEME_HOLO_LIGHT; //En una variable entera guardamos el estilo que tendrá la ventana emergente
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(EstadisticasGastosIngresos.this, style, dateSetListener, year, month, day); //Creamos un nuevo objeto de tipo DatePickerDialog y le mandamos como parámetros al constructor, un contexto, la variable "style" que guarda el estilo, el "dateSetListener", el año, mes y día, estos últimos para que al abrir el AlertDialog, se muestre el mes actual
+                datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("day", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de días asignando "GONE" en su visibilidad
+                datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo mes y año
+            }
+            catch (Exception e) {
+                Log.w("ObtenerMes", e);
+            }
+        }
+    }
+
+    //Método para eliminar la selección del Mes o Año
+    public void eliminarMesAnios(View view) {
+        lblFecha.setText("Seleccionar...");
+    }
+
     public void mostrarOpcionesGraficos(View view) {
         PopupMenu popup = new PopupMenu(this, view); //Objeto de tipo "PopupMenu"
         popup.setOnMenuItemClickListener(this); //Indicamos que asigne el evento "OnMenuItemClick" para que haga algo cada vez que se dé click a una opción del menú
@@ -172,22 +410,26 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.menuGraficoBarras:
-                imgGrafico.setImageResource(R.mipmap.ico_azul_barchart);
-                Toast.makeText(this, "BARCHART", Toast.LENGTH_SHORT).show();
+                imgGrafico.setImageResource(R.mipmap.ico_azul_barchart); //Establecemos la imagen del gráfico de barras en el selector del tipo de gráfico a mostrar
+                obtenerDatos("", "Barras");
                 return true;
 
-            case R.id.menuGraficoPastel:
-                imgGrafico.setImageResource(R.mipmap.ico_azul_piechart);
-                Toast.makeText(this, "PIECHART", Toast.LENGTH_SHORT).show();
+            case R.id.menuGraficoAnillo:
+                imgGrafico.setImageResource(R.mipmap.ico_azul_donutchart); //Establecemos la imagen del gráfico de anillo en el selector del tipo de gráfico a mostrar
+                obtenerDatos("", "Anillo");
                 return true;
 
             case R.id.menuGraficoLineas:
-                imgGrafico.setImageResource(R.mipmap.ico_azul_linechart);
-                Toast.makeText(this, "LINECHART", Toast.LENGTH_SHORT).show();
+                imgGrafico.setImageResource(R.mipmap.ico_azul_linechart); //Establecemos la imagen del gráfico de lineas en el selector del tipo de gráfico a mostrar
+                obtenerDatos("", "Lineas");
                 return true;
 
             default:
                 return false;
         }
+    }
+
+    public void retroceder(View view) {
+        onBackPressed();
     }
 }

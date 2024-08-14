@@ -39,6 +39,7 @@
                     android:layout_width="25dp"
                     android:layout_height="match_parent"
                     android:contentDescription="@string/descripcion"
+                    android:onClick="retroceder"
                     app:srcCompat="@mipmap/ico_azul_regresar"
                     tools:ignore="TouchTargetSizeCheck" />
 
@@ -75,6 +76,7 @@
                     android:background="@drawable/clr_casilladegradadoazul_redonda"
                     android:fontFamily="@font/montserrat_bold"
                     android:gravity="center"
+                    android:onClick="elegirMes"
                     android:text="Mes"
                     android:textColor="@color/clr_fuente_terciario"
                     android:textSize="20sp"
@@ -87,6 +89,7 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/montserrat_bold"
                     android:gravity="center"
+                    android:onClick="elegirAnio"
                     android:text="Año"
                     android:textColor="@color/clr_fuente_secundario"
                     android:textSize="20sp"
@@ -125,6 +128,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
+                        android:onClick="mostrarMesesAnios"
                         android:orientation="horizontal">
 
                         <TextView
@@ -156,6 +160,7 @@
                         android:layout_height="25dp"
                         android:layout_marginLeft="15dp"
                         android:contentDescription="@string/descripcion"
+                        android:onClick="eliminarMesAnios"
                         app:srcCompat="@mipmap/ico_azul_eliminar"
                         tools:ignore="TouchTargetSizeCheck" />
                 </LinearLayout>
@@ -165,10 +170,11 @@
             <LinearLayout
                 android:id="@+id/LLGraficaEstGI"
                 android:layout_width="match_parent"
-                android:layout_height="500dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="15dp"
+                android:layout_marginBottom="15dp"
                 android:background="@drawable/clr_casillablanca_cuadrada"
                 android:orientation="vertical"
                 android:paddingTop="10dp"
@@ -183,13 +189,13 @@
                     android:paddingRight="15dp">
 
                     <TextView
-                        android:id="@+id/lblTotalGastosEstGI"
+                        android:id="@+id/lblTotalEstGI"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center|left"
                         android:text="L. 0.00"
-                        android:textColor="@color/clr_fuente_gastos"
+                        android:textColor="@color/clr_fuente_secundario"
                         android:textSize="35dp" />
 
                     <LinearLayout
@@ -228,7 +234,17 @@
                 <com.github.mikephil.charting.charts.HorizontalBarChart
                     android:id="@+id/graficoBarrasEstGI"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="435dp" />
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/graficoLineasEstGI"
+                    android:layout_width="match_parent"
+                    android:layout_height="435dp" />
+
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/graficoPastelEstGI"
+                    android:layout_width="match_parent"
+                    android:layout_height="435dp"/>
 
             </LinearLayout>
         </LinearLayout>
