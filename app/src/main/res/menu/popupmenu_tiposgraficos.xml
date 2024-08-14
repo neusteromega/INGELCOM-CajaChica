@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:title="Gráfico de Barras"
+        android:id="@+id/menuGraficoBarras"/>
+    <item
+        android:title="Gráfico de Pastel"
+        android:id="@+id/menuGraficoPastel"/>
+    <item
+        android:title="Gráfico de Líneas"
+        android:id="@+id/menuGraficoLineas"/>
+</menu>

@@ -226,7 +226,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:layout_marginBottom="30dp"
+                android:layout_marginBottom="15dp"
                 android:background="@drawable/clr_casillablanca_cuadrada"
                 android:elevation="5dp"
                 android:gravity="center"
