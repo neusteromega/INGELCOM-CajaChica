@@ -223,7 +223,7 @@ public class Utilidades {
 
         try {
             Date fecha = formato.parse(fechaHora); //Creamos una variable de tipo "Date" donde le asignamos con el formato establecido en "formato" la "fechaHora" extraída de Firestore
-            Calendar cal = Calendar.getInstance(); //Creamos una variable de tipo "Calendar"
+            Calendar cal = Calendar.getInstance(); //Creamos una instancia de "Calendar"
             cal.setTime(fecha); //A la variable "cal" le asignamos la fecha y hora guardada en "fecha"
 
             int year = cal.get(Calendar.YEAR); //Del contenido de "cal" extraemos el año y lo guardamos en "year"
@@ -238,7 +238,28 @@ public class Utilidades {
             e.printStackTrace();
         }
 
-        return fechaFormateada;
+        return fechaFormateada; //Retornamos la fecha ya con el formato de Mes - Año
+    }
+
+    //Método que nos ayuda a extraer solo el año de una FechaHora (00/00/0000 00:00)
+    public static String extraerYearDeFechaHora(String fechaHora) {
+        //Creamos un SimpleDateFormat que nos ayudará a darle formato al contenido de "fechaHora". Aquí en "new Locale("es", "ES")" especificamos que queremos un formato de fecha y hora en Español (esto para que los meses sean en español y no en inglés)
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yy - HH:mm", new Locale("es", "ES"));
+        String anio = ""; //Creamos un String donde se guardará el año extraído
+
+        try {
+            Date fecha = formato.parse(fechaHora); //Creamos una variable de tipo "Date" donde le asignamos con el formato establecido en "formato" la "fechaHora" recibida
+            Calendar cal = Calendar.getInstance(); //Creamos una instancia de "Calendar"
+            cal.setTime(fecha); //A la variable "cal" le asignamos la fecha y hora guardada en "fecha"
+
+            int year = cal.get(Calendar.YEAR); //Del contenido de "cal" extraemos el año y lo guardamos en "year"
+            anio = String.valueOf(year); //Convertimos el año a String y lo guardamos en "anio"
+        }
+        catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return anio; //Retornamos el año extraído
     }
 
     //Método que nos ayuda a convertir el mes y el año (que primero están en números) en una cadena String (por ejemplo, "Marzo - 2024")
