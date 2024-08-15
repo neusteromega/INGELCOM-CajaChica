@@ -25,6 +25,7 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -46,6 +47,7 @@ import com.ingelcom.cajachica.Modelos.GastosItems;
 import com.ingelcom.cajachica.Modelos.IngresosItems;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -56,7 +58,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
     private HorizontalBarChart graficoBarras;
     private PieChart graficoAnillo;
     private LineChart graficoLineas;
-    private String fechaSeleccionada, tipoGrafico = "Barras", tipoDatos, tipoFecha = "Mes";
+    private String fechaSeleccionada = "", tipoGrafico = "Barras", tipoDatos, tipoFecha = "Mes";
 
     private Gasto gast = new Gasto(EstadisticasGastosIngresos.this);
     private Ingreso ingr = new Ingreso(EstadisticasGastosIngresos.this);
@@ -104,7 +106,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
                     @Override
                     public void onCallback(List<GastosItems> items) {
                         if (items != null && !items.isEmpty()) {//Si "items" no es null, que entre al if
-                            //items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente");
+                            //items = Utilidades.ordenarListaPorAlfabetico(items, "cuadrilla", "Ascendente");
                             List<EstadisticasItems> listaEstadisticas = Utilidades.sumarTotalesCuadrillas(items, "cuadrilla", "total");
 
                             if (grafico.equalsIgnoreCase("Barras")) {
@@ -136,7 +138,8 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
                             lblNoDatos.setVisibility(View.VISIBLE);
                             graficoLineas.setVisibility(View.GONE);
                             graficoBarras.setVisibility(View.GONE);
-                            graficoAnillo.setVisibility(View.GONE);                        }
+                            graficoAnillo.setVisibility(View.GONE);
+                        }
                     }
 
                     @Override
@@ -224,13 +227,14 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
 
         // Crear los datos para el gráfico
         BarData barData = new BarData(barDataSet);
-        barData.setBarWidth(0.9f); // Ancho de las barras
+        barData.setBarWidth(0.7f); // Ancho de las barras
 
         // Configurar el gráfico
         graficoBarras.setData(barData);
         graficoBarras.setFitBars(true);
         graficoBarras.getDescription().setEnabled(false);
         graficoBarras.animateY(1000);
+        //graficoBarras.setDrawValueAboveBar(false); //Meter los números dentro de las barras
 
         graficoBarras.getLegend().setEnabled(false);
 
@@ -242,21 +246,21 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         graficoBarras.getXAxis().setTextSize(8f); //Tamaño de texto de los Labels
         graficoBarras.getXAxis().setTextColor(getColor(R.color.clr_fuente_primario));
         graficoBarras.getXAxis().setXOffset(4f); // Ajusta el espaciado horizontal para evitar el corte
-        graficoBarras.getXAxis().setLabelRotationAngle(45f);
+        //graficoBarras.getXAxis().setLabelRotationAngle(45f);
 
         Typeface customTypeface = ResourcesCompat.getFont(this, R.font.montserrat_semibold); // Cambia "my_custom_font" por el nombre de tu fuente
         graficoBarras.getXAxis().setTypeface(customTypeface);
 
         graficoBarras.getAxisLeft().setAxisMinimum(0f); // Asegurar que comience desde 0
         graficoBarras.getAxisLeft().setTypeface(ResourcesCompat.getFont(this, R.font.montserrat_semibold));
-        graficoBarras.getAxisLeft().setTextSize(8f);
+        graficoBarras.getAxisLeft().setTextSize(7f);
         graficoBarras.getAxisLeft().setTextColor(getColor(R.color.clr_fuente_primario));
         graficoBarras.getAxisLeft().setDrawGridLines(true); // Asegúrate de que las líneas de cuadrícula estén habilitadas
         graficoBarras.getAxisLeft().setGridColor(Color.LTGRAY);
 
         graficoBarras.getAxisRight().setEnabled(false); // Deshabilitar el eje derecho
 
-        graficoBarras.setExtraOffsets(5, 0, 10, 0); // Añadir espacio en los márgenes
+        graficoBarras.setExtraOffsets(0, 0, 35, 0); // Añadir espacio en los márgenes
 
         //graficoBarras.fitScreen();
         graficoBarras.invalidate(); // Refrescar el gráfico
@@ -270,26 +274,46 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         }
 
         // Crear el conjunto de datos del gráfico
-        PieDataSet pieDataSet = new PieDataSet(pieEntries, "Totales por Cuadrilla");
-        pieDataSet.setColors(ColorTemplate.MATERIAL_COLORS);  // Asignar colores
+        PieDataSet pieDataSet = new PieDataSet(pieEntries, "");
+
+        List<Integer> colores = Utilidades.obtenerColores();
+
+        pieDataSet.setColors(colores);  // Asignar colores
+        //pieDataSet.setSliceSpace(5f); //Espaciado entre secciones del gráfico
+        pieDataSet.setValueTextColor(getColor(R.color.clr_fuente_terciario));
+        pieDataSet.setValueTypeface(ResourcesCompat.getFont(this, R.font.montserrat_bold));
+        pieDataSet.setValueTextSize(10f);
+        /*pieDataSet.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getPieLabel(float value, PieEntry pieEntry) {
+                return "" + pieEntry.getY();
+            }
+        });*/
+
+        /*pieDataSet.setValueLinePart1Length(0.2f);
+        pieDataSet.setValueLinePart2Length(0.4f);*/
+
+        //pieDataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE); // Si quieres que se vean fuera de la gráfica
 
         // Crear los datos para el gráfico
         PieData pieData = new PieData(pieDataSet);
-        pieData.setValueTextSize(12f);
-        pieData.setValueTextColor(Color.WHITE);
 
         // Configurar el gráfico
         graficoAnillo.setData(pieData);
-        graficoAnillo.setUsePercentValues(true);
+        //graficoAnillo.setUsePercentValues(true);
         graficoAnillo.getDescription().setEnabled(false);
-        graficoAnillo.setDrawHoleEnabled(true);
-        graficoAnillo.setHoleColor(Color.TRANSPARENT);
-        graficoAnillo.setTransparentCircleRadius(61f);
-        graficoAnillo.setEntryLabelTextSize(12f);
-        graficoAnillo.setEntryLabelColor(Color.BLACK);
+        //graficoAnillo.setDrawHoleEnabled(true);
+        //graficoAnillo.setHoleColor(Color.TRANSPARENT);
+        graficoAnillo.setEntryLabelTypeface(ResourcesCompat.getFont(this, R.font.montserrat_semibold));
+        graficoAnillo.setTransparentCircleRadius(0f); //Ocultar circulo transparente del centro
+        //graficoAnillo.setHoleRadius(50f);
+        graficoAnillo.setEntryLabelTextSize(7f);
+        graficoAnillo.setEntryLabelColor(getColor(R.color.clr_fuente_terciario));
+
+        graficoAnillo.getLegend().setEnabled(false);
 
         // Configurar la leyenda
-        /*Legend legend = graficoPastel.getLegend();
+        /*Legend legend = graficoAnillo.getLegend();
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
         legend.setOrientation(Legend.LegendOrientation.VERTICAL);
@@ -316,9 +340,9 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         }
 
         // Crear el conjunto de datos del gráfico
-        LineDataSet lineDataSet = new LineDataSet(lineEntries, "Total Gastos por Cuadrilla");
-        lineDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-        lineDataSet.setCircleColors(ColorTemplate.MATERIAL_COLORS);
+        LineDataSet lineDataSet = new LineDataSet(lineEntries, "");
+        lineDataSet.setColors(getColor(R.color.clr_fuente_grafico));
+        lineDataSet.setCircleColors(getColor(R.color.clr_fuente_secundario));
         lineDataSet.setLineWidth(2f);
         lineDataSet.setValueTextSize(10f);
 
@@ -328,6 +352,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         // Configurar el gráfico
         graficoLineas.setData(lineData);
         graficoLineas.getDescription().setEnabled(false);
+        graficoLineas.getLegend().setEnabled(false);
         graficoLineas.animateX(1000);
 
         // Configurar el eje X para mostrar las etiquetas de "Cuadrilla"
@@ -337,7 +362,10 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f);
         xAxis.setLabelCount(labels.size());
-        xAxis.setLabelRotationAngle(-45); // Rotar las etiquetas si son largas
+        xAxis.setLabelRotationAngle(-90); // Rotar las etiquetas si son largas
+
+        YAxis yAxis = graficoLineas.getAxisLeft();
+        yAxis.setGridColor(Color.LTGRAY);
 
         // Refrescar el gráfico
         graficoLineas.invalidate();

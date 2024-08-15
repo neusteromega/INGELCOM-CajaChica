@@ -38,6 +38,7 @@ import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -518,6 +519,7 @@ public class Utilidades {
             listaEstadisticas.add(estadisticasItem); //Añadimos el objeto "estadisticasItem" a la "listaEstadisticas"
         }
 
+        listaEstadisticas = ordenarListaPorAlfabetico(listaEstadisticas, "cuadrilla", "Descendente");
         return listaEstadisticas; //Retornamos la "listaEstadisticas" con las cuadrillas sin repetir y sus totales sumados
     }
 
@@ -556,5 +558,45 @@ public class Utilidades {
         }
 
         return false;
+    }
+
+    //Método que devuelve una lista de 25 colores que nos servirán para establecer los colores en los gráficos del apartado de estadísticas
+    public static List<Integer> obtenerColores() {
+        //Definimos una lista de 31 colores preestablecidos
+        List<Integer> colores = Arrays.asList(
+                Color.parseColor("#9099e8"),
+                Color.parseColor("#7b86e4"),
+                Color.parseColor("#6672df"),
+                Color.parseColor("#505EDB"),
+                Color.parseColor("#3c4cd7"),
+                Color.parseColor("#2b3bce"),
+                Color.parseColor("#2635b9"),
+                Color.parseColor("#222fa4"),
+                Color.parseColor("#1d298f"),
+                Color.parseColor("#151d65"),
+                Color.parseColor("#101750"), //
+                Color.parseColor("#151d65"),
+                Color.parseColor("#1d298f"),
+                Color.parseColor("#222fa4"),
+                Color.parseColor("#2635b9"),
+                Color.parseColor("#2b3bce"),
+                Color.parseColor("#3c4cd7"),
+                Color.parseColor("#505EDB"),
+                Color.parseColor("#6672df"),
+                Color.parseColor("#7b86e4"),
+                Color.parseColor("#9099e8"), //
+                Color.parseColor("#7b86e4"),
+                Color.parseColor("#6672df"),
+                Color.parseColor("#505EDB"),
+                Color.parseColor("#3c4cd7"),
+                Color.parseColor("#2b3bce"),
+                Color.parseColor("#2635b9"),
+                Color.parseColor("#222fa4"),
+                Color.parseColor("#1d298f"),
+                Color.parseColor("#151d65"),
+                Color.parseColor("#101750")
+                );
+
+        return colores;
     }
 }
