@@ -231,6 +231,21 @@
 
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/lblNoDatosEstGI"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:text="NO HAY DATOS\nDISPONIBLES"
+                    android:textColor="@color/clr_fuente_secundario"
+                    android:textSize="24dp"
+                    android:visibility="gone"
+                    tools:ignore="TouchTargetSizeCheck" />
+
                 <com.github.mikephil.charting.charts.HorizontalBarChart
                     android:id="@+id/graficoBarrasEstGI"
                     android:layout_width="match_parent"
@@ -244,7 +259,7 @@
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/graficoPastelEstGI"
                     android:layout_width="match_parent"
-                    android:layout_height="435dp"/>
+                    android:layout_height="435dp" />
 
             </LinearLayout>
         </LinearLayout>

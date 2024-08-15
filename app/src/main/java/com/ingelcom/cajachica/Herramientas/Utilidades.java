@@ -459,43 +459,45 @@ public class Utilidades {
         return spannable; //Retornamos el "spannable" ya con los colores establecidos
     }
 
+    //Método genérico que suma los totales de las cuadrillas repetidas de una lista. Recibe una lista, el nombre del campo de la cuadrilla en la lista y el nombre del campo del total
     public static <T> List<EstadisticasItems> sumarTotalesCuadrillas(List<T> items, String campoCuadrilla, String campoTotal) {
-        Map<String, Double> mapaCuadrillaTotales = new HashMap<>();
+        Map<String, Double> cuadrillaTotales = new HashMap<>(); //Creamos un Map en el cual vamos a guardar los nombres de las cuadrillas sin repetir y sus totales sumados
 
-        for (T item : items) {
+        for (T item : items) { //Hacemos un foreach que recorra los elementos de la lista "items" y los vaya guardando uno por uno en la variable temporal "item"
             try {
-                // Obtener los campos mediante reflección
+                //Usando "getDeclaredField", el nombre del campo de la cuadrilla "campoCuadrilla", y el nombre del campo del total "campoTotal", obtenemos los datos de ambos campos y los guardamos en dos variables de tipo "Field"
                 Field fieldCuadrilla = item.getClass().getDeclaredField(campoCuadrilla);
                 Field fieldTotal = item.getClass().getDeclaredField(campoTotal);
 
-                // Hacer accesibles los campos si son privados
+                //"setAccesible(true)" lo utilizamos para permitir el acceso a un campo privado o protegido de una clase
                 fieldCuadrilla.setAccessible(true);
                 fieldTotal.setAccessible(true);
 
-                // Obtener los valores de los campos
+                //Obtenemos los valores de los campos
                 String cuadrilla = (String) fieldCuadrilla.get(item);
                 double total = fieldTotal.getDouble(item);
 
-                // Sumar los totales de las cuadrillas repetidas
-                mapaCuadrillaTotales.put(cuadrilla, mapaCuadrillaTotales.getOrDefault(cuadrilla, 0.0) + total);
+                //Establecemos la cuadrilla en la parte de la "clave" del Map "cuadrillaTotales"; en la parte del "valor" del Map obtenemos con "getOrDefault" el valor del mismo "cuadrillaTotales" relacionado con la clave "cuadrilla", si no existe el contenido de "cuadrilla" en el Map, que estableczca por defecto el valor "0.0", y a esto le sumamos el contenido de "total". Con esto sumamos los totales de las cuadrillas repetidas
+                cuadrillaTotales.put(cuadrilla, cuadrillaTotales.getOrDefault(cuadrilla, 0.0) + total); //Por ejemplo, si cuadrilla es "Abastecimiento" y ya existe en el Map con un total de 150.0, "getOrDefault(cuadrilla, 0.0)" retornará 150.0 y a ese 150.0 se le sumará el "total". Este nos ayuda a que si la cuadrilla ya se encuentra como una clave en el Map, esto no creará otra cuadrilla con el mismo nombre, sino que sólo actualizará su valor, en este caso, el total
 
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                e.printStackTrace(); // Manejo de excepciones en caso de error de reflección
+            }
+            catch (NoSuchFieldException | IllegalAccessException e) {
+                e.printStackTrace(); //Manejamos las excepciones en caso de error de reflección
             }
         }
 
-        // Crear la lista de EstadisticasItems sin cuadrillas repetidas
-        List<EstadisticasItems> listaEstadisticas = new ArrayList<>();
-        for (Map.Entry<String, Double> entry : mapaCuadrillaTotales.entrySet()) {
-            String cuadrilla = entry.getKey();
-            double totalSumado = entry.getValue();
+        List<EstadisticasItems> listaEstadisticas = new ArrayList<>(); //Creamos la lista de EstadisticasItems sin cuadrillas repetidas
 
-            // Crear un nuevo objeto EstadisticasItems
-            EstadisticasItems estadisticasItem = new EstadisticasItems(cuadrilla, totalSumado);
-            listaEstadisticas.add(estadisticasItem);
+        //Foreach que itera sobre cada entrada en el conjunto (entrySet). Cada entrada se almacena temporalmente en la variable "entry" de tipo "Map.Entry<String, Double>". El método "entrySet()" del Map devuelve un conjunto (Set) de todas las entradas (pares clave-valor) en el Map, y cada entrada es un objeto de tipo "Map.Entry"
+        for (Map.Entry<String, Double> entry : cuadrillaTotales.entrySet()) {
+            String cuadrilla = entry.getKey(); //Obtenemos la clave de la entrada actual (entry) usando el método getKey() de Map.Entry. Cabe mencionar que las claves del Map tienen como nombre las cuadrillas sin repetir
+            double totalSumado = entry.getValue(); //Obtenemos el valor asociado a la clave (cuadrilla) de la entrada actual usando el método getValue() de Map.Entry. Cabe mencionar que todos los valores de las claves son los totales de las cuadrillas
+
+            EstadisticasItems estadisticasItem = new EstadisticasItems(cuadrilla, totalSumado); //Creamos un nuevo objeto de tipo "EstadisticasItems" en el que le mandamos la cuadrilla y el totalSumado
+            listaEstadisticas.add(estadisticasItem); //Añadimos el objeto "estadisticasItem" a la "listaEstadisticas"
         }
 
-        return listaEstadisticas;
+        return listaEstadisticas; //Retornamos la "listaEstadisticas" con las cuadrillas sin repetir y sus totales sumados
     }
 
     //Método auxiliar para crear celdas alineadas a la izquierda y centradas verticalmente. Devuelve una celda de tipo "PdfCell"

@@ -8,6 +8,8 @@ import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,12 +51,12 @@ import java.util.List;
 
 public class EstadisticasGastosIngresos extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
-    private TextView lblTitulo, btnMes, btnAnio, lblFecha, lblTotal;
+    private TextView lblTitulo, btnMes, btnAnio, lblFecha, lblTotal, lblNoDatos;
     private ImageView imgGrafico;
     private HorizontalBarChart graficoBarras;
     private PieChart graficoAnillo;
     private LineChart graficoLineas;
-    private String tipoDatos, tipoFecha = "Mes";
+    private String fechaSeleccionada, tipoGrafico = "Barras", tipoDatos, tipoFecha = "Mes";
 
     private Gasto gast = new Gasto(EstadisticasGastosIngresos.this);
     private Ingreso ingr = new Ingreso(EstadisticasGastosIngresos.this);
@@ -69,6 +71,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         btnAnio = findViewById(R.id.lblAnioEstGI);
         lblFecha = findViewById(R.id.lblFechaEstGI);
         lblTotal = findViewById(R.id.lblTotalEstGI);
+        lblNoDatos = findViewById(R.id.lblNoDatosEstGI);
         imgGrafico = findViewById(R.id.imgTipoGraficoEstGI);
         graficoBarras = findViewById(R.id.graficoBarrasEstGI);
         graficoAnillo = findViewById(R.id.graficoPastelEstGI);
@@ -77,6 +80,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
 
         establecerElementos();
         obtenerDatos("", "Barras");
+        cambioFecha();
     }
 
     private void establecerElementos() {
@@ -93,86 +97,108 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         }
     }
 
-    private void obtenerDatos(String mes, String tipoGrafico) {
-        if (tipoDatos.equalsIgnoreCase("Gastos")) {
-            gast.obtenerGastos("", "Empleado", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
-                @Override
-                public void onCallback(List<GastosItems> items) {
-                    if (items != null) {//Si "items" no es null, que entre al if
-                        //items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente");
-                        List<EstadisticasItems> listaEstadisticas = Utilidades.sumarTotalesCuadrillas(items, "cuadrilla", "total");
+    private void obtenerDatos(String fecha, String grafico) {
+        try {
+            if (tipoDatos.equalsIgnoreCase("Gastos")) {
+                gast.obtenerGastos("", "Empleado", fecha, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                    @Override
+                    public void onCallback(List<GastosItems> items) {
+                        if (items != null && !items.isEmpty()) {//Si "items" no es null, que entre al if
+                            //items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente");
+                            List<EstadisticasItems> listaEstadisticas = Utilidades.sumarTotalesCuadrillas(items, "cuadrilla", "total");
 
-                        if (tipoGrafico.equalsIgnoreCase("Barras")) {
-                            graficoBarras.setVisibility(View.VISIBLE);
-                            graficoAnillo.setVisibility(View.GONE);
-                            graficoLineas.setVisibility(View.GONE);
+                            if (grafico.equalsIgnoreCase("Barras")) {
+                                graficoBarras.setVisibility(View.VISIBLE);
+                                graficoAnillo.setVisibility(View.GONE);
+                                graficoLineas.setVisibility(View.GONE);
+                                lblNoDatos.setVisibility(View.GONE);
 
-                            establecerGraficoHorizontal(listaEstadisticas);
+                                establecerGraficoHorizontal(listaEstadisticas);
+                            }
+                            else if (grafico.equalsIgnoreCase("Anillo")) {
+                                graficoAnillo.setVisibility(View.VISIBLE);
+                                graficoBarras.setVisibility(View.GONE);
+                                graficoLineas.setVisibility(View.GONE);
+                                lblNoDatos.setVisibility(View.GONE);
+
+                                establecerGraficoPastel(listaEstadisticas);
+                            }
+                            else if (grafico.equalsIgnoreCase("Lineas")) {
+                                graficoLineas.setVisibility(View.VISIBLE);
+                                graficoBarras.setVisibility(View.GONE);
+                                graficoAnillo.setVisibility(View.GONE);
+                                lblNoDatos.setVisibility(View.GONE);
+
+                                establecerGraficoLineas(listaEstadisticas);
+                            }
                         }
-                        else if (tipoGrafico.equalsIgnoreCase("Anillo")) {
-                            graficoAnillo.setVisibility(View.VISIBLE);
-                            graficoBarras.setVisibility(View.GONE);
+                        else {
+                            lblNoDatos.setVisibility(View.VISIBLE);
                             graficoLineas.setVisibility(View.GONE);
+                            graficoBarras.setVisibility(View.GONE);
+                            graficoAnillo.setVisibility(View.GONE);                        }
+                    }
 
-                            establecerGraficoPastel(listaEstadisticas);
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.w("ObtenerGastos", e);
+                    }
+                });
+            } else if (tipoDatos.equalsIgnoreCase("Ingresos")) {
+                ingr.obtenerIngresos("", fecha, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
+                    @Override
+                    public void onCallback(List<IngresosItems> items) {
+                        if (items != null && !items.isEmpty()) {//Si "items" no es null, que entre al if
+                            //items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente");
+                            List<EstadisticasItems> listaEstadisticas = Utilidades.sumarTotalesCuadrillas(items, "cuadrilla", "total");
+
+                            if (grafico.equalsIgnoreCase("Barras")) {
+                                graficoBarras.setVisibility(View.VISIBLE);
+                                graficoAnillo.setVisibility(View.GONE);
+                                graficoLineas.setVisibility(View.GONE);
+                                lblNoDatos.setVisibility(View.GONE);
+
+                                establecerGraficoHorizontal(listaEstadisticas);
+                            }
+                            else if (grafico.equalsIgnoreCase("Anillo")) {
+                                graficoAnillo.setVisibility(View.VISIBLE);
+                                graficoBarras.setVisibility(View.GONE);
+                                graficoLineas.setVisibility(View.GONE);
+                                lblNoDatos.setVisibility(View.GONE);
+
+                                establecerGraficoPastel(listaEstadisticas);
+                            }
+                            else if (grafico.equalsIgnoreCase("Lineas")) {
+                                graficoLineas.setVisibility(View.VISIBLE);
+                                graficoBarras.setVisibility(View.GONE);
+                                graficoAnillo.setVisibility(View.GONE);
+                                lblNoDatos.setVisibility(View.GONE);
+
+                                establecerGraficoLineas(listaEstadisticas);
+                            }
                         }
-                        else if (tipoGrafico.equalsIgnoreCase("Lineas")) {
-                            graficoLineas.setVisibility(View.VISIBLE);
+                        else {
+                            lblNoDatos.setVisibility(View.VISIBLE);
+                            graficoLineas.setVisibility(View.GONE);
                             graficoBarras.setVisibility(View.GONE);
                             graficoAnillo.setVisibility(View.GONE);
-
-                            establecerGraficoLineas(listaEstadisticas);
                         }
                     }
-                }
 
-                @Override
-                public void onFailure(Exception e) {
-                    Log.w("ObtenerGastos", e);
-                }
-            });
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.w("ObtenerIngresos", e);
+                    }
+                });
+            }
         }
-        else if (tipoDatos.equalsIgnoreCase("Ingresos")) {
-            ingr.obtenerIngresos("", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
-                @Override
-                public void onCallback(List<IngresosItems> items) {
-                    if (items != null) {//Si "items" no es null, que entre al if
-                        //items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente");
-                        List<EstadisticasItems> listaEstadisticas = Utilidades.sumarTotalesCuadrillas(items, "cuadrilla", "total");
-
-                        if (tipoGrafico.equalsIgnoreCase("Barras")) {
-                            graficoBarras.setVisibility(View.VISIBLE);
-                            graficoAnillo.setVisibility(View.GONE);
-                            graficoLineas.setVisibility(View.GONE);
-                            establecerGraficoHorizontal(listaEstadisticas);
-                        }
-                        else if (tipoGrafico.equalsIgnoreCase("Anillo")) {
-                            graficoAnillo.setVisibility(View.VISIBLE);
-                            graficoBarras.setVisibility(View.GONE);
-                            graficoLineas.setVisibility(View.GONE);
-
-                            establecerGraficoPastel(listaEstadisticas);
-                        }
-                        else if (tipoGrafico.equalsIgnoreCase("Lineas")) {
-                            graficoLineas.setVisibility(View.VISIBLE);
-                            graficoBarras.setVisibility(View.GONE);
-                            graficoAnillo.setVisibility(View.GONE);
-
-                            establecerGraficoLineas(listaEstadisticas);
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Exception e) {
-                    Log.w("ObtenerIngresos", e);
-                }
-            });
+        catch (Exception e) {
+            Log.w("ObtenerDatos", e);
         }
     }
 
     private void establecerGraficoHorizontal(List<EstadisticasItems> items) {
-        // Crear las entradas para el gráfico de barras
+        //Crear las entradas para el gráfico de barras
         ArrayList<BarEntry> barEntries = new ArrayList<>();
         ArrayList<String> labels = new ArrayList<>();
 
@@ -339,6 +365,35 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         tipoFecha = "Año"; //Asignamos la palabra "Año" a la variable global "tipoFecha"
     }
 
+    private void cambioFecha() {
+        try {
+            //Para detectar cuando el lblFecha cambia su valor, llamamos el método "addTextChangedListener"
+            lblFecha.addTextChangedListener(new TextWatcher() {
+                @Override //Antes de que el texto del lblFecha cambie
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override //Durante el texto del lblFecha está cambiando
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    fechaSeleccionada = lblFecha.getText().toString();
+                    if (fechaSeleccionada.equalsIgnoreCase("Seleccionar..."))
+                        fechaSeleccionada = "Seleccionar Mes";
+
+                    obtenerDatos(fechaSeleccionada, tipoGrafico); //Llamamos el método "obtenerIngresos" de arriba y le mandamos el contenido del lblFecha
+                }
+
+                @Override //Después de que el texto del lblFecha cambie
+                public void afterTextChanged(Editable editable) {
+
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("DetectarFecha", e);
+        }
+    }
+
     //Evento Clic del LinearLayout de Fecha, al dar clic en el mismo, se abrirá un "Popup DatePicker" en el que se podrá seleccionar un mes o un año, y esto servirá para filtrar los gráficos
     public void mostrarMesesAnios(View view) {
         if (tipoFecha.equalsIgnoreCase("Mes")) {
@@ -406,17 +461,20 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         switch (menuItem.getItemId()) {
             case R.id.menuGraficoBarras:
                 imgGrafico.setImageResource(R.mipmap.ico_azul_barchart); //Establecemos la imagen del gráfico de barras en el selector del tipo de gráfico a mostrar
-                obtenerDatos("", "Barras");
+                tipoGrafico = "Barras";
+                obtenerDatos(fechaSeleccionada, tipoGrafico);
                 return true;
 
             case R.id.menuGraficoAnillo:
                 imgGrafico.setImageResource(R.mipmap.ico_azul_donutchart); //Establecemos la imagen del gráfico de anillo en el selector del tipo de gráfico a mostrar
-                obtenerDatos("", "Anillo");
+                tipoGrafico = "Anillo";
+                obtenerDatos(fechaSeleccionada, tipoGrafico);
                 return true;
 
             case R.id.menuGraficoLineas:
                 imgGrafico.setImageResource(R.mipmap.ico_azul_linechart); //Establecemos la imagen del gráfico de lineas en el selector del tipo de gráfico a mostrar
-                obtenerDatos("", "Lineas");
+                tipoGrafico = "Lineas";
+                obtenerDatos(fechaSeleccionada, tipoGrafico);
                 return true;
 
             default:
