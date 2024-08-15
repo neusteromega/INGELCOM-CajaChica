@@ -89,12 +89,12 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         switch (tipoDatos) {
             case "Gastos":
                 lblTitulo.setText("Gastos");
-                lblTotal.setTextColor(getColor(R.color.clr_fuente_gastos));
+                //lblTotal.setTextColor(getColor(R.color.clr_fuente_gastos));
                 break;
 
             case "Ingresos":
                 lblTitulo.setText("Ingresos");
-                lblTotal.setTextColor(getColor(R.color.clr_fuente_ingresos));
+                //lblTotal.setTextColor(getColor(R.color.clr_fuente_ingresos));
                 break;
         }
     }
@@ -227,7 +227,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
 
         // Crear los datos para el gráfico
         BarData barData = new BarData(barDataSet);
-        barData.setBarWidth(0.7f); // Ancho de las barras
+        barData.setBarWidth(0.9f); // Ancho de las barras
 
         // Configurar el gráfico
         graficoBarras.setData(barData);
@@ -261,7 +261,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
 
         graficoBarras.getAxisRight().setEnabled(false); // Deshabilitar el eje derecho
 
-        graficoBarras.setExtraOffsets(0, 0, 35, 0); // Añadir espacio en los márgenes
+        graficoBarras.setExtraOffsets(5, 0, 35, 0); // Añadir espacio en los márgenes
 
         //graficoBarras.fitScreen();
         graficoBarras.invalidate(); // Refrescar el gráfico
