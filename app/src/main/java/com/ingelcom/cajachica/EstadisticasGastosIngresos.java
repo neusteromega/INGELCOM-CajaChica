@@ -240,11 +240,12 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
 
         graficoBarras.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         graficoBarras.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
-        graficoBarras.getXAxis().setGranularity(1f);
         graficoBarras.getXAxis().setGranularityEnabled(true);
+        graficoBarras.getXAxis().setGranularity(1f);
         graficoBarras.getXAxis().setDrawGridLines(false); //Eliminar lineas horizontales
         graficoBarras.getXAxis().setTextSize(8f); //Tamaño de texto de los Labels
         graficoBarras.getXAxis().setTextColor(getColor(R.color.clr_fuente_primario));
+        graficoBarras.getXAxis().setLabelCount(labels.size());
         graficoBarras.getXAxis().setXOffset(4f); // Ajusta el espaciado horizontal para evitar el corte
         //graficoBarras.getXAxis().setLabelRotationAngle(45f);
 
@@ -253,7 +254,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
 
         graficoBarras.getAxisLeft().setAxisMinimum(0f); // Asegurar que comience desde 0
         graficoBarras.getAxisLeft().setTypeface(ResourcesCompat.getFont(this, R.font.montserrat_semibold));
-        graficoBarras.getAxisLeft().setTextSize(7f);
+        graficoBarras.getAxisLeft().setTextSize(8f);
         graficoBarras.getAxisLeft().setTextColor(getColor(R.color.clr_fuente_primario));
         graficoBarras.getAxisLeft().setDrawGridLines(true); // Asegúrate de que las líneas de cuadrícula estén habilitadas
         graficoBarras.getAxisLeft().setGridColor(Color.LTGRAY);
@@ -342,9 +343,14 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         // Crear el conjunto de datos del gráfico
         LineDataSet lineDataSet = new LineDataSet(lineEntries, "");
         lineDataSet.setColors(getColor(R.color.clr_fuente_grafico));
-        lineDataSet.setCircleColors(getColor(R.color.clr_fuente_secundario));
+        lineDataSet.setCircleColors(getColor(R.color.clr_fuente_grafico));
+        lineDataSet.setDrawCircleHole(false);
         lineDataSet.setLineWidth(2f);
-        lineDataSet.setValueTextSize(10f);
+        lineDataSet.setValueTextSize(9f);
+        lineDataSet.setValueTextColor(getColor(R.color.clr_fuente_primario));
+        lineDataSet.setValueTypeface(ResourcesCompat.getFont(this, R.font.montserrat_bold));
+        lineDataSet.setHighLightColor(getColor(R.color.clr_fuente_secundario)); //Color que se muestra al dar clic en una parte del gráfico
+        //lineDataSet.setDrawFilled(false);
 
         // Crear los datos para el gráfico
         LineData lineData = new LineData(lineDataSet);
@@ -354,6 +360,8 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         graficoLineas.getDescription().setEnabled(false);
         graficoLineas.getLegend().setEnabled(false);
         graficoLineas.animateX(1000);
+        //graficoLineas.setClipValuesToContent(true); //Recorta los valores que se salen a los dos lados del gráfico
+        graficoLineas.setExtraOffsets(5, 0, 5, 10);
 
         // Configurar el eje X para mostrar las etiquetas de "Cuadrilla"
         XAxis xAxis = graficoLineas.getXAxis();
@@ -363,9 +371,20 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         xAxis.setGranularity(1f);
         xAxis.setLabelCount(labels.size());
         xAxis.setLabelRotationAngle(-90); // Rotar las etiquetas si son largas
+        xAxis.setTextColor(getColor(R.color.clr_fuente_primario));
+        xAxis.setTypeface(ResourcesCompat.getFont(this, R.font.montserrat_semibold));
 
-        YAxis yAxis = graficoLineas.getAxisLeft();
-        yAxis.setGridColor(Color.LTGRAY);
+        YAxis axisLeft = graficoLineas.getAxisLeft();
+        axisLeft.setGridColor(Color.LTGRAY);
+        axisLeft.setTextColor(getColor(R.color.clr_fuente_primario));
+        axisLeft.setTypeface(ResourcesCompat.getFont(this, R.font.montserrat_semibold));
+        axisLeft.setTextSize(8f);
+
+        YAxis axisRight = graficoLineas.getAxisRight();
+        axisRight.setGridColor(Color.LTGRAY);
+        axisRight.setTextColor(getColor(R.color.clr_fuente_primario));
+        axisRight.setTypeface(ResourcesCompat.getFont(this, R.font.montserrat_semibold));
+        axisRight.setTextSize(8f);
 
         // Refrescar el gráfico
         graficoLineas.invalidate();
