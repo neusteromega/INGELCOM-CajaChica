@@ -78,63 +78,74 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         graficoBarras = findViewById(R.id.graficoBarrasEstGI);
         graficoAnillo = findViewById(R.id.graficoPastelEstGI);
         graficoLineas = findViewById(R.id.graficoLineasEstGI);
-        tipoDatos = Utilidades.obtenerStringExtra(this, "ActivityEGI");
+
+        tipoDatos = Utilidades.obtenerStringExtra(this, "ActivityEGI"); //Obtenemos el tipoDatos de la pantalla anterior (FragAdmEstadisticas) el cual puede ser "Gastos" o "Ingresos"
 
         establecerElementos();
-        obtenerDatos("", "Barras");
+        obtenerDatos("", "Barras"); //Llamamos el método "obtenerDatos" donde primeramente mandamos la "fecha" vacía y el texto "Barras" para que primero muestre el gráfico de barras horizontales
         cambioFecha();
     }
 
     private void establecerElementos() {
-        switch (tipoDatos) {
+        switch (tipoDatos) { //Asignamos los titulos dependiendo del "tipoDatos" recibido de la pantalla anterior, para eso usamos este switch
             case "Gastos":
                 lblTitulo.setText("Gastos");
-                //lblTotal.setTextColor(getColor(R.color.clr_fuente_gastos));
                 break;
 
             case "Ingresos":
                 lblTitulo.setText("Ingresos");
-                //lblTotal.setTextColor(getColor(R.color.clr_fuente_ingresos));
                 break;
         }
     }
 
-    private void obtenerDatos(String fecha, String grafico) {
+    //Método que nos permitirá obtener los gastos o ingresos (dependiendo del contenido de la variable global "tipoDatos") de Firestore
+    private void obtenerDatos(String fecha, String grafico) { //Recibe la "fecha" el cual puede ser el año o mes seleccionado por el usuario para filtrar los datos de las gráficas, y el "grafico" que indica cuál gráfico se desea visualizar
         try {
-            if (tipoDatos.equalsIgnoreCase("Gastos")) {
+            if (tipoDatos.equalsIgnoreCase("Gastos")) { //Si "tipoDatos" contiene el texto "Gastos", que entre al if para obtener los gastos
+                //Llamamos el método "obtenerGastos" de la clase "Gasto", le mandamos la cuadrilla vacía, y el texto "Empleado" ya que sólo queremos obtener los gastos hechos por los empleados, y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados
                 gast.obtenerGastos("", "Empleado", fecha, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                     @Override
                     public void onCallback(List<GastosItems> items) {
-                        if (items != null && !items.isEmpty()) {//Si "items" no es null, que entre al if
-                            //items = Utilidades.ordenarListaPorAlfabetico(items, "cuadrilla", "Ascendente");
-                            List<EstadisticasItems> listaEstadisticas = Utilidades.sumarTotalesCuadrillas(items, "cuadrilla", "total");
+                        if (items != null && !items.isEmpty()) { //Si "items" no es null, y si no está vacío, que entre al if
+                            List<EstadisticasItems> listaEstadisticas = Utilidades.sumarTotalesCuadrillas(items, "cuadrilla", "total"); //Llamamos al método utilitario "sumarTotalesCuadrillas", donde le mandamos la lista "items" con los gastos obtenidos, el texto "cuadrilla", y el texto "total", estos últimos indican que así se llaman los campos de los cuales queremos eliminar sus repetidos y sumar sus totales. Esto retorna una lista de tipo "EstadisticasItems" y por ende, guardamos el retorno en "listaEstadisticas" del mismo tipo de dato
 
-                            if (grafico.equalsIgnoreCase("Barras")) {
+                            double total = 0; //Creamos una variable double donde se guardará el total de Gastos
+                            for (EstadisticasItems item : listaEstadisticas) { //Foreach que recorre cada elemento de la lista "listaEstadísticas" y lo van guardando en la variable temporal "item"
+                                total += item.getTotal(); //Obtenemos el "total" de cada elemento de la lista "listaEstadísticas" y lo vamos sumando en la variable "total"
+                            }
+
+                            lblTotal.setText("L. " + String.format("%.2f", total)); //Asignamos el total al TextView "lblTotal" y formateamos la variable "total" para que se muestre con dos digitos después del punto decimal
+
+                            if (grafico.equalsIgnoreCase("Barras")) { //Si "grafico" contiene el texto "Barras" que entre al if
+                                //Hacemos visible el "gráficoBarras" y ocultamos los demás, incluso el TextView "lblNoDatos"
                                 graficoBarras.setVisibility(View.VISIBLE);
                                 graficoAnillo.setVisibility(View.GONE);
                                 graficoLineas.setVisibility(View.GONE);
                                 lblNoDatos.setVisibility(View.GONE);
 
-                                establecerGraficoHorizontal(listaEstadisticas);
+                                establecerGraficoHorizontal(listaEstadisticas); //Llamamos el método "establecerGraficoHorizontal" y le mandamos la "listaEstadisticas"
                             }
-                            else if (grafico.equalsIgnoreCase("Anillo")) {
+                            else if (grafico.equalsIgnoreCase("Anillo")) { //Si "grafico" contiene el texto "Anillo" que entre al if
+                                //Hacemos visible el "gráficoAnillo" y ocultamos los demás, incluso el TextView "lblNoDatos"
                                 graficoAnillo.setVisibility(View.VISIBLE);
                                 graficoBarras.setVisibility(View.GONE);
                                 graficoLineas.setVisibility(View.GONE);
                                 lblNoDatos.setVisibility(View.GONE);
 
-                                establecerGraficoPastel(listaEstadisticas);
+                                establecerGraficoPastel(listaEstadisticas); //Llamamos el método "establecerGraficoPastel" y le mandamos la "listaEstadisticas"
                             }
-                            else if (grafico.equalsIgnoreCase("Lineas")) {
+                            else if (grafico.equalsIgnoreCase("Lineas")) { //Si "grafico" contiene el texto "Lineas" que entre al if
+                                //Hacemos visible el "graficoLineas" y ocultamos los demás, incluso el TextView "lblNoDatos"
                                 graficoLineas.setVisibility(View.VISIBLE);
                                 graficoBarras.setVisibility(View.GONE);
                                 graficoAnillo.setVisibility(View.GONE);
                                 lblNoDatos.setVisibility(View.GONE);
 
-                                establecerGraficoLineas(listaEstadisticas);
+                                establecerGraficoLineas(listaEstadisticas); //Llamamos el método "establecerGraficoLineas" y le mandamos la "listaEstadisticas"
                             }
                         }
-                        else {
+                        else { //En cambio, si "items" es null, o si está vacío (una de las dos) significa que no se encontraron datos en Firestore, por lo tanto, que entre a este else
+                            //Hacemos visible el TextView "lblNoDatos" y ocultamos los gráficos
                             lblNoDatos.setVisibility(View.VISIBLE);
                             graficoLineas.setVisibility(View.GONE);
                             graficoBarras.setVisibility(View.GONE);
@@ -147,40 +158,52 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
                         Log.w("ObtenerGastos", e);
                     }
                 });
-            } else if (tipoDatos.equalsIgnoreCase("Ingresos")) {
+            }
+            else if (tipoDatos.equalsIgnoreCase("Ingresos")) { //En cambio, si "tipoDatos" contiene el texto "Ingresos", que entre al if para obtener los ingresos
+                //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla vacía ya que no queremos filtrar y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores
                 ingr.obtenerIngresos("", fecha, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
                     @Override
                     public void onCallback(List<IngresosItems> items) {
                         if (items != null && !items.isEmpty()) {//Si "items" no es null, que entre al if
-                            //items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente");
-                            List<EstadisticasItems> listaEstadisticas = Utilidades.sumarTotalesCuadrillas(items, "cuadrilla", "total");
+                            List<EstadisticasItems> listaEstadisticas = Utilidades.sumarTotalesCuadrillas(items, "cuadrilla", "total"); //Llamamos al método utilitario "sumarTotalesCuadrillas", donde le mandamos la lista "items" con los ingresos obtenidos, el texto "cuadrilla", y el texto "total", estos últimos indican que así se llaman los campos de los cuales queremos eliminar sus repetidos y sumar sus totales. Esto retorna una lista de tipo "EstadisticasItems" y por ende, guardamos el retorno en "listaEstadisticas" del mismo tipo de dato
 
-                            if (grafico.equalsIgnoreCase("Barras")) {
+                            double total = 0; //Creamos una variable double donde se guardará el total de Ingresos
+                            for (EstadisticasItems item : listaEstadisticas) { //Foreach que recorre cada elemento de la lista "listaEstadísticas" y lo van guardando en la variable temporal "item"
+                                total += item.getTotal(); //Obtenemos el "total" de cada elemento de la lista "listaEstadísticas" y lo vamos sumando en la variable "total"
+                            }
+
+                            lblTotal.setText("L. " + String.format("%.2f", total)); //Asignamos el total al TextView "lblTotal" y formateamos la variable "total" para que se muestre con dos digitos después del punto decimal
+
+                            if (grafico.equalsIgnoreCase("Barras")) { //Si "grafico" contiene el texto "Barras" que entre al if
+                                //Hacemos visible el "gráficoBarras" y ocultamos los demás, incluso el TextView "lblNoDatos"
                                 graficoBarras.setVisibility(View.VISIBLE);
                                 graficoAnillo.setVisibility(View.GONE);
                                 graficoLineas.setVisibility(View.GONE);
                                 lblNoDatos.setVisibility(View.GONE);
 
-                                establecerGraficoHorizontal(listaEstadisticas);
+                                establecerGraficoHorizontal(listaEstadisticas); //Llamamos el método "establecerGraficoHorizontal" y le mandamos la "listaEstadisticas"
                             }
-                            else if (grafico.equalsIgnoreCase("Anillo")) {
+                            else if (grafico.equalsIgnoreCase("Anillo")) { //Si "grafico" contiene el texto "Anillo" que entre al if
+                                //Hacemos visible el "gráficoAnillo" y ocultamos los demás, incluso el TextView "lblNoDatos"
                                 graficoAnillo.setVisibility(View.VISIBLE);
                                 graficoBarras.setVisibility(View.GONE);
                                 graficoLineas.setVisibility(View.GONE);
                                 lblNoDatos.setVisibility(View.GONE);
 
-                                establecerGraficoPastel(listaEstadisticas);
+                                establecerGraficoPastel(listaEstadisticas); //Llamamos el método "establecerGraficoPastel" y le mandamos la "listaEstadisticas"
                             }
-                            else if (grafico.equalsIgnoreCase("Lineas")) {
+                            else if (grafico.equalsIgnoreCase("Lineas")) { //Si "grafico" contiene el texto "Lineas" que entre al if
+                                //Hacemos visible el "graficoLineas" y ocultamos los demás, incluso el TextView "lblNoDatos"
                                 graficoLineas.setVisibility(View.VISIBLE);
                                 graficoBarras.setVisibility(View.GONE);
                                 graficoAnillo.setVisibility(View.GONE);
                                 lblNoDatos.setVisibility(View.GONE);
 
-                                establecerGraficoLineas(listaEstadisticas);
+                                establecerGraficoLineas(listaEstadisticas); //Llamamos el método "establecerGraficoLineas" y le mandamos la "listaEstadisticas"
                             }
                         }
-                        else {
+                        else { //En cambio, si "items" es null, o si está vacío (una de las dos) significa que no se encontraron datos en Firestore, por lo tanto, que entre a este else
+                            //Hacemos visible el TextView "lblNoDatos" y ocultamos los gráficos
                             lblNoDatos.setVisibility(View.VISIBLE);
                             graficoLineas.setVisibility(View.GONE);
                             graficoBarras.setVisibility(View.GONE);
@@ -200,6 +223,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         }
     }
 
+    //Método que nos permite establecer el gráfico de barras horizontales
     private void establecerGraficoHorizontal(List<EstadisticasItems> items) {
         ArrayList<BarEntry> barEntries = new ArrayList<>(); //ArrayList de tipo "BarEntry" (Dato de MPAndroidChart para los gráficos de barras) que recibirá los valores para el gráfico
         ArrayList<String> etiquetas = new ArrayList<>(); //ArrayList de tipo "String" que recibirá los nombres de las cuadrillas para establecerlos en las etiquetas del gráfico
@@ -217,12 +241,6 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         barDataSet.setValueTextColor(getColor(R.color.clr_fuente_primario));
         barDataSet.setValueTypeface(ResourcesCompat.getFont(this, R.font.montserrat_bold));
         barDataSet.setValueTextSize(10f);
-        /*barDataSet.setValueFormatter(new ValueFormatter() {
-            @Override
-            public String getBarLabel(BarEntry barEntry) {
-                return "L. " + barEntry.getY();
-            }
-        });*/
 
         //Crear los datos para el gráfico
         BarData barData = new BarData(barDataSet);
@@ -239,7 +257,6 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         xAxis.setLabelCount(etiquetas.size()); //Forzamos la cantidad de etiquetas que se mostrarán al establecer el conteo de "etiquetas"
         xAxis.setXOffset(4f); //Ajustamos el espaciado horizontal entre las etiquetas y la linea vertical del inicio del gráfico
         xAxis.setTypeface(ResourcesCompat.getFont(this, R.font.montserrat_semibold)); //Fuente de las etiquetas
-        //xAxis.setLabelRotationAngle(45f);
 
         //Configurar el gráfico
         graficoBarras.setFitBars(true); //Ajustamos las barras para que encajen en la vista
@@ -369,7 +386,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         graficoLineas.getLegend().setEnabled(false);
         graficoLineas.animateX(1000);
         //graficoLineas.setClipValuesToContent(true); //Recorta los valores que se salen a los dos lados del gráfico
-        graficoLineas.setExtraOffsets(5, 0, 5, 10);
+        graficoLineas.setExtraOffsets(5, 0, 20, 10);
 
         YAxis axisLeft = graficoLineas.getAxisLeft();
         axisLeft.setGridColor(Color.LTGRAY);
@@ -378,10 +395,11 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         axisLeft.setTextSize(8f);
 
         YAxis axisRight = graficoLineas.getAxisRight();
-        axisRight.setGridColor(Color.LTGRAY);
+        axisRight.setEnabled(false);
+        /*axisRight.setGridColor(Color.LTGRAY);
         axisRight.setTextColor(getColor(R.color.clr_fuente_primario));
         axisRight.setTypeface(ResourcesCompat.getFont(this, R.font.montserrat_semibold));
-        axisRight.setTextSize(8f);
+        axisRight.setTextSize(8f);*/
 
         // Refrescar el gráfico
         graficoLineas.invalidate();

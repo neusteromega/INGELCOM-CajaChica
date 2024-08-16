@@ -177,7 +177,7 @@
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/clr_casillablanca_cuadrada"
                 android:orientation="vertical"
-                android:paddingTop="10dp"
+                android:paddingTop="8dp"
                 android:paddingBottom="5dp">
 
                 <LinearLayout
@@ -191,12 +191,12 @@
                     <TextView
                         android:id="@+id/lblTotalEstGI"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="45dp"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center|left"
                         android:text="L. 0.00"
                         android:textColor="@color/clr_fuente_secundario"
-                        android:textSize="35dp" />
+                        android:textSize="28dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"

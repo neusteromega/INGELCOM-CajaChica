@@ -564,8 +564,8 @@ public class Utilidades {
     public static List<Integer> obtenerColores() {
         //Definimos una lista de 31 colores preestablecidos
         List<Integer> colores = Arrays.asList(
-                Color.parseColor("#101750"),
-                Color.parseColor("#151d65"),
+                /*Color.parseColor("#101750"),
+                Color.parseColor("#151d65"),*/
                 Color.parseColor("#1d298f"),
                 Color.parseColor("#222fa4"),
                 Color.parseColor("#2635b9"),
@@ -583,10 +583,10 @@ public class Utilidades {
                 Color.parseColor("#2635b9"),
                 Color.parseColor("#222fa4"),
                 Color.parseColor("#1d298f"),
-                Color.parseColor("#151d65"),
+                /*Color.parseColor("#151d65"),
                 Color.parseColor("#101750"), //
                 Color.parseColor("#151d65"),
-                Color.parseColor("#1d298f"),
+                Color.parseColor("#1d298f"),*/
                 Color.parseColor("#222fa4"),
                 Color.parseColor("#2635b9"),
                 Color.parseColor("#2b3bce"),
