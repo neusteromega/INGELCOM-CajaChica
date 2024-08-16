@@ -201,18 +201,17 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
     }
 
     private void establecerGraficoHorizontal(List<EstadisticasItems> items) {
-        //Crear las entradas para el gráfico de barras
-        ArrayList<BarEntry> barEntries = new ArrayList<>();
-        ArrayList<String> labels = new ArrayList<>();
+        ArrayList<BarEntry> barEntries = new ArrayList<>(); //ArrayList de tipo "BarEntry" (Dato de MPAndroidChart para los gráficos de barras) que recibirá los valores para el gráfico
+        ArrayList<String> etiquetas = new ArrayList<>(); //ArrayList de tipo "String" que recibirá los nombres de las cuadrillas para establecerlos en las etiquetas del gráfico
 
         int i = 0;
-        for (EstadisticasItems item : items) {
-            barEntries.add(new BarEntry(i, (float) item.getTotal()));
-            labels.add(item.getCuadrilla());
+        for (EstadisticasItems item : items) { //Foreach que recorre uno por uno los elementos de la lista "items" y va guardando cada elemento en la variable temporal "item"
+            barEntries.add(new BarEntry(i, (float) item.getTotal())); //Cada "total" de la lista "items" lo asignamos en el ArrayList "barEntries"
+            etiquetas.add(item.getCuadrilla()); //Cada "cuadrilla" de la lista "items" lo asignamos en el ArrayList "etiquetas"
             i++;
         }
 
-        // Crear el conjunto de datos del gráfico
+        //Crear el conjunto de datos del gráfico
         BarDataSet barDataSet = new BarDataSet(barEntries, "");
         barDataSet.setColors(getColor(R.color.clr_fuente_secundario));
         barDataSet.setValueTextColor(getColor(R.color.clr_fuente_primario));
@@ -225,46 +224,44 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
             }
         });*/
 
-        // Crear los datos para el gráfico
+        //Crear los datos para el gráfico
         BarData barData = new BarData(barDataSet);
-        barData.setBarWidth(0.9f); // Ancho de las barras
+        barData.setBarWidth(0.9f); //Ancho de las barras
 
-        // Configurar el gráfico
+        XAxis xAxis = graficoBarras.getXAxis(); //Obtenemos una instancia del eje X del gráfico (en este caso, el eje X es la parte izquierda ya que es un gráfico horizontal y sus propiedades cambian)
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); //Establecemos la posición de las etiquetas, BOTTOM las establece afuera del gráfico
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(etiquetas));
+        xAxis.setGranularityEnabled(true);
+        xAxis.setGranularity(1f);
+        xAxis.setDrawGridLines(false); //Eliminamos lineas horizontales
+        xAxis.setTextSize(8f); //Tamaño de texto de las etiquetas
+        xAxis.setTextColor(getColor(R.color.clr_fuente_primario)); //Color del texto de las etiquetas
+        xAxis.setLabelCount(etiquetas.size()); //Forzamos la cantidad de etiquetas que se mostrarán al establecer el conteo de "etiquetas"
+        xAxis.setXOffset(4f); //Ajustamos el espaciado horizontal entre las etiquetas y la linea vertical del inicio del gráfico
+        xAxis.setTypeface(ResourcesCompat.getFont(this, R.font.montserrat_semibold)); //Fuente de las etiquetas
+        //xAxis.setLabelRotationAngle(45f);
+
+        //Configurar el gráfico
+        graficoBarras.setFitBars(true); //Ajustamos las barras para que encajen en la vista
         graficoBarras.setData(barData);
-        graficoBarras.setFitBars(true);
-        graficoBarras.getDescription().setEnabled(false);
         graficoBarras.animateY(1000);
+        graficoBarras.getDescription().setEnabled(false); //Eliminamos la descripción
+        graficoBarras.getLegend().setEnabled(false); //Eliminamos la leyenda
         //graficoBarras.setDrawValueAboveBar(false); //Meter los números dentro de las barras
 
-        graficoBarras.getLegend().setEnabled(false);
+        YAxis axisLeft = graficoBarras.getAxisLeft(); //Obtenemos una instancia del eje izquierdo del gráfico (en este caso, el eje izquierdo está en la parte superior ya que es un gráfico horizontal y sus propiedades cambian)
+        axisLeft.setAxisMinimum(0f); //Aseguramos que los valores de referencia comiencen desde 0
+        axisLeft.setTypeface(ResourcesCompat.getFont(this, R.font.montserrat_semibold)); //Fuente de los valores de referencia
+        axisLeft.setTextSize(8f); //Tamaño de texto de los valores de referencia
+        axisLeft.setTextColor(getColor(R.color.clr_fuente_primario)); //Color del texto de los valores de referencia
+        axisLeft.setDrawGridLines(true); //Aseguramos que las líneas de cuadrícula estén habilitadas
+        axisLeft.setGridColor(Color.LTGRAY); //Color a las lineas verticales del gráfico
 
-        graficoBarras.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-        graficoBarras.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
-        graficoBarras.getXAxis().setGranularityEnabled(true);
-        graficoBarras.getXAxis().setGranularity(1f);
-        graficoBarras.getXAxis().setDrawGridLines(false); //Eliminar lineas horizontales
-        graficoBarras.getXAxis().setTextSize(8f); //Tamaño de texto de los Labels
-        graficoBarras.getXAxis().setTextColor(getColor(R.color.clr_fuente_primario));
-        graficoBarras.getXAxis().setLabelCount(labels.size());
-        graficoBarras.getXAxis().setXOffset(4f); // Ajusta el espaciado horizontal para evitar el corte
-        //graficoBarras.getXAxis().setLabelRotationAngle(45f);
+        YAxis axisRight = graficoBarras.getAxisRight(); //Obtenemos una instancia del eje derecho del gráfico (en este caso, el eje derecho está en la parte inferior ya que es un gráfico horizontal y sus propiedades cambian)
+        axisRight.setEnabled(false); //Deshabilitamos el eje derecho ya que no lo necesitaremos
 
-        Typeface customTypeface = ResourcesCompat.getFont(this, R.font.montserrat_semibold); // Cambia "my_custom_font" por el nombre de tu fuente
-        graficoBarras.getXAxis().setTypeface(customTypeface);
-
-        graficoBarras.getAxisLeft().setAxisMinimum(0f); // Asegurar que comience desde 0
-        graficoBarras.getAxisLeft().setTypeface(ResourcesCompat.getFont(this, R.font.montserrat_semibold));
-        graficoBarras.getAxisLeft().setTextSize(8f);
-        graficoBarras.getAxisLeft().setTextColor(getColor(R.color.clr_fuente_primario));
-        graficoBarras.getAxisLeft().setDrawGridLines(true); // Asegúrate de que las líneas de cuadrícula estén habilitadas
-        graficoBarras.getAxisLeft().setGridColor(Color.LTGRAY);
-
-        graficoBarras.getAxisRight().setEnabled(false); // Deshabilitar el eje derecho
-
-        graficoBarras.setExtraOffsets(5, 0, 35, 0); // Añadir espacio en los márgenes
-
-        //graficoBarras.fitScreen();
-        graficoBarras.invalidate(); // Refrescar el gráfico
+        graficoBarras.setExtraOffsets(5, 0, 35, 0); //Añadimos espacio en los márgenes del gráfico
+        graficoBarras.invalidate(); //Refrescamos el gráfico
     }
 
     private void establecerGraficoPastel(List<EstadisticasItems> items) {
@@ -280,7 +277,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         List<Integer> colores = Utilidades.obtenerColores();
 
         pieDataSet.setColors(colores);  // Asignar colores
-        //pieDataSet.setSliceSpace(5f); //Espaciado entre secciones del gráfico
+        //pieDataSet.setSliceSpace(5f); //Espaciado entre secciones (rebanadas) del gráfico
         pieDataSet.setValueTextColor(getColor(R.color.clr_fuente_terciario));
         pieDataSet.setValueTypeface(ResourcesCompat.getFont(this, R.font.montserrat_bold));
         pieDataSet.setValueTextSize(10f);
@@ -355,14 +352,6 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         // Crear los datos para el gráfico
         LineData lineData = new LineData(lineDataSet);
 
-        // Configurar el gráfico
-        graficoLineas.setData(lineData);
-        graficoLineas.getDescription().setEnabled(false);
-        graficoLineas.getLegend().setEnabled(false);
-        graficoLineas.animateX(1000);
-        //graficoLineas.setClipValuesToContent(true); //Recorta los valores que se salen a los dos lados del gráfico
-        graficoLineas.setExtraOffsets(5, 0, 5, 10);
-
         // Configurar el eje X para mostrar las etiquetas de "Cuadrilla"
         XAxis xAxis = graficoLineas.getXAxis();
         xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
@@ -373,6 +362,14 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         xAxis.setLabelRotationAngle(-90); // Rotar las etiquetas si son largas
         xAxis.setTextColor(getColor(R.color.clr_fuente_primario));
         xAxis.setTypeface(ResourcesCompat.getFont(this, R.font.montserrat_semibold));
+
+        // Configurar el gráfico
+        graficoLineas.setData(lineData);
+        graficoLineas.getDescription().setEnabled(false);
+        graficoLineas.getLegend().setEnabled(false);
+        graficoLineas.animateX(1000);
+        //graficoLineas.setClipValuesToContent(true); //Recorta los valores que se salen a los dos lados del gráfico
+        graficoLineas.setExtraOffsets(5, 0, 5, 10);
 
         YAxis axisLeft = graficoLineas.getAxisLeft();
         axisLeft.setGridColor(Color.LTGRAY);
