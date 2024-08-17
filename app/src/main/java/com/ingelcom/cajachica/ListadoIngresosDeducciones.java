@@ -80,7 +80,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
         btnExportar = findViewById(R.id.imgExportarLI);
         swlRecargar = findViewById(R.id.swipeRefreshLayoutLI);
 
-        swlRecargar.setOnRefreshListener(this);
+        swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
     }
 
     private void establecerElementos() {
@@ -465,13 +465,13 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
     }
 
     @Override
-    public void onRefresh() {
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+    public void onRefresh() { //Método que detecta cuando se recarga la pantalla con SwipeRefreshLayout
+        //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
             @Override
             public void run() {
-                //Toast.makeText(ListadoIngresosDeducciones.this, "REFRESCAR", Toast.LENGTH_SHORT).show();
                 obtenerDatos(nombreMes, "Mostrar");
-                swlRecargar.setRefreshing(false);
+                swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
             }
         }, 1500);
     }

@@ -7,173 +7,183 @@
     android:background="@color/clr_fondo_primario"
     tools:context=".Fragmentos.FragAdmInicio">
 
-    <ScrollView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayoutInicio"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="@string/descripcion"
-        android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/imgLogoInicio"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="35dp"
-                app:srcCompat="@mipmap/logo_ingelcom" />
+            android:layout_height="match_parent"
+            android:contentDescription="@string/descripcion"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
-                android:id="@+id/LLIngresosInicio"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
-                android:gravity="center|left"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp"
-                android:paddingRight="12dp">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imgIngresosInicio"
-                    android:layout_width="35dp"
-                    android:layout_height="30dp"
-                    android:layout_marginRight="8dp"
-                    app:srcCompat="@mipmap/ico_color_ingreso" />
-
-                <TextView
-                    android:id="@+id/lblIngresosInicio"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_extrabold"
-                    android:text="Ingresos Recientes"
-                    android:textColor="@color/clr_fuente_primario"
-                    android:textSize="18dp" />
+                    android:id="@+id/imgLogoInicio"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="35dp"
+                    app:srcCompat="@mipmap/logo_ingelcom" />
 
                 <LinearLayout
+                    android:id="@+id/LLIngresosInicio"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center|right"
-                    android:orientation="horizontal">
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center|left"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="12dp">
+
+                    <ImageView
+                        android:id="@+id/imgIngresosInicio"
+                        android:layout_width="35dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="8dp"
+                        app:srcCompat="@mipmap/ico_color_ingreso" />
 
                     <TextView
-                        android:id="@+id/btnVerTodosIngresosInicio"
+                        android:id="@+id/lblIngresosInicio"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat_bold"
-                        android:text="Ver Todos"
-                        android:textColor="@color/clr_fuente_secundario"
-                        android:textSize="17dp" />
+                        android:fontFamily="@font/montserrat_extrabold"
+                        android:text="Ingresos Recientes"
+                        android:textColor="@color/clr_fuente_primario"
+                        android:textSize="18dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center|right"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/btnVerTodosIngresosInicio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:text="Ver Todos"
+                            android:textColor="@color/clr_fuente_secundario"
+                            android:textSize="17dp" />
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvIngresosInicio"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:orientation="horizontal"
-                android:scrollbars="none">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvIngresosInicio"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:orientation="horizontal"
+                    android:scrollbars="none">
 
-            </androidx.recyclerview.widget.RecyclerView>
-
-            <LinearLayout
-                android:id="@+id/LLGastosInicio"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="40dp"
-                android:layout_marginBottom="10dp"
-                android:gravity="center|left"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp"
-                android:paddingRight="12dp">
-
-                <ImageView
-                    android:id="@+id/imgGastosInicio"
-                    android:layout_width="35dp"
-                    android:layout_height="30dp"
-                    android:layout_marginRight="8dp"
-                    app:srcCompat="@mipmap/ico_color_gasto" />
-
-                <TextView
-                    android:id="@+id/lblGastosInicio"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_extrabold"
-                    android:text="Gastos Recientes"
-                    android:textColor="@color/clr_fuente_primario"
-                    android:textSize="18dp" />
+                </androidx.recyclerview.widget.RecyclerView>
 
                 <LinearLayout
+                    android:id="@+id/LLGastosInicio"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center|right"
-                    android:orientation="horizontal">
+                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center|left"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="12dp">
+
+                    <ImageView
+                        android:id="@+id/imgGastosInicio"
+                        android:layout_width="35dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="8dp"
+                        app:srcCompat="@mipmap/ico_color_gasto" />
 
                     <TextView
-                        android:id="@+id/btnVerTodosGastosInicio"
+                        android:id="@+id/lblGastosInicio"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat_bold"
-                        android:text="Ver Todos"
-                        android:textColor="@color/clr_fuente_secundario"
-                        android:textSize="17dp" />
+                        android:fontFamily="@font/montserrat_extrabold"
+                        android:text="Gastos Recientes"
+                        android:textColor="@color/clr_fuente_primario"
+                        android:textSize="18dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center|right"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/btnVerTodosGastosInicio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:text="Ver Todos"
+                            android:textColor="@color/clr_fuente_secundario"
+                            android:textSize="17dp" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvGastosInicio"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:orientation="horizontal"
+                    android:scrollbars="none" />
+
+                <LinearLayout
+                    android:id="@+id/LLDineroDispInicio"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center|left"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="12dp">
+
+                    <ImageView
+                        android:id="@+id/imgDineroDispInicio"
+                        android:layout_width="35dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="8dp"
+                        app:srcCompat="@mipmap/ico_color_dinerodisponible" />
+
+                    <TextView
+                        android:id="@+id/lblDineroDispInicio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_extrabold"
+                        android:text="Dinero Disponible"
+                        android:textColor="@color/clr_fuente_primario"
+                        android:textSize="18dp" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvCuadrillasInicio"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:orientation="horizontal"
+                    android:scrollbars="none" />
             </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvGastosInicio"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:orientation="horizontal"
-                android:scrollbars="none" />
-
-            <LinearLayout
-                android:id="@+id/LLDineroDispInicio"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="40dp"
-                android:layout_marginBottom="10dp"
-                android:gravity="center|left"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp"
-                android:paddingRight="12dp">
-
-                <ImageView
-                    android:id="@+id/imgDineroDispInicio"
-                    android:layout_width="35dp"
-                    android:layout_height="30dp"
-                    android:layout_marginRight="8dp"
-                    app:srcCompat="@mipmap/ico_color_dinerodisponible" />
-
-                <TextView
-                    android:id="@+id/lblDineroDispInicio"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_extrabold"
-                    android:text="Dinero Disponible"
-                    android:textColor="@color/clr_fuente_primario"
-                    android:textSize="18dp" />
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvCuadrillasInicio"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:orientation="horizontal"
-                android:scrollbars="none" />
-        </LinearLayout>
-    </ScrollView>
+        </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

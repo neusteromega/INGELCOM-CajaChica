@@ -5,7 +5,10 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +39,7 @@ import java.util.List;
  * Use the {@link FragAdmInicio#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragAdmInicio extends Fragment {
+public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -46,6 +49,11 @@ public class FragAdmInicio extends Fragment {
 
     private RecyclerView rvIngresos, rvGastos, rvCuadrillas;
     private TextView btnVerIngresos, btnVerGastos;
+    private SwipeRefreshLayout swlRecargar;
+
+    private Ingreso ingr;
+    private Gasto gast;
+    private Cuadrilla cuad;
 
     public FragAdmInicio() {
         // Required empty public constructor
@@ -78,14 +86,16 @@ public class FragAdmInicio extends Fragment {
         rvCuadrillas = view.findViewById(R.id.rvCuadrillasInicio);
         btnVerIngresos = view.findViewById(R.id.btnVerTodosIngresosInicio);
         btnVerGastos = view.findViewById(R.id.btnVerTodosGastosInicio);
+        swlRecargar = view.findViewById(R.id.swipeRefreshLayoutInicio);
 
-        Ingreso ingr = new Ingreso(getContext());
-        Gasto gast = new Gasto(getContext());
-        Cuadrilla cuad = new Cuadrilla(getContext());
+        swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
+        swlRecargar.setColorSchemeResources(R.color.clr_fuente_primario); //Color del SwipeRefreshLayout
 
-        obtenerIngresos(ingr);
-        obtenerGastos(gast);
-        obtenerCuadrillas(cuad);
+        ingr = new Ingreso(getContext());
+        gast = new Gasto(getContext());
+        cuad = new Cuadrilla(getContext());
+
+        obtenerDatos();
 
         btnVerIngresos.setOnClickListener(v -> {
             Utilidades.iniciarActivityConString(getContext(), ListadoIngresosDeducciones.class, "ActivityLID", "ListadoIngresosTodos", false);
@@ -98,8 +108,14 @@ public class FragAdmInicio extends Fragment {
         return view;
     }
 
+    private void obtenerDatos() {
+        obtenerIngresos();
+        obtenerGastos();
+        obtenerCuadrillas();
+    }
+
     //Método que permite obtener los Ingresos de Firestore
-    private void obtenerIngresos(Ingreso ingr) {
+    private void obtenerIngresos() {
         try {
             //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la "cuadrilla" y el "mes" vacíos para indicar que no se haga un filtrado de ingresos. Con esto se podrán obtener todos los ingresos hechos por los administradores
             ingr.obtenerIngresos("", "", new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
@@ -124,7 +140,7 @@ public class FragAdmInicio extends Fragment {
     }
 
     //Método que permite obtener los Gastos de Firestore
-    private void obtenerGastos(Gasto gast) {
+    private void obtenerGastos() {
         try {
             //Llamamos el método "obtenerGastos" de la clase "Gasto", le mandamos la "cuadrilla", el "rol" y el "mes" vacíos para indicar que no se haga un filtrado de gastos. Con esto se podrán obtener todos los gastos hechos por los administradores y empleados
             gast.obtenerGastos("", "", "", new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
@@ -149,7 +165,7 @@ public class FragAdmInicio extends Fragment {
     }
 
     //Método que permite obtener las Cuadrillas de Firestore
-    private void obtenerCuadrillas(Cuadrilla cuad) {
+    private void obtenerCuadrillas() {
         try {
             //Llamamos el método "obtenerCuadrillas" de la clase "Cuadrilla". Con esto se podrán obtener todas las cuadrillas y su dinero disponible
             cuad.obtenerCuadrillas(new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<CuadrillasItems>() {
@@ -277,5 +293,17 @@ public class FragAdmInicio extends Fragment {
                 }
             });
         }
+    }
+
+    @Override
+    public void onRefresh() { //Método que detecta cuando se recarga la pantalla con SwipeRefreshLayout
+        //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
+            @Override
+            public void run() {
+                obtenerDatos();
+                swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
+            }
+        }, 1500);
     }
 }
