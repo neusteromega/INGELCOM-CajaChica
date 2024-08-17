@@ -7,261 +7,271 @@
     android:background="@color/clr_fondo_primario"
     tools:context=".EstadisticasGastosIngresos">
 
-    <ScrollView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayoutEstGI"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="@string/descripcion"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:contentDescription="@string/descripcion"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
-                android:id="@+id/LLEncabezadoEstGI"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="30dp"
-                android:gravity="center|left"
-                android:orientation="horizontal"
-                android:paddingLeft="20dp"
-                android:paddingRight="45dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/imgRegresarEstGI"
-                    android:layout_width="25dp"
-                    android:layout_height="match_parent"
-                    android:contentDescription="@string/descripcion"
-                    android:onClick="retroceder"
-                    app:srcCompat="@mipmap/ico_azul_regresar"
-                    tools:ignore="TouchTargetSizeCheck" />
-
-                <TextView
-                    android:id="@+id/lblTituloEstGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center"
-                    android:text="Gastos"
-                    android:textColor="@color/clr_fuente_primario"
-                    android:textSize="24dp"
-                    tools:ignore="TouchTargetSizeCheck" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/LLTiempoEstGI"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/clr_casillablanca_redonda"
-                android:elevation="5dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/lblMesEstGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/clr_casilladegradadoazul_redonda"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center"
-                    android:onClick="elegirMes"
-                    android:text="Mes"
-                    android:textColor="@color/clr_fuente_terciario"
-                    android:textSize="20sp"
-                    tools:ignore="TouchTargetSizeCheck" />
-
-                <TextView
-                    android:id="@+id/lblAnioEstGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center"
-                    android:onClick="elegirAnio"
-                    android:text="Año"
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="20sp"
-                    tools:ignore="TouchTargetSizeCheck" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/LLFechaEstGI"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/clr_casillablanca_cuadrada"
-                android:elevation="5dp"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp">
-
-                <ImageView
-                    android:id="@+id/imgFechaEstGI"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    app:srcCompat="@mipmap/ico_azul_fecha" />
+                android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/LLEncabezadoEstGI"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="30dp"
+                    android:gravity="center|left"
+                    android:orientation="horizontal"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="45dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/imgRegresarEstGI"
+                        android:layout_width="25dp"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/descripcion"
+                        android:onClick="retroceder"
+                        app:srcCompat="@mipmap/ico_azul_regresar"
+                        tools:ignore="TouchTargetSizeCheck" />
+
+                    <TextView
+                        android:id="@+id/lblTituloEstGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center"
+                        android:text="Gastos"
+                        android:textColor="@color/clr_fuente_primario"
+                        android:textSize="24dp"
+                        tools:ignore="TouchTargetSizeCheck" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/LLTiempoEstGI"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/clr_casillablanca_redonda"
+                    android:elevation="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/lblMesEstGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/clr_casilladegradadoazul_redonda"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center"
+                        android:onClick="elegirMes"
+                        android:text="Mes"
+                        android:textColor="@color/clr_fuente_terciario"
+                        android:textSize="20sp"
+                        tools:ignore="TouchTargetSizeCheck" />
+
+                    <TextView
+                        android:id="@+id/lblAnioEstGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center"
+                        android:onClick="elegirAnio"
+                        android:text="Año"
+                        android:textColor="@color/clr_fuente_secundario"
+                        android:textSize="20sp"
+                        tools:ignore="TouchTargetSizeCheck" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/LLFechaEstGI"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center|right"
-                    android:orientation="horizontal">
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/clr_casillablanca_cuadrada"
+                    android:elevation="5dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp">
+
+                    <ImageView
+                        android:id="@+id/imgFechaEstGI"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        app:srcCompat="@mipmap/ico_azul_fecha" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:onClick="mostrarMesesAnios"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/lblFechaEstGI"
-                            android:layout_width="match_parent"
-                            android:layout_height="50dp"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:fontFamily="@font/montserrat_bold"
-                            android:gravity="center|left"
-                            android:paddingLeft="15dp"
-                            android:paddingRight="10dp"
-                            android:text="Seleccionar..."
-                            android:textColor="@color/clr_fuente_secundario"
-                            android:textSize="17dp" />
-
-                        <ImageView
-                            android:id="@+id/imgAbrirFechaEstGI"
-                            android:layout_width="11dp"
-                            android:layout_height="20dp"
-                            android:layout_marginRight="10dp"
-                            android:contentDescription="@string/descripcion"
-                            app:srcCompat="@mipmap/ico_gris_expandirabajo" />
-                    </LinearLayout>
-
-                    <ImageView
-                        android:id="@+id/btnEliminarFechaEstGI"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_marginLeft="15dp"
-                        android:contentDescription="@string/descripcion"
-                        android:onClick="eliminarMesAnios"
-                        app:srcCompat="@mipmap/ico_azul_eliminar"
-                        tools:ignore="TouchTargetSizeCheck" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/LLGraficaEstGI"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/clr_casillablanca_cuadrada"
-                android:orientation="vertical"
-                android:paddingTop="8dp"
-                android:paddingBottom="5dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:orientation="horizontal"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="15dp">
-
-                    <TextView
-                        android:id="@+id/lblTotalEstGI"
-                        android:layout_width="wrap_content"
-                        android:layout_height="45dp"
-                        android:fontFamily="@font/montserrat_bold"
-                        android:gravity="center|left"
-                        android:text="L. 0.00"
-                        android:textColor="@color/clr_fuente_secundario"
-                        android:textSize="28dp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
                         android:gravity="center|right"
                         android:orientation="horizontal">
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:contentDescription="@string/descripcion"
-                            android:onClick="mostrarOpcionesGraficos"
-                            android:orientation="horizontal"
-                            tools:ignore="TouchTargetSizeCheck">
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:onClick="mostrarMesesAnios"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/lblFechaEstGI"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:layout_weight="1"
+                                android:background="@android:color/transparent"
+                                android:fontFamily="@font/montserrat_bold"
+                                android:gravity="center|left"
+                                android:paddingLeft="15dp"
+                                android:paddingRight="10dp"
+                                android:text="Seleccionar..."
+                                android:textColor="@color/clr_fuente_secundario"
+                                android:textSize="17dp" />
 
                             <ImageView
-                                android:id="@+id/imgTipoGraficoEstGI"
-                                android:layout_width="30dp"
+                                android:id="@+id/imgAbrirFechaEstGI"
+                                android:layout_width="11dp"
                                 android:layout_height="20dp"
-                                android:layout_marginRight="5dp"
-                                app:srcCompat="@mipmap/ico_azul_barchart" />
-
-                            <ImageView
-                                android:id="@+id/imgAbrirTipoGraficoEstGI"
-                                android:layout_width="10dp"
-                                android:layout_height="15dp"
-                                android:layout_marginTop="2dp"
-                                app:srcCompat="@mipmap/ico_azul_expandirabajo" />
+                                android:layout_marginRight="10dp"
+                                android:contentDescription="@string/descripcion"
+                                app:srcCompat="@mipmap/ico_gris_expandirabajo" />
                         </LinearLayout>
 
+                        <ImageView
+                            android:id="@+id/btnEliminarFechaEstGI"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginLeft="15dp"
+                            android:contentDescription="@string/descripcion"
+                            android:onClick="eliminarMesAnios"
+                            app:srcCompat="@mipmap/ico_azul_eliminar"
+                            tools:ignore="TouchTargetSizeCheck" />
                     </LinearLayout>
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/lblNoDatosEstGI"
+                <LinearLayout
+                    android:id="@+id/LLGraficaEstGI"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center"
-                    android:text="NO HAY DATOS\nDISPONIBLES"
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="24dp"
-                    android:visibility="gone"
-                    tools:ignore="TouchTargetSizeCheck" />
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/clr_casillablanca_cuadrada"
+                    android:orientation="vertical"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="5dp">
 
-                <com.github.mikephil.charting.charts.HorizontalBarChart
-                    android:id="@+id/graficoBarrasEstGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="435dp" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="15dp">
 
-                <com.github.mikephil.charting.charts.LineChart
-                    android:id="@+id/graficoLineasEstGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="435dp" />
+                        <TextView
+                            android:id="@+id/lblTotalEstGI"
+                            android:layout_width="wrap_content"
+                            android:layout_height="45dp"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:gravity="center|left"
+                            android:text="L. 0.00"
+                            android:textColor="@color/clr_fuente_secundario"
+                            android:textSize="28dp" />
 
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/graficoPastelEstGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="435dp" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center|right"
+                            android:orientation="horizontal">
 
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/descripcion"
+                                android:onClick="mostrarOpcionesGraficos"
+                                android:orientation="horizontal"
+                                tools:ignore="TouchTargetSizeCheck">
+
+                                <ImageView
+                                    android:id="@+id/imgTipoGraficoEstGI"
+                                    android:layout_width="30dp"
+                                    android:layout_height="20dp"
+                                    android:layout_marginRight="5dp"
+                                    app:srcCompat="@mipmap/ico_azul_barchart" />
+
+                                <ImageView
+                                    android:id="@+id/imgAbrirTipoGraficoEstGI"
+                                    android:layout_width="10dp"
+                                    android:layout_height="15dp"
+                                    android:layout_marginTop="2dp"
+                                    app:srcCompat="@mipmap/ico_azul_expandirabajo" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/lblNoDatosEstGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center"
+                        android:text="NO HAY DATOS\nDISPONIBLES"
+                        android:textColor="@color/clr_fuente_secundario"
+                        android:textSize="24dp"
+                        android:visibility="gone"
+                        tools:ignore="TouchTargetSizeCheck" />
+
+                    <com.github.mikephil.charting.charts.HorizontalBarChart
+                        android:id="@+id/graficoBarrasEstGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="435dp" />
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/graficoLineasEstGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="435dp" />
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/graficoPastelEstGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="435dp" />
+
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
+        </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

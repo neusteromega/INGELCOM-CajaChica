@@ -2,12 +2,15 @@ package com.ingelcom.cajachica;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -51,10 +54,11 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-public class EstadisticasGastosIngresos extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
+public class EstadisticasGastosIngresos extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, PopupMenu.OnMenuItemClickListener {
 
     private TextView lblTitulo, btnMes, btnAnio, lblFecha, lblTotal, lblNoDatos;
     private ImageView imgGrafico;
+    private SwipeRefreshLayout swlRecargar;
     private HorizontalBarChart graficoBarras;
     private PieChart graficoAnillo;
     private LineChart graficoLineas;
@@ -68,6 +72,15 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_estadisticas_gastosingresos);
 
+        inicializarElementos();
+        establecerElementos();
+        obtenerDatos("", "Barras"); //Llamamos el método "obtenerDatos" donde primeramente mandamos la "fecha" vacía y el texto "Barras" para que primero muestre el gráfico de barras horizontales
+        cambioFecha();
+    }
+
+    private void inicializarElementos() {
+        tipoDatos = Utilidades.obtenerStringExtra(this, "ActivityEGI"); //Obtenemos el tipoDatos de la pantalla anterior (FragAdmEstadisticas) el cual puede ser "Gastos" o "Ingresos"
+
         lblTitulo = findViewById(R.id.lblTituloEstGI);
         btnMes = findViewById(R.id.lblMesEstGI);
         btnAnio = findViewById(R.id.lblAnioEstGI);
@@ -75,18 +88,17 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         lblTotal = findViewById(R.id.lblTotalEstGI);
         lblNoDatos = findViewById(R.id.lblNoDatosEstGI);
         imgGrafico = findViewById(R.id.imgTipoGraficoEstGI);
+        swlRecargar = findViewById(R.id.swipeRefreshLayoutEstGI);
         graficoBarras = findViewById(R.id.graficoBarrasEstGI);
         graficoAnillo = findViewById(R.id.graficoPastelEstGI);
         graficoLineas = findViewById(R.id.graficoLineasEstGI);
 
-        tipoDatos = Utilidades.obtenerStringExtra(this, "ActivityEGI"); //Obtenemos el tipoDatos de la pantalla anterior (FragAdmEstadisticas) el cual puede ser "Gastos" o "Ingresos"
-
-        establecerElementos();
-        obtenerDatos("", "Barras"); //Llamamos el método "obtenerDatos" donde primeramente mandamos la "fecha" vacía y el texto "Barras" para que primero muestre el gráfico de barras horizontales
-        cambioFecha();
+        swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
     }
 
     private void establecerElementos() {
+        swlRecargar.setColorSchemeResources(R.color.clr_fuente_primario); //Color del SwipeRefreshLayout
+
         switch (tipoDatos) { //Asignamos los titulos dependiendo del "tipoDatos" recibido de la pantalla anterior, para eso usamos este switch
             case "Gastos":
                 lblTitulo.setText("Gastos");
@@ -502,6 +514,18 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
             default:
                 return false;
         }
+    }
+
+    @Override
+    public void onRefresh() { //Método que detecta cuando se recarga la pantalla con SwipeRefreshLayout
+        //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
+            @Override
+            public void run() {
+                obtenerDatos(fechaSeleccionada, tipoGrafico);
+                swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
+            }
+        }, 1500);
     }
 
     //Método que permite retroceder a la pantalla anterior
