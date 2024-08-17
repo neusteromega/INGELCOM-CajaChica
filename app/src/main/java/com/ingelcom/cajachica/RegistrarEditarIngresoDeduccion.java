@@ -3,6 +3,7 @@ package com.ingelcom.cajachica;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -15,6 +16,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
@@ -49,13 +52,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
+public class RegistrarEditarIngresoDeduccion extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private LinearLayout llFecha, llDinero, llTransferencia;
     private TextView lblTitulo, lblFecha, lblDinero, btnSubirCambiarFoto;
     private EditText txtTransferencia, txtTotal;
     private ImageView imgFoto, btnEliminarFoto;
     private Spinner spCuadrillas;
+    private SwipeRefreshLayout swlRecargar;
     private int day, month, year;
     private String nombreActivity, id, fechaHora, cuadrilla, usuario, transferencia, total;
     private Timestamp timestamp = null;
@@ -94,11 +98,14 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         txtTransferencia = findViewById(R.id.txtTransferenciaRI);
         txtTotal = findViewById(R.id.txtTotalRI);
         spCuadrillas = findViewById(R.id.spCuadrillaRI);
+        swlRecargar = findViewById(R.id.swipeRefreshLayoutRI);
 
         imgFoto = findViewById(R.id.imgFotoEvidenciaRI);
 
         btnEliminarFoto = findViewById(R.id.imgEliminarFotoRI);
         btnSubirCambiarFoto = findViewById(R.id.btnSubirCambiarFotoRI);
+
+        swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
     }
 
     private void obtenerDatos() {
@@ -154,6 +161,8 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
     }
 
     private void establecerElementos() {
+        swlRecargar.setColorSchemeResources(R.color.clr_fuente_primario); //Color del SwipeRefreshLayout
+
         if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
             switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
                 //Establecemos los elementos gráficos dependiendo de la pantalla
@@ -536,6 +545,18 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         catch (Exception e) {
             Log.w("DetectarCuadrilla", e);
         }
+    }
+
+    @Override
+    public void onRefresh() { //Método que detecta cuando se recarga la pantalla con SwipeRefreshLayout
+        //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
+            @Override
+            public void run() {
+                obtenerDineroCuadrilla();
+                swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
+            }
+        }, 1500);
     }
 
     public void retroceder(View view) {
