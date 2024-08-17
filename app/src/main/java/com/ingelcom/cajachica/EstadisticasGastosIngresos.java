@@ -383,6 +383,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         tipoFecha = "Año"; //Asignamos la palabra "Año" a la variable global "tipoFecha"
     }
 
+    //Método en el que se detecta cuando "lblFecha" cambia su texto; esto nos ayudará para filtrar los datos de los gráficos en tiempo real
     private void cambioFecha() {
         try {
             //Para detectar cuando el lblFecha cambia su valor, llamamos el método "addTextChangedListener"
@@ -394,11 +395,12 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
 
                 @Override //Durante el texto del lblFecha está cambiando
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    fechaSeleccionada = lblFecha.getText().toString();
-                    if (fechaSeleccionada.equalsIgnoreCase("Seleccionar..."))
-                        fechaSeleccionada = "Seleccionar Mes";
+                    fechaSeleccionada = lblFecha.getText().toString(); //Guardamos el texto cambiado de "lblFecha" en la variable global "fechaSeleccionada"
 
-                    obtenerDatos(fechaSeleccionada, tipoGrafico); //Llamamos el método "obtenerIngresos" de arriba y le mandamos el contenido del lblFecha
+                    if (fechaSeleccionada.equalsIgnoreCase("Seleccionar...")) //Si "fechaSeleccionada" contiene el texto "Seleccionar...", que entre al if
+                        fechaSeleccionada = "Seleccionar Mes"; //Cambiamos el texto de "fechaSeleccionada" y le establecemos "Seleccionar Mes"; esto se hace para obtener los gastos o ingresos sin ningún filtrado, y en las clases DAO de Gasto e Ingreso, para que devuelva los datos sin filtro, debe detectar que el texto esté vacío o tenga el texto específico: "Seleccionar Mes"
+
+                    obtenerDatos(fechaSeleccionada, tipoGrafico); //Llamamos el método "obtenerIngresos" de arriba y le mandamos el contenido de "fechaSeleccionada"
                 }
 
                 @Override //Después de que el texto del lblFecha cambie
@@ -414,15 +416,15 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
 
     //Evento Clic del LinearLayout de Fecha, al dar clic en el mismo, se abrirá un "Popup DatePicker" en el que se podrá seleccionar un mes o un año, y esto servirá para filtrar los gráficos
     public void mostrarMesesAnios(View view) {
-        if (tipoFecha.equalsIgnoreCase("Mes")) {
+        if (tipoFecha.equalsIgnoreCase("Mes")) { //Si la variable global "tipoFecha" obtiene la palabra "Mes", significa que el usuario tiene seleccionado el botón de mes en la pantalla; por lo tanto, que entre al if
             try {
                 //Creamos una instancia de la interfaz "DatePickerDialog.OnDateSetListener" y esta define el método "onDateSet" que se llama cuando el usuario selecciona una fecha en el DatePickerDialog
                 DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int year, int month, int day) { //Se ejecuta cuando el usuario ha seleccionado una fecha
                         month = month + 1; //Al mes le sumamos +1 porque los meses por defecto empiezan en 0 y no en 1
-                        String fecha = Utilidades.convertirMonthYearString(month, year); //Guardamos el mes y año convertidos a String llamando al método "convertirMonthYearString" con los parámetros de mes y año, y esto retorna el String
-                        lblFecha.setText(fecha); //Asignamos la fecha ya convertida a String al TextView lblFecha
+                        String fecha = Utilidades.convertirMonthYearString(month, year); //Guardamos el mes y año convertidos a String llamando al método "convertirMonthYearString" con los parámetros de mes y año, y esto retorna el String con el formato "Mes - Año"
+                        lblFecha.setText(fecha); //Asignamos la fecha (Mes - Año) ya convertida a String al TextView lblFecha
                     }
                 };
 
@@ -440,10 +442,10 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
                 Log.w("ObtenerMes", e);
             }
         }
-        else if (tipoFecha.equalsIgnoreCase("Año")) {
-            DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() { //Creamos una variable de tipo DatePickerDialog, y creamos el evento "OnDateSetListener" para que responda cuando se selecciona una fecha del AlertDialog o Popup DatePicker de sólo mes y año
+        else if (tipoFecha.equalsIgnoreCase("Año")) { //En cambio, si la variable global "tipoFecha" obtiene la palabra "Año", significa que el usuario tiene seleccionado el botón de año en la pantalla; por lo tanto, que entre al else if
+            DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() { //Creamos una instancia de la interfaz "DatePickerDialog.OnDateSetListener" y esta define el método "onDateSet" que se llama cuando el usuario selecciona una fecha en el DatePickerDialog
                 @Override
-                public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                public void onDateSet(DatePicker datePicker, int year, int month, int day) { //Se ejecuta cuando el usuario ha seleccionado una fecha
                     lblFecha.setText(String.valueOf(year)); //Asignamos el año ya convertido a String al lblFechaSeleccionada
                 }
             };
@@ -457,42 +459,44 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
             DatePickerDialog datePickerDialog = new DatePickerDialog(EstadisticasGastosIngresos.this, style, dateSetListener, year, month, day); //Creamos un nuevo objeto de tipo DatePickerDialog y le mandamos como parámetros al constructor, un contexto, la variable "style" que guarda el estilo, el "dateSetListener", el año, mes y día, estos últimos para que al abrir el AlertDialog, se muestre el mes actual
             datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("day", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de días asignando "GONE" en su visibilidad
             datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("month", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de meses asignando "GONE" en su visibilidad
-            datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo mes y año
+            datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo años
         }
     }
 
     //Método para eliminar la selección del Mes o Año
     public void eliminarMesAnios(View view) {
-        lblFecha.setText("Seleccionar...");
+        lblFecha.setText("Seleccionar..."); //Aquí sólo asignamos el texto "Seleccionar..." al "lblFecha"
     }
 
+    //Método que configura el PopupMenu para seleccionar el tipo de gráfico que desea visualizar
     public void mostrarOpcionesGraficos(View view) {
         PopupMenu popup = new PopupMenu(this, view); //Objeto de tipo "PopupMenu"
-        popup.setOnMenuItemClickListener(this); //Indicamos que asigne el evento "OnMenuItemClick" para que haga algo cada vez que se dé click a una opción del menú
+        popup.setOnMenuItemClickListener(this); //Indicamos que asigne el evento "OnMenuItemClick" para que haga algo cada vez que se dé click a una opción del menú, esto llama al método de abajo "onMenuItemClick"
         popup.inflate(R.menu.popupmenu_tiposgraficos); //Inflamos la vista del menú indicando la ruta de dicha vista gráfica
 
-        popup.show();
+        popup.show(); //Mostramos el popupMenu
     }
 
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
+        //Switch que detecta los IDs de las opciones del PopupMenu de Tipos de Gráficos
         switch (menuItem.getItemId()) {
             case R.id.menuGraficoBarras:
                 imgGrafico.setImageResource(R.mipmap.ico_azul_barchart); //Establecemos la imagen del gráfico de barras en el selector del tipo de gráfico a mostrar
-                tipoGrafico = "Barras";
-                obtenerDatos(fechaSeleccionada, tipoGrafico);
+                tipoGrafico = "Barras"; //Asignamos el texto "Barras" a la variable global "tipoGrafico"
+                obtenerDatos(fechaSeleccionada, tipoGrafico); //Llamamos el método "obtenerDatos" para que cargue el gráfico correspondiente cuando el usuario seleccione una opción del PopupMenu. También le mandamos las variables globales "fechaSeleccionada" y "tipoGrafico"
                 return true;
 
             case R.id.menuGraficoAnillo:
                 imgGrafico.setImageResource(R.mipmap.ico_azul_donutchart); //Establecemos la imagen del gráfico de anillo en el selector del tipo de gráfico a mostrar
-                tipoGrafico = "Anillo";
-                obtenerDatos(fechaSeleccionada, tipoGrafico);
+                tipoGrafico = "Anillo"; //Asignamos el texto "Anillo" a la variable global "tipoGrafico"
+                obtenerDatos(fechaSeleccionada, tipoGrafico); //Llamamos el método "obtenerDatos" para que cargue el gráfico correspondiente cuando el usuario seleccione una opción del PopupMenu. También le mandamos las variables globales "fechaSeleccionada" y "tipoGrafico"
                 return true;
 
             case R.id.menuGraficoLineas:
                 imgGrafico.setImageResource(R.mipmap.ico_azul_linechart); //Establecemos la imagen del gráfico de lineas en el selector del tipo de gráfico a mostrar
-                tipoGrafico = "Lineas";
-                obtenerDatos(fechaSeleccionada, tipoGrafico);
+                tipoGrafico = "Lineas"; //Asignamos el texto "Lineas" a la variable global "tipoGrafico"
+                obtenerDatos(fechaSeleccionada, tipoGrafico); //Llamamos el método "obtenerDatos" para que cargue el gráfico correspondiente cuando el usuario seleccione una opción del PopupMenu. También le mandamos las variables globales "fechaSeleccionada" y "tipoGrafico"
                 return true;
 
             default:
@@ -500,6 +504,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Pop
         }
     }
 
+    //Método que permite retroceder a la pantalla anterior
     public void retroceder(View view) {
         onBackPressed();
     }
