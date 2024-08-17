@@ -469,7 +469,8 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(ListadoIngresosDeducciones.this, "REFRESCAR", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ListadoIngresosDeducciones.this, "REFRESCAR", Toast.LENGTH_SHORT).show();
+                obtenerDatos(nombreMes, "Mostrar");
                 swlRecargar.setRefreshing(false);
             }
         }, 1500);
