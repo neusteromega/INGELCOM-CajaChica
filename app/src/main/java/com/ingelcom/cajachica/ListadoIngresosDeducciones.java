@@ -4,10 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -38,13 +41,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class ListadoIngresosDeducciones extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
+public class ListadoIngresosDeducciones extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, PopupMenu.OnMenuItemClickListener {
 
     private LinearLayout llFecha;
     private TextView lblTitulo, lblFecha, lblTotal, lblTotalTitulo;
     private String nombreActivity, nombreCuadrilla, nombreMes = "", tipoExportar;
     private RecyclerView rvIngrDeduc;
     private ImageView btnExportar;
+    private SwipeRefreshLayout swlRecargar;
 
     private Ingreso ingr = new Ingreso(ListadoIngresosDeducciones.this);
     private Deduccion deduc = new Deduccion(ListadoIngresosDeducciones.this);
@@ -74,9 +78,14 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
         lblTotalTitulo = findViewById(R.id.lblTotalIngresosLI);
         rvIngrDeduc = findViewById(R.id.rvListadoIngrDeduc);
         btnExportar = findViewById(R.id.imgExportarLI);
+        swlRecargar = findViewById(R.id.swipeRefreshLayoutLI);
+
+        swlRecargar.setOnRefreshListener(this);
     }
 
     private void establecerElementos() {
+        swlRecargar.setColorSchemeResources(R.color.clr_fuente_primario); //Color del SwipeRefreshLayout
+
         switch (nombreActivity) { //Según el texto de "nombreActivity" que se recibe de la pantalla anterior, establecemos los elementos gráficos de este Activity
             case "ListadoIngresosAdmin":
                 lblTitulo.setText(nombreCuadrilla);
@@ -453,6 +462,17 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
             else if (tipoExportar.equalsIgnoreCase("PDF"))
                 obtenerDatos(nombreMes, "Exportar");
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(ListadoIngresosDeducciones.this, "REFRESCAR", Toast.LENGTH_SHORT).show();
+                swlRecargar.setRefreshing(false);
+            }
+        }, 1500);
     }
 
     //Método que permite retroceder a la pantalla anterior
