@@ -58,7 +58,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
 
         inicializarElementos();
         establecerElementos();
-        obtenerDatos("", "Mostrar");
+        obtenerDatos("", "Mostrar"); //Llamamos el método "obtenerDatos" de abajo donde mandamos el mes vacío ya que al cargar este activity no queremos filtrar los ingresos, y el texto "Mostrar" ya que primeramente se mostrarán los ingresos, sólo se exportarán si el usuario presiona alguna opción del PopupMenu de exportaciones
         cambioFecha();
     }
 
@@ -77,7 +77,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
     }
 
     private void establecerElementos() {
-        switch (nombreActivity) {
+        switch (nombreActivity) { //Según el texto de "nombreActivity" que se recibe de la pantalla anterior, establecemos los elementos gráficos de este Activity
             case "ListadoIngresosAdmin":
                 lblTitulo.setText(nombreCuadrilla);
                 lblTotalTitulo.setText("Total de Ingresos");
@@ -117,20 +117,21 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
                         if (items != null) { //Si "items" no es null, que entre al if
                             items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
 
-                            if (tipo.equalsIgnoreCase("Mostrar"))
+                            if (tipo.equalsIgnoreCase("Mostrar")) { //Si la variable "tipo" que se recibe como parámetro tiene el texto "Mostrar", significa que solamente se desean mostrar los datos
                                 inicializarRecyclerView(items, "Ingresos"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items"
-                            else if (tipo.equalsIgnoreCase("Exportar")) {
-                                if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) {
-                                    if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                        exp.exportarIngresosExcel(items, "_" + nombreCuadrilla);
-                                    else if (tipoExportar.equalsIgnoreCase("PDF"))
-                                        exp.exportarIngresosPDF(items, "_" + nombreCuadrilla);
+                            }
+                            else if (tipo.equalsIgnoreCase("Exportar")) { //En cambio, si "tipo" tiene el texto "Exportar", significa que desean exportar los datos
+                                if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                    if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
+                                        exp.exportarIngresosExcel(items, "_" + nombreCuadrilla); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                    else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
+                                        exp.exportarIngresosPDF(items, "_" + nombreCuadrilla); //Llamamos el método "exportarIngresosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                 }
-                                else {
-                                    if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                        exp.exportarIngresosExcel(items, "_" + nombreCuadrilla + "_" + mes);
-                                    else if (tipoExportar.equalsIgnoreCase("PDF"))
-                                        exp.exportarIngresosPDF(items, "_" + nombreCuadrilla + "_" + mes);
+                                else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
+                                    if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
+                                        exp.exportarIngresosExcel(items, "_" + nombreCuadrilla + "_" + mes); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                    else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
+                                        exp.exportarIngresosPDF(items, "_" + nombreCuadrilla + "_" + mes); //Llamamos el método "exportarIngresosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                 }
                             }
                         }
@@ -187,20 +188,21 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
                         if (items != null) { //Si "items" no es null, que entre al if
                             items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
 
-                            if (tipo.equalsIgnoreCase("Mostrar"))
+                            if (tipo.equalsIgnoreCase("Mostrar")) { //Si la variable "tipo" que se recibe como parámetro tiene el texto "Mostrar", significa que solamente se desean mostrar los datos
                                 inicializarRecyclerView(items, "Ingresos"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items"
-                            else if (tipo.equalsIgnoreCase("Exportar")) {
-                                if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) {
-                                    if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                        exp.exportarIngresosExcel(items, "Generales");
-                                    else if (tipoExportar.equalsIgnoreCase("PDF"))
-                                        exp.exportarIngresosPDF(items, "Generales");
+                            }
+                            else if (tipo.equalsIgnoreCase("Exportar")) { //En cambio, si "tipo" tiene el texto "Exportar", significa que desean exportar los datos
+                                if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                    if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
+                                        exp.exportarIngresosExcel(items, "Generales"); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                    else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
+                                        exp.exportarIngresosPDF(items, "Generales"); //Llamamos el método "exportarIngresosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                 }
-                                else {
-                                    if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                        exp.exportarIngresosExcel(items, "Generales_" + mes);
-                                    else if (tipoExportar.equalsIgnoreCase("PDF"))
-                                        exp.exportarIngresosPDF(items, "Generales_" + mes);
+                                else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
+                                    if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
+                                        exp.exportarIngresosExcel(items, "Generales_" + mes); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                    else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
+                                        exp.exportarIngresosPDF(items, "Generales_" + mes); //Llamamos el método "exportarIngresosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                 }
                             }
                         }
@@ -374,9 +376,9 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
                 mesActual = mesActual.substring(0, 1).toUpperCase() + mesActual.substring(1); //Aquí establecemos en mayúscula la primera letra del mes
                 mesAnterior = mesAnterior.substring(0, 1).toUpperCase() + mesAnterior.substring(1); //Aquí establecemos en mayúscula la primera letra del mes
 
-                PopupMenu popup = new PopupMenu(this, view); // Objeto de tipo "PopupMenu"
-                popup.setOnMenuItemClickListener(this); // Indicamos que asigne el evento "OnMenuItemClick" para que haga algo cada vez que se dé click a una opción del menú
-                popup.inflate(R.menu.popupmenu_ultimosdosmeses); // Inflamos la vista del menú indicando la ruta de dicha vista gráfica
+                PopupMenu popup = new PopupMenu(this, view); //Objeto de tipo "PopupMenu"
+                popup.setOnMenuItemClickListener(this); //Indicamos que asigne el evento "OnMenuItemClick" para que haga algo cada vez que se dé click a una opción del menú
+                popup.inflate(R.menu.popupmenu_ultimosdosmeses); //Inflamos la vista del menú indicando la ruta de dicha vista gráfica
 
                 // Asignar los textos a los items del menú
                 popup.getMenu().findItem(R.id.menuMesActual).setTitle(mesActual);
@@ -402,19 +404,21 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
                 return true;
 
             case R.id.menuExportarExcel:
-                tipoExportar = "EXCEL";
+                tipoExportar = "EXCEL"; //Cuando el usuario dé clic en la opción de "Exportar a Excel" del PopupMenu "opcionesExportar", asignamos el texto "EXCEL" a la variable global "tipoExportar"
 
+                //Llamamos el método utilitario "verificarPermisosAlmacenamiento" donde mandamos el contexto de esta clase. Si este método devuelve un "true" significa que los permisos de almacenamiento externo ya han sido otorgados, en ese caso que entre al if
                 if (Utilidades.verificarPermisosAlmacenamiento(this)) {
-                    obtenerDatos(nombreMes, "Exportar");
+                    obtenerDatos(nombreMes, "Exportar"); //Como los permisos han sido otorgados, llamamos el método "obtenerDatos" de arriba y le mandamos la variable global "nombreMes" y el texto "Exportar"
                 }
 
                 return true;
 
             case R.id.menuExportarPDF:
-                tipoExportar = "PDF";
+                tipoExportar = "PDF"; //Cuando el usuario dé clic en la opción de "Exportar a PDF" del PopupMenu "opcionesExportar", asignamos el texto "PDF" a la variable global "tipoExportar"
 
+                //Llamamos el método utilitario "verificarPermisosAlmacenamiento" donde mandamos el contexto de esta clase. Si este método devuelve un "true" significa que los permisos de almacenamiento externo ya han sido otorgados, en ese caso que entre al if
                 if (Utilidades.verificarPermisosAlmacenamiento(this)) {
-                    obtenerDatos(nombreMes, "Exportar");
+                    obtenerDatos(nombreMes, "Exportar"); //Como los permisos han sido otorgados, llamamos el método "obtenerDatos" de arriba y le mandamos la variable global "nombreMes" y el texto "Exportar"
                 }
 
                 return true;
@@ -437,11 +441,13 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
         popup.show();
     }
 
-    @Override
+    @Override //Método Override que solicita los permisos de almacenamiento externo al usuario
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+        //If que llama al método utilitario "manejarResultadoPermisos", y le manda los datos necesarios para verificar si los permisos han sido otorgados, si así lo fue, el método retornará un "true", por lo tanto, que entre al if
         if (Utilidades.manejarResultadoPermisos(requestCode, permissions, grantResults, this)) {
+            //Ya que los permisos de almacenamiento externo han sido otorgados, verificamos el contenido de la variable global "tipoExportar" para llamar al método "obtenerDatos"
             if (tipoExportar.equalsIgnoreCase("EXCEL"))
                 obtenerDatos(nombreMes, "Exportar");
             else if (tipoExportar.equalsIgnoreCase("PDF"))
@@ -449,6 +455,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Pop
         }
     }
 
+    //Método que permite retroceder a la pantalla anterior
     public void retroceder(View view) {
         onBackPressed();
     }

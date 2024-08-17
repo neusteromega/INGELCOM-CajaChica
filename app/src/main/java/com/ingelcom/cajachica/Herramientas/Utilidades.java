@@ -537,27 +537,31 @@ public class Utilidades {
         return cell; //Retornamos la celda
     }
 
+    //Método que verifica si los permisos de almacenamiento externo ya han sido otorgados por el usuario
     public static boolean verificarPermisosAlmacenamiento(Activity activity) {
+        //If que comprueba si los permisos de almacenamiento externo (Manifest.permission.WRITE_EXTERNAL_STORAGE) ya han sido otorgados, sino han sido otorgados, entrará al if
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 112);
-            return false;
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 112); //Si el permiso no está concedido, se solicita al usuario mediante ActivityCompat.requestPermissions. Se le pasa la actividad actual, una lista de permisos que se están solicitando (en este caso solo uno), y el código de solicitud (112). Prácticamente estamos llamando al método "onRequestPermissionsResult" del activity que se recibe como parámetro en este método
+            return false; //Retornamos "false" para indicar que no están autorizados los permisos y que finalice este método
         }
 
-        return true;
+        return true; //No entrará al if si los permisos ya han sido otorgados, en ese caso, retornamos un "true"
     }
 
-    public static boolean manejarResultadoPermisos(int requestCode, String[] permissions, int[] grantResults, Context context) {
-        if (requestCode == 112) {
+    //Método que maneja la respuesta del usuario a la solicitud de permisos y determina si el permiso fue concedido o no
+    public static boolean manejarResultadoPermisos(int requestCode, String[] permissions, int[] grantResults, Context context) { //Recibe un "requestCode" que es el código de solicitud que se usa para identificar la solicitud de permiso, "permissions" es la lista de permisos solicitados, "grantResults" son los resultados de la solicitud, y "context" se utiliza para mostrar mensajes al usuario
+        if (requestCode == 112) { //Verifica si el "requestCode" es el 112
+            //Verifica si el usuario ha concedido el permiso. "grantResults.length > 0" asegura que hay al menos un resultado de permiso, y "grantResults[0] == PackageManager.PERMISSION_GRANTED" verifica si el primer permiso en la lista fue concedido
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                return true;
+                return true; //Si el permiso fue concedido, devuelve un "true" indicando que se puede proceder con las operaciones que requieren el permiso específico
             }
             else {
-                Toast.makeText(context, "PERMISO DENEGADO", Toast.LENGTH_SHORT).show();
-                return false;
+                Toast.makeText(context, "PERMISO DENEGADO", Toast.LENGTH_SHORT).show(); //Si el permiso fue denegado, se muestra un mensaje al usuario indicando que no tiene permiso para escribir en el almacenamiento
+                return false; //Devolvemos un "false" si el permiso ha sido denegado
             }
         }
 
-        return false;
+        return false; //Si el código de solicitud no es 112, se devuelve un "false" que indica que la solicitud de permisos no ha sido reconocida
     }
 
     //Método que devuelve una lista de 25 colores que nos servirán para establecer los colores en los gráficos del apartado de estadísticas
@@ -597,6 +601,6 @@ public class Utilidades {
                 Color.parseColor("#9099e8")
                 );
 
-        return colores;
+        return colores; //Retornamos la lista de colores
     }
 }

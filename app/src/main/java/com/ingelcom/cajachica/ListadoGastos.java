@@ -77,7 +77,7 @@ public class ListadoGastos extends AppCompatActivity implements PopupMenu.OnMenu
     }
 
     private void establecerElementos() {
-        switch (nombreActivity) {
+        switch (nombreActivity) { //Según el texto de "nombreActivity" que se recibe de la pantalla anterior, establecemos los elementos gráficos de este Activity
             case "ListadoGastosEmpleado":
                 lblTitulo.setText("Listado de Gastos");
                 break;
@@ -99,7 +99,7 @@ public class ListadoGastos extends AppCompatActivity implements PopupMenu.OnMenu
 
     private void obtenerDatosExportar(String mes) {
         try {
-            switch (nombreActivity) {
+            switch (nombreActivity) { //Dependiendo del "nombreActivity" que se recibe de la pantalla anterior, obtenemos los gastos para exportar de diferentes maneras
                 case "ListadoGastosEmpleado":
                     //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" que obtiene el usuario actual
                     usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
@@ -115,17 +115,17 @@ public class ListadoGastos extends AppCompatActivity implements PopupMenu.OnMenu
                                         if (items != null) {//Si "items" no es null, que entre al if
                                             items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
 
-                                            if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) {
-                                                if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                                    exp.exportarGastosExcel(items, "_" + cuadrilla);
-                                                else if (tipoExportar.equalsIgnoreCase("PDF"))
-                                                    exp.exportarGastosPDF(items, "_" + cuadrilla);
+                                            if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                                if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
+                                                    exp.exportarGastosExcel(items, "_" + cuadrilla); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                                else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
+                                                    exp.exportarGastosPDF(items, "_" + cuadrilla); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             }
-                                            else {
-                                                if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                                    exp.exportarGastosExcel(items, "_" + cuadrilla + "_" + mes);
-                                                else if (tipoExportar.equalsIgnoreCase("PDF"))
-                                                    exp.exportarGastosPDF(items, "_" + cuadrilla + "_" + mes);
+                                            else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
+                                                if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
+                                                    exp.exportarGastosExcel(items, "_" + cuadrilla + "_" + mes); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                                else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
+                                                    exp.exportarGastosPDF(items, "_" + cuadrilla + "_" + mes); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             }
                                         }
                                     }
@@ -153,17 +153,17 @@ public class ListadoGastos extends AppCompatActivity implements PopupMenu.OnMenu
                             if (items != null) {//Si "items" no es null, que entre al if
                                 items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
 
-                                if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) {
-                                    if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                        exp.exportarGastosExcel(items, "_" + nombreCuadrilla);
-                                    else if (tipoExportar.equalsIgnoreCase("PDF"))
-                                        exp.exportarGastosPDF(items, "_" + nombreCuadrilla);
+                                if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                    if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
+                                        exp.exportarGastosExcel(items, "_" + nombreCuadrilla); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                    else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
+                                        exp.exportarGastosPDF(items, "_" + nombreCuadrilla); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                 }
-                                else {
-                                    if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                        exp.exportarGastosExcel(items, "_" + nombreCuadrilla + "_" + mes);
-                                    else if (tipoExportar.equalsIgnoreCase("PDF"))
-                                        exp.exportarGastosPDF(items, "_" + nombreCuadrilla + "_" + mes);
+                                else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
+                                    if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
+                                        exp.exportarGastosExcel(items, "_" + nombreCuadrilla + "_" + mes); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                    else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
+                                        exp.exportarGastosPDF(items, "_" + nombreCuadrilla + "_" + mes); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                 }
                             }
                         }
@@ -183,17 +183,17 @@ public class ListadoGastos extends AppCompatActivity implements PopupMenu.OnMenu
                             if (items != null) {//Si "items" no es null, que entre al if
                                 items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
 
-                                if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) {
-                                    if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                        exp.exportarGastosExcel(items, "Generales");
-                                    else if (tipoExportar.equalsIgnoreCase("PDF"))
-                                        exp.exportarGastosPDF(items, "Generales");
+                                if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                    if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
+                                        exp.exportarGastosExcel(items, "Generales"); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                    else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
+                                        exp.exportarGastosPDF(items, "Generales"); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                 }
-                                else {
-                                    if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                                        exp.exportarGastosExcel(items, "Generales_" + mes);
-                                    else if (tipoExportar.equalsIgnoreCase("PDF"))
-                                        exp.exportarGastosPDF(items, "Generales_" + mes);
+                                else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
+                                    if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
+                                        exp.exportarGastosExcel(items, "Generales_" + mes); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                    else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
+                                        exp.exportarGastosPDF(items, "Generales_" + mes); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                 }
                             }
                         }
@@ -320,19 +320,21 @@ public class ListadoGastos extends AppCompatActivity implements PopupMenu.OnMenu
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.menuExportarExcel:
-                tipoExportar = "EXCEL";
+                tipoExportar = "EXCEL"; //Cuando el usuario dé clic en la opción de "Exportar a Excel" del PopupMenu "opcionesExportar", asignamos el texto "EXCEL" a la variable global "tipoExportar"
 
+                //Llamamos el método utilitario "verificarPermisosAlmacenamiento" donde mandamos el contexto de esta clase. Si este método devuelve un "true" significa que los permisos de almacenamiento externo ya han sido otorgados, en ese caso que entre al if
                 if (Utilidades.verificarPermisosAlmacenamiento(this)) {
-                    obtenerDatosExportar(nombreMes);
+                    obtenerDatosExportar(nombreMes); //Como los permisos han sido otorgados, llamamos el método "obtenerDatosExportar" de arriba y le mandamos la variable global "nombreMes"
                 }
 
                 return true;
 
             case R.id.menuExportarPDF:
-                tipoExportar = "PDF";
+                tipoExportar = "PDF"; //Cuando el usuario dé clic en la opción de "Exportar a PDF" del PopupMenu "opcionesExportar", asignamos el texto "PDF" a la variable global "tipoExportar"
 
+                //Llamamos el método utilitario "verificarPermisosAlmacenamiento" donde mandamos el contexto de esta clase. Si este método devuelve un "true" significa que los permisos de almacenamiento externo ya han sido otorgados, en ese caso que entre al if
                 if (Utilidades.verificarPermisosAlmacenamiento(this)) {
-                    obtenerDatosExportar(nombreMes);
+                    obtenerDatosExportar(nombreMes); //Como los permisos han sido otorgados, llamamos el método "obtenerDatosExportar" de arriba y le mandamos la variable global "nombreMes"
                 }
 
                 return true;
@@ -342,11 +344,13 @@ public class ListadoGastos extends AppCompatActivity implements PopupMenu.OnMenu
         }
     }
 
-    @Override
+    @Override //Método Override que solicita los permisos de almacenamiento externo al usuario
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+        //If que llama al método utilitario "manejarResultadoPermisos", y le manda los datos necesarios para verificar si los permisos han sido otorgados, si así lo fue, el método retornará un "true", por lo tanto, que entre al if
         if (Utilidades.manejarResultadoPermisos(requestCode, permissions, grantResults, this)) {
+            //Ya que los permisos de almacenamiento externo han sido otorgados, verificamos el contenido de la variable global "tipoExportar" para llamar al método "obtenerDatosExportar"
             if (tipoExportar.equalsIgnoreCase("EXCEL"))
                 obtenerDatosExportar(nombreMes);
             else if (tipoExportar.equalsIgnoreCase("PDF"))
@@ -354,6 +358,7 @@ public class ListadoGastos extends AppCompatActivity implements PopupMenu.OnMenu
         }
     }
 
+    //Método que permite retroceder a la pantalla anterior
     public void retroceder(View view) {
         onBackPressed();
     }
