@@ -12,20 +12,54 @@
         android:layout_height="match_parent"
         android:scaleType="fitCenter" />
 
-    <ImageView
-        android:id="@+id/imgRegresarImg"
-        android:layout_width="35dp"
-        android:layout_height="44dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/clr_casillablanca_cuadrada"
-        android:contentDescription="@string/descripcion"
-        android:elevation="5dp"
-        android:onClick="retroceder"
-        android:paddingLeft="5dp"
-        android:paddingTop="3dp"
-        android:paddingRight="5dp"
-        android:paddingBottom="3dp"
-        app:srcCompat="@mipmap/ico_azul_regresar"
-        tools:ignore="TouchTargetSizeCheck" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imgRegresarImg"
+            android:layout_width="40dp"
+            android:layout_height="44dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/clr_casillablanca_cuadrada"
+            android:contentDescription="@string/descripcion"
+            android:elevation="5dp"
+            android:onClick="retroceder"
+            android:paddingLeft="5dp"
+            android:paddingTop="10dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="10dp"
+            app:srcCompat="@mipmap/ico_azul_regresar"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imgDescargarImg"
+                android:layout_width="40dp"
+                android:layout_height="44dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/clr_casillablanca_cuadrada"
+                android:contentDescription="@string/descripcion"
+                android:elevation="5dp"
+                android:onClick="descargarImagen"
+                android:paddingLeft="7dp"
+                android:paddingTop="3dp"
+                android:paddingRight="7dp"
+                android:paddingBottom="3dp"
+                app:srcCompat="@mipmap/ico_azul_descargar"
+                tools:ignore="TouchTargetSizeCheck" />
+        </LinearLayout>
+
+    </LinearLayout>
+
 </RelativeLayout>

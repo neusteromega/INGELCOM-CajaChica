@@ -196,9 +196,9 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                 stor.obtenerImagen(imagen, new StorageCallbacks.StorageURICallback() {
                     @Override
                     public void onCallback(Uri uri) { //En este "Uri" se encuentra el URI de la imagen obtenida de Firebase Storage
-                        pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen se ha cargado
                         imageUri = uri; //Como la imagen ya se cargó, asignamos el URI de la imagen obtenido a la variable global "imageUri"
                         Glide.with(DetalleGastoIngreso.this).load(uri).into(imgFoto); //Asignamos el URI de la imagen obtenida al "imgFoto", pero usando la biblioteca "Glide" para evitar errores
+                        pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen se ha cargado
                     }
 
                     @Override
@@ -225,9 +225,9 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                 stor.obtenerImagen(imagen, new StorageCallbacks.StorageURICallback() {
                     @Override
                     public void onCallback(Uri uri) { //En este "Uri" se encuentra el URI de la imagen obtenida de Firebase Storage
-                        pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen se ha cargado
                         imageUri = uri; //Como la imagen ya se cargó, asignamos el URI de la imagen obtenido a la variable global "imageUri"
                         Glide.with(DetalleGastoIngreso.this).load(uri).into(imgFoto); //Asignamos el URI de la imagen obtenida al "imgFoto", pero usando la biblioteca "Glide" para evitar errores
+                        pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen se ha cargado
                     }
 
                     @Override

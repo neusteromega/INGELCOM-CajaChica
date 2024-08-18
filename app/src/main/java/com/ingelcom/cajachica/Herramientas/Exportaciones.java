@@ -1,8 +1,11 @@
 package com.ingelcom.cajachica.Herramientas;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.ingelcom.cajachica.Modelos.GastosItems;
@@ -31,6 +34,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 public class Exportaciones {
@@ -39,6 +43,35 @@ public class Exportaciones {
 
     public Exportaciones(Context contexto) {
         this.contexto = contexto;
+    }
+
+    public void guardarImagen(ImageView imagen, String tipo, String nombreImagen) {
+        if (imagen == null) {
+            Toast.makeText(contexto, "IMAGEN INVÁLIDA", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        BitmapDrawable drawable = (BitmapDrawable) imagen.getDrawable();
+        Bitmap bitmap = drawable.getBitmap();
+
+        if (tipo.equalsIgnoreCase("Ingreso")) {
+            File directorio = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM_Facturas/Ingresos");
+
+            if (!directorio.exists()) {
+                directorio.mkdirs();
+            }
+
+            String nombreArchivo = nombreImagen + ".jpg";
+            File archivoImagen = new File(directorio, nombreArchivo);
+
+            try (FileOutputStream out = new FileOutputStream(archivoImagen)) {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                out.flush();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void exportarGastosExcel(List<GastosItems> listaGastos, String cuadrillaMes) {
