@@ -84,6 +84,20 @@ public class FragAdmCuadrillas extends Fragment implements SwipeRefreshLayout.On
         swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
         swlRecargar.setColorSchemeResources(R.color.clr_fuente_primario); //Color del SwipeRefreshLayout
 
+        //Detectamos los cambios en el desplazamiento vertical del gridView "gvCuadrillas"
+        gvCuadrillas.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) { //Este método que se ejecuta cada vez que ocurre un cambio en el desplazamiento del gridView
+                //El "canScrollVertically(-1)" del "gvCuadrillas" devuelve un true si el gridView puede seguir desplazándose hacia arriba (si aún no llegamos al limite superior del gridView). Usamos "canScrollVertically" para verificar si la vista "gvCuadrillas" puede seguir desplazándose verticalmente en una dirección específica; y el "-1" indica la dirección "hacia arriba". Si regresa un true, que entre al if
+                if (gvCuadrillas.canScrollVertically(-1)) {
+                    swlRecargar.setEnabled(false); //Si entró al if significa que el gridView puede seguir desplazándose hacia arriba, por lo tanto, desactivamos el "SwipeRefreshLayout" para que no interfiera en el scroll del gridView
+                }
+                else { //Si entra a este else, significa que "canScrollVertically(-1)" devuelve un false, esto indica que el gridView llegó a su limite superior y no puede desplazarse más hacia arriba
+                    swlRecargar.setEnabled(true); //Como el gridView no puede seguir desplazándose hacia arriba, activamos el "SwipeRefreshLayout" para que ahora si permita recargar la pantalla
+                }
+            }
+        });
+
         obtenerCuadrillas(); //Llamamos el método "obtenerCuadrillas" de abajo y le mandamos el objeto "cuad"
 
         btnOrdenar.setOnClickListener(v -> {
