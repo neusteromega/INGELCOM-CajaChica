@@ -7,23 +7,19 @@
     android:background="@color/clr_fondo_primario"
     tools:context=".Fragmentos.FragAdmCuadrillas">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshLayoutCua"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayoutCua"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:id="@+id/LLEncabezadoCua"
@@ -55,7 +51,7 @@
                 <LinearLayout
                     android:id="@+id/LLDineroDispCua"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
                     android:layout_marginBottom="15dp"
                     android:gravity="center"
@@ -97,20 +93,21 @@
 
                 </LinearLayout>
             </LinearLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-            <GridView
-                android:id="@+id/gvCuadrillas"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:horizontalSpacing="-8dp"
-                android:listSelector="@android:color/transparent"
-                android:numColumns="2"
-                android:scrollbars="none"
-                android:verticalSpacing="-15dp"
-                tools:listitem="@layout/items_cuadrillas" />
 
-        </LinearLayout>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        <GridView
+            android:id="@+id/gvCuadrillas"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:horizontalSpacing="-8dp"
+            android:listSelector="@android:color/transparent"
+            android:numColumns="2"
+            android:scrollbars="none"
+            android:verticalSpacing="-15dp"
+            tools:listitem="@layout/items_cuadrillas" />
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
