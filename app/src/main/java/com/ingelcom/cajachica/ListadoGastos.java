@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.Manifest;
@@ -13,6 +14,8 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -38,11 +41,12 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-public class ListadoGastos extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
+public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, PopupMenu.OnMenuItemClickListener {
 
     private TextView lblTitulo, lblFecha, lblLineaCuadrilla, lblLineaSupervisores;
     private String nombreActivity, nombreCuadrilla, nombreMes = "", tipoExportar;
     private ViewPager2 vpGastos;
+    private SwipeRefreshLayout swlRecargar;
 
     //Instancia de la clase "SharedViewGastosModel" que nos ayuda a compartir datos con diferentes componentes de la interfaz de usuario, como ser fragmentos y actividades y que estos datos sobreviven a cambios de configuración como las rotaciones de pantalla
     private SharedViewGastosModel svmGastos;
@@ -72,11 +76,15 @@ public class ListadoGastos extends AppCompatActivity implements PopupMenu.OnMenu
         lblLineaCuadrilla = findViewById(R.id.lblCuadrillaLineaLG);
         lblLineaSupervisores = findViewById(R.id.lblSupervisoresLineaLG);
         vpGastos = findViewById(R.id.vpListadoGastos); //Relacionamos la variable "vpGastos" con el ViewPager
+        swlRecargar = findViewById(R.id.swipeRefreshLayoutLG);
 
         svmGastos = new ViewModelProvider(this).get(SharedViewGastosModel.class); //Obtenemos el ViewModel compartido, haciendo referencia a la clase "SharedViewGastosModel"
+        swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
     }
 
     private void establecerElementos() {
+        swlRecargar.setColorSchemeResources(R.color.clr_fuente_primario); //Color del SwipeRefreshLayout
+
         switch (nombreActivity) { //Según el texto de "nombreActivity" que se recibe de la pantalla anterior, establecemos los elementos gráficos de este Activity
             case "ListadoGastosEmpleado":
                 lblTitulo.setText("Listado de Gastos");
@@ -356,6 +364,17 @@ public class ListadoGastos extends AppCompatActivity implements PopupMenu.OnMenu
             else if (tipoExportar.equalsIgnoreCase("PDF"))
                 obtenerDatosExportar(nombreMes);
         }
+    }
+
+    @Override
+    public void onRefresh() { //Método que detecta cuando se recarga la pantalla con SwipeRefreshLayout
+        //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
+            @Override
+            public void run() {
+                swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
+            }
+        }, 1500);
     }
 
     //Método que permite retroceder a la pantalla anterior
