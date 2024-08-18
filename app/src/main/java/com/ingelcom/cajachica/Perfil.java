@@ -168,6 +168,7 @@ public class Perfil extends AppCompatActivity {
         }
     }
 
+    //Método que redirecciona al activity "AgregarEditarPerfil" donde manda los datos necesarios dependiendo del contenido recibido del Activity anterior y guardado en la variable global "nombreActivity"
     public void editarPerfil(View view) {
         //Que entre al if si "nombreActivity" no es nulo
         if (nombreActivity != null) {
