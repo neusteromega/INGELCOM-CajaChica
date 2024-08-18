@@ -359,6 +359,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         }
     }
 
+    //Método que permite retroceder a la pantalla anterior
     public void retroceder(View view) {
         onBackPressed();
     }

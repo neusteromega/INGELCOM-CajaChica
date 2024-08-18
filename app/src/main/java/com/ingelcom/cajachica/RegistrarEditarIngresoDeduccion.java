@@ -52,14 +52,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class RegistrarEditarIngresoDeduccion extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
 
     private LinearLayout llFecha, llDinero, llTransferencia;
     private TextView lblTitulo, lblFecha, lblDinero, btnSubirCambiarFoto;
     private EditText txtTransferencia, txtTotal;
     private ImageView imgFoto, btnEliminarFoto;
     private Spinner spCuadrillas;
-    private SwipeRefreshLayout swlRecargar;
+    //private SwipeRefreshLayout swlRecargar;
     private int day, month, year;
     private String nombreActivity, id, fechaHora, cuadrilla, usuario, transferencia, total;
     private Timestamp timestamp = null;
@@ -98,14 +98,14 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity implement
         txtTransferencia = findViewById(R.id.txtTransferenciaRI);
         txtTotal = findViewById(R.id.txtTotalRI);
         spCuadrillas = findViewById(R.id.spCuadrillaRI);
-        swlRecargar = findViewById(R.id.swipeRefreshLayoutRI);
+        //swlRecargar = findViewById(R.id.swipeRefreshLayoutRI);
 
         imgFoto = findViewById(R.id.imgFotoEvidenciaRI);
 
         btnEliminarFoto = findViewById(R.id.imgEliminarFotoRI);
         btnSubirCambiarFoto = findViewById(R.id.btnSubirCambiarFotoRI);
 
-        swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
+        //swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
     }
 
     private void obtenerDatos() {
@@ -161,7 +161,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity implement
     }
 
     private void establecerElementos() {
-        swlRecargar.setColorSchemeResources(R.color.clr_fuente_primario); //Color del SwipeRefreshLayout
+        //swlRecargar.setColorSchemeResources(R.color.clr_fuente_primario); //Color del SwipeRefreshLayout
 
         if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
             switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
@@ -547,7 +547,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity implement
         }
     }
 
-    @Override
+    /*@Override
     public void onRefresh() { //Método que detecta cuando se recarga la pantalla con SwipeRefreshLayout
         //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
@@ -557,8 +557,9 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity implement
                 swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
             }
         }, 1500);
-    }
+    }*/
 
+    //Método que permite retroceder a la pantalla anterior
     public void retroceder(View view) {
         onBackPressed();
     }
