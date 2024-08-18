@@ -3,7 +3,10 @@ package com.ingelcom.cajachica.Fragmentos;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -28,7 +31,7 @@ import com.ingelcom.cajachica.R;
 import java.util.HashMap;
 import java.util.List;
 
-public class FragAdmCuadrillas extends Fragment implements PopupMenu.OnMenuItemClickListener {
+public class FragAdmCuadrillas extends Fragment implements SwipeRefreshLayout.OnRefreshListener, PopupMenu.OnMenuItemClickListener {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -38,9 +41,11 @@ public class FragAdmCuadrillas extends Fragment implements PopupMenu.OnMenuItemC
 
     private ImageView btnOrdenar;
     private GridView gvCuadrillas;
+    private SwipeRefreshLayout swlRecargar;
     private CuadrillasAdapter customAdapter; //Objeto de la clase "CuadrillasAdapter"
     private List<CuadrillasItems> items;
-    private FirestoreOperaciones oper;
+    private Cuadrilla cuad;
+    private String tipoOrden = "";
 
     public FragAdmCuadrillas() {
         // Required empty public constructor
@@ -62,8 +67,6 @@ public class FragAdmCuadrillas extends Fragment implements PopupMenu.OnMenuItemC
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        oper = new FirestoreOperaciones(); //Creamos la instancia de la clase "FirestoreOperaciones"
     }
 
     @Override
@@ -71,11 +74,17 @@ public class FragAdmCuadrillas extends Fragment implements PopupMenu.OnMenuItemC
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_adm_cuadrillas, container, false);
-        Cuadrilla cuad = new Cuadrilla(getContext()); //Ponemos la instancia de la clase "Cuadrilla" aquí y no de forma global ya que el "getContext()" se genera cuando se crea el fragment, aquí en "onCreateView"
 
         gvCuadrillas = view.findViewById(R.id.gvCuadrillas);
         btnOrdenar = view.findViewById(R.id.imgOrdenarCua);
-        obtenerCuadrillas(cuad); //Llamamos el método "obtenerCuadrillas" de abajo y le mandamos el objeto "cuad"
+        swlRecargar = view.findViewById(R.id.swipeRefreshLayoutCua);
+
+        cuad = new Cuadrilla(getContext()); //Ponemos la instancia de la clase "Cuadrilla" aquí y no de forma global ya que el "getContext()" se genera cuando se crea el fragment, aquí en "onCreateView"
+
+        swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
+        swlRecargar.setColorSchemeResources(R.color.clr_fuente_primario); //Color del SwipeRefreshLayout
+
+        obtenerCuadrillas(); //Llamamos el método "obtenerCuadrillas" de abajo y le mandamos el objeto "cuad"
 
         btnOrdenar.setOnClickListener(v -> {
             try {
@@ -94,15 +103,20 @@ public class FragAdmCuadrillas extends Fragment implements PopupMenu.OnMenuItemC
     }
 
     //Método que nos ayuda a obtener las cuadrillas de la colección "cuadrillas" de Firestore y asignarlas al RecyclerView
-    private void obtenerCuadrillas(Cuadrilla cuad) {
+    private void obtenerCuadrillas() {
         try {
             //Llamamos el método "obtenerCuadrillas" de la clase "Cuadrilla" donde se obtienen todas las cuadrillas, e invocamos a la interfaz "FirestoreAllSpecialDocumentsCallback" y le decimos que debe recibir un "CuadrillasItems"
             cuad.obtenerCuadrillas(new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<CuadrillasItems>() {
                 @Override
                 public void onCallback(List<CuadrillasItems> lista) { //En esta lista "items" están todos las cuadrillas y sus datos (Nombre y Dinero)
-                    if (lista != null) //Si "items" no es null, que entre al if
+                    if (lista != null) {//Si "items" no es null, que entre al if
                         items = lista; //Inicializamos la lista global "items" con la "lista" de cuadrillas extraída de Firestore
+
+                        if (tipoOrden.equalsIgnoreCase("Alfabetico")) {
+
+                        }
                         inicializarGridView(lista); //Llamamos el método "inicializarGridView" y le mandamos la lista "items"
+                    }
                 }
 
                 @Override
@@ -141,16 +155,19 @@ public class FragAdmCuadrillas extends Fragment implements PopupMenu.OnMenuItemC
     public boolean onMenuItemClick(MenuItem menuItem) { //Parte lógica de lo que queremos que haga cada opción del popup menú
         switch (menuItem.getItemId()) {
             case R.id.menuOrdenAlfabetico:
+                tipoOrden = "Alfabetico";
                 items = Utilidades.ordenarListaPorAlfabetico(items, "cuadrilla", "Ascendente"); //Llamamos el método utilitario "ordenarListaPorAlfabetico". Le mandamos la lista "items", el nombre del campo String "cuadrilla", y el tipo de orden "Ascendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                 customAdapter.notifyDataSetChanged(); //Esto indica al "customAdapter" que sus datos han sido cambiados
                 return true;
 
             case R.id.menuMenosDinero:
+                tipoOrden = "MenosDinero";
                 items = Utilidades.ordenarListaPorDouble(items, "dinero", "Ascendente"); //Llamamos el método utilitario "ordenarListaPorDouble". Le mandamos la lista "items", el nombre del campo double "dinero", y el tipo de orden "Ascendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                 customAdapter.notifyDataSetChanged(); //Esto indica al "customAdapter" que sus datos han sido cambiados
                 return true;
 
             case R.id.menuMasDinero:
+                tipoOrden = "MasDinero";
                 items = Utilidades.ordenarListaPorDouble(items, "dinero", "Descendente"); //Llamamos el método utilitario "ordenarListaPorDouble". Le mandamos la lista "items", el nombre del campo double "dinero", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                 customAdapter.notifyDataSetChanged(); //Esto indica al "customAdapter" que sus datos han sido cambiados
                 return true;
@@ -158,5 +175,17 @@ public class FragAdmCuadrillas extends Fragment implements PopupMenu.OnMenuItemC
             default:
                 return false;
         }
+    }
+
+    @Override
+    public void onRefresh() { //Método que detecta cuando se recarga la pantalla con SwipeRefreshLayout
+        //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
+            @Override
+            public void run() {
+                obtenerCuadrillas();
+                swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
+            }
+        }, 1500);
     }
 }
