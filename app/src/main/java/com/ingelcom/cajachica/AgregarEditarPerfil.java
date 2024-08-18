@@ -129,9 +129,30 @@ public class AgregarEditarPerfil extends AppCompatActivity {
 
                 //Establecemos los elementos gráficos si la pantalla es "EditarEmpleadoAdmin"
                 case "EditarEmpleadoAdmin":
-                    txtNombreApellido.setText(nombre);
+                    /*txtNombreApellido.setText(nombre);
                     txtIdentidad.setText(identidadVieja);
-                    txtTelefono.setText(telefono);
+                    txtTelefono.setText(telefono);*/
+
+                    try {
+                        usu.obtenerUnUsuario(identidadVieja, new FirestoreCallbacks.FirestoreDocumentCallback() {
+                            @Override
+                            public void onCallback(Map<String, Object> documento) {
+                                if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante la identidad
+                                    txtNombreApellido.setText((String) documento.get("Nombre"));
+                                    txtIdentidad.setText((String) documento.get("Identidad"));
+                                    txtTelefono.setText((String) documento.get("Telefono"));
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                Log.w("BuscarDocumento", "Error al obtener el documento", e);
+                            }
+                        });
+                    }
+                    catch (Exception e) {
+                        Log.w("ObtenerUsuario", e);
+                    }
                     break;
             }
         }

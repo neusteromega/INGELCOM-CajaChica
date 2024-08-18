@@ -137,12 +137,31 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
     private void perfilEmpleadoAdmin() {
         lblTitulo.setText("Perfil de Empleado"); //Asignamos el titulo
 
-        //Asignamos los datos del empleado a los TextViews
-        lblNombre.setText(nombre);
-        lblCorreo.setText(correo);
-        lblIdentidad.setText(identidad);
-        lblTelefono.setText(telefono);
-        lblCuadrilla.setText(cuadrilla);
+        try {
+            usu.obtenerUnUsuario(identidad, new FirestoreCallbacks.FirestoreDocumentCallback() {
+                @Override
+                public void onCallback(Map<String, Object> documento) {
+                    if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante la identidad
+                        lblNombre.setText((String) documento.get("Nombre"));
+                        lblCorreo.setText((String) documento.get("Correo"));
+                        lblIdentidad.setText((String) documento.get("Identidad"));
+                        lblTelefono.setText((String) documento.get("Telefono"));
+                        lblCuadrilla.setText((String) documento.get("Cuadrilla"));
+                    }
+                    else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
+                        Toast.makeText(Perfil.this, "USUARIO NO ENCONTRADO", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Log.w("BuscarDocumento", "Error al obtener el documento", e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("PerfilEmpleadoAdmin", e);
+        }
     }
 
     private void perfilEmpleado() {
@@ -154,13 +173,19 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
                 @Override
                 public void onCallback(Map<String, Object> documento) {
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
-                        //Asignamos la información del usuario en los elementos gráficos de la pantalla. Esta información se extrae del hashMap
-                        lblNombre.setText((String) documento.get("Nombre"));
-                        lblCorreo.setText((String) documento.get("Correo"));
-                        lblIdentidad.setText((String) documento.get("Identidad"));
-                        lblTelefono.setText((String) documento.get("Telefono"));
-                        lblCuadrilla.setText((String) documento.get("Cuadrilla"));
-                    } else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
+                        nombre = (String) documento.get("Nombre");
+                        correo = (String) documento.get("Correo");
+                        identidad = (String) documento.get("Identidad");
+                        telefono = (String) documento.get("Telefono");
+                        cuadrilla = (String) documento.get("Cuadrilla");
+
+                        lblNombre.setText(nombre);
+                        lblCorreo.setText(correo);
+                        lblIdentidad.setText(identidad);
+                        lblTelefono.setText(telefono);
+                        lblCuadrilla.setText(cuadrilla);
+                    }
+                    else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
                         Toast.makeText(Perfil.this, "USUARIO NO ENCONTRADO", Toast.LENGTH_SHORT).show();
                     }
                 }
