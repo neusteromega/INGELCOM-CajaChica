@@ -8,7 +8,7 @@ public class SharedViewGastosModel extends ViewModel {
 
     //Declaramos un campo "final" llamado "fecha" de tipo "MutableLiveData<String>". MutableLiveData es una clase que permite que los datos sean observables y también mutables, es decir, su valor puede cambiar
     private final MutableLiveData<String> fecha = new MutableLiveData<>();
-    private final MutableLiveData<String> exportar = new MutableLiveData<>();
+    private final MutableLiveData<String> recargar = new MutableLiveData<>();
 
     //Método que actualiza el valor del MutableLiveData "fecha" con el nuevo valor proporcionado (será el lblFecha.getText() del ListadoGastos)
     public void setFecha(String fecha) {
@@ -21,11 +21,11 @@ public class SharedViewGastosModel extends ViewModel {
         return fecha;
     }
 
-    public void setExportar(String exportar) {
-        this.exportar.setValue(exportar);
+    public void setRecargar(String recargar) {
+        this.recargar.setValue(recargar);
     }
 
-    public LiveData<String> getExportar() {
-        return exportar;
+    public LiveData<String> getRecargar() {
+        return recargar;
     }
 }

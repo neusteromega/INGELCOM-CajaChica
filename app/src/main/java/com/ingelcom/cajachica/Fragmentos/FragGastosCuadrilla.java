@@ -36,14 +36,13 @@ public class FragGastosCuadrilla extends Fragment {
     private static final String ARG_NOMBRE_CUADRILLA = "cuadrilla_key";
     private static final String ARG_NOMBRE_ACTIVITY = "activity_key";
 
-    private String nombreCuadrilla, nombreActivity, nombreMes = "", tipoExportar;
+    private String nombreCuadrilla, nombreActivity, nombreMes = "", recargar = "";
     private RecyclerView rvGastos;
     private TextView lblTotalGastos;
     private Gasto gast;
     private Usuario usu;
-    private Exportaciones exp;
 
-    //Instancia de la clase "SharedViewGastosModel" que nos ayuda a compartir datos con diferentes componentes de la interfaz de usuario, como ser fragmentos y actividades y que estos datos sobreviven a cambios de configuración como las rotaciones de pantalla
+    //Instancias de la clase "SharedViewGastosModel" que nos ayuda a compartir datos con diferentes componentes de la interfaz de usuario, como ser fragmentos y actividades y que estos datos sobreviven a cambios de configuración como las rotaciones de pantalla
     private SharedViewGastosModel svmGastos;
 
     public FragGastosCuadrilla() {
@@ -75,7 +74,6 @@ public class FragGastosCuadrilla extends Fragment {
         //Ponemos las instancias de las clases aquí y no de forma global ya que el "getContext()" se genera cuando se crea el fragment, aquí en "onCreateView"
         gast = new Gasto(getContext());
         usu = new Usuario(getContext());
-        exp = new Exportaciones(getContext());
 
         //Enlazamos los componentes gráficos del fragment a sus respectivas variables
         lblTotalGastos = view.findViewById(R.id.lblTotalGastosCua);
@@ -219,6 +217,17 @@ public class FragGastosCuadrilla extends Fragment {
                 public void onChanged(String mes) { //Este método se llamará cada vez que el valor "fecha" cambie en el "LiveData<String>"
                     nombreMes = mes; //Guardamos el mes recibido en la variable global "nombreMes"
                     obtenerGastos(mes); //Llamamos el método "obtenerGastos" de arriba y le mandamos las instancias de las clases "Usuario" y "Gasto", y "mes" que contiene el "lblFecha" del activity ListadoGastos, y el tipo "Mostrar" para indicar que muestre los datos en el RecyclerView
+                }
+            });
+
+            //Llamamos el método "getRecargar" del usando la instancia "svmGastos" de la clase "SharedViewGastosModel" que devuelve un "LiveData<String>", esto proporciona una referencia observable al valor de "recargar"
+            svmGastos.getRecargar().observe(getViewLifecycleOwner(), new Observer<String>() {
+                @Override
+                public void onChanged(String s) { //Este método se llamará cada vez que el valor "recargar" cambie en el "LiveData<String>"
+                    recargar = s; //Guardamos el texto recibido en la variable global "recargar"
+
+                    if (recargar.equalsIgnoreCase("Recargar"))
+                        obtenerGastos(nombreMes); //Llamamos al método "obtenerGastos" para que se extraigan los datos al recargar
                 }
             });
         }

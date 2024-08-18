@@ -34,9 +34,11 @@ public class FragGastosSupervisores extends Fragment {
     private static final String ARG_NOMBRE_CUADRILLA = "cuadrilla_key";
     private static final String ARG_NOMBRE_ACTIVITY = "activity_key";
 
-    private String nombreCuadrilla, nombreActivity;
+    private String nombreCuadrilla, nombreActivity, nombreMes = "", recargar = "";
     private RecyclerView rvGastos;
     private TextView lblTotalGastos;
+    private Gasto gast;
+    private Usuario usu;
 
     //Instancia de la clase "SharedViewGastosModel" que nos ayuda a compartir datos con diferentes componentes de la interfaz de usuario, como ser fragmentos y actividades y que estos datos sobreviven a cambios de configuración como las rotaciones de pantalla
     private SharedViewGastosModel svmGastos;
@@ -68,21 +70,21 @@ public class FragGastosSupervisores extends Fragment {
         View view = inflater.inflate(R.layout.fragment_gastos_supervisores, container, false);
 
         //Ponemos las instancias de las clases aquí y no de forma global ya que el "getContext()" se genera cuando se crea el fragment, aquí en "onCreateView"
-        Gasto gast = new Gasto(getContext());
-        Usuario usu = new Usuario(getContext());
+        gast = new Gasto(getContext());
+        usu = new Usuario(getContext());
 
         //Enlazamos los componentes gráficos del fragment a sus respectivas variables
         lblTotalGastos = view.findViewById(R.id.lblTotalGastosSup);
         rvGastos = view.findViewById(R.id.rvGastosSupervisores);
 
-        obtenerGastos(usu, gast, ""); //Llamamos al método "obtenerGastos" y le mandamos la instancias de las clases Usuario y Gasto, y el "mes" vacío, ya que al crear el fragment no se realiza un filtrado de gastos por mes
-        obtenerMes(usu, gast); //Llamamos al método "obtenerMes" para recibir la selección del mes hecha por el usuario
+        obtenerGastos(""); //Llamamos al método "obtenerGastos" y le mandamos la instancias de las clases Usuario y Gasto, y el "mes" vacío, ya que al crear el fragment no se realiza un filtrado de gastos por mes
+        obtenerDatos(); //Llamamos al método "obtenerMes" para recibir la selección del mes hecha por el usuario
 
         return view;
     }
 
     //Método que nos ayuda a obtener los gastos de la colección "gastos" de Firestore y asignarlos al RecyclerView
-    private void obtenerGastos(Usuario usu, Gasto gast, String mes) { //Recibe las instancias de las clases "Usuario" y "Gasto", y el String con el mes y año (por ejemplo, "Julio - 2024") para hacer el filtrado de gastos
+    private void obtenerGastos(String mes) { //Recibe las instancias de las clases "Usuario" y "Gasto", y el String con el mes y año (por ejemplo, "Julio - 2024") para hacer el filtrado de gastos
         try {
             //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" que obtiene el usuario actual
             usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
@@ -203,7 +205,7 @@ public class FragGastosSupervisores extends Fragment {
     }
 
     //Método que nos permite obtener el mes y el año seleccionado por el usuario. Aquí se obtiene literalmente el contenido del TextView lblFecha del Activity ListadoGastos, y se obtiene cada vez que el contenido de dicho TextView cambia
-    private void obtenerMes(Usuario usu, Gasto gast) { //Recibe las instancias de las clases "Usuario" y "Gasto"
+    private void obtenerDatos() { //Recibe las instancias de las clases "Usuario" y "Gasto"
         try {
             svmGastos = new ViewModelProvider(getActivity()).get(SharedViewGastosModel.class); //Obtenemos el ViewModel compartido, haciendo referencia a la clase "SharedViewGastosModel"
 
@@ -211,7 +213,19 @@ public class FragGastosSupervisores extends Fragment {
             svmGastos.getFecha().observe(getViewLifecycleOwner(), new Observer<String>() { //Configuramos un observador del "LiveData<String>" que devuelve "getFecha()". "getViewLifecycleOwner()" se usa para obtener el ciclo de vida del fragmento actual, asegurando que las actualizaciones solo se envíen cuando el fragmento esté en un estado activo (es decir, no cuando está destruido o detenido)
                 @Override
                 public void onChanged(String mes) { //Este método se llamará cada vez que el valor "fecha" cambie en el "LiveData<String>"
-                    obtenerGastos(usu, gast, mes); //Llamamos el método "obtenerGastos" de arriba y le mandamos las instancias de las clases "Usuario" y "Gasto", y "mes" que contiene el "lblFecha" del activity ListadoGastos
+                    nombreMes = mes;
+                    obtenerGastos(mes); //Llamamos el método "obtenerGastos" de arriba y le mandamos las instancias de las clases "Usuario" y "Gasto", y "mes" que contiene el "lblFecha" del activity ListadoGastos
+                }
+            });
+
+            //Llamamos el método "getRecargar" del usando la instancia "svmGastos" de la clase "SharedViewGastosModel" que devuelve un "LiveData<String>", esto proporciona una referencia observable al valor de "recargar"
+            svmGastos.getRecargar().observe(getViewLifecycleOwner(), new Observer<String>() {
+                @Override
+                public void onChanged(String s) { //Este método se llamará cada vez que el valor "recargar" cambie en el "LiveData<String>"
+                    recargar = s; //Guardamos el texto recibido en la variable global "recargar"
+
+                    if (recargar.equalsIgnoreCase("Recargar"))
+                        obtenerGastos(nombreMes); //Llamamos al método "obtenerGastos" para que se extraigan los datos al recargar
                 }
             });
         }

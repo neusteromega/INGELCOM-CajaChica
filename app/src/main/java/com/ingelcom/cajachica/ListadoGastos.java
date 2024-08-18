@@ -372,6 +372,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
             @Override
             public void run() {
+                svmGastos.setRecargar("Recargar"); //Cada vez que se recargue la pantalla, establecemos el texto "Recargar" en el "setRecargar" del "svmGastos"
                 swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
             }
         }, 1500);
