@@ -1,9 +1,12 @@
 package com.ingelcom.cajachica;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -20,13 +23,14 @@ import com.ingelcom.cajachica.Herramientas.Utilidades;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Perfil extends AppCompatActivity {
+public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     private FirestoreOperaciones oper = new FirestoreOperaciones();
     private TextView lblTitulo, lblSeparadorTelCua, lblNombre, lblCorreo, lblIdentidad, lblTelefono, lblCuadrilla, btnEditarPerfil;
     private LinearLayout llCuadrilla;
+    private SwipeRefreshLayout swlRecargar;
     private String emailActual, nombreActivity, nombre, correo, identidad, telefono, cuadrilla, rol, estado;
 
     private Usuario usu = new Usuario(Perfil.this);
@@ -54,6 +58,10 @@ public class Perfil extends AppCompatActivity {
         lblTelefono = findViewById(R.id.lblTelefonoPerfil);
         lblCuadrilla = findViewById(R.id.lblCuadrillaPerfil);
         btnEditarPerfil = findViewById(R.id.btnEditarPerfil);
+        swlRecargar = findViewById(R.id.swipeRefreshLayoutPerfil);
+
+        swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
+        swlRecargar.setColorSchemeResources(R.color.clr_fuente_primario); //Color del SwipeRefreshLayout
     }
 
     private void obtenerDatos() {
@@ -70,8 +78,8 @@ public class Perfil extends AppCompatActivity {
     }
 
     private void establecerElementos() {
-        //Que entre al if si "nombreActivity" no es nulo
-        if (nombreActivity != null) {
+
+        if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
             //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
             switch (nombreActivity) {
                 //Establecemos los elementos gráficos si la pantalla es "PerfilAdmin"
@@ -201,5 +209,17 @@ public class Perfil extends AppCompatActivity {
 
     public void retroceder(View view) {
         onBackPressed();
+    }
+
+    @Override
+    public void onRefresh() { //Método que detecta cuando se recarga la pantalla con SwipeRefreshLayout
+        //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
+            @Override
+            public void run() {
+                establecerElementos();
+                swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
+            }
+        }, 1500);
     }
 }

@@ -104,6 +104,30 @@ public class Usuario {
         }
     }
 
+    //Método que permite obtener el documento de Firestore de un usuario buscándolo mediante su identidad
+    public void obtenerUnUsuario(String identidad, FirestoreCallbacks.FirestoreDocumentCallback callback) {
+        try {
+            oper.obtenerUnRegistro("usuarios", "Identidad", identidad, new FirestoreCallbacks.FirestoreDocumentCallback() {
+                @Override
+                public void onCallback(Map<String, Object> documento) {
+                    if (documento != null)
+                        callback.onCallback(documento);
+                    else
+                        Log.w("ObtenerUsuario", "Usuario no encontrado");
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    callback.onFailure(e);
+                    Log.w("BuscarUsuario", "Error al obtener el usuario", e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerUsuario", e);
+        }
+    }
+
     //Método que nos permite insertar un nuevo usuario
     public void insertarUsuario(String nombre, String identidad, String telefono, String rol, String cuadrilla) {
         try {
