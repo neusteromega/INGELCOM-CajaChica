@@ -7,50 +7,65 @@
     android:background="@color/clr_fondo_primario"
     tools:context=".ListadoEmpleados">
 
-    <LinearLayout
-        android:id="@+id/LLEncabezadoLE"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayoutLE"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:gravity="center|left"
-        android:orientation="horizontal"
-        android:paddingLeft="20dp"
-        android:paddingRight="30dp"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/imgRegresarLE"
-            android:layout_width="25dp"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/descripcion"
-            android:onClick="retroceder"
-            app:srcCompat="@mipmap/ico_azul_regresar"
-            tools:ignore="TouchTargetSizeCheck" />
-
-        <TextView
-            android:id="@+id/lblTituloLE"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:fontFamily="@font/montserrat_bold"
-            android:gravity="center"
-            android:text="Listado de Empleados"
-            android:textColor="@color/clr_fuente_primario"
-            android:textSize="24dp"
-            tools:ignore="TouchTargetSizeCheck" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/LLEncabezadoLE"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:gravity="center|left"
+                android:orientation="horizontal"
+                android:paddingLeft="20dp"
+                android:paddingRight="30dp">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvListadoEmpleados"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="25dp"
-        android:paddingBottom="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/LLEncabezadoLE"
-        tools:listitem="@layout/items_empleados" />
+                <ImageView
+                    android:id="@+id/imgRegresarLE"
+                    android:layout_width="25dp"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/descripcion"
+                    android:onClick="retroceder"
+                    app:srcCompat="@mipmap/ico_azul_regresar"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+                <TextView
+                    android:id="@+id/lblTituloLE"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:text="Listado de Empleados"
+                    android:textColor="@color/clr_fuente_primario"
+                    android:textSize="24dp"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvListadoEmpleados"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="25dp"
+                android:paddingBottom="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/LLEncabezadoLE"
+                tools:listitem="@layout/items_empleados" />
+
+        </LinearLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

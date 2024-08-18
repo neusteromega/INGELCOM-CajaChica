@@ -123,10 +123,11 @@ public class FragAdmCuadrillas extends Fragment implements SwipeRefreshLayout.On
             cuad.obtenerCuadrillas(new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<CuadrillasItems>() {
                 @Override
                 public void onCallback(List<CuadrillasItems> lista) { //En esta lista "items" están todos las cuadrillas y sus datos (Nombre y Dinero)
-                    if (lista != null) {//Si "items" no es null, que entre al if
+                    if (lista != null) { //Si "lista" no es null, que entre al if
                         items = lista; //Inicializamos la lista global "items" con la "lista" de cuadrillas extraída de Firestore
                         items = Utilidades.ordenarListaPorAlfabetico(items, "cuadrilla", "Ascendente"); //Siempre al inicio que se carguen las cuadrillas, que siempre se muestren en orden alfabético. Llamamos el método utilitario "ordenarListaPorAlfabetico". Le mandamos la lista "items", el nombre del campo String "cuadrilla", y el tipo de orden "Ascendente". Este método retorna la lista ya ordenada y la guardamos en "items"
 
+                        //Estos if ordenan la lista "items" dependiendo del contenido de la variable global "tipoOrden" que su contenido solo cambia cuando el usuario da clic en una opción del PopupMenu para ordenar cuadrillas
                         if (tipoOrden.equalsIgnoreCase("Alfabetico")) {
                             items = Utilidades.ordenarListaPorAlfabetico(items, "cuadrilla", "Ascendente"); //Llamamos el método utilitario "ordenarListaPorAlfabetico". Le mandamos la lista "items", el nombre del campo String "cuadrilla", y el tipo de orden "Ascendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                         }

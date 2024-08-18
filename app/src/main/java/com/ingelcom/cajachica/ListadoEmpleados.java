@@ -3,9 +3,12 @@ package com.ingelcom.cajachica;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -20,13 +23,13 @@ import com.ingelcom.cajachica.Modelos.EmpleadosItems;
 import java.util.HashMap;
 import java.util.List;
 
-public class ListadoEmpleados extends AppCompatActivity {
+public class ListadoEmpleados extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private FirestoreOperaciones oper = new FirestoreOperaciones();
     private Usuario usuario = new Usuario(ListadoEmpleados.this);
     private EmpleadosAdapter adapter;
     private RecyclerView rvEmpleados;
-    //private List<EmpleadosItems> items;
+    private SwipeRefreshLayout swlRecargar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +37,12 @@ public class ListadoEmpleados extends AppCompatActivity {
         setContentView(R.layout.activity_listado_empleados);
 
         rvEmpleados = findViewById(R.id.rvListadoEmpleados);
+        swlRecargar = findViewById(R.id.swipeRefreshLayoutLE);
 
-        obtenerValores();
+        swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
+        swlRecargar.setColorSchemeResources(R.color.clr_fuente_primario); //Color del SwipeRefreshLayout
+
+        obtenerDatos();
     }
 
     @Override
@@ -43,7 +50,7 @@ public class ListadoEmpleados extends AppCompatActivity {
         Utilidades.iniciarActivity(ListadoEmpleados.this, AdmPantallas.class, true);
     }
 
-    private void obtenerValores() {
+    private void obtenerDatos() {
         LinearLayoutManager managerEmp = new LinearLayoutManager(this); //Creamos un manager para que el RecyclerView se vea en forma de tarjetas
         rvEmpleados.setLayoutManager(managerEmp); //Asignamos el manager al RecyclerView
 
@@ -52,8 +59,10 @@ public class ListadoEmpleados extends AppCompatActivity {
             usuario.obtenerEmpleados(new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<EmpleadosItems>() {
                 @Override
                 public void onCallback(List<EmpleadosItems> items) { //Esto nos devuelve la lista de tipo "EmpleadosItems" ya con los empleados extraídos de Firestore
-                    if (items != null)
-                        inicializarRecyclerView(items);
+                    if (items != null) { //Si "items" no es null, que entre al if
+                        items = Utilidades.ordenarListaPorAlfabetico(items, "nombre", "Ascendente"); //Llamamos el método utilitario "ordenarListaPorAlfabetico". Le mandamos la lista "items", el nombre del campo String "nombre", y el tipo de orden "Ascendente". Este método retorna la lista ya ordenada y la guardamos en "items"
+                        inicializarRecyclerView(items); //Llamamos el método "inicializarGridView" y le mandamos la lista "items"
+                    }
                 }
 
                 @Override
@@ -90,6 +99,18 @@ public class ListadoEmpleados extends AppCompatActivity {
                 Utilidades.iniciarActivityConDatos(ListadoEmpleados.this, Perfil.class, datosPerfil);
             }
         });
+    }
+
+    @Override
+    public void onRefresh() { //Método que detecta cuando se recarga la pantalla con SwipeRefreshLayout
+        //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
+            @Override
+            public void run() {
+                obtenerDatos();
+                swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
+            }
+        }, 1500);
     }
 
     public void retroceder(View view) {
