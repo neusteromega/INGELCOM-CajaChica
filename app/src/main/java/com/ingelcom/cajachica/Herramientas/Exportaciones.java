@@ -1,8 +1,10 @@
 package com.ingelcom.cajachica.Herramientas;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.ImageView;
@@ -33,6 +35,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -51,37 +54,52 @@ public class Exportaciones {
             return;
         }
 
-        BitmapDrawable drawable = (BitmapDrawable) imagen.getDrawable();
-        Bitmap bitmap = drawable.getBitmap();
-        File directorio = null;
+        FileOutputStream fileOutputStream = null;
+        File file = null;
 
         if (tipo.equalsIgnoreCase("Ingreso")) {
-            directorio = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM_Facturas/Ingresos");
-
-            if (!directorio.exists()) {
-                directorio.mkdirs();
-            }
+            file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "INGELCOM_Facturas/Ingresos");
         }
         else if (tipo.equalsIgnoreCase("Gasto")) {
-            directorio = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM_Facturas/Gastos");
-
-            if (!directorio.exists()) {
-                directorio.mkdirs();
-            }
+            file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "INGELCOM_Facturas/Gastos");
         }
 
-        String nombreArchivo = nombreImagen + ".jpg";
-        File archivoImagen = new File(directorio, nombreArchivo);
-
-        try (FileOutputStream out = new FileOutputStream(archivoImagen)) {
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            out.flush();
-            Toast.makeText(contexto, "IMAGEN GUARDADA EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
+        if (!file.exists() && !file.mkdirs()) {
+            file.mkdirs();
         }
-        catch (IOException e) {
-            e.printStackTrace();
+
+        String nombre = nombreImagen + ".jpg";
+        String nombreArchivo = file.getAbsolutePath()+"/"+nombre;
+        File nuevoArchivo = new File(nombreArchivo);
+
+        int contador = 1;
+        while (nuevoArchivo.exists()) {
+            nombre = nombreImagen + "(" + contador + ").jpg";
+            nuevoArchivo = new File(file, nombre);
+            contador++;
+        }
+
+        try {
+            BitmapDrawable draw = (BitmapDrawable) imagen.getDrawable();
+            Bitmap bitmap = draw.getBitmap();
+            fileOutputStream = new FileOutputStream(nuevoArchivo);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+            Toast.makeText(contexto, "IMAGEN GUARDADA EN LA CARPETA DE IMÁGENES", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
+            fileOutputStream.flush();
+            fileOutputStream.close();
+        }
+        catch (FileNotFoundException e) {
+            Log.e("TAG_ERROR", "Error guardando la imagen", e);
             Toast.makeText(contexto, "ERROR AL GUARDAR LA IMAGEN", Toast.LENGTH_LONG).show(); //Mostramos mensaje de error
         }
+        catch (IOException e) {
+            Log.e("TAG_ERROR", "Error guardando la imagen", e);
+            Toast.makeText(contexto, "ERROR AL GUARDAR LA IMAGEN", Toast.LENGTH_LONG).show(); //Mostramos mensaje de error
+        }
+
+        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        intent.setData(Uri.fromFile(nuevoArchivo));
+        contexto.sendBroadcast(intent);
     }
 
     public void exportarGastosExcel(List<GastosItems> listaGastos, String cuadrillaMes) {
