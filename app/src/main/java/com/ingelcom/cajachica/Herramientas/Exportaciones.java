@@ -49,12 +49,12 @@ public class Exportaciones {
     }
 
     public void guardarImagen(ImageView imagen, String tipo, String nombreImagen) {
-        if (imagen == null) {
+        if (imagen == null) { //Si el ImageView recibido es nulo, que muestre un mensaje indicándolo y finalice el método
             Toast.makeText(contexto, "IMAGEN INVÁLIDA", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        FileOutputStream fileOutputStream = null;
+        FileOutputStream fileOutputStream = null; //Creamos un flujo de salida (FileOutputStream)
         File directorio = null;
 
         if (tipo.equalsIgnoreCase("Ingreso")) { //Si "tipo" contiene la palabra "Ingreso", que entre al if para crear la carpeta "Ingresos" donde se almacenarán las fotos
@@ -72,21 +72,21 @@ public class Exportaciones {
         String rutaArchivo = directorio.getAbsolutePath() + "/" + nombre; //Guardamos la ruta del archivo guardada en "directorio.getAbsolutePath" y la concatenamos con el nombre del archivo
         File nuevoArchivo = new File(rutaArchivo); //Creamos una nueva variable "File" donde guardamos la ruta completa del archivo
 
-        int contador = 1;
-        while (nuevoArchivo.exists()) {
-            nombre = nombreImagen + "(" + contador + ").jpg";
-            nuevoArchivo = new File(directorio, nombre);
-            contador++;
+        int contador = 1; //Contador que nos ayudará a establecer un nombre diferente al archivo guardado en "nuevoArchivo" sólo si este ya se encuentra en el almacenamiento interno
+        while (nuevoArchivo.exists()) { //Mientras "nuevoArchivo" exista en el mismo almacenamiento interno, que no salga del while
+            nombre = nombreImagen + "(" + contador + ").jpg"; //Como "nuevoArchivo" existe, agregamos un número al nombre del archivo para que dicho nombre no se repita
+            nuevoArchivo = new File(directorio, nombre); //Guardamos el directorio y el nuevo nombre en el "nuevoArchivo"
+            contador++; //Aumentamos un número al contador para que si no sale del "while", el archivo tenga el siguiente número en su nombre
         }
 
         try {
-            BitmapDrawable draw = (BitmapDrawable) imagen.getDrawable();
-            Bitmap bitmap = draw.getBitmap();
-            fileOutputStream = new FileOutputStream(nuevoArchivo);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+            BitmapDrawable draw = (BitmapDrawable) imagen.getDrawable(); //Creamos un objeto de tipo "BitmapDrawable" donde guardamos el "drawable" del ImageView "imagen"
+            Bitmap bitmap = draw.getBitmap(); //Creamos un "Bitmap" del objeto "draw" con la imagen. Un Bitmap representa la imagen en un formato que se puede manipular o guardar, lo cual no es posible directamente con un Drawable, por eso se debe convertir
+            fileOutputStream = new FileOutputStream(nuevoArchivo); //Con "fileOutputStream" inicializamos el flujo de salida para escribir datos en el "nuevoArchivo"
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream); //Comprimimos el Bitmap y lo escribimos en el archivo especificado por "fileOutputStream". Recibe el formato de compresión (Bitmap.CompressFormat.JPEG en este caso), y la calidad de la compresión, que varía de 0 a 100 (donde 100 significa calidad máxima sin pérdida)
             Toast.makeText(contexto, "IMAGEN GUARDADA EN LA CARPETA DE IMÁGENES", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
-            fileOutputStream.flush();
-            fileOutputStream.close();
+            fileOutputStream.flush(); //Garantizamos que todos los datos en el buffer del "FileOutputStream" se escriban físicamente en el archivo
+            fileOutputStream.close(); //Cerramos el flujo de salida
         }
         catch (FileNotFoundException e) {
             Log.e("TAG_ERROR", "Error guardando la imagen", e);
@@ -146,23 +146,22 @@ public class Exportaciones {
                 directorio.mkdirs();
             }
 
-            //Creamos el nombre del archivo de excel, el cual empieza con la palabra "Gastos", recibe el resto del nombre en la variable "cuadrillaMes" en el cual, con una expresión regular, se le eliminan los guiones y espacios para evitar conflictos en la creación del archivo. Y esto se concatena a ".xlsx" que es la extensión del archivo de excel. El nombre del archivo lo concatenamos con "directorio.getPath()" que tiene la ruta con las carpetas "INGELCOM_Reportes/Gastos/EXCEL"
-            String nombre = "/Gastos" + cuadrillaMes.replaceAll("[- ]", "");
-            String nombreXlsx = nombre + ".xlsx";
-            String rutaArchivo = directorio.getAbsolutePath() + "/" + nombreXlsx;
-            File nuevoArchivo = new File(rutaArchivo);
+            String nombre = "/Gastos" + cuadrillaMes.replaceAll("[- ]", ""); //Creamos el nombre del archivo de excel, el cual empieza con la palabra "Gastos", recibe el resto del nombre en la variable "cuadrillaMes" en el cual, con una expresión regular, se le eliminan los guiones y espacios para evitar conflictos en la creación del archivo
+            String nombreXlsx = nombre + ".xlsx"; //Concatenamos el nombre con ".xlsx" que es la extensión del archivo de excel
+            String rutaArchivo = directorio.getAbsolutePath() + "/" + nombreXlsx; //El nombre del archivo con el ".xlsx" lo concatenamos con "directorio.getAbsolutePath()" que tiene la ruta con las carpetas "INGELCOM_Reportes/Gastos/EXCEL", y con un separador de archivos "/"
+            File nuevoArchivo = new File(rutaArchivo); //Guardamos la ruta completa del archivo en una variable de tipo File
 
-            int contador = 1;
-            while (nuevoArchivo.exists()) {
-                nombreXlsx = nombre + "(" + contador + ").xlsx";
-                nuevoArchivo = new File(directorio, nombreXlsx);
-                contador++;
+            int contador = 1; //Contador que nos ayudará a establecer un nombre diferente al archivo guardado en "nuevoArchivo" sólo si este ya se encuentra en el almacenamiento interno
+            while (nuevoArchivo.exists()) { //Mientras "nuevoArchivo" exista en el mismo almacenamiento interno, que no salga del while
+                nombreXlsx = nombre + "(" + contador + ").xlsx"; //Como "nuevoArchivo" existe, agregamos un número al nombre del archivo para que dicho nombre no se repita
+                nuevoArchivo = new File(directorio, nombreXlsx); //Guardamos el directorio y el nuevo nombre en el "nuevoArchivo"
+                contador++; //Aumentamos un número al contador para que si no sale del "while", el archivo tenga el siguiente número en su nombre
             }
 
-            FileOutputStream fileOut = new FileOutputStream(nuevoArchivo);
+            FileOutputStream fileOut = new FileOutputStream(nuevoArchivo); //Creamos un flujo de salida (FileOutputStream) para escribir datos en un archivo específico (nuevoArchivo)
             workbook.write(fileOut); //Escribimos el contenido del "Workbook" usando el "FileOutputStream"
-            fileOut.flush();
-            fileOut.close();
+            fileOut.flush(); //Garantizamos que todos los datos en el buffer del "FileOutputStream" se escriban físicamente en el archivo
+            fileOut.close(); //Cerramos el flujo de salida
 
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
@@ -190,26 +189,25 @@ public class Exportaciones {
         Document document = new Document(PageSize.LETTER.rotate()); //Creamos una instancia de "Document" de iText, con un tamaño de página de carta (Letter) en orientación horizontal (rotate())
 
         try {
-            //Obtenemos la ruta de la carpeta "Documentos", y en ella creamos la carpeta "INGELCOM_Reportes/Gastos/PDF", esto lo guardamos en una variable de tipo "File" ("Archivo" en español) llamada "carpeta"
+            //Obtenemos la ruta de la carpeta "Documentos", y en ella creamos la carpeta "INGELCOM_Reportes/Gastos/PDF", esto lo guardamos en una variable de tipo "File" ("Archivo" en español) llamada "directorio"
             File directorio = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM_Reportes/Gastos/PDF");
             if (!directorio.exists()) { //Si "carpeta" no existe, que entre al if y lo cree
                 directorio.mkdirs();
             }
 
-            //Creamos el nombre del archivo PDF, el cual empieza con la palabra "Gastos", recibe el resto del nombre en la variable "cuadrillaMes" en el cual, con una expresión regular, se le eliminan los guiones y espacios para evitar conflictos en la creación del archivo. Y esto se concatena a ".pdf" que es la extensión del archivo de PDF
-            String nombre = "Gastos" + cuadrillaMes.replaceAll("[- ]", "");
-            String nombrePdf = nombre + ".pdf";
-            String rutaArchivo = directorio.getAbsolutePath() + "/" + nombrePdf;
-            File nuevoArchivo = new File(rutaArchivo);
+            String nombre = "Gastos" + cuadrillaMes.replaceAll("[- ]", ""); //Creamos el nombre del archivo PDF, el cual empieza con la palabra "Gastos", recibe el resto del nombre en la variable "cuadrillaMes" en el cual, con una expresión regular, se le eliminan los guiones y espacios para evitar conflictos en la creación del archivo
+            String nombrePdf = nombre + ".pdf"; //Concatenamos el nombre con ".pdf" que es la extensión del archivo PDF
+            String rutaArchivo = directorio.getAbsolutePath() + "/" + nombrePdf; //El nombre del archivo con el ".pdf" lo concatenamos con "directorio.getAbsolutePath()" que tiene la ruta con las carpetas "INGELCOM_Reportes/Gastos/PDF", y con un separador de archivos "/"
+            File nuevoArchivo = new File(rutaArchivo); //Guardamos la ruta completa del archivo en una variable de tipo File
 
-            int contador = 1;
-            while (nuevoArchivo.exists()) {
-                nombrePdf = nombre + "(" + contador + ").pdf";
-                nuevoArchivo = new File(directorio, nombrePdf);
-                contador++;
+            int contador = 1; //Contador que nos ayudará a establecer un nombre diferente al archivo guardado en "nuevoArchivo" sólo si este ya se encuentra en el almacenamiento interno
+            while (nuevoArchivo.exists()) { //Mientras "nuevoArchivo" exista en el mismo almacenamiento interno, que no salga del while
+                nombrePdf = nombre + "(" + contador + ").pdf"; //Como "nuevoArchivo" existe, agregamos un número al nombre del archivo para que dicho nombre no se repita
+                nuevoArchivo = new File(directorio, nombrePdf); //Guardamos el directorio y el nuevo nombre en el "nuevoArchivo"
+                contador++; //Aumentamos un número al contador para que si no sale del "while", el archivo tenga el siguiente número en su nombre
             }
 
-            FileOutputStream fos = new FileOutputStream(nuevoArchivo); //Inicializamos un "FileOutputStream" para escribir en "archivo"
+            FileOutputStream fos = new FileOutputStream(nuevoArchivo); //Creamos un flujo de salida (FileOutputStream) para escribir datos en un archivo específico (nuevoArchivo)
 
             PdfWriter.getInstance(document, fos); //Asociamos el "PdfWriter" con el "Document" y el "FileOutputStream" para escribir en el archivo
             document.open(); //Abrimos el "document"
@@ -250,7 +248,7 @@ public class Exportaciones {
 
             document.add(table); //Añadimos la tabla completa al documento PDF
             document.close(); //Cerramos el documento PDF finalizando la escritura del archivo
-            fos.close();
+            fos.close(); //Cerramos el flujo de salida
 
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
@@ -296,29 +294,28 @@ public class Exportaciones {
         }
 
         try {
-            //Obtenemos la ruta de la carpeta "Documentos", y en ella creamos la carpeta "INGELCOM - Reportes", esto lo guardamos en una variable de tipo "File" ("Archivo" en español) llamada "DocumentosDir"
+            //Obtenemos la ruta de la carpeta "Documentos", y en ella creamos la carpeta "INGELCOM_Reportes/Ingresos/EXCEL", esto lo guardamos en una variable de tipo "File" ("Archivo" en español)
             File directorio = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM_Reportes/Ingresos/EXCEL");
             if (!directorio.exists()) { //Si "directorio" no existe, que entre al if y lo cree
                 directorio.mkdirs();
             }
 
-            //Creamos el nombre del archivo de excel, el cual empieza con la palabra "Ingresos", recibe el resto del nombre en la variable "cuadrillaMes" en el cual, con una expresión regular, se le eliminan los guiones y espacios para evitar conflictos en la creación del archivo. Y esto se concatena a ".xlsx" que es la extensión del archivo de excel. El nombre del archivo lo concatenamos con "directorio.getPath()" que tiene la ruta con las carpetas "INGELCOM_Reportes/Ingresos/EXCEL"
-            String nombre = "/Ingresos" + cuadrillaMes.replaceAll("[- ]", "");
-            String nombreXlsx = nombre + ".xlsx";
-            String rutaArchivo = directorio.getAbsolutePath() + "/" + nombreXlsx;
-            File nuevoArchivo = new File(rutaArchivo);
+            String nombre = "/Ingresos" + cuadrillaMes.replaceAll("[- ]", ""); //Creamos el nombre del archivo de excel, el cual empieza con la palabra "Ingresos", recibe el resto del nombre en la variable "cuadrillaMes" en el cual, con una expresión regular, se le eliminan los guiones y espacios para evitar conflictos en la creación del archivo
+            String nombreXlsx = nombre + ".xlsx"; //Concatenamos el nombre con ".xlsx" que es la extensión del archivo de excel
+            String rutaArchivo = directorio.getAbsolutePath() + "/" + nombreXlsx; //El nombre del archivo con el ".xlsx" lo concatenamos con "directorio.getAbsolutePath()" que tiene la ruta con las carpetas "INGELCOM_Reportes/Gastos/EXCEL", y con un separador de archivos "/"
+            File nuevoArchivo = new File(rutaArchivo); //Guardamos la ruta completa del archivo en una variable de tipo File
 
-            int contador = 1;
-            while (nuevoArchivo.exists()) {
-                nombreXlsx = nombre + "(" + contador + ").xlsx";
-                nuevoArchivo = new File(directorio, nombreXlsx);
-                contador++;
+            int contador = 1; //Contador que nos ayudará a establecer un nombre diferente al archivo guardado en "nuevoArchivo" sólo si este ya se encuentra en el almacenamiento interno
+            while (nuevoArchivo.exists()) { //Mientas "nuevoArchivo" exista en el mismo almacenamiento interno, que no salga del while
+                nombreXlsx = nombre + "(" + contador + ").xlsx"; //Como "nuevoArchivo" existe, agregamos un número al nombre del archivo para que dicho nombre no se repita
+                nuevoArchivo = new File(directorio, nombreXlsx); //Guardamos el directorio y el nuevo nombre en el "nuevoArchivo"
+                contador++; //Aumentamos un número al contador para que si no sale del "while", el archivo tenga el siguiente número en su nombre
             }
 
-            FileOutputStream fileOut = new FileOutputStream(nuevoArchivo);
+            FileOutputStream fileOut = new FileOutputStream(nuevoArchivo); //Creamos un flujo de salida (FileOutputStream) para escribir datos en un archivo específico (nuevoArchivo)
             workbook.write(fileOut); //Escribimos el contenido del "Workbook" usando el "FileOutputStream"
-            fileOut.flush();
-            fileOut.close();
+            fileOut.flush(); //Garantizamos que todos los datos en el buffer del "FileOutputStream" se escriban físicamente en el archivo
+            fileOut.close(); //Cerramos el flujo de salida
 
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
@@ -346,26 +343,25 @@ public class Exportaciones {
         Document document = new Document(PageSize.LETTER.rotate()); //Creamos una instancia de "Document" de iText, con un tamaño de página de carta (Letter) en orientación horizontal (rotate())
 
         try {
-            //Obtenemos la ruta de la carpeta "Documentos", y en ella creamos la carpeta "INGELCOM_Reportes/Ingresos/PDF", esto lo guardamos en una variable de tipo "File" ("Archivo" en español) llamada "carpeta"
+            //Obtenemos la ruta de la carpeta "Documentos", y en ella creamos la carpeta "INGELCOM_Reportes/Ingresos/PDF", esto lo guardamos en una variable de tipo "File" ("Archivo" en español) llamada "directorio"
             File directorio = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM_Reportes/Ingresos/PDF");
             if (!directorio.exists()) { //Si "carpeta" no existe, que entre al if y lo cree
                 directorio.mkdirs();
             }
 
-            //Creamos el nombre del archivo PDF, el cual empieza con la palabra "Ingresos", recibe el resto del nombre en la variable "cuadrillaMes" en el cual, con una expresión regular, se le eliminan los guiones y espacios para evitar conflictos en la creación del archivo. Y esto se concatena a ".pdf" que es la extensión del archivo de PDF
-            String nombre = "Ingresos" + cuadrillaMes.replaceAll("[- ]", "");
-            String nombrePdf = nombre + ".pdf";
-            String rutaArchivo = directorio.getAbsolutePath() + "/" + nombrePdf;
-            File nuevoArchivo = new File(rutaArchivo);
+            String nombre = "Ingresos" + cuadrillaMes.replaceAll("[- ]", ""); //Creamos el nombre del archivo PDF, el cual empieza con la palabra "Ingresos", recibe el resto del nombre en la variable "cuadrillaMes" en el cual, con una expresión regular, se le eliminan los guiones y espacios para evitar conflictos en la creación del archivo
+            String nombrePdf = nombre + ".pdf"; //Concatenamos el nombre con ".pdf" que es la extensión del archivo PDF
+            String rutaArchivo = directorio.getAbsolutePath() + "/" + nombrePdf; //El nombre del archivo con el ".pdf" lo concatenamos con "directorio.getAbsolutePath()" que tiene la ruta con las carpetas "INGELCOM_Reportes/Ingresos/PDF", y con un separador de archivos "/"
+            File nuevoArchivo = new File(rutaArchivo); //Guardamos la ruta completa del archivo en una variable de tipo File
 
-            int contador = 1;
-            while (nuevoArchivo.exists()) {
-                nombrePdf = nombre + "(" + contador + ").pdf";
-                nuevoArchivo = new File(directorio, nombrePdf);
-                contador++;
+            int contador = 1; //Contador que nos ayudará a establecer un nombre diferente al archivo guardado en "nuevoArchivo" sólo si este ya se encuentra en el almacenamiento interno
+            while (nuevoArchivo.exists()) { //Mientras "nuevoArchivo" exista en el mismo almacenamiento interno, que no salga del while
+                nombrePdf = nombre + "(" + contador + ").pdf"; //Como "nuevoArchivo" existe, agregamos un número al nombre del archivo para que dicho nombre no se repita
+                nuevoArchivo = new File(directorio, nombrePdf); //Guardamos el directorio y el nuevo nombre en el "nuevoArchivo"
+                contador++; //Aumentamos un número al contador para que si no sale del "while", el archivo tenga el siguiente número en su nombre
             }
 
-            FileOutputStream fos = new FileOutputStream(nuevoArchivo); //Inicializamos un "FileOutputStream" para escribir en "archivo"
+            FileOutputStream fos = new FileOutputStream(nuevoArchivo); //Creamos un flujo de salida (FileOutputStream) para escribir datos en un archivo específico (nuevoArchivo)
 
             PdfWriter.getInstance(document, fos); //Asociamos el "PdfWriter" con el "Document" y el "FileOutputStream" para escribir en el archivo
             document.open(); //Abrimos el "document"
@@ -403,7 +399,7 @@ public class Exportaciones {
 
             document.add(table); //Añadimos la tabla completa al documento PDF
             document.close(); //Cerramos el documento PDF finalizando la escritura del archivo
-            fos.close();
+            fos.close(); //Cerramos el flujo de salida
 
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
