@@ -33,7 +33,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
     private ImageView btnRegresar, btnEditar, imgFoto;
     private ProgressBar pbCargar;
 
-    private String nombreActivity, id, fecha, usuario, rol, cuadrilla, lugarCompra, tipoCompra, descripcion, factura, transferencia, imagen, total;
+    private String nombreActivity, id, fecha, usuario, rol, cuadrilla, lugarCompra, tipoCompra, descripcion, factura, transferencia, imagen = "", total;
     private Uri imageUri;
     private Usuario usu = new Usuario(DetalleGastoIngreso.this);
     private Cuadrilla cuad = new Cuadrilla(DetalleGastoIngreso.this);
@@ -324,9 +324,10 @@ public class DetalleGastoIngreso extends AppCompatActivity {
         //intent.putExtra("imageUri", imageUri); //Enviamos el URI de la imagen
         //startActivity(intent); //Iniciamos el activity
 
-        datosImagen.put("imageUri", imageUri);
-        datosImagen.put("nombreImagen", imagen);
+        datosImagen.put("imageUri", imageUri); //Enviamos el URI de la imagen
+        datosImagen.put("nombreImagen", imagen); //Mandamos el nombre de la imagen que está guardado en la variable global "imagen"
 
+        //Dependiendo de la pantalla que estemos, mandamos la palabra "Ingreso" o "Gasto" para ver en cuál carpeta se guarda la imagen a descargar
         if (nombreActivity.equalsIgnoreCase("DetalleIngreso"))
             datosImagen.put("tipoImagen", "Ingreso");
         else if (nombreActivity.equalsIgnoreCase("DetalleGastoCuadrilla") || nombreActivity.equalsIgnoreCase("DetalleGastoSupervisores"))

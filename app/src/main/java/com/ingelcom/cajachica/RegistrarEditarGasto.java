@@ -40,6 +40,7 @@ import com.ingelcom.cajachica.Herramientas.Utilidades;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -347,9 +348,16 @@ public class RegistrarEditarGasto extends AppCompatActivity {
     }
 
     public void mostrarImagenCompleta(View view) {
-        Intent intent = new Intent(this, ImagenCompleta.class);
+        HashMap<String, Object> datosImagen = new HashMap<>();
+
+        /*Intent intent = new Intent(this, ImagenCompleta.class);
         intent.putExtra("imageUri", imageUri); // Enviar el URI de la imagen
-        startActivity(intent);
+        startActivity(intent);*/
+
+        datosImagen.put("imageUri", imageUri); //Enviamos el URI de la imagen
+        datosImagen.put("tipoImagen", ""); //Mandamos el tipoImagen vacío ya que no queremos que la imagen se pueda descargar ya que aún no ha sido subida a Firebase Storage
+
+        Utilidades.iniciarActivityConDatos(RegistrarEditarGasto.this, ImagenCompleta.class, datosImagen);
     }
 
     public void eliminarFoto(View view) {

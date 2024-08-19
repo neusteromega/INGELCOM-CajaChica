@@ -48,6 +48,7 @@ import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -377,9 +378,16 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
 
     //Método Click que al dar clic en la imagen cargada, nos manda al Activity "ImagenCompleta" donde también envía el URI de la imagen cargada para mostrarla en pantalla completa
     public void mostrarImagenCompleta(View view) {
-        Intent intent = new Intent(this, ImagenCompleta.class);
+        HashMap<String, Object> datosImagen = new HashMap<>();
+
+        /*Intent intent = new Intent(this, ImagenCompleta.class);
         intent.putExtra("imageUri", imageUri); //Enviamos el URI de la imagen
-        startActivity(intent); //Iniciamos el activity
+        startActivity(intent); //Iniciamos el activity*/
+
+        datosImagen.put("imageUri", imageUri); //Enviamos el URI de la imagen
+        datosImagen.put("tipoImagen", ""); //Mandamos el tipoImagen vacío ya que no queremos que la imagen se pueda descargar ya que aún no ha sido subida a Firebase Storage
+
+        Utilidades.iniciarActivityConDatos(RegistrarEditarIngresoDeduccion.this, ImagenCompleta.class, datosImagen);
     }
 
     public void eliminarFoto(View view) {
