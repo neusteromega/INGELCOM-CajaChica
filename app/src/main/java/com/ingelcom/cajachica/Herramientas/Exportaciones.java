@@ -55,27 +55,27 @@ public class Exportaciones {
         }
 
         FileOutputStream fileOutputStream = null;
-        File file = null;
+        File directorio = null;
 
-        if (tipo.equalsIgnoreCase("Ingreso")) {
-            file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "INGELCOM_Facturas/Ingresos");
+        if (tipo.equalsIgnoreCase("Ingreso")) { //Si "tipo" contiene la palabra "Ingreso", que entre al if para crear la carpeta "Ingresos" donde se almacenarán las fotos
+            directorio = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "INGELCOM_Facturas/Ingresos");
         }
-        else if (tipo.equalsIgnoreCase("Gasto")) {
-            file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "INGELCOM_Facturas/Gastos");
-        }
-
-        if (!file.exists() && !file.mkdirs()) {
-            file.mkdirs();
+        else if (tipo.equalsIgnoreCase("Gasto")) { //Si "tipo" contiene la palabra "Gasto", que entre al if para crear la carpeta "Gastos" donde se almacenarán las fotos
+            directorio = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "INGELCOM_Facturas/Gastos");
         }
 
-        String nombre = nombreImagen + ".jpg";
-        String rutaArchivo = file.getAbsolutePath() + "/" + nombre;
-        File nuevoArchivo = new File(rutaArchivo);
+        if (!directorio.exists() && !directorio.mkdirs()) { //Si "directorio" aún no existe, que entre al if y lo cree
+            directorio.mkdirs();
+        }
+
+        String nombre = nombreImagen + ".jpg"; //Guardamos el nombre de la imagen con la extensión .jpg
+        String rutaArchivo = directorio.getAbsolutePath() + "/" + nombre; //Guardamos la ruta del archivo guardada en "directorio.getAbsolutePath" y la concatenamos con el nombre del archivo
+        File nuevoArchivo = new File(rutaArchivo); //Creamos una nueva variable "File" donde guardamos la ruta completa del archivo
 
         int contador = 1;
         while (nuevoArchivo.exists()) {
             nombre = nombreImagen + "(" + contador + ").jpg";
-            nuevoArchivo = new File(file, nombre);
+            nuevoArchivo = new File(directorio, nombre);
             contador++;
         }
 
