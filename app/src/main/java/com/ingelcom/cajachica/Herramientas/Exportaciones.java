@@ -69,8 +69,8 @@ public class Exportaciones {
         }
 
         String nombre = nombreImagen + ".jpg";
-        String nombreArchivo = file.getAbsolutePath()+"/"+nombre;
-        File nuevoArchivo = new File(nombreArchivo);
+        String rutaArchivo = file.getAbsolutePath() + "/" + nombre;
+        File nuevoArchivo = new File(rutaArchivo);
 
         int contador = 1;
         while (nuevoArchivo.exists()) {
@@ -142,16 +142,27 @@ public class Exportaciones {
         try {
             //Obtenemos la ruta de la carpeta "Documentos", y en ella creamos la carpetas "INGELCOM_Reportes/Gastos/EXCEL", esto lo guardamos en una variable de tipo "File" ("Archivo" en español) llamada "directorio"
             File directorio = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM_Reportes/Gastos/EXCEL");
-            if (!directorio.exists()) { //Si "directorio" no existe, que entre al if y lo cree
+            if (!directorio.exists() && !directorio.mkdirs()) { //Si "directorio" no existe, que entre al if y lo cree
                 directorio.mkdirs();
             }
 
             //Creamos el nombre del archivo de excel, el cual empieza con la palabra "Gastos", recibe el resto del nombre en la variable "cuadrillaMes" en el cual, con una expresión regular, se le eliminan los guiones y espacios para evitar conflictos en la creación del archivo. Y esto se concatena a ".xlsx" que es la extensión del archivo de excel. El nombre del archivo lo concatenamos con "directorio.getPath()" que tiene la ruta con las carpetas "INGELCOM_Reportes/Gastos/EXCEL"
-            String rutaArchivo = directorio.getPath() + ("/Gastos" + cuadrillaMes.replaceAll("[- ]", "") + ".xlsx");
+            String nombre = "/Gastos" + cuadrillaMes.replaceAll("[- ]", "");
+            String nombreXlsx = nombre + ".xlsx";
+            String rutaArchivo = directorio.getPath() + nombreXlsx;
+            File nuevoArchivo = new File(rutaArchivo);
 
-            FileOutputStream fileOut = new FileOutputStream(new File(rutaArchivo));
+            int contador = 1;
+            while (nuevoArchivo.exists()) {
+                nombreXlsx = nombre + "(" + contador + ").xlsx";
+                nuevoArchivo = new File(directorio, nombreXlsx);
+                contador++;
+            }
+
+            FileOutputStream fileOut = new FileOutputStream(nuevoArchivo);
             workbook.write(fileOut); //Escribimos el contenido del "Workbook" usando el "FileOutputStream"
             fileOut.flush();
+            fileOut.close();
 
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
@@ -180,16 +191,25 @@ public class Exportaciones {
 
         try {
             //Obtenemos la ruta de la carpeta "Documentos", y en ella creamos la carpeta "INGELCOM_Reportes/Gastos/PDF", esto lo guardamos en una variable de tipo "File" ("Archivo" en español) llamada "carpeta"
-            File carpeta = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM_Reportes/Gastos/PDF");
-            if (!carpeta.exists()) { //Si "carpeta" no existe, que entre al if y lo cree
-                carpeta.mkdirs();
+            File directorio = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM_Reportes/Gastos/PDF");
+            if (!directorio.exists()) { //Si "carpeta" no existe, que entre al if y lo cree
+                directorio.mkdirs();
             }
 
             //Creamos el nombre del archivo PDF, el cual empieza con la palabra "Gastos", recibe el resto del nombre en la variable "cuadrillaMes" en el cual, con una expresión regular, se le eliminan los guiones y espacios para evitar conflictos en la creación del archivo. Y esto se concatena a ".pdf" que es la extensión del archivo de PDF
-            String nombreArchivo = "Gastos" + cuadrillaMes.replaceAll("[- ]", "") + ".pdf";
+            String nombre = "Gastos" + cuadrillaMes.replaceAll("[- ]", "");
+            String nombrePdf = nombre + ".pdf";
+            String rutaArchivo = directorio.getAbsolutePath() + "/" + nombrePdf;
+            File nuevoArchivo = new File(rutaArchivo);
 
-            File archivo = new File(carpeta, nombreArchivo); //Usando otra variable de tipo "File" creamos el archivo en el directorio guardado en "carpeta" y le pasamos el nombre del PDF que está guardado en "nombreArchivo"
-            FileOutputStream fos = new FileOutputStream(archivo); //Inicializamos un "FileOutputStream" para escribir en "archivo"
+            int contador = 1;
+            while (nuevoArchivo.exists()) {
+                nombrePdf = nombre + "(" + contador + ").pdf";
+                nuevoArchivo = new File(directorio, nombrePdf);
+                contador++;
+            }
+
+            FileOutputStream fos = new FileOutputStream(nuevoArchivo); //Inicializamos un "FileOutputStream" para escribir en "archivo"
 
             PdfWriter.getInstance(document, fos); //Asociamos el "PdfWriter" con el "Document" y el "FileOutputStream" para escribir en el archivo
             document.open(); //Abrimos el "document"
@@ -230,6 +250,7 @@ public class Exportaciones {
 
             document.add(table); //Añadimos la tabla completa al documento PDF
             document.close(); //Cerramos el documento PDF finalizando la escritura del archivo
+            fos.close();
 
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
@@ -282,11 +303,22 @@ public class Exportaciones {
             }
 
             //Creamos el nombre del archivo de excel, el cual empieza con la palabra "Ingresos", recibe el resto del nombre en la variable "cuadrillaMes" en el cual, con una expresión regular, se le eliminan los guiones y espacios para evitar conflictos en la creación del archivo. Y esto se concatena a ".xlsx" que es la extensión del archivo de excel. El nombre del archivo lo concatenamos con "directorio.getPath()" que tiene la ruta con las carpetas "INGELCOM_Reportes/Ingresos/EXCEL"
-            String rutaArchivo = directorio.getPath() + ("/Ingresos" + cuadrillaMes.replaceAll("[- ]", "") + ".xlsx");
+            String nombre = "/Ingresos" + cuadrillaMes.replaceAll("[- ]", "");
+            String nombreXlsx = nombre + ".xlsx";
+            String rutaArchivo = directorio.getPath() + nombreXlsx;
+            File nuevoArchivo = new File(rutaArchivo);
 
-            FileOutputStream fileOut = new FileOutputStream(new File(rutaArchivo));
+            int contador = 1;
+            while (nuevoArchivo.exists()) {
+                nombreXlsx = nombre + "(" + contador + ").xlsx";
+                nuevoArchivo = new File(directorio, nombreXlsx);
+                contador++;
+            }
+
+            FileOutputStream fileOut = new FileOutputStream(nuevoArchivo);
             workbook.write(fileOut); //Escribimos el contenido del "Workbook" usando el "FileOutputStream"
             fileOut.flush();
+            fileOut.close();
 
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
