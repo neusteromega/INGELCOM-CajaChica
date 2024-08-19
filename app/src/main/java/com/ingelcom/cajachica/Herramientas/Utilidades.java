@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -86,6 +87,10 @@ public class Utilidades {
             if (valor instanceof String) {
                 String valorString = (String) valor;
                 intent.putExtra(clave, valorString);
+            }
+            else if (valor instanceof Uri) {
+                Uri valorUri = (Uri) valor;
+                intent.putExtra(clave, valorUri);
             }
         }
 

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.ingelcom.cajachica.DAO.Cuadrilla;
@@ -20,6 +21,7 @@ import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.StorageCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 
+import java.io.ObjectStreamException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -316,9 +318,21 @@ public class DetalleGastoIngreso extends AppCompatActivity {
 
     //Método Click que al dar clic en la imagen cargada, nos manda al Activity "ImagenCompleta" donde también envía el URI de la imagen cargada para mostrarla en pantalla completa
     public void mostrarImagenCompleta(View view) {
-        Intent intent = new Intent(DetalleGastoIngreso.this, ImagenCompleta.class);
-        intent.putExtra("imageUri", imageUri); //Enviamos el URI de la imagen
-        startActivity(intent); //Iniciamos el activity
+        HashMap<String, Object> datosImagen = new HashMap<>();
+
+        //Intent intent = new Intent(DetalleGastoIngreso.this, ImagenCompleta.class);
+        //intent.putExtra("imageUri", imageUri); //Enviamos el URI de la imagen
+        //startActivity(intent); //Iniciamos el activity
+
+        datosImagen.put("imageUri", imageUri);
+        datosImagen.put("nombreImagen", imagen);
+
+        if (nombreActivity.equalsIgnoreCase("DetalleIngreso"))
+            datosImagen.put("tipoImagen", "Ingreso");
+        else if (nombreActivity.equalsIgnoreCase("DetalleGastoCuadrilla") || nombreActivity.equalsIgnoreCase("DetalleGastoSupervisores"))
+            datosImagen.put("tipoImagen", "Gasto");
+
+        Utilidades.iniciarActivityConDatos(DetalleGastoIngreso.this, ImagenCompleta.class, datosImagen);
     }
 
     //Método que ocultar el botón de Editar cuando el rol del Usuario es "Empleado"

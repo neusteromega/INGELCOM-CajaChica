@@ -53,7 +53,7 @@ public class Exportaciones {
 
         BitmapDrawable drawable = (BitmapDrawable) imagen.getDrawable();
         Bitmap bitmap = drawable.getBitmap();
-        File directorio = new File("", "");
+        File directorio = null;
 
         if (tipo.equalsIgnoreCase("Ingreso")) {
             directorio = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM_Facturas/Ingresos");
