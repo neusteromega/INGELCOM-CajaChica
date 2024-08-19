@@ -53,24 +53,34 @@ public class Exportaciones {
 
         BitmapDrawable drawable = (BitmapDrawable) imagen.getDrawable();
         Bitmap bitmap = drawable.getBitmap();
+        File directorio = new File("", "");
 
         if (tipo.equalsIgnoreCase("Ingreso")) {
-            File directorio = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM_Facturas/Ingresos");
+            directorio = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM_Facturas/Ingresos");
 
             if (!directorio.exists()) {
                 directorio.mkdirs();
             }
+        }
+        else if (tipo.equalsIgnoreCase("Gasto")) {
+            directorio = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "INGELCOM_Facturas/Gastos");
 
-            String nombreArchivo = nombreImagen + ".jpg";
-            File archivoImagen = new File(directorio, nombreArchivo);
+            if (!directorio.exists()) {
+                directorio.mkdirs();
+            }
+        }
 
-            try (FileOutputStream out = new FileOutputStream(archivoImagen)) {
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-                out.flush();
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
+        String nombreArchivo = nombreImagen + ".jpg";
+        File archivoImagen = new File(directorio, nombreArchivo);
+
+        try (FileOutputStream out = new FileOutputStream(archivoImagen)) {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            Toast.makeText(contexto, "IMAGEN GUARDADA EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(contexto, "ERROR AL GUARDAR LA IMAGEN", Toast.LENGTH_LONG).show(); //Mostramos mensaje de error
         }
     }
 
@@ -125,7 +135,7 @@ public class Exportaciones {
             workbook.write(fileOut); //Escribimos el contenido del "Workbook" usando el "FileOutputStream"
             fileOut.flush();
 
-            Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito*//*
+            Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
         catch (Exception e) {
             e.printStackTrace();
