@@ -182,7 +182,7 @@ public class Ingreso {
     }
 
     //Método que nos permite editar un Ingreso existente en Firestore
-    public void editarIngreso(String id, Timestamp fechaHora, String cuadrilla, String transferencia, String carpetaImagen, String totalViejo, String totalNuevo, Uri uriVieja, Uri uriNueva) {
+    public void editarIngreso(String id, Timestamp fechaHora, String cuadrillaVieja, String cuadrilla, String transferencia, String carpetaImagen, String totalViejo, String totalNuevo, Uri uriVieja, Uri uriNueva) {
         if (fechaHora != null && !transferencia.isEmpty() && !totalNuevo.isEmpty()) { //Verificamos que las dos cajas de texto no estén vacías, y que el Timestamp "fechaHora" no sea nulo para que entre al if (el timestamp sólo será nulo si la pantalla no es "EditarIngreso", y si es "RegistrarIngreso", será nulo cuando el usuario no haya seleccionado una fecha y hora)
             if (uriVieja != null || uriNueva != null) { //Con uno de los dos URIs que se reciben en los parámetros no sea nulo, que entre al if, en cambio, si ambos son nulos significa que no hay ninguna imagen lista para subir a Firebase Storage, entonces no podrá entrar al if
                 try {
@@ -192,10 +192,17 @@ public class Ingreso {
                     //Convertimos las variables String "totalViejo" y "totalNuevo" en double
                     double primerTotal = Double.parseDouble(totalViejo);
                     double segundoTotal = Double.parseDouble(totalNuevo);
-                    double diferenciaTotales = segundoTotal - primerTotal; //Restamos el segundoTotal con el primerTotal y la diferencia la guardamos en "diferenciaTotales"
 
-                    if (diferenciaTotales != 0) //Si "diferenciaTotales" no es 0, significa que si hay una diferencia de dinero entre ambos totales, en ese caso, que proceda a actualizar el dinero de la cuadrilla
-                        cuad.actualizarDineroCuadrilla(cuadrilla, diferenciaTotales, "Ingreso");
+                    if (cuadrillaVieja.equalsIgnoreCase(cuadrilla)) { //Si las cuadrillas recibidas son iguales, significa que en la modificación del Ingreso no se está cambiando la cuadrilla, entonces que sólo reste o sume la posible diferencia entre totales
+                        double diferenciaTotales = segundoTotal - primerTotal; //Restamos el segundoTotal con el primerTotal y la diferencia la guardamos en "diferenciaTotales"
+
+                        if (diferenciaTotales != 0) //Si "diferenciaTotales" no es 0, significa que si hay una diferencia de dinero entre ambos totales, en ese caso, que proceda a actualizar el dinero de la cuadrilla
+                            cuad.actualizarDineroCuadrilla(cuadrilla, diferenciaTotales, "Ingreso");
+                    }
+                    else { //En cambio, si las cuadrillas recibidas son distintas, significa que en la modificación del Ingreso si se está cambiando la cuadrilla, por lo tanto, el dinero del Ingreso se le debe restar a la cuadrilla vieja, y sumar a la nueva cuadrilla
+                        cuad.actualizarDineroCuadrilla(cuadrillaVieja, primerTotal, "Gasto"); //Mandamos la cuadrillaVieja, el primerTotal (mandamos el primerTotal ya que ese es el total original que pertenecía a la cuadrillaVieja) y la palabra "Gasto" al método "actualizarDineroCuadrilla" para que reste el dinero del Ingreso a la cuadrilla vieja porque hubo un error y ese dinero no le pertenece
+                        cuad.actualizarDineroCuadrilla(cuadrilla, segundoTotal, "Ingreso"); //Mandamos la cuadrillaNueva, el segundoTotal y la palabra "Ingreso" al método "actualizarDineroCuadrilla" para que sume el nuevo total (segundoTotal) a la cuadrilla seleccionada en el Spinner al momento de editar, cuyo nombre se encuentra en la variable "cuadrilla"
+                    }
 
                     //Establecemos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el nuevo valor
                     datos.put("Fecha", fechaHora);

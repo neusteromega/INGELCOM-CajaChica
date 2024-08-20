@@ -67,7 +67,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
     private ProgressBar pbCargar;
     //private SwipeRefreshLayout swlRecargar;
 
-    private String nombreActivity, id, fechaHora, cuadrilla, usuario, transferencia, imagen, total;
+    private String nombreActivity, id, fechaHora, cuadrilla, cuadrillaVieja, usuario, transferencia, imagen, total;
     private Timestamp timestamp = null;
     private Uri imageUri = null, imageUriVieja;
 
@@ -120,6 +120,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                 id = Utilidades.obtenerStringExtra(this, "ID");
                 fechaHora = Utilidades.obtenerStringExtra(this, "FechaHora");
                 cuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
+                cuadrillaVieja = Utilidades.obtenerStringExtra(this, "Cuadrilla"); //Guardamos la cuadrilla original del Ingreso en la variable global "cuadrillaVieja"
                 usuario = Utilidades.obtenerStringExtra(this, "Usuario");
                 transferencia = Utilidades.obtenerStringExtra(this, "Transferencia");
                 imagen = Utilidades.obtenerStringExtra(this, "Imagen");
@@ -130,6 +131,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                 id = Utilidades.obtenerStringExtra(this, "ID");
                 fechaHora = Utilidades.obtenerStringExtra(this, "FechaHora");
                 cuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
+                cuadrillaVieja = Utilidades.obtenerStringExtra(this, "Cuadrilla"); //Guardamos la cuadrilla original de la Deducción en la variable global "cuadrillaVieja"
                 usuario = Utilidades.obtenerStringExtra(this, "Usuario");
                 total = Utilidades.obtenerStringExtra(this, "Total");
                 break;
@@ -567,9 +569,9 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         String totalNuevo = txtTotal.getText().toString();
 
         if (tipo.equalsIgnoreCase("Ingreso")) //Si "tipo" es "Ingreso" que modifique el ingreso en Firestore
-            ingr.editarIngreso(id, timestamp, cuadrilla, transferencia, imagen, total, totalNuevo, imageUriVieja, imageUri); //Llamamos el método "editarIngreso" de la clase Ingreso donde se hará el proceso de modificación de los datos del ingreso, para ello le mandamos el id, la fecha y hora guardada en "timestamp", la cuadrilla, el número de transferencia, la ruta de la imagen guardada en "imagen", el total anterior guardado en la variable global "total" y el total nuevo que se extrae del EditText, y los URIs de la imagen cargada de Firebase Storage y de la posible nueva imagen que subirá el usuario para reemplazar la imagen anterior
+            ingr.editarIngreso(id, timestamp, cuadrillaVieja, cuadrilla, transferencia, imagen, total, totalNuevo, imageUriVieja, imageUri); //Llamamos el método "editarIngreso" de la clase Ingreso donde se hará el proceso de modificación de los datos del ingreso, para ello le mandamos el id, la fecha y hora guardada en "timestamp", la cuadrilla vieja, la cuadrilla nueva, el número de transferencia, la ruta de la imagen guardada en "imagen", el total anterior guardado en la variable global "total" y el total nuevo que se extrae del EditText, y los URIs de la imagen cargada de Firebase Storage y de la posible nueva imagen que subirá el usuario para reemplazar la imagen anterior
         else if (tipo.equalsIgnoreCase("Deduccion")) //Si "tipo" es "Deduccion" que modifique la deducción en Firestore
-            deduc.editarDeduccion(id, timestamp, cuadrilla, total, totalNuevo); //Llamamos el método "editarDeduccion" de la clase Deduccion donde se hará el proceso de modificación de los datos de la deducción, para ello le mandamos el id, la fecha y hora guardada en "timestamp", la cuadrilla, el total anterior guardado en la variable global "total" y el total nuevo que se extrae del EditText
+            deduc.editarDeduccion(id, timestamp, cuadrillaVieja, cuadrilla, total, totalNuevo); //Llamamos el método "editarDeduccion" de la clase Deduccion donde se hará el proceso de modificación de los datos de la deducción, para ello le mandamos el id, la fecha y hora guardada en "timestamp", la cuadrilla vieja, la cuadrilla nueva, el total anterior guardado en la variable global "total" y el total nuevo que se extrae del EditText
     }
 
     private void cambioCuadrilla() {
