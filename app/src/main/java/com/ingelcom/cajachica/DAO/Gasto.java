@@ -13,14 +13,11 @@ import com.ingelcom.cajachica.Herramientas.StorageCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.Modelos.GastosItems;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -211,7 +208,7 @@ public class Gasto {
                                     activityEmpleado = false; //Establecemos el "activityEmpleado" en false que indique que es un Administrador quien está registrando el gasto
                                 }
 
-                                stor.subirFoto(uri, carpetaImagen, new StorageCallbacks.StorageCallback() { //Llamamos el método "subirFoto" de la clase "StorageOperaciones", donde le mandamos el URI de la imagen, el nombre de la carpeta donde se almacenerá la foto concatenado con el nombre de la imagen a subir, y este texto está guardado en la variable "carpetaImagen" (por ejemplo, "Imagenes/Gastos/04-08-2024 - 12:00"), e invocamos la interfaz "StorageCallback" para hacer la tarea asíncrona
+                                stor.subirActualizarImagen(uri, carpetaImagen, "Agregar", new StorageCallbacks.StorageCallback() { //Llamamos el método "subirFoto" de la clase "StorageOperaciones", donde le mandamos el URI de la imagen, el nombre de la carpeta donde se almacenerá la foto concatenado con el nombre de la imagen a subir, y este texto está guardado en la variable "carpetaImagen" (por ejemplo, "Imagenes/Gastos/04-08-2024 - 12:00"), e invocamos la interfaz "StorageCallback" para hacer la tarea asíncrona
                                     @Override
                                     public void onCallback(String texto) {
                                         if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
@@ -243,7 +240,7 @@ public class Gasto {
                     }
                 }
                 else {
-                    Toast.makeText(contexto, "DEBE SUBIR UNA FOTO DEL RECIBO O FACTURA DEL GASTO", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(contexto, "DEBE SUBIR UNA IMAGEN DEL RECIBO O FACTURA DEL GASTO", Toast.LENGTH_SHORT).show();
                 }
             }
             else {

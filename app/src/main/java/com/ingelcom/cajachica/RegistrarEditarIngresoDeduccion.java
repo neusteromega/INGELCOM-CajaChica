@@ -309,36 +309,37 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
     }
 
     private void abrirCamara() {
-        /*ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, "Nueva Imagen");
-        values.put(MediaStore.Images.Media.DESCRIPTION, "Desde la Cámara");
-        imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        try {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); //Creamos un nuevo intent con la acción de "Capturar Imagen" (Image Capture) de "MediaStore"
 
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-        startActivityForResult(intent, 101);*/
+            //Verificamos si el intent de la cámara puede manejar la captura de la imagen
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                //Creamos un ContentValues para almacenar los metadatos de la imagen
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.TITLE, "Nueva Imagen");
+                values.put(MediaStore.Images.Media.DESCRIPTION, "Desde la cámara");
 
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); //Creamos un nuevo intent con la acción de "Capturar Imagen" (Image Capture) de "MediaStore"
+                imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values); //Insertamos la imagen en el MediaStore y obtenemos el URI
 
-        //Verificamos si el intent de la cámara puede manejar la captura de la imagen
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            //Creamos un ContentValues para almacenar los metadatos de la imagen
-            ContentValues values = new ContentValues();
-            values.put(MediaStore.Images.Media.TITLE, "Nueva Imagen");
-            values.put(MediaStore.Images.Media.DESCRIPTION, "Desde la cámara");
-
-            imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values); //Insertamos la imagen en el MediaStore y obtenemos el URI
-
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri); //Pasamos el URI al intent de la cámara
-            startActivityForResult(intent, 101); //Iniciamos la actividad de la cámara
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri); //Pasamos el URI al intent de la cámara
+                startActivityForResult(intent, 101); //Iniciamos la actividad de la cámara
+            }
+        }
+        catch (Exception e) {
+            Log.e("AbrirCamara", "Error al abrir la cámara: ", e);
         }
     }
 
     private void seleccionarImagen() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT); //Asignamos que la acción del Intent será "Obtener Contenido" (Get Content)
-        startActivityForResult(intent, 100);
+        try {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT); //Asignamos que la acción del Intent será "Obtener Contenido" (Get Content)
+            startActivityForResult(intent, 100);
+        }
+        catch (Exception e) {
+            Log.e("ElegirImagen", "Error al abrir la galería: ", e);
+        }
     }
 
     @Override
