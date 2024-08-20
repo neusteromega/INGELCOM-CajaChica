@@ -348,6 +348,14 @@
                     android:textSize="17dp" />
             </LinearLayout>
 
+            <ProgressBar
+                android:id="@+id/pbCargarREG"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:visibility="gone" />
+
             <ImageView
                 android:id="@+id/imgFotoEvidenciaRG"
                 android:layout_width="wrap_content"
@@ -358,8 +366,7 @@
                 android:layout_marginRight="15dp"
                 android:contentDescription="@string/descripcion"
                 android:onClick="mostrarImagenCompleta"
-                android:visibility="gone"
-                app:srcCompat="@mipmap/foto_evidencia" />
+                android:visibility="gone" />
 
             <LinearLayout
                 android:id="@+id/LLSubirCambiarFotoRG"

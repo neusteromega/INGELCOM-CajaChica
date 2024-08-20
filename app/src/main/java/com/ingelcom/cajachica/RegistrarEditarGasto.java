@@ -25,16 +25,20 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.Timestamp;
 import com.ingelcom.cajachica.DAO.Cuadrilla;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.DAO.Gasto;
+import com.ingelcom.cajachica.DAO.StorageOperaciones;
 import com.ingelcom.cajachica.DAO.Usuario;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
+import com.ingelcom.cajachica.Herramientas.StorageCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 
 import java.text.SimpleDateFormat;
@@ -52,14 +56,17 @@ public class RegistrarEditarGasto extends AppCompatActivity {
     private EditText txtLugar, txtDescripcion, txtFactura, txtTotal;
     private ImageView imgFoto, btnEliminarFoto;
     private Spinner spCuadrillas, spTipoCompras;
-    private String nombreActivity, dineroDisponible, id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, total;
+    private ProgressBar pbCargar;
+
+    private String nombreActivity, dineroDisponible, id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, imagen, total;
     private Timestamp timestamp = null;
-    private Uri imageUri = null;
+    private Uri imageUri = null, imageUriVieja;
 
     private FirestoreOperaciones oper = new FirestoreOperaciones();
     private Cuadrilla cuad = new Cuadrilla(RegistrarEditarGasto.this);
     private Gasto gast = new Gasto(RegistrarEditarGasto.this);
     private Usuario usu = new Usuario(RegistrarEditarGasto.this);
+    private StorageOperaciones stor = new StorageOperaciones();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +96,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
         spTipoCompras = findViewById(R.id.spTipoCompraRG);
         imgFoto = findViewById(R.id.imgFotoEvidenciaRG);
 
+        pbCargar = findViewById(R.id.pbCargarREG);
         btnEliminarFoto = findViewById(R.id.imgEliminarFotoRG);
         btnSubirCambiarFoto = findViewById(R.id.btnSubirCambiarFotoRG);
         btnConfirmar = findViewById(R.id.btnConfirmarRG);
@@ -111,6 +119,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                 descripcion = Utilidades.obtenerStringExtra(this, "Descripcion");
                 numeroFactura = Utilidades.obtenerStringExtra(this, "NumeroFactura");
                 usuario = Utilidades.obtenerStringExtra(this, "Usuario");
+                imagen = Utilidades.obtenerStringExtra(this, "Imagen");
                 total = Utilidades.obtenerStringExtra(this, "Total");
                 break;
         }
@@ -144,6 +153,32 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                     //Ocultamos estos dos elementos (Fecha y Cuadrilla) para que el empleado no pueda verlos
                     llFecha.setVisibility(View.GONE);
                     llCuadrilla.setVisibility(View.GONE);
+
+                    imgFoto.setVisibility(View.VISIBLE);
+                    btnEliminarFoto.setVisibility(View.VISIBLE);
+                    btnSubirCambiarFoto.setText("Cambiar Fotografía");
+
+                    pbCargar.setVisibility(View.VISIBLE); //Ponemos visible el progressBar
+
+                    try {
+                        //Llamamos el método "obtenerImagen" de la clase StorageOperaciones al cual le mandamos la ruta de la imagen a obtener guardada en la variable global "imagen", y realizamos una invocación a la interfaz "StorageURICallback"
+                        stor.obtenerImagen(imagen, new StorageCallbacks.StorageURICallback() {
+                            @Override
+                            public void onCallback(Uri uri) { //En este "Uri" se encuentra el URI de la imagen obtenida de Firebase Storage
+                                imageUriVieja = uri; //Como la imagen ya se cargó, asignamos el URI de la imagen obtenido a la variable global "imageUri"
+                                Glide.with(RegistrarEditarGasto.this).load(uri).into(imgFoto); //Asignamos el URI de la imagen obtenida al "imgFoto", pero usando la biblioteca "Glide" para evitar errores
+                                pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen se ha cargado
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                Log.w("ObtenerImagen", "Error al obtener el URI de la imagen: " + e);
+                            }
+                        });
+                    }
+                    catch (Exception e) {
+                        Log.w("ObtenerImagenStorage", e);
+                    }
                     break;
 
                 case "EditarGastoAdmin":
@@ -157,6 +192,30 @@ public class RegistrarEditarGasto extends AppCompatActivity {
 
                     //Como la fechaHora se obtiene en formato String, usamos el método utilitario "convertirFechaHoraATimestamp" para convertirlo a Timestamp y el resultado lo guardamos en la variable global "timestamp"
                     timestamp = Utilidades.convertirFechaHoraATimestamp(fechaHora);
+
+                    imgFoto.setVisibility(View.VISIBLE);
+                    btnEliminarFoto.setVisibility(View.VISIBLE);
+                    btnSubirCambiarFoto.setText("Cambiar Fotografía");
+
+                    try {
+                        //Llamamos el método "obtenerImagen" de la clase StorageOperaciones al cual le mandamos la ruta de la imagen a obtener guardada en la variable global "imagen", y realizamos una invocación a la interfaz "StorageURICallback"
+                        stor.obtenerImagen(imagen, new StorageCallbacks.StorageURICallback() {
+                            @Override
+                            public void onCallback(Uri uri) { //En este "Uri" se encuentra el URI de la imagen obtenida de Firebase Storage
+                                imageUriVieja = uri; //Como la imagen ya se cargó, asignamos el URI de la imagen obtenido a la variable global "imageUri"
+                                Glide.with(RegistrarEditarGasto.this).load(uri).into(imgFoto); //Asignamos el URI de la imagen obtenida al "imgFoto", pero usando la biblioteca "Glide" para evitar errores
+                                pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen se ha cargado
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                Log.w("ObtenerImagen", "Error al obtener el URI de la imagen: " + e);
+                            }
+                        });
+                    }
+                    catch (Exception e) {
+                        Log.w("ObtenerImagenStorage", e);
+                    }
                     break;
             }
         }
@@ -300,6 +359,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                 values.put(MediaStore.Images.Media.DESCRIPTION, "Desde la cámara");
 
                 imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values); //Insertamos la imagen en el MediaStore y obtenemos el URI
+                imageUriVieja = null; //Establecemos null en la "imageUriVieja" para indicar que la imagen inicial ya no existe
 
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri); //Pasamos el URI al intent de la cámara
                 startActivityForResult(intent, 101); //Iniciamos la actividad de la cámara
@@ -329,6 +389,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
         try {
             if (requestCode == 100 && data != null & data.getData() != null) { //Si el "requestCode" es 100, significa que se está seleccionando una imagen de la galería
                 imageUri = data.getData(); //Obtenemos el URI de la imagen seleccionada y lo guardamos en la variable "imageUri" de tipo URI
+                imageUriVieja = null; //Establecemos null en la "imageUriVieja" para indicar que la imagen inicial ya no existe
 
                 //Mostramos el imageView con la foto recién seleccionada, el botón de eliminar foto y asignamos el texto "Cambiar Fotografía" al botón de subir y cambiar foto
                 imgFoto.setVisibility(View.VISIBLE);
@@ -364,7 +425,11 @@ public class RegistrarEditarGasto extends AppCompatActivity {
         intent.putExtra("imageUri", imageUri); // Enviar el URI de la imagen
         startActivity(intent);*/
 
-        datosImagen.put("imageUri", imageUri); //Enviamos el URI de la imagen
+        if (imageUri != null) //Si "imageUri" no es nulo, que muestre en pantalla completa la foto recién cargada
+            datosImagen.put("imageUri", imageUri); //Enviamos el URI de la imagen
+        else //En cambio, si "imageUri" si es nulo, que muestre en pantalla completa la foto extraída de Firebase Storage al querer editar un gasto
+            datosImagen.put("imageUri", imageUriVieja); //Enviamos el URI de la imagen
+
         datosImagen.put("tipoImagen", ""); //Mandamos el tipoImagen vacío ya que no queremos que la imagen se pueda descargar ya que aún no ha sido subida a Firebase Storage
 
         Utilidades.iniciarActivityConDatos(RegistrarEditarGasto.this, ImagenCompleta.class, datosImagen);
@@ -376,7 +441,9 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        imageUri = null; //Establecemos el "imageUri" en null
+                        //Establecemos ambos "imageUri" en null para recalcar que no hay ninguna imagen cargada
+                        imageUri = null;
+                        imageUriVieja = null;
 
                         //Ocultamos el imageView con la foto, el botón de eliminar Foto, y le cambiamos el texto al botón de subir y cambiar foto
                         imgFoto.setVisibility(View.GONE);
@@ -524,11 +591,11 @@ public class RegistrarEditarGasto extends AppCompatActivity {
         //Si "tipo" es igual (ignorando mayúsculas y minúsculas) a la palabra "Empleado", que entre al if
         if (tipo.equalsIgnoreCase("Empleado")) {
             //Llamamos el método "editarGasto" de la clase Gasto donde se hará el proceso de modificación de los datos del gasto; para ello le mandamos el "id", un "null" para indicar que la fecha no se cambiará, la cuadrilla no se cambia así que se coloca la misma que se recibe del activity anterior (DetalleGastoIngreso), el resto de datos de los EditTexts, el Spinner de tipoCompra, el total anterior guardado en la variable global "total" y el "totalNuevo" que se extrae del EditText, un "true" indicando que debe actualizar el dinero de la cuadrilla ya que se está editando un gasto de un empleado, y un "false" indicando que no se ha seleccionado una nueva fecha
-            gast.editarGasto(id, null, cuadrilla, lugarCompra, tipoCompra, descripcion, factura, total, totalNuevo, true, false);
+            gast.editarGasto(id, null, cuadrilla, lugarCompra, tipoCompra, descripcion, factura, imagen, total, totalNuevo, imageUriVieja, imageUri, true, false);
         }
         else if (tipo.equalsIgnoreCase("Admin")) { //En cambio, si "tipo" es igual (ignorando mayúsculas y minúsculas) a la palabra "Admin", que entre al else if
             //Llamamos el método "editarGasto" de la clase Gasto donde se hará el proceso de modificación de los datos del gasto; para ello le mandamos el "id", la variable global "timestamp" que guarda la fecha seleccionada, la cuadrilla y el tipoCompra extraídos de los Spinners, el resto de datos de los EditTexts, el total anterior guardado en la variable global "total" y el "totalNuevo" que se extrae del EditText, un "false" indicando que no debe actualizar el dinero de la cuadrilla ya que se está editando un gasto de un administrador, y un "true" indicando que se ha seleccionado una nueva fecha
-            gast.editarGasto(id, timestamp, cuadrillaNueva, lugarCompra, tipoCompra, descripcion, factura, total, totalNuevo, false, true);
+            gast.editarGasto(id, timestamp, cuadrillaNueva, lugarCompra, tipoCompra, descripcion, factura, imagen, total, totalNuevo, imageUriVieja, imageUri, false, true);
         }
     }
 

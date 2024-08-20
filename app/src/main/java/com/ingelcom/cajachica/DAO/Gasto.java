@@ -235,7 +235,8 @@ public class Gasto {
                                 Toast.makeText(contexto, "ERROR AL REGISTRAR EL GASTO", Toast.LENGTH_SHORT).show();
                             }
                         });
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         Log.w("RegistrarGasto", e);
                     }
                 }
@@ -253,48 +254,82 @@ public class Gasto {
     }
 
     //Método que nos permite editar un Gasto existente en Firestore
-    public void editarGasto(String id, Timestamp fechaHora, String cuadrilla, String lugar, String tipo, String descripcion, String factura, String totalViejo, String totalNuevo, boolean actualizarDinero, boolean fechaSeleccionada) {
+    public void editarGasto(String id, Timestamp fechaHora, String cuadrilla, String lugar, String tipo, String descripcion, String factura, String carpetaImagen, String totalViejo, String totalNuevo, Uri uriVieja, Uri uriNueva, boolean actualizarDinero, boolean fechaSeleccionada) {
         if (!lugar.isEmpty() && !descripcion.isEmpty() && !factura.isEmpty() && !totalNuevo.isEmpty()) { //Verificamos que las cajas de texto no estén vacías
             if ((fechaSeleccionada && fechaHora != null) || (!fechaSeleccionada && fechaHora == null)) {
-                try {
-                    Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
-                    Map<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos
+                if (uriVieja != null || uriNueva != null) { //Si el "uri" de la imagen recibida no es nulo, significa que si se ha cargado una imagen, por lo tanto, que entre al if
+                    try {
+                        Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
+                        Map<String, Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos
 
-                    //Convertimos las variables String "totalViejo" y "totalNuevo" en double
-                    double primerTotal = Double.parseDouble(totalViejo);
-                    double segundoTotal = Double.parseDouble(totalNuevo);
-                    double diferenciaTotales = segundoTotal - primerTotal; //Restamos el segundoTotal con el primerTotal y la diferencia la guardamos en "diferenciaTotales"
+                        //Convertimos las variables String "totalViejo" y "totalNuevo" en double
+                        double primerTotal = Double.parseDouble(totalViejo);
+                        double segundoTotal = Double.parseDouble(totalNuevo);
+                        double diferenciaTotales = segundoTotal - primerTotal; //Restamos el segundoTotal con el primerTotal y la diferencia la guardamos en "diferenciaTotales"
 
-                    if (diferenciaTotales != 0 && actualizarDinero) //Si "diferenciaTotales" no es 0, significa que si hay una diferencia de dinero entre ambos totales, y también, si "actualizarDinero" es true; en ese caso, que proceda a actualizar el dinero de la cuadrilla
-                        cuad.actualizarDineroCuadrilla(cuadrilla, diferenciaTotales, "Gasto");
+                        if (diferenciaTotales != 0 && actualizarDinero) //Si "diferenciaTotales" no es 0, significa que si hay una diferencia de dinero entre ambos totales, y también, si "actualizarDinero" es true; en ese caso, que proceda a actualizar el dinero de la cuadrilla
+                            cuad.actualizarDineroCuadrilla(cuadrilla, diferenciaTotales, "Gasto");
 
-                    //Establecemos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el nuevo valor
-                    datos.put("Lugar", lugar);
-                    datos.put("TipoCompra", tipo);
-                    datos.put("Descripcion", descripcion);
-                    datos.put("NumeroFactura", factura);
-                    datos.put("Total", segundoTotal);
+                        //Establecemos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el nuevo valor
+                        datos.put("Lugar", lugar);
+                        datos.put("TipoCompra", tipo);
+                        datos.put("Descripcion", descripcion);
+                        datos.put("NumeroFactura", factura);
+                        datos.put("Total", segundoTotal);
 
-                    if (fechaSeleccionada) {
-                        datos.put("Fecha", fechaHora);
-                        datos.put("Cuadrilla", cuadrilla);
+                        if (fechaSeleccionada) {
+                            datos.put("Fecha", fechaHora);
+                            datos.put("Cuadrilla", cuadrilla);
+                        }
+
+                        //Creamos un "ProgressDialog" por mientras se están subiendo los datos a Firebase
+                        progressDialog = new ProgressDialog(contexto);
+                        progressDialog.setTitle("Confirmando Gasto de Dinero...");
+                        progressDialog.show();
+
+                        //Llamamos al método "agregarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar, el HashMap con los nuevos campos y datos (o los campos existentes para actualizar su contenido) e invocamos la interfaz "FirestoreInsertCallback"
+                        oper.agregarActualizarRegistrosColeccion("gastos", "ID", id, datos, new FirestoreCallbacks.FirestoreTextCallback() {
+                            @Override
+                            public void onSuccess(String texto) {
+                                if (uriNueva != null) {
+                                    stor.subirActualizarImagen(uriNueva, carpetaImagen, "Actualizar", new StorageCallbacks.StorageCallback() {
+                                        @Override
+                                        public void onCallback(String texto) {
+                                            if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
+                                                progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de actualización de la imagen a Storage ha sido exitoso
+
+                                            Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "GastoEditado", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "GastoEditado" para indicar que fue un Gasto el que se modificó, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarGasto
+                                        }
+
+                                        @Override
+                                        public void onFailure(Exception e) {
+                                            if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
+                                                progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de actualización de la imagen a Storage haya fallado
+
+                                            Log.e("SubirFotoStorage", "Error al actualizar la foto: ", e);
+                                        }
+                                    });
+                                }
+                                else {
+                                    if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
+                                        progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de actualización de la imagen a Storage ha sido exitoso
+
+                                    Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "GastoEditado", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "GastoEditado" para indicar que fue un Gasto el que se modificó, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarGasto
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                Toast.makeText(contexto, "ERROR AL MODIFICAR EL GASTO", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
-
-                    //Llamamos al método "agregarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar, el HashMap con los nuevos campos y datos (o los campos existentes para actualizar su contenido) e invocamos la interfaz "FirestoreInsertCallback"
-                    oper.agregarActualizarRegistrosColeccion("gastos", "ID", id, datos, new FirestoreCallbacks.FirestoreTextCallback() {
-                        @Override
-                        public void onSuccess(String texto) {
-                            Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "GastoEditado", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "GastoEditado" para indicar que fue un Gasto el que se modificó, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarGasto
-                        }
-
-                        @Override
-                        public void onFailure(Exception e) {
-                            Toast.makeText(contexto, "ERROR AL MODIFICAR EL GASTO", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    catch (Exception e) {
+                        Log.w("ActualizarGasto", e);
+                    }
                 }
-                catch (Exception e) {
-                    Log.w("ActualizarGasto", e);
+                else {
+                    Toast.makeText(contexto, "DEBE SUBIR UNA IMAGEN DEL RECIBO O FACTURA DEL GASTO", Toast.LENGTH_SHORT).show();
                 }
             }
         }

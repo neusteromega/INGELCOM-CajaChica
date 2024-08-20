@@ -269,6 +269,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                             datos.put("NumeroFactura", factura);
                             datos.put("Usuario", usuario);
                             datos.put("Rol", rol);
+                            datos.put("Imagen", imagen);
                             datos.put("Total", total);
 
                             Utilidades.iniciarActivityConDatos(DetalleGastoIngreso.this, RegistrarEditarGasto.class, datos); //Abrimos el activity "RegistrarEditarGasto" y le mandamos el HashMap "datos" con los parámetros
@@ -286,6 +287,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                             datos.put("NumeroFactura", factura);
                             datos.put("Usuario", usuario);
                             datos.put("Rol", rol);
+                            datos.put("Imagen", imagen);
                             datos.put("Total", total);
 
                             Utilidades.iniciarActivityConDatos(DetalleGastoIngreso.this, RegistrarEditarGasto.class, datos); //Abrimos el activity "RegistrarEditarGasto" y le mandamos el HashMap "datos" con los parámetros
@@ -298,6 +300,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                             datos.put("Cuadrilla", cuadrilla);
                             datos.put("Usuario", usuario);
                             datos.put("Transferencia", transferencia);
+                            datos.put("Imagen", imagen);
                             datos.put("Total", total);
 
                             Utilidades.iniciarActivityConDatos(DetalleGastoIngreso.this, RegistrarEditarIngresoDeduccion.class, datos);
