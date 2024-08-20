@@ -124,11 +124,11 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                     lblDinero.setTextColor(this.getColor(R.color.clr_fuente_gastos));
 
                     //Ocultamos estos elementos
-
                     lblTransferencia.setVisibility(View.GONE);
                     sepPrincipal.setVisibility(View.GONE);
                     sepFactTransf.setVisibility(View.GONE);
 
+                    ocultarBotonEditar("Cuadrilla");
                     asignarDatos("Gasto"); //Llamamos al método "asignarDatos" de abajo y le mandamos "Gasto" para indicar que asigne los datos al gasto
                     break;
 
@@ -145,7 +145,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                     sepPrincipal.setVisibility(View.GONE);
                     sepFactTransf.setVisibility(View.GONE);
 
-                    ocultarBotonEditar();
+                    ocultarBotonEditar("Supervisores");
                     asignarDatos("Gasto"); //Llamamos al método "asignarDatos" de abajo y le mandamos "Gasto" para indicar que asigne los datos al gasto
                     break;
 
@@ -168,7 +168,6 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                     sepFactTransf.setVisibility(View.GONE);
                     //imgFoto.setVisibility(View.GONE);
 
-                    ocultarBotonEditar();
                     asignarDatos("Ingreso"); //Llamamos al método "asignarDatos" de abajo y le mandamos "Ingreso" para indicar que asigne los datos al ingreso
                     break;
             }
@@ -337,7 +336,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
     }
 
     //Método que ocultar el botón de Editar cuando el rol del Usuario es "Empleado"
-    private void ocultarBotonEditar() {
+    private void ocultarBotonEditar(String tipo) {
         try {
             //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" y creamos una invocación a la interfaz "FirestoreDocumentCallback"
             usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
@@ -346,8 +345,16 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                     if (documento != null) { //Si documento no es nulo, quiere decir que si encontró el usuario actual
                         String rol = (String) documento.get("Rol"); //Obtenemos el rol del usuario
 
-                        if (rol.equalsIgnoreCase("Empleado")) //Si el rol es "Empleado", que entre al if
-                            btnEditar.setVisibility(View.GONE); //Ocultamos el botón de Editar
+                        if (tipo.equalsIgnoreCase("Cuadrilla")) { //Si "tipo" es "Cuadrilla", significa que se está visualizando un gasto hecho por un empleado de una cuadrilla
+                            //Si el método utilitario "verificarMonthYearActual" no retorna un true, que entre al if y oculte el botón de editar ya que eso significa que el mes de la fecha del gasto/ingreso no coincide con el mes actual, por lo tanto, no puede editar
+                            if (!Utilidades.verificarMonthYearActual(fecha))
+                                btnEditar.setVisibility(View.GONE); //Ocultamos el botón de Editar
+                        }
+                        else if (tipo.equalsIgnoreCase("Supervisores")) { //Pero, si "tipo" es "Supervisores", significa que se está visualizando un gasto hecho por un supervisor a una cuadrilla
+                            //Si el método utilitario "verificarMonthYearActual" no retorna un true, que entre al if y oculte el botón de editar ya que eso significa que el mes de la fecha del gasto/ingreso no coincide con el mes actual, por lo tanto, no puede editar
+                            if (rol.equalsIgnoreCase("Empleado") || !Utilidades.verificarMonthYearActual(fecha)) //Si el rol es "Empleado", que entre al if
+                                btnEditar.setVisibility(View.GONE); //Ocultamos el botón de Editar
+                        }
                     }
                 }
 

@@ -268,6 +268,16 @@ public class Utilidades {
         return anio; //Retornamos el año extraído
     }
 
+    //Método que nos ayuda a comprobar si un Mes - Año coincide con el Mes - Año actual
+    public static boolean verificarMonthYearActual(String fechaHora) {
+        String monthYear = convertirFechaAFormatoMonthYear(fechaHora); //Como el parámetro recibido es la fechaHora, la convertimos a formato Mes - Año llamando el método de arriba "convertirFechaAFormatoMonthYear"
+        Calendar fechaActual = Calendar.getInstance(); //Obtenemos la fecha actual
+        SimpleDateFormat formatoMesAnio = new SimpleDateFormat("MMMM - yyyy", new Locale("es", "ES")); //Establecemos un formato similar al formato del "monthYear" recibido por parámetro (Mes - 0000). Aquí en "new Locale("es", "ES")" especificamos que queremos un formato de fecha y hora en Español (esto para que los meses sean en español y no en inglés)
+        String monthYearActual = formatoMesAnio.format(fechaActual.getTime()); //Establecemos el formato a la variable de tipo Calendar "fechaActual" y el resultado lo guardamos en un String llamado "monthYearActual"
+
+        return monthYearActual.equalsIgnoreCase(monthYear); //Comparamos el mes y año actual con el pasado como parámetro, si coinciden, retornará true, sino retornará false
+    }
+
     //Método que nos ayuda a convertir el mes y el año (que primero están en números) en una cadena String (por ejemplo, "Marzo - 2024")
     public static String convertirMonthYearString(int month, int year) {
         return obtenerFormatoMes(month) + " - " + year; //Retornamos la cadena String a mostrar en el lblFechaSeleccionada, para ello primero convertir el número del mes al nombre del mes (valga la redundancia) llamando al método "obtenerFormatoMes" y le enviamos el número del mes "month" como parámetro
