@@ -30,18 +30,22 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.Timestamp;
 import com.ingelcom.cajachica.DAO.Cuadrilla;
 import com.ingelcom.cajachica.DAO.Deduccion;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.DAO.Ingreso;
+import com.ingelcom.cajachica.DAO.StorageOperaciones;
 import com.ingelcom.cajachica.DAO.Usuario;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
+import com.ingelcom.cajachica.Herramientas.StorageCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 
 import java.io.ByteArrayOutputStream;
@@ -60,13 +64,15 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
     private EditText txtTransferencia, txtTotal;
     private ImageView imgFoto, btnEliminarFoto;
     private Spinner spCuadrillas;
+    private ProgressBar pbCargar;
     //private SwipeRefreshLayout swlRecargar;
-    private int day, month, year;
-    private String nombreActivity, id, fechaHora, cuadrilla, usuario, transferencia, total;
+
+    private String nombreActivity, id, fechaHora, cuadrilla, usuario, transferencia, imagen, total;
     private Timestamp timestamp = null;
-    private Uri imageUri = null;
+    private Uri imageUri = null, imageUriVieja;
 
     private FirestoreOperaciones oper = new FirestoreOperaciones();
+    private StorageOperaciones stor = new StorageOperaciones();
     private Cuadrilla cuad = new Cuadrilla(RegistrarEditarIngresoDeduccion.this);
     private Ingreso ingr = new Ingreso(RegistrarEditarIngresoDeduccion.this);
     private Deduccion deduc = new Deduccion(RegistrarEditarIngresoDeduccion.this);
@@ -85,11 +91,6 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
     }
 
     private void inicializarElementos() {
-        final Calendar c = Calendar.getInstance(); //Creamos un objeto de tipo Calendar que representa la fecha y hora actuales en el dispositivo donde se está ejecutando el código
-        year = c.get(Calendar.YEAR); //Obtenemos el año actual
-        month = c.get(Calendar.MONTH); //Obtenemos el mes actual
-        day = c.get(Calendar.DAY_OF_MONTH); //Obtenemos el día actual
-
         llFecha = findViewById(R.id.LLFechaRI);
         llDinero = findViewById(R.id.LLDineroRI);
         llTransferencia = findViewById(R.id.LLTransferenciaRI);
@@ -103,6 +104,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
 
         imgFoto = findViewById(R.id.imgFotoEvidenciaRI);
 
+        pbCargar = findViewById(R.id.pbCargarRI);
         btnEliminarFoto = findViewById(R.id.imgEliminarFotoRI);
         btnSubirCambiarFoto = findViewById(R.id.btnSubirCambiarFotoRI);
 
@@ -120,6 +122,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                 cuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
                 usuario = Utilidades.obtenerStringExtra(this, "Usuario");
                 transferencia = Utilidades.obtenerStringExtra(this, "Transferencia");
+                imagen = Utilidades.obtenerStringExtra(this, "Imagen");
                 total = Utilidades.obtenerStringExtra(this, "Total");
                 break;
 
@@ -192,6 +195,32 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                     }
                     catch (Exception e) {
                         Log.w("ObtenerIngreso", e);
+                    }
+
+                    imgFoto.setVisibility(View.VISIBLE);
+                    btnEliminarFoto.setVisibility(View.VISIBLE);
+                    btnSubirCambiarFoto.setText("Cambiar Fotografía");
+
+                    pbCargar.setVisibility(View.VISIBLE); //Ponemos visible el progressBar
+
+                    try {
+                        //Llamamos el método "obtenerImagen" de la clase StorageOperaciones al cual le mandamos la ruta de la imagen a obtener guardada en la variable global "imagen", y realizamos una invocación a la interfaz "StorageURICallback"
+                        stor.obtenerImagen(imagen, new StorageCallbacks.StorageURICallback() {
+                            @Override
+                            public void onCallback(Uri uri) { //En este "Uri" se encuentra el URI de la imagen obtenida de Firebase Storage
+                                imageUriVieja = uri; //Como la imagen ya se cargó, asignamos el URI de la imagen obtenido a la variable global "imageUriVieja" que indica que es la imagen que ya viene de Firebase Storage, no la que cargara ahorita el usuario
+                                Glide.with(RegistrarEditarIngresoDeduccion.this).load(uri).into(imgFoto); //Asignamos el URI de la imagen obtenida al "imgFoto", pero usando la biblioteca "Glide" para evitar errores
+                                pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen se ha cargado
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                Log.w("ObtenerImagen", "Error al obtener el URI de la imagen: " + e);
+                            }
+                        });
+                    }
+                    catch (Exception e) {
+                        Log.w("ObtenerImagenStorage", e);
                     }
                     break;
 
@@ -320,6 +349,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                 values.put(MediaStore.Images.Media.DESCRIPTION, "Desde la cámara");
 
                 imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values); //Insertamos la imagen en el MediaStore y obtenemos el URI
+                imageUriVieja = null; //Establecemos null en la "imageUriVieja" para indicar que la imagen inicial ya no existe
 
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri); //Pasamos el URI al intent de la cámara
                 startActivityForResult(intent, 101); //Iniciamos la actividad de la cámara
@@ -349,6 +379,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         try {
             if (requestCode == 100 && data != null & data.getData() != null) { //Si el "requestCode" es 100, significa que se está seleccionando una imagen de la galería
                 imageUri = data.getData(); //Obtenemos el URI de la imagen seleccionada y lo guardamos en la variable "imageUri" de tipo URI
+                imageUriVieja = null; //Establecemos null en la "imageUriVieja" para indicar que la imagen inicial ya no existe
 
                 //Mostramos el imageView con la foto recién seleccionada, el botón de eliminar foto y asignamos el texto "Cambiar Fotografía" al botón de subir y cambiar foto
                 imgFoto.setVisibility(View.VISIBLE);
@@ -385,7 +416,11 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         intent.putExtra("imageUri", imageUri); //Enviamos el URI de la imagen
         startActivity(intent); //Iniciamos el activity*/
 
-        datosImagen.put("imageUri", imageUri); //Enviamos el URI de la imagen
+        if (imageUri != null) //Si "imageUri" no es nulo, que muestre en pantalla completa la foto recién cargada
+            datosImagen.put("imageUri", imageUri); //Enviamos el URI de la imagen
+        else //En cambio, si "imageUri" si es nulo, que muestre en pantalla completa la foto extraída de Firebase Storage al querer editar un gasto
+            datosImagen.put("imageUri", imageUriVieja); //Enviamos el URI de la imagen
+
         datosImagen.put("tipoImagen", ""); //Mandamos el tipoImagen vacío ya que no queremos que la imagen se pueda descargar ya que aún no ha sido subida a Firebase Storage
 
         Utilidades.iniciarActivityConDatos(RegistrarEditarIngresoDeduccion.this, ImagenCompleta.class, datosImagen);
@@ -397,7 +432,9 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    imageUri = null; //Establecemos el "imageUri" en null
+                    //Establecemos ambos "imageUri" en null para recalcar que no hay ninguna imagen cargada
+                    imageUri = null;
+                    imageUriVieja = null;
 
                     //Ocultamos el imageView con la foto, el botón de eliminar Foto, y le cambiamos el texto al botón de subir y cambiar foto
                     imgFoto.setVisibility(View.GONE);
@@ -530,7 +567,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         String totalNuevo = txtTotal.getText().toString();
 
         if (tipo.equalsIgnoreCase("Ingreso")) //Si "tipo" es "Ingreso" que modifique el ingreso en Firestore
-            ingr.editarIngreso(id, timestamp, cuadrilla, transferencia, total, totalNuevo); //Llamamos el método "editarIngreso" de la clase Ingreso donde se hará el proceso de modificación de los datos del ingreso, para ello le mandamos el id, la fecha y hora guardada en "timestamp", la cuadrilla, el número de transferencia, el total anterior guardado en la variable global "total" y el total nuevo que se extrae del EditText
+            ingr.editarIngreso(id, timestamp, cuadrilla, transferencia, imagen, total, totalNuevo, imageUriVieja, imageUri); //Llamamos el método "editarIngreso" de la clase Ingreso donde se hará el proceso de modificación de los datos del ingreso, para ello le mandamos el id, la fecha y hora guardada en "timestamp", la cuadrilla, el número de transferencia, la ruta de la imagen guardada en "imagen", el total anterior guardado en la variable global "total" y el total nuevo que se extrae del EditText, y los URIs de la imagen cargada de Firebase Storage y de la posible nueva imagen que subirá el usuario para reemplazar la imagen anterior
         else if (tipo.equalsIgnoreCase("Deduccion")) //Si "tipo" es "Deduccion" que modifique la deducción en Firestore
             deduc.editarDeduccion(id, timestamp, cuadrilla, total, totalNuevo); //Llamamos el método "editarDeduccion" de la clase Deduccion donde se hará el proceso de modificación de los datos de la deducción, para ello le mandamos el id, la fecha y hora guardada en "timestamp", la cuadrilla, el total anterior guardado en la variable global "total" y el total nuevo que se extrae del EditText
     }

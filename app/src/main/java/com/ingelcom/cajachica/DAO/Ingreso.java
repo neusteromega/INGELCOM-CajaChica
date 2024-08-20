@@ -182,41 +182,75 @@ public class Ingreso {
     }
 
     //Método que nos permite editar un Ingreso existente en Firestore
-    public void editarIngreso(String id, Timestamp fechaHora, String cuadrilla, String transferencia, String totalViejo, String totalNuevo) {
+    public void editarIngreso(String id, Timestamp fechaHora, String cuadrilla, String transferencia, String carpetaImagen, String totalViejo, String totalNuevo, Uri uriVieja, Uri uriNueva) {
         if (fechaHora != null && !transferencia.isEmpty() && !totalNuevo.isEmpty()) { //Verificamos que las dos cajas de texto no estén vacías, y que el Timestamp "fechaHora" no sea nulo para que entre al if (el timestamp sólo será nulo si la pantalla no es "EditarIngreso", y si es "RegistrarIngreso", será nulo cuando el usuario no haya seleccionado una fecha y hora)
-            try {
-                Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
-                Map<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos
+            if (uriVieja != null || uriNueva != null) { //Con uno de los dos URIs que se reciben en los parámetros no sea nulo, que entre al if, en cambio, si ambos son nulos significa que no hay ninguna imagen lista para subir a Firebase Storage, entonces no podrá entrar al if
+                try {
+                    Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
+                    Map<String, Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos
 
-                //Convertimos las variables String "totalViejo" y "totalNuevo" en double
-                double primerTotal = Double.parseDouble(totalViejo);
-                double segundoTotal = Double.parseDouble(totalNuevo);
-                double diferenciaTotales = segundoTotal - primerTotal; //Restamos el segundoTotal con el primerTotal y la diferencia la guardamos en "diferenciaTotales"
+                    //Convertimos las variables String "totalViejo" y "totalNuevo" en double
+                    double primerTotal = Double.parseDouble(totalViejo);
+                    double segundoTotal = Double.parseDouble(totalNuevo);
+                    double diferenciaTotales = segundoTotal - primerTotal; //Restamos el segundoTotal con el primerTotal y la diferencia la guardamos en "diferenciaTotales"
 
-                if (diferenciaTotales != 0) //Si "diferenciaTotales" no es 0, significa que si hay una diferencia de dinero entre ambos totales, en ese caso, que proceda a actualizar el dinero de la cuadrilla
-                    cuad.actualizarDineroCuadrilla(cuadrilla, diferenciaTotales, "Ingreso");
+                    if (diferenciaTotales != 0) //Si "diferenciaTotales" no es 0, significa que si hay una diferencia de dinero entre ambos totales, en ese caso, que proceda a actualizar el dinero de la cuadrilla
+                        cuad.actualizarDineroCuadrilla(cuadrilla, diferenciaTotales, "Ingreso");
 
-                //Establecemos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el nuevo valor
-                datos.put("Fecha", fechaHora);
-                datos.put("Cuadrilla", cuadrilla);
-                datos.put("Transferencia", transferencia);
-                datos.put("Total", segundoTotal);
+                    //Establecemos los datos en el HashMap usando ".put", indicando entre comillas el nombre del campo, y después de la coma, el nuevo valor
+                    datos.put("Fecha", fechaHora);
+                    datos.put("Cuadrilla", cuadrilla);
+                    datos.put("Transferencia", transferencia);
+                    datos.put("Total", segundoTotal);
 
-                //Llamamos al método "agregarActualizarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar, el HashMap con los nuevos campos y datos (o los campos existentes para actualizar su contenido) e invocamos la interfaz "FirestoreInsertCallback"
-                oper.agregarActualizarRegistrosColeccion("ingresos", "ID", id, datos, new FirestoreCallbacks.FirestoreTextCallback() {
-                    @Override
-                    public void onSuccess(String texto) {
-                        Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "IngresoEditado", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "IngresoEditado" para indicar que fue un Ingreso el que se modificó, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarIngresoDeduccion
-                    }
+                    //Creamos un "ProgressDialog" por mientras se están subiendo los datos a Firebase
+                    progressDialog = new ProgressDialog(contexto);
+                    progressDialog.setTitle("Confirmando Ingreso de Dinero...");
+                    progressDialog.show();
 
-                    @Override
-                    public void onFailure(Exception e) {
-                        Toast.makeText(contexto, "ERROR AL MODIFICAR EL INGRESO", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    //Llamamos al método "agregarActualizarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar, el HashMap con los nuevos campos y datos (o los campos existentes para actualizar su contenido) e invocamos la interfaz "FirestoreInsertCallback"
+                    oper.agregarActualizarRegistrosColeccion("ingresos", "ID", id, datos, new FirestoreCallbacks.FirestoreTextCallback() {
+                        @Override
+                        public void onSuccess(String texto) {
+                            if (uriNueva != null) { //Si la "uriNueva" no es nulo, significa que se quiere actualizar una imagen de Firebase Storage con una imagen nueva, por lo tanto, que entre al if y proceda con la actualización de la imagen
+                                stor.subirActualizarImagen(uriNueva, carpetaImagen, "Actualizar", new StorageCallbacks.StorageCallback() { //Llamamos el método "subirActualizarImagen" de la clase "StorageOperaciones", donde le mandamos el URI de la imagen, el nombre de la carpeta donde se almacenerá la foto concatenado con el nombre de la imagen a subir, y este texto está guardado en la variable "carpetaImagen" (por ejemplo, "Imagenes/Gastos/04-08-2024 - 12:00"), la palabra "Actualizar" para indicar que se actualizará una imagen, e invocamos la interfaz "StorageCallback" para hacer la tarea asíncrona
+                                    @Override
+                                    public void onCallback(String texto) {
+                                        if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
+                                            progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de actualización de la imagen a Storage ha sido exitoso
+
+                                        Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "IngresoEditado", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "IngresoEditado" para indicar que fue un Ingreso el que se modificó, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarIngresoDeduccion
+                                    }
+
+                                    @Override
+                                    public void onFailure(Exception e) {
+                                        if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
+                                            progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de actualización de la imagen a Storage haya fallado
+
+                                        Log.e("SubirFotoStorage", "Error al actualizar la foto: ", e);
+                                    }
+                                });
+                            }
+                            else {
+                                if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
+                                    progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de actualización de la imagen a Storage ha sido exitoso
+
+                                Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "IngresoEditado", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "IngresoEditado" para indicar que fue un Ingreso el que se modificó, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarIngresoDeduccion
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            Toast.makeText(contexto, "ERROR AL MODIFICAR EL INGRESO", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                catch (Exception e) {
+                    Log.w("ActualizarIngreso", e);
+                }
             }
-            catch (Exception e) {
-                Log.w("ActualizarIngreso", e);
+            else {
+                Toast.makeText(contexto, "DEBE SUBIR UNA IMAGEN DEL RECIBO O FACTURA DEL GASTO", Toast.LENGTH_SHORT).show();
             }
         }
         else {

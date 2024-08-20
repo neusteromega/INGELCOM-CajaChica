@@ -43,14 +43,13 @@ public class GastoIngresoRegistrado extends AppCompatActivity {
         if (nombreActivity != null) {
             //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
             switch (nombreActivity) {
-                //Establecemos los elementos gráficos si la pantalla es "IngresoRegistrado"
+                //Establecemos los elementos gráficos para cada uno de los tipos de pantallas
                 case "IngresoRegistrado":
                     lblTitulo.setText("Ingreso Registrado");
                     lblExito.setText("¡EL INGRESO HA SIDO REGISTRADO CON ÉXITO!");
                     lblMensaje.setText("Puede revisar el Listado de Ingresos de la Cuadrilla para visualizar el Ingreso Registrado.");
                     break;
 
-                //Establecemos los elementos gráficos si la pantalla es "GastoRegistradoAdmin"
                 case "GastoRegistradoAdmin":
                     lblTitulo.setText("Gasto Registrado");
                     lblExito.setText("¡EL GASTO HA SIDO REGISTRADO CON ÉXITO");
@@ -63,11 +62,28 @@ public class GastoIngresoRegistrado extends AppCompatActivity {
                     lblMensaje.setText("Puede revisar el Listado de Gastos en el Menú Principal para visualizar el Gasto Registrado.");
                     break;
 
-                //Establecemos los elementos gráficos si la pantalla es "DeduccionRegistrada"
                 case "DeduccionRegistrada":
                     lblTitulo.setText("Deducción Registrada");
                     lblExito.setText("¡LA DEDUCCIÓN HA SIDO REGISTRADA CON ÉXITO!");
                     lblMensaje.setText("Puede revisar el Listado de Deducciones de la Cuadrilla para visualizar la Deducción Registrada.");
+                    break;
+
+                case "IngresoEditado":
+                    lblTitulo.setText("Ingreso Modificado");
+                    lblExito.setText("¡EL INGRESO HA SIDO MODIFICADO CON ÉXITO!");
+                    lblMensaje.setText("Puede revisar el Listado de Ingresos de la Cuadrilla para visualizar el Ingreso Modificado.");
+                    break;
+
+                case "GastoEditado":
+                    lblTitulo.setText("Gasto Modificado");
+                    lblExito.setText("¡EL GASTO HA SIDO MODIFICADO CON ÉXITO");
+                    lblMensaje.setText("Puede revisar el Listado de Gastos de la Cuadrilla para visualizar el Gasto Modificado.");
+                    break;
+
+                case "DeduccionEditada":
+                    lblTitulo.setText("Deducción Modificada");
+                    lblExito.setText("¡LA DEDUCCIÓN HA SIDO MODIFICADA CON ÉXITO!");
+                    lblMensaje.setText("Puede revisar el Listado de Deducciones de la Cuadrilla para visualizar la Deducción Modificada.");
                     break;
             }
         }

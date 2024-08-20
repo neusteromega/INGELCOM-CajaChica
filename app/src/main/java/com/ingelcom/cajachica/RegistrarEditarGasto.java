@@ -63,10 +63,10 @@ public class RegistrarEditarGasto extends AppCompatActivity {
     private Uri imageUri = null, imageUriVieja;
 
     private FirestoreOperaciones oper = new FirestoreOperaciones();
+    private StorageOperaciones stor = new StorageOperaciones();
     private Cuadrilla cuad = new Cuadrilla(RegistrarEditarGasto.this);
     private Gasto gast = new Gasto(RegistrarEditarGasto.this);
     private Usuario usu = new Usuario(RegistrarEditarGasto.this);
-    private StorageOperaciones stor = new StorageOperaciones();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -196,6 +196,8 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                     imgFoto.setVisibility(View.VISIBLE);
                     btnEliminarFoto.setVisibility(View.VISIBLE);
                     btnSubirCambiarFoto.setText("Cambiar Fotografía");
+
+                    pbCargar.setVisibility(View.VISIBLE); //Ponemos visible el progressBar
 
                     try {
                         //Llamamos el método "obtenerImagen" de la clase StorageOperaciones al cual le mandamos la ruta de la imagen a obtener guardada en la variable global "imagen", y realizamos una invocación a la interfaz "StorageURICallback"
@@ -590,11 +592,11 @@ public class RegistrarEditarGasto extends AppCompatActivity {
 
         //Si "tipo" es igual (ignorando mayúsculas y minúsculas) a la palabra "Empleado", que entre al if
         if (tipo.equalsIgnoreCase("Empleado")) {
-            //Llamamos el método "editarGasto" de la clase Gasto donde se hará el proceso de modificación de los datos del gasto; para ello le mandamos el "id", un "null" para indicar que la fecha no se cambiará, la cuadrilla no se cambia así que se coloca la misma que se recibe del activity anterior (DetalleGastoIngreso), el resto de datos de los EditTexts, el Spinner de tipoCompra, el total anterior guardado en la variable global "total" y el "totalNuevo" que se extrae del EditText, los URIs de la imagen cargada de Firebase Storage y de la posible nueva imagen que subirá el usuario para reemplazar la imagen anterior, un "true" indicando que debe actualizar el dinero de la cuadrilla ya que se está editando un gasto de un empleado, y un "false" indicando que no se ha seleccionado una nueva fecha
+            //Llamamos el método "editarGasto" de la clase Gasto donde se hará el proceso de modificación de los datos del gasto; para ello le mandamos el "id", un "null" para indicar que la fecha no se cambiará, la cuadrilla no se cambia así que se coloca la misma que se recibe del activity anterior (DetalleGastoIngreso), el resto de datos de los EditTexts, el Spinner de tipoCompra, la ruta de la imagen guardada en "imagen", el total anterior guardado en la variable global "total" y el "totalNuevo" que se extrae del EditText, los URIs de la imagen cargada de Firebase Storage y de la posible nueva imagen que subirá el usuario para reemplazar la imagen anterior, un "true" indicando que debe actualizar el dinero de la cuadrilla ya que se está editando un gasto de un empleado, y un "false" indicando que no se ha seleccionado una nueva fecha
             gast.editarGasto(id, null, cuadrilla, lugarCompra, tipoCompra, descripcion, factura, imagen, total, totalNuevo, imageUriVieja, imageUri, true, false);
         }
         else if (tipo.equalsIgnoreCase("Admin")) { //En cambio, si "tipo" es igual (ignorando mayúsculas y minúsculas) a la palabra "Admin", que entre al else if
-            //Llamamos el método "editarGasto" de la clase Gasto donde se hará el proceso de modificación de los datos del gasto; para ello le mandamos el "id", la variable global "timestamp" que guarda la fecha seleccionada, la cuadrilla y el tipoCompra extraídos de los Spinners, el resto de datos de los EditTexts, el total anterior guardado en la variable global "total" y el "totalNuevo" que se extrae del EditText, los URIs de la imagen cargada de Firebase Storage y de la posible nueva imagen que subirá el usuario para reemplazar la imagen anterior, un "false" indicando que no debe actualizar el dinero de la cuadrilla ya que se está editando un gasto de un administrador, y un "true" indicando que se ha seleccionado una nueva fecha
+            //Llamamos el método "editarGasto" de la clase Gasto donde se hará el proceso de modificación de los datos del gasto; para ello le mandamos el "id", la variable global "timestamp" que guarda la fecha seleccionada, la cuadrilla y el tipoCompra extraídos de los Spinners, el resto de datos de los EditTexts, la ruta de la imagen guardada en "imagen", el total anterior guardado en la variable global "total" y el "totalNuevo" que se extrae del EditText, los URIs de la imagen cargada de Firebase Storage y de la posible nueva imagen que subirá el usuario para reemplazar la imagen anterior, un "false" indicando que no debe actualizar el dinero de la cuadrilla ya que se está editando un gasto de un administrador, y un "true" indicando que se ha seleccionado una nueva fecha
             gast.editarGasto(id, timestamp, cuadrillaNueva, lugarCompra, tipoCompra, descripcion, factura, imagen, total, totalNuevo, imageUriVieja, imageUri, false, true);
         }
     }

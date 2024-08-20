@@ -264,13 +264,21 @@
                         android:textSize="17dp" />
                 </LinearLayout>
 
+                <ProgressBar
+                    android:id="@+id/pbCargarRI"
+                    style="@style/Widget.AppCompat.ProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:visibility="gone" />
+
                 <ImageView
                     android:id="@+id/imgFotoEvidenciaRI"
                     android:layout_width="match_parent"
                     android:layout_height="167dp"
                     android:layout_gravity="center"
                     android:layout_marginLeft="15dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="30dp"
                     android:layout_marginRight="15dp"
                     android:contentDescription="@string/descripcion"
                     android:onClick="mostrarImagenCompleta"
@@ -288,7 +296,7 @@
                         android:id="@+id/imgEliminarFotoRI"
                         android:layout_width="47dp"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="30dp"
                         android:layout_marginBottom="15dp"
                         android:contentDescription="@string/descripcion"
                         android:onClick="eliminarFoto"
@@ -301,7 +309,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="12dp"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="30dp"
                         android:layout_marginRight="15dp"
                         android:layout_marginBottom="15dp"
                         android:background="@drawable/clr_casilladegradadoazul_redonda"
@@ -323,7 +331,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="30dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginBottom="40dp"
                     android:background="@drawable/clr_casilladegradadoazul_redonda"
