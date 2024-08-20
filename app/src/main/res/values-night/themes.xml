@@ -12,7 +12,6 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/clr_fondo_primario</item>
         <item name="android:windowLightStatusBar">true</item> <!-- Texto oscuro -->
-        <!-- Customize your theme here. -->
     </style>
 
     <style name="DialogAnimation">

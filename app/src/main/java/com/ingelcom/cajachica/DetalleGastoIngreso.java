@@ -168,6 +168,7 @@ public class DetalleGastoIngreso extends AppCompatActivity {
                     sepFactTransf.setVisibility(View.GONE);
                     //imgFoto.setVisibility(View.GONE);
 
+                    ocultarBotonEditar("Supervisores");
                     asignarDatos("Ingreso"); //Llamamos al método "asignarDatos" de abajo y le mandamos "Ingreso" para indicar que asigne los datos al ingreso
                     break;
             }
