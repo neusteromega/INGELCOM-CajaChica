@@ -208,7 +208,7 @@ public class Gasto {
                                     activityEmpleado = false; //Establecemos el "activityEmpleado" en false que indique que es un Administrador quien está registrando el gasto
                                 }
 
-                                stor.subirActualizarImagen(uri, carpetaImagen, "Agregar", new StorageCallbacks.StorageCallback() { //Llamamos el método "subirFoto" de la clase "StorageOperaciones", donde le mandamos el URI de la imagen, el nombre de la carpeta donde se almacenerá la foto concatenado con el nombre de la imagen a subir, y este texto está guardado en la variable "carpetaImagen" (por ejemplo, "Imagenes/Gastos/04-08-2024 - 12:00"), e invocamos la interfaz "StorageCallback" para hacer la tarea asíncrona
+                                stor.subirActualizarImagen(uri, carpetaImagen, "Agregar", new StorageCallbacks.StorageCallback() { //Llamamos el método "subirActualizarImagen" de la clase "StorageOperaciones", donde le mandamos el URI de la imagen, el nombre de la carpeta donde se almacenerá la foto concatenado con el nombre de la imagen a subir, y este texto está guardado en la variable "carpetaImagen" (por ejemplo, "Imagenes/Gastos/04-08-2024 - 12:00"), la palabra "Agregar" para indicar que será una imagen nueva que se subirá, e invocamos la interfaz "StorageCallback" para hacer la tarea asíncrona
                                     @Override
                                     public void onCallback(String texto) {
                                         if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
@@ -257,7 +257,7 @@ public class Gasto {
     public void editarGasto(String id, Timestamp fechaHora, String cuadrilla, String lugar, String tipo, String descripcion, String factura, String carpetaImagen, String totalViejo, String totalNuevo, Uri uriVieja, Uri uriNueva, boolean actualizarDinero, boolean fechaSeleccionada) {
         if (!lugar.isEmpty() && !descripcion.isEmpty() && !factura.isEmpty() && !totalNuevo.isEmpty()) { //Verificamos que las cajas de texto no estén vacías
             if ((fechaSeleccionada && fechaHora != null) || (!fechaSeleccionada && fechaHora == null)) {
-                if (uriVieja != null || uriNueva != null) { //Si el "uri" de la imagen recibida no es nulo, significa que si se ha cargado una imagen, por lo tanto, que entre al if
+                if (uriVieja != null || uriNueva != null) { //Con uno de los dos URIs que se reciben en los parámetros no sea nulo, que entre al if, en cambio, si ambos son nulos significa que no hay ninguna imagen lista para subir a Firebase Storage, entonces no podrá entrar al if
                     try {
                         Cuadrilla cuad = new Cuadrilla(contexto); //Objeto de la clase "Cuadrilla"
                         Map<String, Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos
@@ -291,8 +291,8 @@ public class Gasto {
                         oper.agregarActualizarRegistrosColeccion("gastos", "ID", id, datos, new FirestoreCallbacks.FirestoreTextCallback() {
                             @Override
                             public void onSuccess(String texto) {
-                                if (uriNueva != null) {
-                                    stor.subirActualizarImagen(uriNueva, carpetaImagen, "Actualizar", new StorageCallbacks.StorageCallback() {
+                                if (uriNueva != null) { //Si la "uriNueva" no es nulo, significa que se quiere actualizar una imagen de Firebase Storage con una imagen nueva, por lo tanto, que entre al if y proceda con la actualización de la imagen
+                                    stor.subirActualizarImagen(uriNueva, carpetaImagen, "Actualizar", new StorageCallbacks.StorageCallback() { //Llamamos el método "subirActualizarImagen" de la clase "StorageOperaciones", donde le mandamos el URI de la imagen, el nombre de la carpeta donde se almacenerá la foto concatenado con el nombre de la imagen a subir, y este texto está guardado en la variable "carpetaImagen" (por ejemplo, "Imagenes/Gastos/04-08-2024 - 12:00"), la palabra "Actualizar" para indicar que se actualizará una imagen, e invocamos la interfaz "StorageCallback" para hacer la tarea asíncrona
                                         @Override
                                         public void onCallback(String texto) {
                                             if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if

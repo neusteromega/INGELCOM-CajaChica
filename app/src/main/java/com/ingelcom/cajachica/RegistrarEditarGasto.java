@@ -165,7 +165,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                         stor.obtenerImagen(imagen, new StorageCallbacks.StorageURICallback() {
                             @Override
                             public void onCallback(Uri uri) { //En este "Uri" se encuentra el URI de la imagen obtenida de Firebase Storage
-                                imageUriVieja = uri; //Como la imagen ya se cargó, asignamos el URI de la imagen obtenido a la variable global "imageUri"
+                                imageUriVieja = uri; //Como la imagen ya se cargó, asignamos el URI de la imagen obtenido a la variable global "imageUriVieja" que indica que es la imagen que ya viene de Firebase Storage, no la que cargara ahorita el usuario
                                 Glide.with(RegistrarEditarGasto.this).load(uri).into(imgFoto); //Asignamos el URI de la imagen obtenida al "imgFoto", pero usando la biblioteca "Glide" para evitar errores
                                 pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen se ha cargado
                             }
@@ -202,7 +202,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                         stor.obtenerImagen(imagen, new StorageCallbacks.StorageURICallback() {
                             @Override
                             public void onCallback(Uri uri) { //En este "Uri" se encuentra el URI de la imagen obtenida de Firebase Storage
-                                imageUriVieja = uri; //Como la imagen ya se cargó, asignamos el URI de la imagen obtenido a la variable global "imageUri"
+                                imageUriVieja = uri; //Como la imagen ya se cargó, asignamos el URI de la imagen obtenido a la variable global "imageUriVieja" que indica que es la imagen que ya viene de Firebase Storage, no la que cargara ahorita el usuario
                                 Glide.with(RegistrarEditarGasto.this).load(uri).into(imgFoto); //Asignamos el URI de la imagen obtenida al "imgFoto", pero usando la biblioteca "Glide" para evitar errores
                                 pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen se ha cargado
                             }
@@ -590,11 +590,11 @@ public class RegistrarEditarGasto extends AppCompatActivity {
 
         //Si "tipo" es igual (ignorando mayúsculas y minúsculas) a la palabra "Empleado", que entre al if
         if (tipo.equalsIgnoreCase("Empleado")) {
-            //Llamamos el método "editarGasto" de la clase Gasto donde se hará el proceso de modificación de los datos del gasto; para ello le mandamos el "id", un "null" para indicar que la fecha no se cambiará, la cuadrilla no se cambia así que se coloca la misma que se recibe del activity anterior (DetalleGastoIngreso), el resto de datos de los EditTexts, el Spinner de tipoCompra, el total anterior guardado en la variable global "total" y el "totalNuevo" que se extrae del EditText, un "true" indicando que debe actualizar el dinero de la cuadrilla ya que se está editando un gasto de un empleado, y un "false" indicando que no se ha seleccionado una nueva fecha
+            //Llamamos el método "editarGasto" de la clase Gasto donde se hará el proceso de modificación de los datos del gasto; para ello le mandamos el "id", un "null" para indicar que la fecha no se cambiará, la cuadrilla no se cambia así que se coloca la misma que se recibe del activity anterior (DetalleGastoIngreso), el resto de datos de los EditTexts, el Spinner de tipoCompra, el total anterior guardado en la variable global "total" y el "totalNuevo" que se extrae del EditText, los URIs de la imagen cargada de Firebase Storage y de la posible nueva imagen que subirá el usuario para reemplazar la imagen anterior, un "true" indicando que debe actualizar el dinero de la cuadrilla ya que se está editando un gasto de un empleado, y un "false" indicando que no se ha seleccionado una nueva fecha
             gast.editarGasto(id, null, cuadrilla, lugarCompra, tipoCompra, descripcion, factura, imagen, total, totalNuevo, imageUriVieja, imageUri, true, false);
         }
         else if (tipo.equalsIgnoreCase("Admin")) { //En cambio, si "tipo" es igual (ignorando mayúsculas y minúsculas) a la palabra "Admin", que entre al else if
-            //Llamamos el método "editarGasto" de la clase Gasto donde se hará el proceso de modificación de los datos del gasto; para ello le mandamos el "id", la variable global "timestamp" que guarda la fecha seleccionada, la cuadrilla y el tipoCompra extraídos de los Spinners, el resto de datos de los EditTexts, el total anterior guardado en la variable global "total" y el "totalNuevo" que se extrae del EditText, un "false" indicando que no debe actualizar el dinero de la cuadrilla ya que se está editando un gasto de un administrador, y un "true" indicando que se ha seleccionado una nueva fecha
+            //Llamamos el método "editarGasto" de la clase Gasto donde se hará el proceso de modificación de los datos del gasto; para ello le mandamos el "id", la variable global "timestamp" que guarda la fecha seleccionada, la cuadrilla y el tipoCompra extraídos de los Spinners, el resto de datos de los EditTexts, el total anterior guardado en la variable global "total" y el "totalNuevo" que se extrae del EditText, los URIs de la imagen cargada de Firebase Storage y de la posible nueva imagen que subirá el usuario para reemplazar la imagen anterior, un "false" indicando que no debe actualizar el dinero de la cuadrilla ya que se está editando un gasto de un administrador, y un "true" indicando que se ha seleccionado una nueva fecha
             gast.editarGasto(id, timestamp, cuadrillaNueva, lugarCompra, tipoCompra, descripcion, factura, imagen, total, totalNuevo, imageUriVieja, imageUri, false, true);
         }
     }
