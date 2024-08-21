@@ -95,6 +95,10 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
         gast = new Gasto(getContext());
         cuad = new Cuadrilla(getContext());
 
+        desactivarSwipeDuranteScroll(rvIngresos);
+        desactivarSwipeDuranteScroll(rvGastos);
+        desactivarSwipeDuranteScroll(rvCuadrillas);
+
         obtenerDatos();
 
         btnVerIngresos.setOnClickListener(v -> {
@@ -293,6 +297,23 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
                 }
             });
         }
+    }
+
+    private void desactivarSwipeDuranteScroll(RecyclerView recyclerView) {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    // Desactiva el SwipeRefreshLayout cuando el RecyclerView está siendo arrastrado
+                    swlRecargar.setEnabled(false);
+                }
+                else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    // Reactiva el SwipeRefreshLayout cuando el RecyclerView deja de arrastrarse
+                    swlRecargar.setEnabled(true);
+                }
+            }
+        });
     }
 
     @Override

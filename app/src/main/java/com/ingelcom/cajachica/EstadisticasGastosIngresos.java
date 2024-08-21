@@ -77,7 +77,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
         establecerElementos();
         obtenerDatos("", "Barras"); //Llamamos el método "obtenerDatos" donde primeramente mandamos la "fecha" vacía y el texto "Barras" para que primero muestre el gráfico de barras horizontales
         cambioFecha();
-        bloquearRecargarEnGraficos();
+        desactivarSwipeEnGraficos();
     }
 
     private void inicializarElementos() {
@@ -519,7 +519,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
     }
 
     //Método que detecta el evento "OnTouchListener" de los tres gráficos, y bloquea el SwipeRefreshLayout "swlRecargar" cuando se esté manipulando algún gráfico
-    private void bloquearRecargarEnGraficos() {
+    private void desactivarSwipeEnGraficos() {
         //Objeto de tipo "OnTouchListener" que detecta cuando se está tocando la pantalla y en el algún elemento específico de la misma (ahorita lo usaremos para detectar cuando se toquen los gráficos)
         View.OnTouchListener listener = new View.OnTouchListener() {
             @Override

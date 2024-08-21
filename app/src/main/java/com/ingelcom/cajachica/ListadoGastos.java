@@ -64,6 +64,20 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         establecerElementos();
         cambioFecha();
         cambioViewPager();
+
+        // Desactivar SwipeRefreshLayout mientras se arrastra el ViewPager2
+        vpGastos.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+                // Desactivar SwipeRefreshLayout cuando se arrastra el ViewPager
+                if (state == ViewPager2.SCROLL_STATE_DRAGGING) {
+                    swlRecargar.setEnabled(false);
+                } else {
+                    swlRecargar.setEnabled(true);
+                }
+            }
+        });
     }
 
     private void inicializarElementos() {
