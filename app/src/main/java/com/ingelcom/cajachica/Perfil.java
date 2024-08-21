@@ -245,6 +245,6 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
                 establecerElementos();
                 swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
             }
-        }, 1500);
+        }, 1000);
     }
 }

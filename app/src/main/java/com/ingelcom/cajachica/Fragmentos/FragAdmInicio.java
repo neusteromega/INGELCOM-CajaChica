@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +51,9 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
     private RecyclerView rvIngresos, rvGastos, rvCuadrillas;
     private TextView btnVerIngresos, btnVerGastos;
     private SwipeRefreshLayout swlRecargar;
+    private View viewNoInternet;
+    private TextView btnReintentarConexion;
+    private ProgressBar pbReintentarConexion;
 
     private Ingreso ingr;
     private Gasto gast;
@@ -87,14 +91,20 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
         btnVerIngresos = view.findViewById(R.id.btnVerTodosIngresosInicio);
         btnVerGastos = view.findViewById(R.id.btnVerTodosGastosInicio);
         swlRecargar = view.findViewById(R.id.swipeRefreshLayoutInicio);
+        viewNoInternet = view.findViewById(R.id.viewNoInternetInicio);
+        btnReintentarConexion = view.findViewById(R.id.btnReintentarConexion);
+        pbReintentarConexion = view.findViewById(R.id.pbReintentarConexion);
 
         swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
         swlRecargar.setColorSchemeResources(R.color.clr_fuente_primario); //Color del SwipeRefreshLayout
+
+        verificarInternet();
 
         ingr = new Ingreso(getContext());
         gast = new Gasto(getContext());
         cuad = new Cuadrilla(getContext());
 
+        //Llamamos el método "desactivarSwipeDuranteScroll" tres veces, y en cada llamado mandamos un RecyclerView diferente
         desactivarSwipeDuranteScroll(rvIngresos);
         desactivarSwipeDuranteScroll(rvGastos);
         desactivarSwipeDuranteScroll(rvCuadrillas);
@@ -107,6 +117,10 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
 
         btnVerGastos.setOnClickListener(v -> {
             Utilidades.iniciarActivityConString(getContext(), ListadoGastos.class, "ActivityLG", "ListadoGastosTodos", false);
+        });
+
+        btnReintentarConexion.setOnClickListener(v -> {
+            verificarInternet();
         });
 
         return view;
@@ -316,15 +330,30 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
         });
     }
 
+    private void verificarInternet() {
+        //pbReintentarConexion.setVisibility(View.VISIBLE);
+
+        if (Utilidades.verificarConexionInternet(getContext())) {
+            viewNoInternet.setVisibility(View.GONE);
+            swlRecargar.setVisibility(View.VISIBLE);
+        }
+        else {
+            viewNoInternet.setVisibility(View.VISIBLE);
+            swlRecargar.setVisibility(View.GONE);
+            //pbReintentarConexion.setVisibility(View.GONE);
+        }
+    }
+
     @Override
     public void onRefresh() { //Método que detecta cuando se recarga la pantalla con SwipeRefreshLayout
         //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
             @Override
             public void run() {
+                verificarInternet();
                 obtenerDatos();
                 swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
             }
-        }, 1500);
+        }, 1000);
     }
 }

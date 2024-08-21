@@ -389,7 +389,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                 svmGastos.setRecargar("Recargar"); //Cada vez que se recargue la pantalla, establecemos el texto "Recargar" en el "setRecargar" del "svmGastos"
                 swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
             }
-        }, 1500);
+        }, 1000);
     }
 
     //Método que permite retroceder a la pantalla anterior

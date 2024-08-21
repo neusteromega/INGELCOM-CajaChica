@@ -553,7 +553,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
                 obtenerDatos(fechaSeleccionada, tipoGrafico);
                 swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
             }
-        }, 1500);
+        }, 1000);
     }
 
     //Método que permite retroceder a la pantalla anterior

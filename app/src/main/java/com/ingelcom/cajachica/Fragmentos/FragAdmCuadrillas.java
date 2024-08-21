@@ -209,6 +209,6 @@ public class FragAdmCuadrillas extends Fragment implements SwipeRefreshLayout.On
                 obtenerCuadrillas();
                 swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
             }
-        }, 1500);
+        }, 1000);
     }
 }

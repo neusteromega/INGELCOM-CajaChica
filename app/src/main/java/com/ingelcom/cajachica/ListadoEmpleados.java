@@ -110,7 +110,7 @@ public class ListadoEmpleados extends AppCompatActivity implements SwipeRefreshL
                 obtenerDatos();
                 swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
             }
-        }, 1500);
+        }, 1000);
     }
 
     public void retroceder(View view) {

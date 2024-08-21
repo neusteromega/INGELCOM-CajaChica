@@ -473,7 +473,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
                 obtenerDatos(nombreMes, "Mostrar");
                 swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
             }
-        }, 1500);
+        }, 1000);
     }
 
     //Método que permite retroceder a la pantalla anterior
