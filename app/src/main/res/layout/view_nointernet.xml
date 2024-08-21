@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/clr_fondo_primario"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/imgNoInternet"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginBottom="15dp"
+        app:srcCompat="@mipmap/ico_azul_nointernet" />
+
+    <TextView
+        android:id="@+id/lblNoInternet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_bold"
+        android:text="No hay Conexión a Internet"
+        android:textColor="@color/clr_fuente_primario"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/btnReintentarConexion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/clr_casilladegradadoazul_redonda"
+        android:elevation="5dp"
+        android:fontFamily="@font/montserrat_bold"
+        android:gravity="center"
+        android:paddingLeft="25dp"
+        android:paddingTop="8dp"
+        android:paddingRight="25dp"
+        android:paddingBottom="8dp"
+        android:text="Reintentar"
+        android:textColor="@color/clr_fuente_terciario"
+        android:textSize="20sp"
+        tools:ignore="TouchTargetSizeCheck" />
+
+</LinearLayout>

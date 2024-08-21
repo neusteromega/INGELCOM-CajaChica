@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -52,6 +54,12 @@ import java.util.Map;
 public class Utilidades {
 
     private static FirestoreOperaciones oper = new FirestoreOperaciones(); //Instancia de la clase "FirestoreOperaciones"
+
+    public static boolean verificarConexionInternet(Context contexto) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) contexto.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo infoRed = connectivityManager.getActiveNetworkInfo();
+        return infoRed != null && infoRed.isConnected();
+    }
 
     //Método que permita abrir un nuevo Activity, y si es necesario, finalizar el activity actual
     public static void iniciarActivity(Context contexto, Class<?> activityClase, boolean finalizarActivity) {
