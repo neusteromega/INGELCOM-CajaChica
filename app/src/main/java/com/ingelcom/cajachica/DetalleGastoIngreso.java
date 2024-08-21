@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.Timestamp;
 import com.ingelcom.cajachica.DAO.Cuadrilla;
 import com.ingelcom.cajachica.DAO.Gasto;
 import com.ingelcom.cajachica.DAO.Ingreso;
@@ -39,7 +40,7 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
     private ProgressBar pbCargar;
     private SwipeRefreshLayout swlRecargar;
 
-    private String nombreActivity, id, fecha, usuario, rol, cuadrilla, lugarCompra, tipoCompra, descripcion, factura, transferencia, imagen = "", total;
+    private String nombreActivity, id, fecha = "", usuario = "", rol = "", cuadrilla = "", lugarCompra = "", tipoCompra = "", descripcion = "", factura = "", transferencia = "", imagen = "", total = "";
     private Uri imageUri;
     private Usuario usu = new Usuario(DetalleGastoIngreso.this);
     private Cuadrilla cuad = new Cuadrilla(DetalleGastoIngreso.this);
@@ -54,7 +55,6 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
 
         inicializarElementos();
         obtenerDatos();
-        establecerElementos();
     }
 
     private void inicializarElementos() {
@@ -97,7 +97,7 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
 
                 case "DetalleGastoSupervisores":
                     id = Utilidades.obtenerStringExtra(this, "ID");
-                    fecha = Utilidades.obtenerStringExtra(this, "FechaHora");
+                    /*fecha = Utilidades.obtenerStringExtra(this, "FechaHora");
                     cuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
                     usuario = Utilidades.obtenerStringExtra(this, "Usuario");
                     rol = Utilidades.obtenerStringExtra(this, "Rol");
@@ -106,17 +106,75 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
                     descripcion = Utilidades.obtenerStringExtra(this, "Descripcion");
                     factura = Utilidades.obtenerStringExtra(this, "NumeroFactura");
                     imagen = Utilidades.obtenerStringExtra(this, "Imagen");
-                    total = Utilidades.obtenerStringExtra(this, "Total");
+                    total = Utilidades.obtenerStringExtra(this, "Total");*/
+
+                    try {
+                        gast.obtenerUnGasto(id, new FirestoreCallbacks.FirestoreDocumentCallback() {
+                            @Override
+                            public void onCallback(Map<String, Object> documento) {
+                                if (documento != null) {
+                                    fecha = Utilidades.convertirTimestampAString((Timestamp) documento.get("Fecha"), "dd/MM/yyyy - HH:mm"); //En este campo, al ser un Timestamp y no un String, llamamos al método utilitario "convertirTimestampAString" que convierte un objeto Timestamp y retorna un string. Aquí mandamos el formato "dd/MM/yyyy - HH:mm" para que nos retorne la fecha y hora de esa forma
+                                    cuadrilla = (String) documento.get("Cuadrilla");
+                                    usuario = (String) documento.get("Usuario");
+                                    rol = (String) documento.get("RolUsuario");
+                                    lugarCompra = (String) documento.get("Lugar");
+                                    tipoCompra = (String) documento.get("TipoCompra");
+                                    descripcion = (String) documento.get("Descripcion");
+                                    factura = (String) documento.get("NumeroFactura");
+                                    imagen = (String) documento.get("Imagen");
+                                    total = String.format("%.2f", Utilidades.convertirObjectADouble(documento.get("Total")));
+
+                                    establecerElementos();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                Log.e("ObtenerGasto", "Error al obtener el Gasto: ", e);
+                            }
+                        });
+                    }
+                    catch (Exception e) {
+                        Log.e("ObtenerGasto", "Error al obtener el Gasto: ", e);
+                    }
                     break;
 
                 case "DetalleIngreso": //Obtener los datos y guardarlos en las variables globales si la pantalla es "DetalleIngreso"
                     id = Utilidades.obtenerStringExtra(this, "ID");
-                    fecha = Utilidades.obtenerStringExtra(this, "FechaHora");
+                    /*fecha = Utilidades.obtenerStringExtra(this, "FechaHora");
                     cuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
                     usuario = Utilidades.obtenerStringExtra(this, "Usuario");
                     transferencia = Utilidades.obtenerStringExtra(this, "Transferencia");
                     imagen = Utilidades.obtenerStringExtra(this, "Imagen");
-                    total = Utilidades.obtenerStringExtra(this, "Total");
+                    total = Utilidades.obtenerStringExtra(this, "Total");*/
+
+                    try {
+                        ingr.obtenerUnIngreso(id, new FirestoreCallbacks.FirestoreDocumentCallback() {
+                            @Override
+                            public void onCallback(Map<String, Object> documento) {
+                                if (documento != null) {
+                                    fecha = Utilidades.convertirTimestampAString((Timestamp) documento.get("Fecha"), "dd/MM/yyyy - HH:mm"); //En este campo, al ser un Timestamp y no un String, llamamos al método utilitario "convertirTimestampAString" que convierte un objeto Timestamp y retorna un string. Aquí mandamos el formato "dd/MM/yyyy - HH:mm" para que nos retorne la fecha y hora de esa forma
+                                    cuadrilla = (String) documento.get("Cuadrilla");
+                                    usuario = (String) documento.get("Usuario");
+                                    transferencia = (String) documento.get("Transferencia");
+                                    imagen = (String) documento.get("Imagen");
+                                    total = String.format("%.2f", Utilidades.convertirObjectADouble(documento.get("Total")));
+
+                                    establecerElementos();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                Log.e("ObtenerIngreso", "Error al obtener el Ingreso: ", e);
+                            }
+                        });
+                    }
+                    catch (Exception e) {
+                        Log.e("ObtenerIngreso", "Error al obtener el Ingreso: ", e);
+                    }
+
+                    establecerElementos();
                     break;
             }
         }

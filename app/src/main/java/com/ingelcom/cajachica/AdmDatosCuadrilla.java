@@ -110,7 +110,7 @@ public class AdmDatosCuadrilla extends AppCompatActivity implements SwipeRefresh
 
                 @Override
                 public void onFailure(Exception e) {
-                    Log.w("ObtenerGastos", e);
+                    Log.w("ObtenerIngresos", e);
                 }
             });
         }

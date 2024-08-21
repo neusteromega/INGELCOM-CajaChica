@@ -229,12 +229,12 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
 
                         //Llamamos el método utilitario "obtenerCampo" y le mandamos el "item" clickeado, y los nombres de los métodos getter de la clase IngresosItems para que nos retorne los valores que devuelven estos métodos y poder guardarlos en el HashMap
                         datosIngreso.put("ID", Utilidades.obtenerCampo(item, "getId"));
-                        datosIngreso.put("Usuario", Utilidades.obtenerCampo(item, "getUsuario"));
+                        /*datosIngreso.put("Usuario", Utilidades.obtenerCampo(item, "getUsuario"));
                         datosIngreso.put("FechaHora", Utilidades.obtenerCampo(item, "getFechaHora"));
                         datosIngreso.put("Cuadrilla", Utilidades.obtenerCampo(item, "getCuadrilla"));
                         datosIngreso.put("Transferencia", Utilidades.obtenerCampo(item, "getTransferencia"));
                         datosIngreso.put("Imagen", Utilidades.obtenerCampo(item, "getImagen"));
-                        datosIngreso.put("Total", String.format("%.2f", Utilidades.obtenerCampo(item, "getTotal")));
+                        datosIngreso.put("Total", String.format("%.2f", Utilidades.obtenerCampo(item, "getTotal")));*/
 
                         //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
                         Utilidades.iniciarActivityConDatos(getActivity(), DetalleGastoIngreso.class, datosIngreso);
@@ -264,7 +264,7 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
 
                         //Llamamos el método utilitario "obtenerCampo" y le mandamos el "item" clickeado, y los nombres de los métodos getter de la clase GastosItems para que nos retorne los valores que devuelven estos métodos y poder guardarlos en el HashMap
                         datosGasto.put("ID", Utilidades.obtenerCampo(item, "getId"));
-                        datosGasto.put("FechaHora", Utilidades.obtenerCampo(item, "getFechaHora"));
+                        /*datosGasto.put("FechaHora", Utilidades.obtenerCampo(item, "getFechaHora"));
                         datosGasto.put("Cuadrilla", Utilidades.obtenerCampo(item, "getCuadrilla"));
                         datosGasto.put("LugarCompra", Utilidades.obtenerCampo(item, "getLugarCompra"));
                         datosGasto.put("TipoCompra", Utilidades.obtenerCampo(item, "getTipoCompra"));
@@ -273,7 +273,7 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
                         datosGasto.put("Usuario", Utilidades.obtenerCampo(item, "getUsuario"));
                         datosGasto.put("Rol", Utilidades.obtenerCampo(item, "getRol"));
                         datosGasto.put("Imagen", Utilidades.obtenerCampo(item, "getImagen"));
-                        datosGasto.put("Total", String.format("%.2f", Utilidades.obtenerCampo(item, "getTotal")));
+                        datosGasto.put("Total", String.format("%.2f", Utilidades.obtenerCampo(item, "getTotal")));*/
 
                         //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
                         Utilidades.iniciarActivityConDatos(getActivity(), DetalleGastoIngreso.class, datosGasto);
