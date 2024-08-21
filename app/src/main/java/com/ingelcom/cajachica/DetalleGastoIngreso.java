@@ -2,10 +2,13 @@ package com.ingelcom.cajachica;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,6 +18,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.ingelcom.cajachica.DAO.Cuadrilla;
+import com.ingelcom.cajachica.DAO.Gasto;
+import com.ingelcom.cajachica.DAO.Ingreso;
 import com.ingelcom.cajachica.DAO.StorageOperaciones;
 import com.ingelcom.cajachica.DAO.Usuario;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
@@ -25,18 +30,21 @@ import java.io.ObjectStreamException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DetalleGastoIngreso extends AppCompatActivity {
+public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private TextView lblTitulo, lblTotalGastIngr, lblDinero;
     private TextView lblFecha, lblUsuario, lblCuadrilla, lblLugar, lblTipoCompra, lblDescripcion, lblFactura, lblTransferencia;
     private TextView sepPrincipal, sepFechaCuad, sepCuadUser, sepCuadLugar, sepLugarTipo, sepTipoDesc, sepDescFact, sepFactTransf;
-    private ImageView btnRegresar, btnEditar, imgFoto;
+    private ImageView btnEditar, imgFoto;
     private ProgressBar pbCargar;
+    private SwipeRefreshLayout swlRecargar;
 
     private String nombreActivity, id, fecha, usuario, rol, cuadrilla, lugarCompra, tipoCompra, descripcion, factura, transferencia, imagen = "", total;
     private Uri imageUri;
     private Usuario usu = new Usuario(DetalleGastoIngreso.this);
     private Cuadrilla cuad = new Cuadrilla(DetalleGastoIngreso.this);
+    private Gasto gast = new Gasto(DetalleGastoIngreso.this);
+    private Ingreso ingr = new Ingreso(DetalleGastoIngreso.this);
     private StorageOperaciones stor = new StorageOperaciones();
 
     @Override
@@ -73,9 +81,11 @@ public class DetalleGastoIngreso extends AppCompatActivity {
         sepFactTransf = findViewById(R.id.lblSepFacturaTransferenciaDGI);
 
         pbCargar = findViewById(R.id.pbCargarDGI);
-        btnRegresar = findViewById(R.id.imgRegresarDGI);
         btnEditar = findViewById(R.id.imgEditarDGI);
         imgFoto = findViewById(R.id.imgFotoEvidenciaDGI);
+        swlRecargar = findViewById(R.id.swipeRefreshLayoutDGI);
+
+        swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
     }
 
     private void obtenerDatos() {
@@ -113,6 +123,8 @@ public class DetalleGastoIngreso extends AppCompatActivity {
     }
 
     private void establecerElementos() {
+        swlRecargar.setColorSchemeResources(R.color.clr_fuente_primario); //Color del SwipeRefreshLayout
+
         if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
             switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
                 case "DetalleGastoCuadrilla": //Establecemos los elementos gráficos si la pantalla es "DetalleGastoCuadrilla"
@@ -371,6 +383,19 @@ public class DetalleGastoIngreso extends AppCompatActivity {
         catch (Exception e) {
             Log.w("ObtenerUsuario", e);
         }
+    }
+
+    @Override //Método que detecta cuando se recarga la pantalla con SwipeRefreshLayout
+    public void onRefresh() {
+        //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
+            @Override
+            public void run() {
+                obtenerDatos();
+                establecerElementos();
+                swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
+            }
+        }, 1000);
     }
 
     public void retroceder(View view) {

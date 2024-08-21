@@ -140,8 +140,29 @@ public class Gasto {
         }
     }
 
-    public void obtenerUnGasto() {
+    //Método que nos permite obtener el documento de un gasto específico mediante su "ID", e invocamos el "FirestoreDocumentCallback" para que al llamar este método, se pueda recibir el "documento" con el contenido del gasto
+    public void obtenerUnGasto(String id, FirestoreCallbacks.FirestoreDocumentCallback callback) {
+        try {
+            //Llamamos el método "obtenerUnRegistro" de la clase FirestoreOperaciones y le mamdamos el nombre de la colección, el campo, y el dato a buscar, e invocamos el "FirestoreDocumentCallback"
+            oper.obtenerUnRegistro("gastos", "ID", id, new FirestoreCallbacks.FirestoreDocumentCallback() {
+                @Override
+                public void onCallback(Map<String, Object> documento) {
+                    if (documento != null) //Si "documento" no es nulo, quiere decir que encontró el gasto
+                        callback.onCallback(documento); //Guardamos el "documento" con los datos del gasto en el "onCallback"
+                    else //Si "documento" es nulo, no se encontró el gasto en la colección, y entrará en este else
+                        Log.w("ObtenerGasto", "Gasto no encontrado");
+                }
 
+                @Override
+                public void onFailure(Exception e) {
+                    callback.onFailure(e);
+                    Log.w("BuscarGasto", "Error al obtener el Gasto", e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerGasto", e);
+        }
     }
 
     //Método que nos permite registrar un Gasto en Firestore

@@ -7,298 +7,308 @@
     android:background="@color/clr_fondo_primario"
     tools:context=".DetalleGastoIngreso">
 
-    <ScrollView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayoutDGI"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="@string/descripcion"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:contentDescription="@string/descripcion"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
-                android:id="@+id/LLEncabezadoDGI"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="30dp"
-                android:gravity="center|left"
-                android:orientation="horizontal"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp">
-
-                <ImageView
-                    android:id="@+id/imgRegresarDGI"
-                    android:layout_width="25dp"
-                    android:layout_height="match_parent"
-                    android:contentDescription="@string/descripcion"
-                    android:onClick="retroceder"
-                    app:srcCompat="@mipmap/ico_azul_regresar"
-                    tools:ignore="TouchTargetSizeCheck" />
+                android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/LLEncabezadoDGI"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/lblTituloDGI"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/montserrat_bold"
-                        android:gravity="center"
-                        android:text="Detalle"
-                        android:textColor="@color/clr_fuente_primario"
-                        android:textSize="25dp" />
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="30dp"
+                    android:gravity="center|left"
+                    android:orientation="horizontal"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp">
 
                     <ImageView
-                        android:id="@+id/imgEditarDGI"
+                        android:id="@+id/imgRegresarDGI"
                         android:layout_width="25dp"
                         android:layout_height="match_parent"
                         android:contentDescription="@string/descripcion"
-                        android:onClick="editarGastoIngreso"
-                        app:srcCompat="@mipmap/ico_azul_editar"
+                        android:onClick="retroceder"
+                        app:srcCompat="@mipmap/ico_azul_regresar"
                         tools:ignore="TouchTargetSizeCheck" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/lblTituloDGI"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:gravity="center"
+                            android:text="Detalle"
+                            android:textColor="@color/clr_fuente_primario"
+                            android:textSize="25dp" />
+
+                        <ImageView
+                            android:id="@+id/imgEditarDGI"
+                            android:layout_width="25dp"
+                            android:layout_height="match_parent"
+                            android:contentDescription="@string/descripcion"
+                            android:onClick="editarGastoIngreso"
+                            app:srcCompat="@mipmap/ico_azul_editar"
+                            tools:ignore="TouchTargetSizeCheck" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/lblSeparadorDGI"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginBottom="40dp"
+                    android:background="@drawable/clr_casillaazul_separador"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:textSize="2dp" />
+
+                <LinearLayout
+                    android:id="@+id/LLTotalGastadoDGI"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="35dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/clr_casillablanca_cuadrada"
+                    android:elevation="5dp"
+                    android:orientation="vertical"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/lblTituloTotalDGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center"
+                        android:text="Total"
+                        android:textColor="@color/clr_fuente_primario"
+                        android:textSize="17dp" />
+
+                    <TextView
+                        android:id="@+id/lblTotalDGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center"
+                        android:text="L.00.00"
+                        android:textColor="@color/clr_fuente_secundario"
+                        android:textSize="40dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/LLDatosDGI"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/clr_casillablanca_cuadrada"
+                    android:elevation="5dp"
+                    android:orientation="vertical"
+                    android:paddingLeft="12dp"
+                    android:paddingTop="12dp"
+                    android:paddingRight="12dp"
+                    android:paddingBottom="12dp">
+
+                    <TextView
+                        android:id="@+id/lblFechaDGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="Fecha: 00/00/0000"
+                        android:textColor="@color/clr_fuente_secundario"
+                        android:textSize="17dp" />
+
+                    <TextView
+                        android:id="@+id/lblSepFechaCuadrillaDGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/clr_casillagris_separador"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center"
+                        android:textSize="1dp" />
+
+                    <TextView
+                        android:id="@+id/lblCuadrillaDGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="Cuadrilla: Nombre Cuadrilla"
+                        android:textColor="@color/clr_fuente_secundario"
+                        android:textSize="17dp" />
+
+                    <TextView
+                        android:id="@+id/lblSepCuadrillaUsuarioDGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/clr_casillagris_separador"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center"
+                        android:textSize="1dp" />
+
+                    <TextView
+                        android:id="@+id/lblUsuarioDGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="Usuario: Nombre Completo"
+                        android:textColor="@color/clr_fuente_secundario"
+                        android:textSize="17dp" />
+
+                    <TextView
+                        android:id="@+id/lblSepCuadrillaLugarDGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/clr_casillagris_separador"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center"
+                        android:textSize="1dp" />
+
+                    <TextView
+                        android:id="@+id/lblLugarDGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="Lugar: Lugar de Compra"
+                        android:textColor="@color/clr_fuente_secundario"
+                        android:textSize="17dp" />
+
+                    <TextView
+                        android:id="@+id/lblSepLugarTipoDGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/clr_casillagris_separador"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center"
+                        android:textSize="1dp" />
+
+                    <TextView
+                        android:id="@+id/lblTipoDGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="Compra: Tipo de Compra"
+                        android:textColor="@color/clr_fuente_secundario"
+                        android:textSize="17dp" />
+
+                    <TextView
+                        android:id="@+id/lblSepTipoDescripcionDGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/clr_casillagris_separador"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center"
+                        android:textSize="1dp" />
+
+                    <TextView
+                        android:id="@+id/lblDescripcionDGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="Descripción: Lorem ipsum dolor sit amet, consectetur adipiscing elit,  sed do eiusmod tempor ut."
+                        android:textColor="@color/clr_fuente_secundario"
+                        android:textSize="17dp" />
+
+                    <TextView
+                        android:id="@+id/lblSepDescripcionFacturaDGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/clr_casillagris_separador"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center"
+                        android:textSize="1dp" />
+
+                    <TextView
+                        android:id="@+id/lblFacturaDGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="Factura: 0000-0000000-00"
+                        android:textColor="@color/clr_fuente_secundario"
+                        android:textSize="17dp" />
+
+                    <TextView
+                        android:id="@+id/lblSepFacturaTransferenciaDGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/clr_casillagris_separador"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center"
+                        android:textSize="1dp" />
+
+                    <TextView
+                        android:id="@+id/lblTransferenciaDGI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="No. Transferencia: 000000000"
+                        android:textColor="@color/clr_fuente_secundario"
+                        android:textSize="17dp" />
+
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/pbCargarDGI"
+                    style="@style/Widget.AppCompat.ProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <ImageView
+                    android:id="@+id/imgFotoEvidenciaDGI"
+                    android:layout_width="wrap_content"
+                    android:layout_height="167dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="25dp"
+                    android:onClick="mostrarImagenCompleta" />
+
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/lblSeparadorDGI"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:layout_marginBottom="40dp"
-                android:background="@drawable/clr_casillaazul_separador"
-                android:fontFamily="@font/montserrat_bold"
-                android:gravity="center"
-                android:textSize="2dp" />
-
-            <LinearLayout
-                android:id="@+id/LLTotalGastadoDGI"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="35dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/clr_casillablanca_cuadrada"
-                android:elevation="5dp"
-                android:orientation="vertical"
-                android:paddingTop="12dp"
-                android:paddingBottom="10dp">
-
-                <TextView
-                    android:id="@+id/lblTituloTotalDGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center"
-                    android:text="Total"
-                    android:textColor="@color/clr_fuente_primario"
-                    android:textSize="17dp" />
-
-                <TextView
-                    android:id="@+id/lblTotalDGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center"
-                    android:text="L.00.00"
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="40dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/LLDatosDGI"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/clr_casillablanca_cuadrada"
-                android:elevation="5dp"
-                android:orientation="vertical"
-                android:paddingLeft="12dp"
-                android:paddingTop="12dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="12dp">
-
-                <TextView
-                    android:id="@+id/lblFechaDGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:text="Fecha: 00/00/0000"
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="17dp" />
-
-                <TextView
-                    android:id="@+id/lblSepFechaCuadrillaDGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/clr_casillagris_separador"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center"
-                    android:textSize="1dp" />
-
-                <TextView
-                    android:id="@+id/lblCuadrillaDGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:text="Cuadrilla: Nombre Cuadrilla"
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="17dp" />
-
-                <TextView
-                    android:id="@+id/lblSepCuadrillaUsuarioDGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/clr_casillagris_separador"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center"
-                    android:textSize="1dp" />
-
-                <TextView
-                    android:id="@+id/lblUsuarioDGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:text="Usuario: Nombre Completo"
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="17dp" />
-
-                <TextView
-                    android:id="@+id/lblSepCuadrillaLugarDGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/clr_casillagris_separador"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center"
-                    android:textSize="1dp" />
-
-                <TextView
-                    android:id="@+id/lblLugarDGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:text="Lugar: Lugar de Compra"
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="17dp" />
-
-                <TextView
-                    android:id="@+id/lblSepLugarTipoDGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/clr_casillagris_separador"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center"
-                    android:textSize="1dp" />
-
-                <TextView
-                    android:id="@+id/lblTipoDGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:text="Compra: Tipo de Compra"
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="17dp" />
-
-                <TextView
-                    android:id="@+id/lblSepTipoDescripcionDGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/clr_casillagris_separador"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center"
-                    android:textSize="1dp" />
-
-                <TextView
-                    android:id="@+id/lblDescripcionDGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:text="Descripción: Lorem ipsum dolor sit amet, consectetur adipiscing elit,  sed do eiusmod tempor ut."
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="17dp" />
-
-                <TextView
-                    android:id="@+id/lblSepDescripcionFacturaDGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/clr_casillagris_separador"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center"
-                    android:textSize="1dp" />
-
-                <TextView
-                    android:id="@+id/lblFacturaDGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:text="Factura: 0000-0000000-00"
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="17dp" />
-
-                <TextView
-                    android:id="@+id/lblSepFacturaTransferenciaDGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/clr_casillagris_separador"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center"
-                    android:textSize="1dp" />
-
-                <TextView
-                    android:id="@+id/lblTransferenciaDGI"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:text="No. Transferencia: 000000000"
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="17dp" />
-
-            </LinearLayout>
-
-            <ProgressBar
-                android:id="@+id/pbCargarDGI"
-                style="@style/Widget.AppCompat.ProgressBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <ImageView
-                android:id="@+id/imgFotoEvidenciaDGI"
-                android:layout_width="wrap_content"
-                android:layout_height="167dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="25dp"
-                android:onClick="mostrarImagenCompleta" />
-
-        </LinearLayout>
-    </ScrollView>
+        </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

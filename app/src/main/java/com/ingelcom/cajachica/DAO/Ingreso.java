@@ -106,8 +106,29 @@ public class Ingreso {
         }
     }
 
-    public void obtenerUnIngreso() {
+    //Método que nos permite obtener el documento de un ingreso específico mediante su "ID", e invocamos el "FirestoreDocumentCallback" para que al llamar este método, se pueda recibir el "documento" con el contenido del ingreso
+    public void obtenerUnIngreso(String id, FirestoreCallbacks.FirestoreDocumentCallback callback) {
+        try {
+            //Llamamos el método "obtenerUnRegistro" de la clase FirestoreOperaciones y le mamdamos el nombre de la colección, el campo, y el dato a buscar, e invocamos el "FirestoreDocumentCallback"
+            oper.obtenerUnRegistro("ingresos", "ID", id, new FirestoreCallbacks.FirestoreDocumentCallback() {
+                @Override
+                public void onCallback(Map<String, Object> documento) {
+                    if (documento != null) //Si "documento" no es nulo, quiere decir que encontró el ingreso
+                        callback.onCallback(documento); //Guardamos el "documento" con los datos del ingreso en el "onCallback"
+                    else //Si "documento" es nulo, no se encontró el ingreso en la colección, y entrará en este else
+                        Log.w("ObtenerIngreso", "Ingreso no encontrado");
+                }
 
+                @Override
+                public void onFailure(Exception e) {
+                    callback.onFailure(e);
+                    Log.w("BuscarIngreso", "Error al obtener el Ingreso", e);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerIngreso", e);
+        }
     }
 
     //Método que nos permite registrar un Ingreso en Firestore

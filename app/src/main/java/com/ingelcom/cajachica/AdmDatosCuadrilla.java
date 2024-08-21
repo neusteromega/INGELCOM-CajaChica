@@ -1,10 +1,13 @@
 package com.ingelcom.cajachica;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -24,10 +27,11 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-public class AdmDatosCuadrilla extends AppCompatActivity {
+public class AdmDatosCuadrilla extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private TextView lblCuadrilla, lblDinero, lblFecha, lblIngresos, lblGastos;
-    private String nombreCuadrilla, dineroDisponible;
+    private SwipeRefreshLayout swlRecargar;
+    private String nombreCuadrilla, dineroDisponible, nombreMes = "";
 
     private Gasto gast = new Gasto(AdmDatosCuadrilla.this);
     private Ingreso ingr = new Ingreso(AdmDatosCuadrilla.this);
@@ -40,8 +44,7 @@ public class AdmDatosCuadrilla extends AppCompatActivity {
         inicializarElementos();
         establecerElementos();
         cambioFecha();
-        obtenerGastos("");
-        obtenerIngresos("");
+        obtenerDatos();
     }
 
     private void inicializarElementos() {
@@ -54,12 +57,22 @@ public class AdmDatosCuadrilla extends AppCompatActivity {
         lblFecha = findViewById(R.id.lblFechaDC);
         lblIngresos = findViewById(R.id.lblCantIngresosDC);
         lblGastos = findViewById(R.id.lblCantGastosDC);
+        swlRecargar = findViewById(R.id.swipeRefreshLayoutDC);
+
+        swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
     }
 
     private void establecerElementos() {
+        swlRecargar.setColorSchemeResources(R.color.clr_fuente_primario); //Color del SwipeRefreshLayout
+
         //Asignamos el nombre de la cuadrilla y su dinero disponible tras dar clic en la cuadrilla corresponiente en el GridView de "AdmCuadrillas" (La pantalla anterior)
         lblCuadrilla.setText(nombreCuadrilla);
         lblDinero.setText("L. " + dineroDisponible);
+    }
+
+    private void obtenerDatos() {
+        obtenerGastos(nombreMes);
+        obtenerIngresos(nombreMes);
     }
 
     //Método que obtiene los gastos de la cuadrilla y permite obtenerlos por mes
@@ -142,9 +155,11 @@ public class AdmDatosCuadrilla extends AppCompatActivity {
 
                 @Override //Durante el texto del lblFecha está cambiando
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    nombreMes = lblFecha.getText().toString();
+
                     //Llamamos a los métodos "obtenerGastos" y "obtenerIngresos" de arriba y les mandamos el contenido del lblFecha
-                    obtenerGastos(lblFecha.getText().toString());
-                    obtenerIngresos(lblFecha.getText().toString());
+                    obtenerGastos(nombreMes);
+                    obtenerIngresos(nombreMes);
                 }
 
                 @Override //Después de que el texto del lblFecha cambie
@@ -219,6 +234,18 @@ public class AdmDatosCuadrilla extends AppCompatActivity {
         datos.put("Cuadrilla", nombreCuadrilla);
 
         Utilidades.iniciarActivityConDatos(AdmDatosCuadrilla.this, ListadoIngresosDeducciones.class, datos); //Mandamos el hashMap con los datos a la clase "ListadoIngresosDeducciones"
+    }
+
+    @Override //Método que detecta cuando se recarga la pantalla con SwipeRefreshLayout
+    public void onRefresh() {
+        //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
+            @Override
+            public void run() {
+                obtenerDatos();
+                swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
+            }
+        }, 1000);
     }
 
     public void retroceder(View view) {
