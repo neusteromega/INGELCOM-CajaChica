@@ -466,7 +466,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                 case "RegistrarGastoAdmin": //Si estamos en la pantalla de "RegistrarGastoAdmin", al dar clic en el botón "Confirmar" que realice las operaciones de este case
 
                     //Creamos un alertDialog que pregunte si se desea registrar el gasto de dinero a la cuadrilla seleccionada
-                    new AlertDialog.Builder(this).setTitle("REGISTRAR GASTO").setMessage("¿Está seguro que desea registrar el gasto de dinero a la cuadrilla seleccionada")
+                    new AlertDialog.Builder(this).setTitle("REGISTRAR GASTO").setMessage("¿Está seguro que desea registrar el gasto de dinero a la cuadrilla seleccionada?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "insertarGasto()"
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -483,7 +483,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                 case "RegistrarGastoEmpleado":
 
                     //Creamos un alertDialog que pregunte si se desea registrar el gasto de dinero
-                    new AlertDialog.Builder(this).setTitle("REGISTRAR GASTO").setMessage("¿Está seguro que desea registrar el gasto de dinero")
+                    new AlertDialog.Builder(this).setTitle("REGISTRAR GASTO").setMessage("¿Está seguro que desea registrar el gasto de dinero?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "insertarGasto()"
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {

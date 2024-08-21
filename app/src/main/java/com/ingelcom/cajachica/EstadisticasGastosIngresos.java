@@ -15,6 +15,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -76,6 +77,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
         establecerElementos();
         obtenerDatos("", "Barras"); //Llamamos el método "obtenerDatos" donde primeramente mandamos la "fecha" vacía y el texto "Barras" para que primero muestre el gráfico de barras horizontales
         cambioFecha();
+        bloquearRecargarEnGraficos();
     }
 
     private void inicializarElementos() {
@@ -514,6 +516,32 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
             default:
                 return false;
         }
+    }
+
+    //Método que detecta el evento "OnTouchListener" de los tres gráficos, y bloquea el SwipeRefreshLayout "swlRecargar" cuando se esté manipulando algún gráfico
+    private void bloquearRecargarEnGraficos() {
+        //Objeto de tipo "OnTouchListener" que detecta cuando se está tocando la pantalla y en el algún elemento específico de la misma (ahorita lo usaremos para detectar cuando se toquen los gráficos)
+        View.OnTouchListener listener = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN: //Si se está realizando la acción de arrastrar hacia abajo
+                        swlRecargar.setEnabled(false); //Bloqueamos el "swlRecargar"
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL: //Si se está realizando la acción de arrastrar hacia arriba, y cuando se cancele el hecho de estar manipulando el gráfico
+                        swlRecargar.setEnabled(true); //Habilitamos el "swlRecargar"
+                        break;
+                }
+                return false;
+            }
+        };
+
+        //Asignamos el listener a todos los gráficos
+        graficoBarras.setOnTouchListener(listener);
+        graficoAnillo.setOnTouchListener(listener);
+        graficoLineas.setOnTouchListener(listener);
     }
 
     @Override
