@@ -57,9 +57,10 @@ import java.util.List;
 
 public class EstadisticasGastosIngresos extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, PopupMenu.OnMenuItemClickListener {
 
-    private TextView lblTitulo, btnMes, btnAnio, lblFecha, lblTotal, lblNoDatos;
+    private TextView btnReintentarConexion, lblTitulo, btnMes, btnAnio, lblFecha, lblTotal, lblNoDatos;
     private ImageView imgGrafico;
     private SwipeRefreshLayout swlRecargar;
+    private View viewNoInternet;
     private HorizontalBarChart graficoBarras;
     private PieChart graficoAnillo;
     private LineChart graficoLineas;
@@ -78,6 +79,11 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
         obtenerDatos("", "Barras"); //Llamamos el método "obtenerDatos" donde primeramente mandamos la "fecha" vacía y el texto "Barras" para que primero muestre el gráfico de barras horizontales
         cambioFecha();
         desactivarSwipeEnGraficos();
+
+        //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
+        btnReintentarConexion.setOnClickListener(v -> {
+            Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
+        });
     }
 
     private void inicializarElementos() {
@@ -91,11 +97,14 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
         lblNoDatos = findViewById(R.id.lblNoDatosEstGI);
         imgGrafico = findViewById(R.id.imgTipoGraficoEstGI);
         swlRecargar = findViewById(R.id.swipeRefreshLayoutEstGI);
+        viewNoInternet = findViewById(R.id.viewNoInternetEstGI);
+        btnReintentarConexion = findViewById(R.id.btnReintentarConexion);
         graficoBarras = findViewById(R.id.graficoBarrasEstGI);
         graficoAnillo = findViewById(R.id.graficoPastelEstGI);
         graficoLineas = findViewById(R.id.graficoLineasEstGI);
 
         swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
+        Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
     }
 
     private void establecerElementos() {
@@ -550,6 +559,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
             @Override
             public void run() {
+                Utilidades.mostrarMensajePorInternetCaido(EstadisticasGastosIngresos.this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
                 obtenerDatos(fechaSeleccionada, tipoGrafico);
                 swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
             }

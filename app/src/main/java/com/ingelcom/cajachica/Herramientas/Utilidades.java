@@ -15,6 +15,7 @@ import android.text.SpannableString;
 import android.text.method.PasswordTransformationMethod;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -55,10 +56,18 @@ public class Utilidades {
 
     private static FirestoreOperaciones oper = new FirestoreOperaciones(); //Instancia de la clase "FirestoreOperaciones"
 
+    //Método que permite verificar si el dispositivo cuenta con internet mientras se ejecuta la aplicación
     public static boolean verificarConexionInternet(Context contexto) {
         ConnectivityManager connectivityManager = (ConnectivityManager) contexto.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo infoRed = connectivityManager.getActiveNetworkInfo();
         return infoRed != null && infoRed.isConnected();
+    }
+
+    public static void mostrarMensajePorInternetCaido(Context contexto, View vista) {
+        if (verificarConexionInternet(contexto))
+            vista.setVisibility(View.GONE);
+        else
+            vista.setVisibility(View.VISIBLE);
     }
 
     //Método que permita abrir un nuevo Activity, y si es necesario, finalizar el activity actual
