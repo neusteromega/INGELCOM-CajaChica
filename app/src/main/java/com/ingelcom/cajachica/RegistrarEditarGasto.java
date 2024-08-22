@@ -52,11 +52,12 @@ import java.util.Map;
 public class RegistrarEditarGasto extends AppCompatActivity {
 
     private LinearLayout llFecha, llCuadrilla, llDinero;
-    private TextView lblTitulo, lblDinero, lblFecha, btnSubirCambiarFoto, btnConfirmar;
+    private TextView btnReintentarConexion, lblTitulo, lblDinero, lblFecha, btnSubirCambiarFoto, btnConfirmar;
     private EditText txtLugar, txtDescripcion, txtFactura, txtTotal;
     private ImageView imgFoto, btnEliminarFoto;
     private Spinner spCuadrillas, spTipoCompras;
     private ProgressBar pbCargar;
+    private View viewNoInternet;
 
     private String nombreActivity, dineroDisponible, id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, imagen, total;
     private Timestamp timestamp = null;
@@ -77,6 +78,11 @@ public class RegistrarEditarGasto extends AppCompatActivity {
         obtenerDatos();
         establecerElementos();
         inicializarSpinners();
+
+        //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
+        btnReintentarConexion.setOnClickListener(v -> {
+            Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
+        });
     }
 
     private void inicializarElementos() {
@@ -100,6 +106,10 @@ public class RegistrarEditarGasto extends AppCompatActivity {
         btnEliminarFoto = findViewById(R.id.imgEliminarFotoRG);
         btnSubirCambiarFoto = findViewById(R.id.btnSubirCambiarFotoRG);
         btnConfirmar = findViewById(R.id.btnConfirmarRG);
+        viewNoInternet = findViewById(R.id.viewNoInternetRG);
+        btnReintentarConexion = findViewById(R.id.btnReintentarConexion);
+
+        Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
     }
 
     private void obtenerDatos() {
@@ -461,75 +471,80 @@ public class RegistrarEditarGasto extends AppCompatActivity {
     }
 
     public void confirmar(View view) {
-        if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
-            switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
-                case "RegistrarGastoAdmin": //Si estamos en la pantalla de "RegistrarGastoAdmin", al dar clic en el botón "Confirmar" que realice las operaciones de este case
+        //Llamamos el método utilitario "mostrarMensajePorInternetCaidoBoolean" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya. Este retorna un booleano indicando si hay internet o no
+        boolean internetDisponible = Utilidades.mostrarMensajePorInternetCaidoBoolean(this, viewNoInternet);
 
-                    //Creamos un alertDialog que pregunte si se desea registrar el gasto de dinero a la cuadrilla seleccionada
-                    new AlertDialog.Builder(this).setTitle("REGISTRAR GASTO").setMessage("¿Está seguro que desea registrar el gasto de dinero a la cuadrilla seleccionada?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "insertarGasto()"
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                insertarGasto("GastoAdmin");
-                            }
-                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
-                            }
-                        }).show();
-                    break;
+        if (internetDisponible) { //Si el booleano guardado en "internetDisponible" es true, significa que si hay internet, entonces que entre al if para hacer las operaciones de confirmación. Pero si es un false, significa que no hay internet, entonces que no entre al if y muestre la vista "view_nointernet" (esto se muestra en el método utilitario)
+            if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
+                switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
+                    case "RegistrarGastoAdmin": //Si estamos en la pantalla de "RegistrarGastoAdmin", al dar clic en el botón "Confirmar" que realice las operaciones de este case
 
-                case "RegistrarGastoEmpleado":
+                        //Creamos un alertDialog que pregunte si se desea registrar el gasto de dinero a la cuadrilla seleccionada
+                        new AlertDialog.Builder(this).setTitle("REGISTRAR GASTO").setMessage("¿Está seguro que desea registrar el gasto de dinero a la cuadrilla seleccionada?")
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "insertarGasto()"
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        insertarGasto("GastoAdmin");
+                                    }
+                                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                    }
+                                }).show();
+                        break;
 
-                    //Creamos un alertDialog que pregunte si se desea registrar el gasto de dinero
-                    new AlertDialog.Builder(this).setTitle("REGISTRAR GASTO").setMessage("¿Está seguro que desea registrar el gasto de dinero?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "insertarGasto()"
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                insertarGasto("GastoEmpleado");
-                            }
-                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
-                            }
-                        }).show();
-                    break;
+                    case "RegistrarGastoEmpleado":
 
-                case "EditarGastoEmpleado":
+                        //Creamos un alertDialog que pregunte si se desea registrar el gasto de dinero
+                        new AlertDialog.Builder(this).setTitle("REGISTRAR GASTO").setMessage("¿Está seguro que desea registrar el gasto de dinero?")
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "insertarGasto()"
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        insertarGasto("GastoEmpleado");
+                                    }
+                                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                    }
+                                }).show();
+                        break;
 
-                    //Creamos un alertDialog que pregunte si se desea editar el ingreso de dinero
-                    new AlertDialog.Builder(this).setTitle("EDITAR GASTO").setMessage("¿Está seguro que desea modificar los datos del gasto?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarGasto()"
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                editarGasto("Empleado"); //Llamamos el método "editarGasto" de abajo para que se complete la modificación de los datos, y le mandamos la palabra "Empleado" para que sepa que modificará un gasto hecho por un empleado
-                            }
-                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
-                            }
-                        }).show();
-                    break;
+                    case "EditarGastoEmpleado":
 
-                case "EditarGastoAdmin":
+                        //Creamos un alertDialog que pregunte si se desea editar el ingreso de dinero
+                        new AlertDialog.Builder(this).setTitle("EDITAR GASTO").setMessage("¿Está seguro que desea modificar los datos del gasto?")
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarGasto()"
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        editarGasto("Empleado"); //Llamamos el método "editarGasto" de abajo para que se complete la modificación de los datos, y le mandamos la palabra "Empleado" para que sepa que modificará un gasto hecho por un empleado
+                                    }
+                                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                    }
+                                }).show();
+                        break;
 
-                    //Creamos un alertDialog que pregunte si se desea editar el gasto de dinero a la cuadrilla seleccionada
-                    new AlertDialog.Builder(this).setTitle("EDITAR GASTO").setMessage("¿Está seguro que desea modificar los datos del gasto?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarGasto()"
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                editarGasto("Admin"); //Llamamos el método "editarGasto" de abajo para que se complete la modificación de los datos, y le mandamos la palabra "Admin" para que sepa que modificará un gasto hecho por un administrador
-                            }
-                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
-                                }
-                            }).show();
-                    break;
+                    case "EditarGastoAdmin":
+
+                        //Creamos un alertDialog que pregunte si se desea editar el gasto de dinero a la cuadrilla seleccionada
+                        new AlertDialog.Builder(this).setTitle("EDITAR GASTO").setMessage("¿Está seguro que desea modificar los datos del gasto?")
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarGasto()"
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        editarGasto("Admin"); //Llamamos el método "editarGasto" de abajo para que se complete la modificación de los datos, y le mandamos la palabra "Admin" para que sepa que modificará un gasto hecho por un administrador
+                                    }
+                                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                    }
+                                }).show();
+                        break;
+                }
             }
         }
     }

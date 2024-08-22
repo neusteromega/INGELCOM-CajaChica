@@ -72,6 +72,19 @@ public class Utilidades {
             vista.setVisibility(View.VISIBLE); //Mostramos la vista "view_nointernet"
     }
 
+    //Método que permite hacer visible la vista "view_nointernet" que se recibe como parámetro cuando no haya una conexión a internet, y también, ocultará dicha vista cuando la conexión a internet esté activa. La diferencia de este, es cuando detecta que no hay internet retorna un false, pero cuando detecta que si lo hay retorna un true
+    public static Boolean mostrarMensajePorInternetCaidoBoolean(Context contexto, View vista) {
+        //Si al llamar el método de arriba "verificarConexionInternet" retorna un "true", significa que si hay internet, entonces que entre al if
+        if (verificarConexionInternet(contexto)) {
+            vista.setVisibility(View.GONE); //Ocultamos la vista "view_nointernet"
+            return true;
+        }
+        else { //En cambio, si al llamar el método de arriba "verificarConexionInternet" retorna un "false", significa que no hay internet, entonces que entre al else
+            vista.setVisibility(View.VISIBLE); //Mostramos la vista "view_nointernet"
+            return false;
+        }
+    }
+
     //Método que permita abrir un nuevo Activity, y si es necesario, finalizar el activity actual
     public static void iniciarActivity(Context contexto, Class<?> activityClase, boolean finalizarActivity) {
         Intent intent = new Intent(contexto, activityClase); //Creamos el intent y le establecemos el contexto y el nombre del activity
