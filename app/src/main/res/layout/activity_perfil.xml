@@ -285,6 +285,7 @@
     <include
         android:id="@+id/viewNoInternetPerfil"
         layout="@layout/view_nointernet"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

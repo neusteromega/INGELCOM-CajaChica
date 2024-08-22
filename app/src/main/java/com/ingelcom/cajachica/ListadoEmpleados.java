@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ingelcom.cajachica.Adaptadores.EmpleadosAdapter;
@@ -28,8 +29,10 @@ public class ListadoEmpleados extends AppCompatActivity implements SwipeRefreshL
     private FirestoreOperaciones oper = new FirestoreOperaciones();
     private Usuario usuario = new Usuario(ListadoEmpleados.this);
     private EmpleadosAdapter adapter;
+    private TextView btnReintentarConexion;
     private RecyclerView rvEmpleados;
     private SwipeRefreshLayout swlRecargar;
+    private View viewNoInternet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +41,19 @@ public class ListadoEmpleados extends AppCompatActivity implements SwipeRefreshL
 
         rvEmpleados = findViewById(R.id.rvListadoEmpleados);
         swlRecargar = findViewById(R.id.swipeRefreshLayoutLE);
+        viewNoInternet = findViewById(R.id.viewNoInternetLE);
+        btnReintentarConexion = findViewById(R.id.btnReintentarConexion);
 
         swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
         swlRecargar.setColorSchemeResources(R.color.clr_fuente_primario); //Color del SwipeRefreshLayout
 
+        Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
         obtenerDatos();
+
+        //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
+        btnReintentarConexion.setOnClickListener(v -> {
+            Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
+        });
     }
 
     @Override
@@ -107,6 +118,7 @@ public class ListadoEmpleados extends AppCompatActivity implements SwipeRefreshL
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
             @Override
             public void run() {
+                Utilidades.mostrarMensajePorInternetCaido(ListadoEmpleados.this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
                 obtenerDatos();
                 swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
             }

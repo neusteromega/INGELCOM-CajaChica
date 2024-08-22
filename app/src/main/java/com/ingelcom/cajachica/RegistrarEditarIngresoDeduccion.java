@@ -66,7 +66,6 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
     private Spinner spCuadrillas;
     private ProgressBar pbCargar;
     private View viewNoInternet;
-    //private SwipeRefreshLayout swlRecargar;
 
     private String nombreActivity, id, fechaHora, cuadrilla, cuadrillaVieja, usuario, transferencia, imagen, total;
     private Timestamp timestamp = null;
@@ -117,8 +116,6 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         btnReintentarConexion = findViewById(R.id.btnReintentarConexion);
 
         Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
-
-        //swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
     }
 
     private void obtenerDatos() {

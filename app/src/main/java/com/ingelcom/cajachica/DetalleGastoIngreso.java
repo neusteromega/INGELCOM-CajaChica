@@ -33,12 +33,13 @@ import java.util.Map;
 
 public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
-    private TextView lblTitulo, lblTotalGastIngr, lblDinero;
+    private TextView btnReintentarConexion, lblTitulo, lblTotalGastIngr, lblDinero;
     private TextView lblFecha, lblUsuario, lblCuadrilla, lblLugar, lblTipoCompra, lblDescripcion, lblFactura, lblTransferencia;
     private TextView sepPrincipal, sepFechaCuad, sepCuadUser, sepCuadLugar, sepLugarTipo, sepTipoDesc, sepDescFact, sepFactTransf;
     private ImageView btnEditar, imgFoto;
     private ProgressBar pbCargar;
     private SwipeRefreshLayout swlRecargar;
+    private View viewNoInternet;
 
     private String nombreActivity, id, fecha = "", usuario = "", rol = "", cuadrilla = "", lugarCompra = "", tipoCompra = "", descripcion = "", factura = "", transferencia = "", imagen = "", total = "";
     private Uri imageUri;
@@ -55,6 +56,11 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
 
         inicializarElementos();
         obtenerDatos();
+
+        //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
+        btnReintentarConexion.setOnClickListener(v -> {
+            Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
+        });
     }
 
     private void inicializarElementos() {
@@ -84,8 +90,12 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
         btnEditar = findViewById(R.id.imgEditarDGI);
         imgFoto = findViewById(R.id.imgFotoEvidenciaDGI);
         swlRecargar = findViewById(R.id.swipeRefreshLayoutDGI);
+        viewNoInternet = findViewById(R.id.viewNoInternetDGI);
+        btnReintentarConexion = findViewById(R.id.btnReintentarConexion);
 
         swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
+
+        Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
     }
 
     private void obtenerDatos() {
@@ -449,6 +459,7 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
             @Override
             public void run() {
+                Utilidades.mostrarMensajePorInternetCaido(DetalleGastoIngreso.this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
                 obtenerDatos();
                 establecerElementos();
                 swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco

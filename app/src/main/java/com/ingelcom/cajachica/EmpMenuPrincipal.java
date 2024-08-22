@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,7 +22,9 @@ import java.util.Map;
 
 public class EmpMenuPrincipal extends AppCompatActivity {
 
-    private TextView lblDinero;
+    private TextView btnReintentarConexion, lblDinero;
+    private LinearLayout btnCerrarSesion;
+    private View viewNoInternet;
     private String dineroDisponible;
 
     private FirebaseAuth auth; //Objeto que verifica la autenticación del usuario con Firebase
@@ -36,6 +39,11 @@ public class EmpMenuPrincipal extends AppCompatActivity {
         setContentView(R.layout.activity_emp_menu_principal);
 
         lblDinero = findViewById(R.id.lblCantDineroMenuEMP);
+        btnCerrarSesion = findViewById(R.id.LLCerrarSesionMenuEMP);
+        viewNoInternet = findViewById(R.id.viewNoInternetMenuEMP);
+        btnReintentarConexion = findViewById(R.id.btnReintentarConexion);
+
+        ocultarBotonLogoutNoInternet();
 
         auth = FirebaseAuth.getInstance(); //Inicializamos la autenticación con Firebase
         user = auth.getCurrentUser(); //Obtenemos el usuario actual usando "auth"
@@ -46,6 +54,11 @@ public class EmpMenuPrincipal extends AppCompatActivity {
         }
 
         obtenerCuadrillaUsuario(); //Llamamos el método obtenerCuadrillaUsuario de abajo
+
+        //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
+        btnReintentarConexion.setOnClickListener(v -> {
+            ocultarBotonLogoutNoInternet();
+        });
     }
 
     @Override
@@ -151,5 +164,15 @@ public class EmpMenuPrincipal extends AppCompatActivity {
                         Log.d("Mensaje", "Se canceló la acción"); //Como se canceló el cierre de la sesión, se muestra un mensaje en el Logcat indicando que se canceló la acción
                     }
             }).show();
+    }
+
+    private void ocultarBotonLogoutNoInternet() {
+        //Llamamos el método utilitario "mostrarMensajePorInternetCaidoBoolean" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya. Este retorna un booleano indicando si hay internet o no
+        boolean internetDisponible = Utilidades.mostrarMensajePorInternetCaidoBoolean(this, viewNoInternet);
+
+        if (internetDisponible) //Si el booleano guardado en "internetDisponible" es true, significa que si hay internet, entonces que entre al if
+            btnCerrarSesion.setVisibility(View.VISIBLE); //Mostramos el botón de cerrar sesión
+        else //Pero si es un false, significa que no hay internet, entonces que entre al else
+            btnCerrarSesion.setVisibility(View.GONE); //Ocultamos el botón de cerrar sesión
     }
 }

@@ -17,16 +17,37 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/lblBuscarUsuario"
+        <LinearLayout
+            android:id="@+id/LLEncabezadoCC"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:fontFamily="@font/montserrat_bold"
-            android:gravity="center"
-            android:text="Completar Usuario"
-            android:textColor="@color/clr_fuente_primario"
-            android:textSize="29dp" />
+            android:gravity="center|left"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:paddingRight="30dp">
+
+            <ImageView
+                android:id="@+id/imgRegresarCC"
+                android:layout_width="25dp"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/descripcion"
+                android:onClick="retroceder"
+                app:srcCompat="@mipmap/ico_azul_regresar"
+                tools:ignore="TouchTargetSizeCheck" />
+
+            <TextView
+                android:id="@+id/lblTituloCC"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:text="Completar Usuario"
+                android:textColor="@color/clr_fuente_primario"
+                android:textSize="26dp"
+                tools:ignore="TouchTargetSizeCheck" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/lblSeparadorCC"
@@ -46,7 +67,16 @@
             android:layout_height="match_parent"
             app:defaultNavHost="true"
             app:navGraph="@navigation/nav_graphcrearcontrasena"
-            tools:layout="@layout/fragment_crear_correocontrasena" />
+            tools:layout="@layout/fragment_buscar_usuario" />
     </LinearLayout>
+
+    <include
+        android:id="@+id/viewNoInternetCC"
+        layout="@layout/view_nointernet"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -43,10 +43,11 @@ import java.util.Map;
 
 public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, PopupMenu.OnMenuItemClickListener {
 
-    private TextView lblTitulo, lblFecha, lblLineaCuadrilla, lblLineaSupervisores;
+    private TextView btnReintentarConexion, lblTitulo, lblFecha, lblLineaCuadrilla, lblLineaSupervisores;
     private String nombreActivity, nombreCuadrilla, nombreMes = "", tipoExportar;
     private ViewPager2 vpGastos;
     private SwipeRefreshLayout swlRecargar;
+    private View viewNoInternet;
 
     //Instancia de la clase "SharedViewGastosModel" que nos ayuda a compartir datos con diferentes componentes de la interfaz de usuario, como ser fragmentos y actividades y que estos datos sobreviven a cambios de configuración como las rotaciones de pantalla
     private SharedViewGastosModel svmGastos;
@@ -64,19 +65,11 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         establecerElementos();
         cambioFecha();
         cambioViewPager();
+        desactivarSwipeEnViewPager();
 
-        // Desactivar SwipeRefreshLayout mientras se arrastra el ViewPager2
-        vpGastos.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                super.onPageScrollStateChanged(state);
-                // Desactivar SwipeRefreshLayout cuando se arrastra el ViewPager
-                if (state == ViewPager2.SCROLL_STATE_DRAGGING) {
-                    swlRecargar.setEnabled(false);
-                } else {
-                    swlRecargar.setEnabled(true);
-                }
-            }
+        //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
+        btnReintentarConexion.setOnClickListener(v -> {
+            Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
         });
     }
 
@@ -91,9 +84,13 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         lblLineaSupervisores = findViewById(R.id.lblSupervisoresLineaLG);
         vpGastos = findViewById(R.id.vpListadoGastos); //Relacionamos la variable "vpGastos" con el ViewPager
         swlRecargar = findViewById(R.id.swipeRefreshLayoutLG);
+        viewNoInternet = findViewById(R.id.viewNoInternetLG);
+        btnReintentarConexion = findViewById(R.id.btnReintentarConexion);
 
         svmGastos = new ViewModelProvider(this).get(SharedViewGastosModel.class); //Obtenemos el ViewModel compartido, haciendo referencia a la clase "SharedViewGastosModel"
         swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
+
+        Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
     }
 
     private void establecerElementos() {
@@ -330,6 +327,23 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         lblFecha.setText("Seleccionar Mes");
     }
 
+    private void desactivarSwipeEnViewPager() {
+        //Desactivamos el SwipeRefreshLayout mientras se arrastra el ViewPager2
+        vpGastos.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+                // Desactivar SwipeRefreshLayout cuando se arrastra el ViewPager
+                if (state == ViewPager2.SCROLL_STATE_DRAGGING) {
+                    swlRecargar.setEnabled(false);
+                }
+                else {
+                    swlRecargar.setEnabled(true);
+                }
+            }
+        });
+    }
+
     public void exportarGastos(View view) {
         PopupMenu popup = new PopupMenu(this, view); //Objeto de tipo "PopupMenu"
         popup.setOnMenuItemClickListener(this); //Indicamos que asigne el evento "OnMenuItemClick" para que haga algo cada vez que se dé click a una opción del menú
@@ -386,6 +400,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
             @Override
             public void run() {
+                Utilidades.mostrarMensajePorInternetCaido(ListadoGastos.this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
                 svmGastos.setRecargar("Recargar"); //Cada vez que se recargue la pantalla, establecemos el texto "Recargar" en el "setRecargar" del "svmGastos"
                 swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
             }

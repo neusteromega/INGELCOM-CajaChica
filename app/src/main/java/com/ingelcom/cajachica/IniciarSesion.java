@@ -28,8 +28,9 @@ public class IniciarSesion extends AppCompatActivity {
     //Variables para los componentes gráficos
     private EditText txtCorreo, txtContra;
     private ImageView imgContra;
-    private TextView btnAcceder;
+    private TextView btnReintentarConexion;
     private ProgressBar pbAcceder;
+    private View viewNoInternet;
 
     private int clicks = 0; //Se utilizará en la parte de mostrar y ocultar la contraseña
     private FirebaseAuth mAuth; //Objeto que verifica la autenticación del usuario con Firebase
@@ -46,8 +47,16 @@ public class IniciarSesion extends AppCompatActivity {
         txtCorreo = findViewById(R.id.txtCorreoLogin);
         txtContra = findViewById(R.id.txtContrasenaLogin);
         imgContra = findViewById(R.id.imgVerContrasenaLogin);
-        btnAcceder = findViewById(R.id.btnAccederLogin);
         pbAcceder = findViewById(R.id.pbAccederLogin);
+        viewNoInternet = findViewById(R.id.viewNoInternetLogin);
+        btnReintentarConexion = findViewById(R.id.btnReintentarConexion);
+
+        Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
+
+        //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
+        btnReintentarConexion.setOnClickListener(v -> {
+            Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
+        });
     }
 
     @Override

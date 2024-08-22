@@ -30,19 +30,11 @@ import com.ingelcom.cajachica.R;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragCrearCorreoContrasena#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class FragCrearCorreoContrasena extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -61,15 +53,6 @@ public class FragCrearCorreoContrasena extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragCrearContrasena.
-     */
-    // TODO: Rename and change types and number of parameters
     public static FragCrearCorreoContrasena newInstance(String param1, String param2) {
         FragCrearCorreoContrasena fragment = new FragCrearCorreoContrasena();
         Bundle args = new Bundle();
@@ -137,7 +120,7 @@ public class FragCrearCorreoContrasena extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser(); // Obtiene el usuario actual
+        FirebaseUser currentUser = mAuth.getCurrentUser(); //Obtiene el usuario actual
 
         //CAMBIAR CUANDO SE ESTABLEZCAN LOS ROLES. Verificamos que el usuario no sea null, si no lo es, que mande a la pantalla inicial
         if (currentUser != null) {
@@ -166,6 +149,7 @@ public class FragCrearCorreoContrasena extends Fragment {
                                     //FirebaseUser user = mAuth.getCurrentUser();
                                     Toast.makeText(getActivity(), "USUARIO REGISTRADO", Toast.LENGTH_SHORT).show();
                                     agregarCorreoUsuario(correo); //Llamamos la función "agregarCorreoUsuario" de abajo y le mandamos el correo como parámetro
+                                    mAuth.signOut(); //Cerramos la sesión ya que cuando se registra el usuario, automáticamente se inicia sesión, pero queremos que él se loguee manualmente
                                     Utilidades.iniciarActivity(getActivity(), IniciarSesion.class, true); //Redireccionamos al usuario a la pantalla de Login y finalizamos esta actividad
                                 }
                                 else { //Si el registro falló, entrará aquí

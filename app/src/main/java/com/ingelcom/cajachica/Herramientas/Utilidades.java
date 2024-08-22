@@ -58,9 +58,15 @@ public class Utilidades {
 
     //Método que permite verificar si el dispositivo cuenta con internet mientras se ejecuta la aplicación
     public static boolean verificarConexionInternet(Context contexto) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) contexto.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo infoRed = connectivityManager.getActiveNetworkInfo();
-        return infoRed != null && infoRed.isConnected();
+        try {
+            ConnectivityManager connectivityManager = (ConnectivityManager) contexto.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo infoRed = connectivityManager.getActiveNetworkInfo();
+            return infoRed != null && infoRed.isConnected();
+        }
+        catch (Exception e) {
+            Log.e("ObtenerInternet", "Error al obtener la disponibilidad del internet: ", e);
+            return false;
+        }
     }
 
     //Método que permite hacer visible la vista "view_nointernet" que se recibe como parámetro cuando no haya una conexión a internet, y también, ocultará dicha vista cuando la conexión a internet esté activa

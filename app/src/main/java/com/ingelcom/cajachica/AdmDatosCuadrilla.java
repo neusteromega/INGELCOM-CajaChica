@@ -29,8 +29,9 @@ import java.util.List;
 
 public class AdmDatosCuadrilla extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
-    private TextView lblCuadrilla, lblDinero, lblFecha, lblIngresos, lblGastos;
+    private TextView btnReintentarConexion, lblCuadrilla, lblDinero, lblFecha, lblIngresos, lblGastos;
     private SwipeRefreshLayout swlRecargar;
+    private View viewNoInternet;
     private String nombreCuadrilla, dineroDisponible, nombreMes = "";
 
     private Gasto gast = new Gasto(AdmDatosCuadrilla.this);
@@ -45,6 +46,11 @@ public class AdmDatosCuadrilla extends AppCompatActivity implements SwipeRefresh
         establecerElementos();
         cambioFecha();
         obtenerDatos();
+
+        //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
+        btnReintentarConexion.setOnClickListener(v -> {
+            Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
+        });
     }
 
     private void inicializarElementos() {
@@ -58,8 +64,12 @@ public class AdmDatosCuadrilla extends AppCompatActivity implements SwipeRefresh
         lblIngresos = findViewById(R.id.lblCantIngresosDC);
         lblGastos = findViewById(R.id.lblCantGastosDC);
         swlRecargar = findViewById(R.id.swipeRefreshLayoutDC);
+        viewNoInternet = findViewById(R.id.viewNoInternetDC);
+        btnReintentarConexion = findViewById(R.id.btnReintentarConexion);
 
         swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
+
+        Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
     }
 
     private void establecerElementos() {
@@ -242,6 +252,7 @@ public class AdmDatosCuadrilla extends AppCompatActivity implements SwipeRefresh
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
             @Override
             public void run() {
+                Utilidades.mostrarMensajePorInternetCaido(AdmDatosCuadrilla.this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
                 obtenerDatos();
                 swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
             }

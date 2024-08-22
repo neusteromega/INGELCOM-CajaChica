@@ -28,11 +28,12 @@ import java.util.Map;
 
 public class AgregarEditarPerfil extends AppCompatActivity {
 
-    private LinearLayout llNombreApellido, llIdentidad, llTelefono, llCorreo, llRol, llCuadrilla;
+    private LinearLayout llCorreo, llRol, llCuadrilla;
     private EditText txtNombreApellido, txtIdentidad, txtTelefono, txtCorreo;
-    private TextView lblTitulo, btnConfirmar;
+    private TextView btnReintentarConexion, lblTitulo, btnConfirmar;
     private Spinner spRoles, spCuadrillas;
     private ImageView btnRegresar;
+    private View viewNoInternet;
     private String nombreActivity, nombre, identidadVieja, telefono, cuadrilla, rol;
 
     private FirestoreOperaciones oper = new FirestoreOperaciones();
@@ -48,12 +49,14 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         establecerElementos();
         inicializarSpinners();
         ocultarCuadrillas();
+
+        //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
+        btnReintentarConexion.setOnClickListener(v -> {
+            Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
+        });
     }
 
     private void inicializarElementos() {
-        llNombreApellido = findViewById(R.id.LLNombreApellidoAEP);
-        llIdentidad = findViewById(R.id.LLIdentidadAEP);
-        llTelefono = findViewById(R.id.LLTelefonoAEP);
         llCorreo = findViewById(R.id.LLCorreoAEP);
         llRol = findViewById(R.id.LLRolAEP);
         llCuadrilla = findViewById(R.id.LLCuadrillaAEP);
@@ -66,9 +69,12 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         lblTitulo = findViewById(R.id.lblTituloAEP);
         btnRegresar = findViewById(R.id.imgRegresarAEP);
         btnConfirmar = findViewById(R.id.btnConfirmarAEP);
-
         spRoles = findViewById(R.id.spRolAEP);
         spCuadrillas = findViewById(R.id.spCuadrillaAEP);
+        viewNoInternet = findViewById(R.id.viewNoInternetAEP);
+        btnReintentarConexion = findViewById(R.id.btnReintentarConexion);
+
+        Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
     }
 
     private void obtenerDatos() {
@@ -202,75 +208,80 @@ public class AgregarEditarPerfil extends AppCompatActivity {
     }
 
     public void confirmar(View view) {
-        if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
-            switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
-                case "AgregarUsuario": //Si estamos en la pantalla de "Agregar Usuario", al dar clic en el botón "Confirmar" que realice las operaciones de este case
+        //Llamamos el método utilitario "mostrarMensajePorInternetCaidoBoolean" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya. Este retorna un booleano indicando si hay internet o no
+        boolean internetDisponible = Utilidades.mostrarMensajePorInternetCaidoBoolean(this, viewNoInternet);
 
-                    //Creamos un alertDialog que pregunte si se desea agregar el usuario
-                    new AlertDialog.Builder(this).setTitle("AGREGAR USUARIO").setMessage("¿Está seguro que desea agregar el usuario?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "insertarUsuario()"
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                agregarUsuario();
-                            }
-                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
-                                }
-                            }).show();
-                    break;
+        if (internetDisponible) { //Si el booleano guardado en "internetDisponible" es true, significa que si hay internet, entonces que entre al if para hacer las operaciones de confirmación. Pero si es un false, significa que no hay internet, entonces que no entre al if y muestre la vista "view_nointernet" (esto se muestra en el método utilitario)
+            if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
+                switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
+                    case "AgregarUsuario": //Si estamos en la pantalla de "Agregar Usuario", al dar clic en el botón "Confirmar" que realice las operaciones de este case
 
-                case "EditarAdmin":
+                        //Creamos un alertDialog que pregunte si se desea agregar el usuario
+                        new AlertDialog.Builder(this).setTitle("AGREGAR USUARIO").setMessage("¿Está seguro que desea agregar el usuario?")
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "insertarUsuario()"
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        agregarUsuario();
+                                    }
+                                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                    }
+                                }).show();
+                        break;
 
-                    //Creamos un alertDialog que pregunte si se desea editar el perfil del Administrador
-                    new AlertDialog.Builder(this).setTitle("EDITAR PERFIL").setMessage("¿Está seguro que desea modificar los datos de su perfil")
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarPerfilAdmin()"
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    editarPerfilAdminEmpleado("Administrador"); //Llamamos el método "editarPerfilAdminEmpleado" y le mandamos el texto "Administrador" para indicar que es un administrador quien está editando su perfil
-                                }
-                            }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
-                                }
-                            }).show();
-                    break;
+                    case "EditarAdmin":
 
-                case "EditarEmpleado":
+                        //Creamos un alertDialog que pregunte si se desea editar el perfil del Administrador
+                        new AlertDialog.Builder(this).setTitle("EDITAR PERFIL").setMessage("¿Está seguro que desea modificar los datos de su perfil")
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarPerfilAdmin()"
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        editarPerfilAdminEmpleado("Administrador"); //Llamamos el método "editarPerfilAdminEmpleado" y le mandamos el texto "Administrador" para indicar que es un administrador quien está editando su perfil
+                                    }
+                                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                    }
+                                }).show();
+                        break;
 
-                    //Creamos un alertDialog que pregunte si se desea editar el perfil del Empleado
-                    new AlertDialog.Builder(this).setTitle("EDITAR PERFIL").setMessage("¿Está seguro que desea modificar los datos de su perfil")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarPerfilAdmin()"
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                editarPerfilAdminEmpleado("Empleado"); //Llamamos el método "editarPerfilAdminEmpleado" y le mandamos el texto "Empleado" para indicar que es un empleado quien está editando su perfil
-                            }
-                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
-                            }
-                        }).show();
-                    break;
+                    case "EditarEmpleado":
 
-                case "EditarEmpleadoAdmin":
+                        //Creamos un alertDialog que pregunte si se desea editar el perfil del Empleado
+                        new AlertDialog.Builder(this).setTitle("EDITAR PERFIL").setMessage("¿Está seguro que desea modificar los datos de su perfil")
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarPerfilAdmin()"
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        editarPerfilAdminEmpleado("Empleado"); //Llamamos el método "editarPerfilAdminEmpleado" y le mandamos el texto "Empleado" para indicar que es un empleado quien está editando su perfil
+                                    }
+                                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                    }
+                                }).show();
+                        break;
 
-                    //Creamos un alertDialog que pregunte si se desea editar el perfil del Empleado por un Administrador
-                    new AlertDialog.Builder(this).setTitle("EDITAR PERFIL").setMessage("¿Está seguro que desea modificar los datos del perfil")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarPerfilAdmin()"
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                editarPerfilEmpleadoPorAdmin(); //Llamamos el método "editarPerfilEmpleadoPorAdmin"
-                            }
-                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
-                            }
-                        }).show();
-                    break;
+                    case "EditarEmpleadoAdmin":
+
+                        //Creamos un alertDialog que pregunte si se desea editar el perfil del Empleado por un Administrador
+                        new AlertDialog.Builder(this).setTitle("EDITAR PERFIL").setMessage("¿Está seguro que desea modificar los datos del perfil")
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarPerfilAdmin()"
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        editarPerfilEmpleadoPorAdmin(); //Llamamos el método "editarPerfilEmpleadoPorAdmin"
+                                    }
+                                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                    }
+                                }).show();
+                        break;
+                }
             }
         }
     }

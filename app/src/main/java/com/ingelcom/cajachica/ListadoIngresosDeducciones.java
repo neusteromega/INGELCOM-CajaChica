@@ -44,11 +44,12 @@ import java.util.Map;
 public class ListadoIngresosDeducciones extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, PopupMenu.OnMenuItemClickListener {
 
     private LinearLayout llFecha;
-    private TextView lblTitulo, lblFecha, lblTotal, lblTotalTitulo;
+    private TextView btnReintentarConexion, lblTitulo, lblFecha, lblTotal, lblTotalTitulo;
     private String nombreActivity, nombreCuadrilla, nombreMes = "", tipoExportar;
     private RecyclerView rvIngrDeduc;
     private ImageView btnExportar;
     private SwipeRefreshLayout swlRecargar;
+    private View viewNoInternet;
 
     private Ingreso ingr = new Ingreso(ListadoIngresosDeducciones.this);
     private Deduccion deduc = new Deduccion(ListadoIngresosDeducciones.this);
@@ -64,6 +65,11 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
         establecerElementos();
         obtenerDatos("", "Mostrar"); //Llamamos el método "obtenerDatos" de abajo donde mandamos el mes vacío ya que al cargar este activity no queremos filtrar los ingresos, y el texto "Mostrar" ya que primeramente se mostrarán los ingresos, sólo se exportarán si el usuario presiona alguna opción del PopupMenu de exportaciones
         cambioFecha();
+
+        //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
+        btnReintentarConexion.setOnClickListener(v -> {
+            Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
+        });
     }
 
     private void inicializarElementos() {
@@ -79,8 +85,12 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
         rvIngrDeduc = findViewById(R.id.rvListadoIngrDeduc);
         btnExportar = findViewById(R.id.imgExportarLI);
         swlRecargar = findViewById(R.id.swipeRefreshLayoutLI);
+        viewNoInternet = findViewById(R.id.viewNoInternetLI);
+        btnReintentarConexion = findViewById(R.id.btnReintentarConexion);
 
         swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
+
+        Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
     }
 
     private void establecerElementos() {
@@ -470,6 +480,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
             @Override
             public void run() {
+                Utilidades.mostrarMensajePorInternetCaido(ListadoIngresosDeducciones.this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
                 obtenerDatos(nombreMes, "Mostrar");
                 swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
             }

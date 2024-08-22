@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,7 +30,9 @@ public class FragAdmUsuarios extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private LinearLayout btnMiPerfil, btnAgregarUsuario, btnListadoEmpleados, btnCerrarSesión;
+    private LinearLayout btnMiPerfil, btnAgregarUsuario, btnListadoEmpleados, btnCerrarSesion;
+    private TextView btnReintentarConexion;
+    private View viewNoInternet;
 
     private FirebaseAuth auth; //Objeto que verifica la autenticación del usuario con Firebase
     private FirebaseUser user; //Objeto que obtiene el usuario actual
@@ -69,8 +72,17 @@ public class FragAdmUsuarios extends Fragment {
         btnMiPerfil = view.findViewById(R.id.LLMiPerfilUsu);
         btnAgregarUsuario = view.findViewById(R.id.LLAgregarUsuarioUsu);
         btnListadoEmpleados = view.findViewById(R.id.LLListadoEmpleadosUsu);
-        btnCerrarSesión = view.findViewById(R.id.LLCerrarSesionUsu);
+        btnCerrarSesion = view.findViewById(R.id.LLCerrarSesionUsu);
+        viewNoInternet = view.findViewById(R.id.viewNoInternetUsu);
+        btnReintentarConexion = view.findViewById(R.id.btnReintentarConexion);
 
+        ocultarBotonLogoutNoInternet();
+        establecerBotones();
+
+        return view;
+    }
+
+    private void establecerBotones() {
         //Eventos Clic de botones
         btnMiPerfil.setOnClickListener(v -> {
             //Redireccionamos al usuario al activity de "Perfil"
@@ -87,7 +99,7 @@ public class FragAdmUsuarios extends Fragment {
             Utilidades.iniciarActivity(getActivity(), ListadoEmpleados.class, false);
         });
 
-        btnCerrarSesión.setOnClickListener(v -> {
+        btnCerrarSesion.setOnClickListener(v -> {
             //Creamos un nuevo "AlertDialog" que nos pregunte si deseamos cerrar sesión
             new AlertDialog.Builder(getActivity()).setTitle("CERRAR SESIÓN").setMessage("¿Está seguro que desea cerrar sesión?")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Aquí se ejecutará una acción si el usuario seleccionó la opción de "Confirmar"
@@ -104,6 +116,19 @@ public class FragAdmUsuarios extends Fragment {
                     }).show();
         });
 
-        return view;
+        //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
+        btnReintentarConexion.setOnClickListener(v -> {
+            ocultarBotonLogoutNoInternet();
+        });
+    }
+
+    private void ocultarBotonLogoutNoInternet() {
+        //Llamamos el método utilitario "mostrarMensajePorInternetCaidoBoolean" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya. Este retorna un booleano indicando si hay internet o no
+        boolean internetDisponible = Utilidades.mostrarMensajePorInternetCaidoBoolean(getContext(), viewNoInternet);
+
+        if (internetDisponible) //Si el booleano guardado en "internetDisponible" es true, significa que si hay internet, entonces que entre al if
+            btnCerrarSesion.setVisibility(View.VISIBLE); //Mostramos el botón de cerrar sesión
+        else //Pero si es un false, significa que no hay internet, entonces que entre al else
+            btnCerrarSesion.setVisibility(View.GONE); //Ocultamos el botón de cerrar sesión
     }
 }

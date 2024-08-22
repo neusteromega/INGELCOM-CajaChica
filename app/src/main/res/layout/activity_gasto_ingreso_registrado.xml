@@ -16,7 +16,7 @@
         android:gravity="center"
         android:text="Gasto Registrado"
         android:textColor="@color/clr_fuente_primario"
-        android:textSize="29dp"
+        android:textSize="26dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
