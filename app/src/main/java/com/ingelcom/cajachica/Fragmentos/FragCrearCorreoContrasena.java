@@ -17,8 +17,13 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseNetworkException;
+import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.EmpMenuPrincipal;
@@ -153,10 +158,28 @@ public class FragCrearCorreoContrasena extends Fragment {
                                     Utilidades.iniciarActivity(getActivity(), IniciarSesion.class, true); //Redireccionamos al usuario a la pantalla de Login y finalizamos esta actividad
                                 }
                                 else { //Si el registro falló, entrará aquí
-                                    //CAMBIAR EL MENSAJE DE ERROR
-                                    String errorMessage = task.getException() != null ? task.getException().getMessage() : "Error desconocido";
-                                    Log.e("FragCrearCorreoContrasena", "Error al registrarse: " + errorMessage);
-                                    Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_LONG).show();
+                                    String mensajeError = "ERROR DESCONOCIDO"; //Variable que servirá para almacenar el mensaje de error correspondiente
+                                    Exception exception = task.getException(); //Obtenemos la excepción lanzada tras que el proceso de creación del usuario ha fallado
+
+                                    //Varios condicionales que revisan el tipo de excepción, y tras ello, se guarda el mensaje de error correspondiente en la variable "mensajeError"
+                                    if (exception instanceof FirebaseAuthWeakPasswordException) {
+                                        mensajeError = "CONTRASEÑA DÉBIL, DEBE TENER AL MENOS 6 CARACTERES";
+                                    }
+                                    else if (exception instanceof FirebaseAuthInvalidCredentialsException) {
+                                        mensajeError = "EL FORMATO DEL CORREO NO ES VÁLIDO";
+                                    }
+                                    else if (exception instanceof FirebaseAuthUserCollisionException) {
+                                        mensajeError = "YA EXISTE UNA CUENTA CON ESTE CORREO";
+                                    }
+                                    else if (exception instanceof FirebaseNetworkException) {
+                                        mensajeError = "ERROR DE RED, VERIFIQUE SU CONEXIÓN A INTERNET";
+                                    }
+                                    else if (exception instanceof FirebaseTooManyRequestsException) {
+                                        mensajeError = "DEMASIADOS INTENTOS FALLIDOS, INTENTE DE NUEVO MÁS TARDE";
+                                    }
+
+                                    Log.e("FragCrearCorreoContrasena", "Error al registrarse: " + exception.getMessage()); //Mostramos el mensaje de error en el Logcat
+                                    Toast.makeText(getActivity(), mensajeError, Toast.LENGTH_LONG).show(); //Mostramos el mensaje de error con un Toast
                                 }
                             }
                         });
