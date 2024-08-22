@@ -93,6 +93,23 @@
 
                 </androidx.recyclerview.widget.RecyclerView>
 
+                <TextView
+                    android:id="@+id/lblNoIngresosInicio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center|start"
+                    android:text="NO HAY INGRESOS\nDISPONIBLES"
+                    android:textColor="@color/clr_fuente_secundario"
+                    android:textSize="22dp"
+                    android:visibility="gone"
+                    tools:ignore="TouchTargetSizeCheck" />
+
                 <LinearLayout
                     android:id="@+id/LLGastosInicio"
                     android:layout_width="match_parent"
@@ -145,7 +162,26 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:orientation="horizontal"
-                    android:scrollbars="none" />
+                    android:scrollbars="none">
+
+                </androidx.recyclerview.widget.RecyclerView>
+
+                <TextView
+                    android:id="@+id/lblNoGastosInicio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center|start"
+                    android:text="NO HAY GASTOS\nDISPONIBLES"
+                    android:textColor="@color/clr_fuente_secundario"
+                    android:textSize="22dp"
+                    android:visibility="gone"
+                    tools:ignore="TouchTargetSizeCheck" />
 
                 <LinearLayout
                     android:id="@+id/LLDineroDispInicio"
@@ -183,6 +219,24 @@
                     android:layout_marginRight="10dp"
                     android:orientation="horizontal"
                     android:scrollbars="none" />
+
+                <TextView
+                    android:id="@+id/lblNoCuadrillasInicio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center|start"
+                    android:text="NO HAY CUADRILLAS\nDISPONIBLES"
+                    android:textColor="@color/clr_fuente_secundario"
+                    android:textSize="22dp"
+                    android:visibility="gone"
+                    tools:ignore="TouchTargetSizeCheck" />
+
             </LinearLayout>
         </ScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
