@@ -82,10 +82,6 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
 
         inicializarElementos(view);
 
-        ingr = new Ingreso(getContext());
-        gast = new Gasto(getContext());
-        cuad = new Cuadrilla(getContext());
-
         //Llamamos el método "desactivarSwipeDuranteScroll" tres veces, y en cada llamado mandamos un RecyclerView diferente
         desactivarSwipeDuranteScroll(rvIngresos);
         desactivarSwipeDuranteScroll(rvGastos);
@@ -118,6 +114,10 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
         viewNoInternet = view.findViewById(R.id.viewNoInternetInicio);
         btnReintentarConexion = view.findViewById(R.id.btnReintentarConexion);
         pbReintentarConexion = view.findViewById(R.id.pbReintentarConexion);
+
+        ingr = new Ingreso(getContext());
+        gast = new Gasto(getContext());
+        cuad = new Cuadrilla(getContext());
 
         swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
         swlRecargar.setColorSchemeResources(R.color.clr_fuente_primario); //Color del SwipeRefreshLayout

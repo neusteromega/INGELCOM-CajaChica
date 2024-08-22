@@ -28,9 +28,10 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     private FirestoreOperaciones oper = new FirestoreOperaciones();
-    private TextView lblTitulo, lblSeparadorTelCua, lblNombre, lblCorreo, lblIdentidad, lblTelefono, lblCuadrilla, btnEditarPerfil;
+    private TextView btnReintentarConexion, lblTitulo, lblSeparadorTelCua, lblNombre, lblCorreo, lblIdentidad, lblTelefono, lblCuadrilla, btnEditarPerfil;
     private LinearLayout llCuadrilla;
     private SwipeRefreshLayout swlRecargar;
+    private View viewNoInternet;
     private String emailActual, nombreActivity, nombre, correo, identidad, telefono, cuadrilla, rol, estado;
 
     private Usuario usu = new Usuario(Perfil.this);
@@ -43,6 +44,11 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
         inicializarElementos();
         obtenerDatos();
         establecerElementos();
+
+        //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
+        btnReintentarConexion.setOnClickListener(v -> {
+            ocultarBotonEditarNoInternet();
+        });
     }
 
     private void inicializarElementos() {
@@ -59,9 +65,13 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
         lblCuadrilla = findViewById(R.id.lblCuadrillaPerfil);
         btnEditarPerfil = findViewById(R.id.btnEditarPerfil);
         swlRecargar = findViewById(R.id.swipeRefreshLayoutPerfil);
+        viewNoInternet = findViewById(R.id.viewNoInternetPerfil);
+        btnReintentarConexion = findViewById(R.id.btnReintentarConexion);
 
         swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
         swlRecargar.setColorSchemeResources(R.color.clr_fuente_primario); //Color del SwipeRefreshLayout
+
+        ocultarBotonEditarNoInternet();
     }
 
     private void obtenerDatos() {
@@ -232,8 +242,14 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
         }
     }
 
-    public void retroceder(View view) {
-        onBackPressed();
+    private void ocultarBotonEditarNoInternet() {
+        //Llamamos el método utilitario "mostrarMensajePorInternetCaidoBoolean" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya. Este retorna un booleano indicando si hay internet o no
+        boolean internetDisponible = Utilidades.mostrarMensajePorInternetCaidoBoolean(this, viewNoInternet);
+
+        if (internetDisponible) //Si el booleano guardado en "internetDisponible" es true, significa que si hay internet, entonces que entre al if
+            btnEditarPerfil.setVisibility(View.VISIBLE); //Mostramos el botón de editar perfil
+        else //Pero si es un false, significa que no hay internet, entonces que entre al else
+            btnEditarPerfil.setVisibility(View.GONE); //Ocultamos el botón de editar perfil
     }
 
     @Override
@@ -242,9 +258,14 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
             @Override
             public void run() {
+                ocultarBotonEditarNoInternet();
                 establecerElementos();
                 swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
             }
         }, 1000);
+    }
+
+    public void retroceder(View view) {
+        onBackPressed();
     }
 }

@@ -17,6 +17,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ingelcom.cajachica.Adaptadores.CuadrillasAdapter;
@@ -39,9 +40,11 @@ public class FragAdmCuadrillas extends Fragment implements SwipeRefreshLayout.On
     private String mParam1;
     private String mParam2;
 
+    private TextView btnReintentarConexion;
     private ImageView btnOrdenar;
     private GridView gvCuadrillas;
     private SwipeRefreshLayout swlRecargar;
+    private View viewNoInternet;
     private CuadrillasAdapter customAdapter; //Objeto de la clase "CuadrillasAdapter"
     private List<CuadrillasItems> items;
     private Cuadrilla cuad;
@@ -78,26 +81,16 @@ public class FragAdmCuadrillas extends Fragment implements SwipeRefreshLayout.On
         gvCuadrillas = view.findViewById(R.id.gvCuadrillas);
         btnOrdenar = view.findViewById(R.id.imgOrdenarCua);
         swlRecargar = view.findViewById(R.id.swipeRefreshLayoutCua);
+        viewNoInternet = view.findViewById(R.id.viewNoInternetCua);
+        btnReintentarConexion = view.findViewById(R.id.btnReintentarConexion);
 
         cuad = new Cuadrilla(getContext()); //Ponemos la instancia de la clase "Cuadrilla" aquí y no de forma global ya que el "getContext()" se genera cuando se crea el fragment, aquí en "onCreateView"
 
         swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
         swlRecargar.setColorSchemeResources(R.color.clr_fuente_primario); //Color del SwipeRefreshLayout
 
-        //Detectamos los cambios en el desplazamiento vertical del gridView "gvCuadrillas"
-        gvCuadrillas.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) { //Este método que se ejecuta cada vez que ocurre un cambio en el desplazamiento del gridView
-                //El "canScrollVertically(-1)" del "gvCuadrillas" devuelve un true si el gridView puede seguir desplazándose hacia arriba (si aún no llegamos al limite superior del gridView). Usamos "canScrollVertically" para verificar si la vista "gvCuadrillas" puede seguir desplazándose verticalmente en una dirección específica; y el "-1" indica la dirección "hacia arriba". Si regresa un true, que entre al if
-                if (gvCuadrillas.canScrollVertically(-1)) {
-                    swlRecargar.setEnabled(false); //Si entró al if significa que el gridView puede seguir desplazándose hacia arriba, por lo tanto, desactivamos el "SwipeRefreshLayout" para que no interfiera en el scroll del gridView
-                }
-                else { //Si entra a este else, significa que "canScrollVertically(-1)" devuelve un false, esto indica que el gridView llegó a su limite superior y no puede desplazarse más hacia arriba
-                    swlRecargar.setEnabled(true); //Como el gridView no puede seguir desplazándose hacia arriba, activamos el "SwipeRefreshLayout" para que ahora si permita recargar la pantalla
-                }
-            }
-        });
-
+        Utilidades.mostrarMensajePorInternetCaido(getContext(), viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
+        desactivarSwipeGridView();
         obtenerCuadrillas(); //Llamamos el método "obtenerCuadrillas" de abajo y le mandamos el objeto "cuad"
 
         btnOrdenar.setOnClickListener(v -> {
@@ -111,6 +104,11 @@ public class FragAdmCuadrillas extends Fragment implements SwipeRefreshLayout.On
             catch (Exception e) {
                 Log.w("MenuOrdenar", e);
             }
+        });
+
+        //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
+        btnReintentarConexion.setOnClickListener(v -> {
+            Utilidades.mostrarMensajePorInternetCaido(getContext(), viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
         });
 
         return view;
@@ -200,12 +198,30 @@ public class FragAdmCuadrillas extends Fragment implements SwipeRefreshLayout.On
         }
     }
 
+    //Método que desactiva el SwipeRefreshLayout mientras se está desplazando hacia arriba el GridView de Cuadrillas
+    private void desactivarSwipeGridView() {
+        //Detectamos los cambios en el desplazamiento vertical del gridView "gvCuadrillas"
+        gvCuadrillas.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) { //Este método que se ejecuta cada vez que ocurre un cambio en el desplazamiento del gridView
+                //El "canScrollVertically(-1)" del "gvCuadrillas" devuelve un true si el gridView puede seguir desplazándose hacia arriba (si aún no llegamos al limite superior del gridView). Usamos "canScrollVertically" para verificar si la vista "gvCuadrillas" puede seguir desplazándose verticalmente en una dirección específica; y el "-1" indica la dirección "hacia arriba". Si regresa un true, que entre al if
+                if (gvCuadrillas.canScrollVertically(-1)) {
+                    swlRecargar.setEnabled(false); //Si entró al if significa que el gridView puede seguir desplazándose hacia arriba, por lo tanto, desactivamos el "SwipeRefreshLayout" para que no interfiera en el scroll del gridView
+                }
+                else { //Si entra a este else, significa que "canScrollVertically(-1)" devuelve un false, esto indica que el gridView llegó a su limite superior y no puede desplazarse más hacia arriba
+                    swlRecargar.setEnabled(true); //Como el gridView no puede seguir desplazándose hacia arriba, activamos el "SwipeRefreshLayout" para que ahora si permita recargar la pantalla
+                }
+            }
+        });
+    }
+
     @Override
     public void onRefresh() { //Método que detecta cuando se recarga la pantalla con SwipeRefreshLayout
         //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
             @Override
             public void run() {
+                Utilidades.mostrarMensajePorInternetCaido(getContext(), viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
                 obtenerCuadrillas();
                 swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
             }
