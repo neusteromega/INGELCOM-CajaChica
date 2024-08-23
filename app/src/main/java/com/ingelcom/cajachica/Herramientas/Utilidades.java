@@ -491,7 +491,7 @@ public class Utilidades {
             Log.w("OrdenarListaAlfabetico", e);
         }
 
-        return items; // Retornamos la lista ordenada o la original si no se realizó ningún ordenamiento
+        return items; //Retornamos la lista ordenada o la original si no se realizó ningún ordenamiento
     }
 
     //Método genérico que recibe una lista y devuelve los últimos elementos de la lista (la cantidad de elementos que devulve están en la variable "cantidadItems")
