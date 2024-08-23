@@ -451,24 +451,40 @@ public class Utilidades {
 
     //Método genérico que permite ordenar una lista genérica por orden alfabético basada en un String
     public static <T> List<T> ordenarListaPorAlfabetico(List<T> items, String nombreCampo, String orden) {
-        //Si la lista es nula, el nombre del campo o el tipo de orden es nulo o está vacío, se retorna la lista tal como está
-        if (items == null || items.isEmpty() || nombreCampo == null || nombreCampo.isEmpty() || orden == null || orden.isEmpty()) {
+        //Si la lista es nula o está vacía o el tipo de orden es nulo o está vacío, se retorna la lista tal como está
+        if (items == null || items.isEmpty() || orden == null || orden.isEmpty()) {
             return items;
         }
 
         try {
-            //Hacemos una búsqueda en la lista "items" mediante el "nombreCampo", y tras los resultados, obtenemos el elemento encontrado en la posición 0, la primera y única posición porque el nombre del campo guardado en "nombreCampo" no se repite en la lista (por ejemplo, si buscamos el campo "fechaHora" en la lista items, ese nombre de campo no se repetirá)
-            Field campo = items.get(0).getClass().getDeclaredField(nombreCampo); //Obtenemos el nombre del tipo de dato con "getDeclaredField" y lo guardamos en la variable "campo" de tipo Field
-            campo.setAccessible(true); //Lo utilizamos para permitir el acceso a un campo privado o protegido de una clase
+            Field campo = null;
+
+            //Si el nombre del campo no es nulo, ni está vacío, y la lista no está vacía y su primer elemento (elemento en la posición 0) no es una instancia de String, que entre al if (lo de que el primer elemento no sea una instancia de String nos asegura que la lista es de una clase, no es una lista String sencilla)
+            if (nombreCampo != null && !nombreCampo.isEmpty() && !items.isEmpty() && !(items.get(0) instanceof String)) {
+                //Hacemos una búsqueda en la lista "items" mediante el "nombreCampo", y tras los resultados, obtenemos el elemento encontrado en la posición 0, la primera y única posición porque el nombre del campo guardado en "nombreCampo" no se repite en la lista (por ejemplo, si buscamos el campo "fechaHora" en la lista items, ese nombre de campo no se repetirá)
+                campo = items.get(0).getClass().getDeclaredField(nombreCampo); //Obtenemos el nombre del tipo de dato con "getDeclaredField" y lo guardamos en la variable "campo" de tipo Field
+                campo.setAccessible(true); //Lo utilizamos para permitir el acceso a un campo privado o protegido de una clase
+            }
+
+            Field finalCampo = campo; //Guardamos el contenido de "campo" en la variable "finalCampo" de tipo Field, esto para que se pueda acceder a ella desde el "Collections.sort"
 
             //Utilizamos el método "Collections.sort" para ordenar la lista "items"
             Collections.sort(items, new Comparator<T>() { //"Comparator<T>" es una interfaz que se usa para definir la lógica de comparación entre dos objetos del mismo tipo (T)
                 @Override //Implementamos el método "compare" del "Comparator<T>"
                 public int compare(T o1, T o2) { //Este método toma dos objetos "o1" y "o2" de tipo "T" y devuelve un valor entero que indica el orden relativo de los dos objetos. Devuelve un valor negativo si "o1" debe ir antes que "o2". Devuelve 0 si "o1" y "o2" son iguales. Devuelve un valor positivo si "o1" debe ir después que "o2"
                     try {
-                        //Obtenemos los valores del campo especificado en "nombreCampo", y estos valores son convertidos a String
-                        String valor1 = (String) campo.get(o1);
-                        String valor2 = (String) campo.get(o2);
+                        String valor1, valor2;
+
+                        if (finalCampo != null) { //Si "finalCampo" no es nulo, significa que la lista recibida es de tipo Clase
+                            //Obtenemos los valores del campo especificado en "nombreCampo", y estos valores son convertidos a String
+                            valor1 = (String) finalCampo.get(o1);
+                            valor2 = (String) finalCampo.get(o2);
+                        }
+                        else { //En cambio, si "finalCampo" es nulo, significa que la lista recibida es una lista sencilla, con índices numéricos
+                            //Casteamos los valores o1 y o2 a String para pasar su contenido a las variables "valor1" y "valor2"
+                            valor1 = (String) o1;
+                            valor2 = (String) o2;
+                        }
 
                         if ("Ascendente".equalsIgnoreCase(orden)) { //Si orden es "Ascendente" (ignorando mayúsculas y minúsculas), que entre al if
                             return valor1.compareToIgnoreCase(valor2); //Orden ascendente (alfabético)

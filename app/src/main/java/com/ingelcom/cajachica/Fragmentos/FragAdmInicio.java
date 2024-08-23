@@ -44,7 +44,7 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
     private String mParam2;
 
     private RecyclerView rvIngresos, rvGastos, rvCuadrillas;
-    private TextView btnVerIngresos, btnVerGastos;
+    private TextView btnVerIngresos, btnVerGastos, lblNoIngresos, lblNoGastos, lblNoCuadrillas;
     private SwipeRefreshLayout swlRecargar;
     private View viewNoInternet;
     private TextView btnReintentarConexion;
@@ -110,6 +110,9 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
         rvCuadrillas = view.findViewById(R.id.rvCuadrillasInicio);
         btnVerIngresos = view.findViewById(R.id.btnVerTodosIngresosInicio);
         btnVerGastos = view.findViewById(R.id.btnVerTodosGastosInicio);
+        lblNoIngresos = view.findViewById(R.id.lblNoIngresosInicio);
+        lblNoGastos = view.findViewById(R.id.lblNoGastosInicio);
+        lblNoCuadrillas = view.findViewById(R.id.lblNoCuadrillasInicio);
         swlRecargar = view.findViewById(R.id.swipeRefreshLayoutInicio);
         viewNoInternet = view.findViewById(R.id.viewNoInternetInicio);
         btnReintentarConexion = view.findViewById(R.id.btnReintentarConexion);
@@ -138,9 +141,16 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
             ingr.obtenerIngresos("", "", new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
                 @Override
                 public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos
-                    if (items != null) {//Si "items" no es null, que entre al if
+                    //Verificamos si "items" es nulo o si está vacío. Si cumple una de estas condiciones, que oculte el recyclerview y muestre el textview indicando que no hay datos
+                    if (items == null || items.isEmpty()) {
+                        lblNoIngresos.setVisibility(View.VISIBLE);
+                        rvIngresos.setVisibility(View.GONE);
+                    }
+                    else { //Si "items" no es nulo ni está vacío, hacemos el proceso para mostrar los datos en su recylerview correspondiente
                         items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                         items = Utilidades.obtenerPrimerosItemsLista(items, 8); //Llamamos el método utilitario "obtenerPrimerosItemsLista" que nos devolverá los primeros elementos de la lista "items" (esta lista ya está ordenada por la fecha más reciente) y también le pasamos la cantidad de los primeros elementos que devolverá, en este caso son 8
+
+                        lblNoIngresos.setVisibility(View.GONE);
                         inicializarRecyclerView(items, "Ingreso"); //Llamamos el método "inicializarRecyclerView" de abajo, le mandamos la lista "items" y el tipo "Ingreso" indicando que debe inicializar el rvIngresos
                     }
                 }
@@ -163,9 +173,16 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
             gast.obtenerGastos("", "", "", new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                 @Override
                 public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos
-                    if (items != null) {//Si "items" no es null, que entre al if
+                    //Verificamos si "items" es nulo o si está vacío. Si cumple una de estas condiciones, que oculte el recyclerview y muestre el textview indicando que no hay datos
+                    if (items == null || items.isEmpty()) {
+                        lblNoGastos.setVisibility(View.VISIBLE);
+                        rvGastos.setVisibility(View.GONE);
+                    }
+                    else { //Si "items" no es nulo ni está vacío, hacemos el proceso para mostrar los datos en su recylerview correspondiente
                         items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                         items = Utilidades.obtenerPrimerosItemsLista(items, 8); //Llamamos el método utilitario "obtenerPrimerosItemsLista" que nos devolverá los primeros elementos de la lista "items" (esta lista ya está ordenada por la fecha más reciente) y también le pasamos la cantidad de los primeros elementos que devolverá, en este caso son 8
+
+                        lblNoGastos.setVisibility(View.GONE);
                         inicializarRecyclerView(items, "Gasto"); //Llamamos el método "inicializarRecyclerView" de abajo, le mandamos la lista "items" y el tipo "Gastos" indicando que debe inicializar el rvGastos
                     }
                 }
@@ -188,8 +205,15 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
             cuad.obtenerCuadrillas(new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<CuadrillasItems>() {
                 @Override
                 public void onCallback(List<CuadrillasItems> items) { //En esta lista "items" están todas las cuadrillas
-                    if (items != null) {//Si "items" no es null, que entre al if
+                    //Verificamos si "items" es nulo o si está vacío. Si cumple una de estas condiciones, que oculte el recyclerview y muestre el textview indicando que no hay datos
+                    if (items == null || items.isEmpty()) {
+                        lblNoCuadrillas.setVisibility(View.VISIBLE);
+                        rvCuadrillas.setVisibility(View.GONE);
+                    }
+                    else { //Si "items" no es nulo ni está vacío, hacemos el proceso para mostrar los datos en su recylerview correspondiente
                         items = Utilidades.ordenarListaPorDouble(items, "dinero", "Ascendente"); //Llamamos el método utilitario "ordenarListaPorDouble". Le mandamos la lista "items", el nombre del campo double "dinero", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
+
+                        lblNoCuadrillas.setVisibility(View.GONE);
                         inicializarRecyclerView(items, "Cuadrilla"); //Llamamos el método "inicializarRecyclerView" de abajo, le mandamos la lista "items" ya ordenada y el tipo "Cuadrilla" indicando que debe inicializar el rvCuadrillas
                     }
                 }

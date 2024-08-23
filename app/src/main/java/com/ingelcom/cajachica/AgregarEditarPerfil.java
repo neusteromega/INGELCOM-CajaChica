@@ -190,6 +190,9 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         oper.obtenerRegistrosCampo("cuadrillas", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
             @Override
             public void onCallback(List<String> lista) {
+                //Ordenamos la "lista" alfabéticamente llamando al método utilitario "ordenarListaPorAlfabetico" donde enviamos la lista, un String vacío ("") y el orden ascendente. El String vacío es para indicar que el "nombreCampo" por el cual se desea realizar el orden de la lista, en este caso no existe ya que es una lista sencilla y no de una clase
+                lista = Utilidades.ordenarListaPorAlfabetico(lista, "", "Ascendente");
+
                 //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(AgregarEditarPerfil.this, R.layout.spinner_items, lista);
                 spCuadrillas.setAdapter(adapter); //Asignamos el adapter a "spCuadrillas"

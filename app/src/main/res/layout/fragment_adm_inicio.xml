@@ -78,7 +78,7 @@
                             android:fontFamily="@font/montserrat_bold"
                             android:text="Ver Todos"
                             android:textColor="@color/clr_fuente_secundario"
-                            android:textSize="17dp" />
+                            android:textSize="17sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -102,11 +102,15 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="5dp"
                     android:layout_weight="1"
+                    android:background="@drawable/clr_casillablanca_cuadrada"
+                    android:elevation="5dp"
                     android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center|start"
+                    android:gravity="center"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
                     android:text="NO HAY INGRESOS\nDISPONIBLES"
                     android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="22dp"
+                    android:textSize="22sp"
                     android:visibility="gone"
                     tools:ignore="TouchTargetSizeCheck" />
 
@@ -135,7 +139,7 @@
                         android:fontFamily="@font/montserrat_extrabold"
                         android:text="Gastos Recientes"
                         android:textColor="@color/clr_fuente_primario"
-                        android:textSize="18dp" />
+                        android:textSize="18sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -150,7 +154,7 @@
                             android:fontFamily="@font/montserrat_bold"
                             android:text="Ver Todos"
                             android:textColor="@color/clr_fuente_secundario"
-                            android:textSize="17dp" />
+                            android:textSize="17sp" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -170,16 +174,20 @@
                     android:id="@+id/lblNoGastosInicio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="15dp"
                     android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="15dp"
                     android:layout_marginBottom="5dp"
                     android:layout_weight="1"
+                    android:background="@drawable/clr_casillablanca_cuadrada"
+                    android:elevation="5dp"
                     android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center|start"
+                    android:gravity="center"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
                     android:text="NO HAY GASTOS\nDISPONIBLES"
                     android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="22dp"
+                    android:textSize="22sp"
                     android:visibility="gone"
                     tools:ignore="TouchTargetSizeCheck" />
 
@@ -208,7 +216,7 @@
                         android:fontFamily="@font/montserrat_extrabold"
                         android:text="Dinero Disponible"
                         android:textColor="@color/clr_fuente_primario"
-                        android:textSize="18dp" />
+                        android:textSize="18sp" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -224,16 +232,20 @@
                     android:id="@+id/lblNoCuadrillasInicio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="15dp"
                     android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="15dp"
                     android:layout_weight="1"
+                    android:background="@drawable/clr_casillablanca_cuadrada"
+                    android:elevation="5dp"
                     android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center|start"
+                    android:gravity="center"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
                     android:text="NO HAY CUADRILLAS\nDISPONIBLES"
                     android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="22dp"
+                    android:textSize="22sp"
                     android:visibility="gone"
                     tools:ignore="TouchTargetSizeCheck" />
 
