@@ -15,8 +15,12 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseNetworkException;
+import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
@@ -85,8 +89,27 @@ public class IniciarSesion extends AppCompatActivity {
                                 if (task.isSuccessful()) { //Si el inicio de sesión fue exitoso, entrará en este if
                                     Utilidades.redireccionarUsuario(IniciarSesion.this, correo); //Llamamos al método "redireccionarUsuario" de la clase Utilidades y le mandamos un contexto y el correo
                                     //FirebaseUser user = mAuth.getCurrentUser();
-                                } else {
-                                    Toast.makeText(IniciarSesion.this, "CORREO O CONTRASEÑA INCORRECTA", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    String mensajeError = "CORREO O CONTRASEÑA INCORRECTA"; //Variable que servirá para almacenar el mensaje de error correspondiente
+                                    Exception exception = task.getException(); //Obtenemos la excepción lanzada tras que el proceso de creación del usuario ha fallado
+
+                                    //Varios condicionales que revisan el tipo de excepción, y tras ello, se guarda el mensaje de error correspondiente en la variable "mensajeError"
+                                    if (exception instanceof FirebaseAuthInvalidCredentialsException) {
+                                        mensajeError = "CORREO O CONTRASEÑA INCORRECTA";
+                                    }
+                                    else if (exception instanceof FirebaseAuthInvalidUserException) {
+                                        mensajeError = "EL USUARIO NO EXISTE O HA SIDO DESHABILITADO";
+                                    }
+                                    else if (exception instanceof FirebaseNetworkException) {
+                                        mensajeError = "ERROR DE RED, VERIFIQUE SU CONEXIÓN A INTERNET";
+                                    }
+                                    else if (exception instanceof FirebaseTooManyRequestsException) {
+                                        mensajeError = "DEMASIADOS INTENTOS FALLIDOS, INTENTE DE NUEVO MÁS TARDE";
+                                    }
+
+                                    Log.e("IniciarSesion", "Error al iniciar sesión: " + exception.getMessage()); //Mostramos el mensaje de error en el Logcat
+                                    Toast.makeText(IniciarSesion.this, mensajeError, Toast.LENGTH_SHORT).show(); //Mostramos el mensaje de error con un Toast
                                 }
                             }
                         });
