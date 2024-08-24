@@ -11,6 +11,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -50,6 +51,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
     private SwipeRefreshLayout swlRecargar;
     private View viewNoInternet;
     private ProgressBar pbReintentarConexion;
+    private ProgressDialog progressDialog;
 
     //Instancia de la clase "SharedViewGastosModel" que nos ayuda a compartir datos con diferentes componentes de la interfaz de usuario, como ser fragmentos y actividades y que estos datos sobreviven a cambios de configuración como las rotaciones de pantalla
     private SharedViewGastosModel svmGastos;
@@ -145,6 +147,12 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                                     @Override
                                     public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por cuadrilla
                                         if (items != null) {//Si "items" no es null, que entre al if
+                                            //Creamos un "ProgressDialog" por mientras se está realizando la exportación del archivo
+                                            progressDialog = new ProgressDialog(ListadoGastos.this);
+                                            progressDialog.setTitle("Exportando Datos...");
+                                            progressDialog.setCancelable(false);
+                                            progressDialog.show();
+
                                             items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
 
                                             if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
@@ -159,6 +167,9 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                                                 else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
                                                     exp.exportarGastosPDF(items, "_" + cuadrilla + "_" + mes); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             }
+
+                                            if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
+                                                progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de exportación
                                         }
                                     }
 
@@ -183,6 +194,12 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                         @Override
                         public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por cuadrilla
                             if (items != null) {//Si "items" no es null, que entre al if
+                                //Creamos un "ProgressDialog" por mientras se está realizando la exportación del archivo
+                                progressDialog = new ProgressDialog(ListadoGastos.this);
+                                progressDialog.setTitle("Exportando Datos...");
+                                progressDialog.setCancelable(false);
+                                progressDialog.show();
+
                                 items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
 
                                 if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
@@ -197,6 +214,9 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                                     else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
                                         exp.exportarGastosPDF(items, "_" + nombreCuadrilla + "_" + mes); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                 }
+
+                                if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
+                                    progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de exportación
                             }
                         }
 
@@ -213,6 +233,12 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                         @Override
                         public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos sin filtro
                             if (items != null) {//Si "items" no es null, que entre al if
+                                //Creamos un "ProgressDialog" por mientras se está realizando la exportación del archivo
+                                progressDialog = new ProgressDialog(ListadoGastos.this);
+                                progressDialog.setTitle("Exportando Datos...");
+                                progressDialog.setCancelable(false);
+                                progressDialog.show();
+
                                 items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
 
                                 if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
@@ -227,6 +253,9 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                                     else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
                                         exp.exportarGastosPDF(items, "Generales_" + mes); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                 }
+
+                                if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
+                                    progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de exportación
                             }
                         }
 

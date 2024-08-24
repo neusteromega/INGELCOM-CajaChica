@@ -105,6 +105,9 @@ public class Deduccion {
 
                     @Override
                     public void onFailure(Exception e) {
+                        if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
+                            progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de inserción ha fallado
+
                         Toast.makeText(contexto, "ERROR AL REGISTRAR LA DEDUCCIÓN", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -163,6 +166,9 @@ public class Deduccion {
 
                     @Override
                     public void onFailure(Exception e) {
+                        if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
+                            progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de inserción ha fallado
+
                         Toast.makeText(contexto, "ERROR AL MODIFICAR LA DEDUCCIÓN", Toast.LENGTH_SHORT).show();
                     }
                 });

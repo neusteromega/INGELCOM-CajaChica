@@ -1,5 +1,6 @@
 package com.ingelcom.cajachica.Herramientas;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
