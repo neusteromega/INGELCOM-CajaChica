@@ -14,6 +14,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -57,7 +59,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
     private EditText txtLugar, txtDescripcion, txtFactura, txtTotal;
     private ImageView imgFoto, btnEliminarFoto;
     private Spinner spCuadrillas, spTipoCompras;
-    private ProgressBar pbCargar;
+    private ProgressBar pbCargar, pbReintentarConexion;
     private View viewNoInternet;
 
     private String nombreActivity, dineroDisponible, id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, imagen, total;
@@ -82,6 +84,16 @@ public class RegistrarEditarGasto extends AppCompatActivity {
 
         //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
         btnReintentarConexion.setOnClickListener(v -> {
+            pbReintentarConexion.setVisibility(View.VISIBLE); //Mostramos el ProgressBar
+
+            //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
+                @Override
+                public void run() {
+                    pbReintentarConexion.setVisibility(View.GONE); //Después de un segundo, ocultamos el ProgressBar
+                }
+            }, 1000);
+
             Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
         });
     }
@@ -109,6 +121,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
         btnConfirmar = findViewById(R.id.btnConfirmarRG);
         viewNoInternet = findViewById(R.id.viewNoInternetRG);
         btnReintentarConexion = findViewById(R.id.btnReintentarConexion);
+        pbReintentarConexion = findViewById(R.id.pbReintentarConexion);
 
         Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
     }

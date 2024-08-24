@@ -10,6 +10,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
     private LinearLayout llCuadrilla;
     private SwipeRefreshLayout swlRecargar;
     private View viewNoInternet;
+    private ProgressBar pbReintentarConexion;
     private String emailActual, nombreActivity, nombre, correo, identidad, telefono, cuadrilla, rol, estado;
 
     private Usuario usu = new Usuario(Perfil.this);
@@ -47,6 +49,16 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
 
         //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
         btnReintentarConexion.setOnClickListener(v -> {
+            pbReintentarConexion.setVisibility(View.VISIBLE); //Mostramos el ProgressBar
+
+            //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
+                @Override
+                public void run() {
+                    pbReintentarConexion.setVisibility(View.GONE); //Después de un segundo, ocultamos el ProgressBar
+                }
+            }, 1000);
+
             ocultarBotonEditarNoInternet();
         });
     }
@@ -67,6 +79,7 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
         swlRecargar = findViewById(R.id.swipeRefreshLayoutPerfil);
         viewNoInternet = findViewById(R.id.viewNoInternetPerfil);
         btnReintentarConexion = findViewById(R.id.btnReintentarConexion);
+        pbReintentarConexion = findViewById(R.id.pbReintentarConexion);
 
         swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
         swlRecargar.setColorSchemeResources(R.color.clr_fuente_primario); //Color del SwipeRefreshLayout
@@ -261,7 +274,7 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
     @Override
     public void onRefresh() { //Método que detecta cuando se recarga la pantalla con SwipeRefreshLayout
         //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
             @Override
             public void run() {
                 ocultarBotonEditarNoInternet();

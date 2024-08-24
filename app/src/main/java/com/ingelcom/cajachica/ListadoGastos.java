@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +49,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
     private ViewPager2 vpGastos;
     private SwipeRefreshLayout swlRecargar;
     private View viewNoInternet;
+    private ProgressBar pbReintentarConexion;
 
     //Instancia de la clase "SharedViewGastosModel" que nos ayuda a compartir datos con diferentes componentes de la interfaz de usuario, como ser fragmentos y actividades y que estos datos sobreviven a cambios de configuración como las rotaciones de pantalla
     private SharedViewGastosModel svmGastos;
@@ -69,6 +71,16 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
 
         //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
         btnReintentarConexion.setOnClickListener(v -> {
+            pbReintentarConexion.setVisibility(View.VISIBLE); //Mostramos el ProgressBar
+
+            //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
+                @Override
+                public void run() {
+                    pbReintentarConexion.setVisibility(View.GONE); //Después de un segundo, ocultamos el ProgressBar
+                }
+            }, 1000);
+
             Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
         });
     }
@@ -86,6 +98,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         swlRecargar = findViewById(R.id.swipeRefreshLayoutLG);
         viewNoInternet = findViewById(R.id.viewNoInternetLG);
         btnReintentarConexion = findViewById(R.id.btnReintentarConexion);
+        pbReintentarConexion = findViewById(R.id.pbReintentarConexion);
 
         svmGastos = new ViewModelProvider(this).get(SharedViewGastosModel.class); //Obtenemos el ViewModel compartido, haciendo referencia a la clase "SharedViewGastosModel"
         swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
@@ -397,7 +410,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
     @Override
     public void onRefresh() { //Método que detecta cuando se recarga la pantalla con SwipeRefreshLayout
         //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
             @Override
             public void run() {
                 Utilidades.mostrarMensajePorInternetCaido(ListadoGastos.this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya

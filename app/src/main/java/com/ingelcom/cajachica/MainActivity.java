@@ -45,6 +45,6 @@ public class MainActivity extends AppCompatActivity {
                     Utilidades.iniciarActivity(MainActivity.this, IniciarSesion.class, true);
                 }
             }
-        }, 3000); //Establecemos que la pantalla splash debe durar 3 segundos
+        }, 2500); //Establecemos que la pantalla splash debe durar 2.5 segundos
     }
 }

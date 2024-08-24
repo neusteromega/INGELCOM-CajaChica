@@ -6,11 +6,14 @@ import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,6 +36,7 @@ public class FragAdmUsuarios extends Fragment {
     private LinearLayout btnMiPerfil, btnAgregarUsuario, btnListadoEmpleados, btnCerrarSesion;
     private TextView btnReintentarConexion;
     private View viewNoInternet;
+    private ProgressBar pbReintentarConexion;
 
     private FirebaseAuth auth; //Objeto que verifica la autenticación del usuario con Firebase
     private FirebaseUser user; //Objeto que obtiene el usuario actual
@@ -75,6 +79,7 @@ public class FragAdmUsuarios extends Fragment {
         btnCerrarSesion = view.findViewById(R.id.LLCerrarSesionUsu);
         viewNoInternet = view.findViewById(R.id.viewNoInternetUsu);
         btnReintentarConexion = view.findViewById(R.id.btnReintentarConexion);
+        pbReintentarConexion = view.findViewById(R.id.pbReintentarConexion);
 
         ocultarBotonLogoutNoInternet();
         establecerBotones();
@@ -118,10 +123,21 @@ public class FragAdmUsuarios extends Fragment {
 
         //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
         btnReintentarConexion.setOnClickListener(v -> {
+            pbReintentarConexion.setVisibility(View.VISIBLE); //Mostramos el ProgressBar
+
+            //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
+                @Override
+                public void run() {
+                    pbReintentarConexion.setVisibility(View.GONE); //Después de un segundo, ocultamos el ProgressBar
+                }
+            }, 1000);
+
             ocultarBotonLogoutNoInternet();
         });
     }
 
+    //Método que permite ocultar el botón de Cerrar Sesión mientras se muestra la vista "view_nointernet"
     private void ocultarBotonLogoutNoInternet() {
         //Llamamos el método utilitario "mostrarMensajePorInternetCaidoBoolean" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya. Este retorna un booleano indicando si hay internet o no
         boolean internetDisponible = Utilidades.mostrarMensajePorInternetCaidoBoolean(getContext(), viewNoInternet);

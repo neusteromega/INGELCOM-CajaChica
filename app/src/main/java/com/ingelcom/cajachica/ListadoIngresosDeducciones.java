@@ -20,6 +20,7 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +51,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
     private ImageView btnExportar;
     private SwipeRefreshLayout swlRecargar;
     private View viewNoInternet;
+    private ProgressBar pbReintentarConexion;
 
     private Ingreso ingr = new Ingreso(ListadoIngresosDeducciones.this);
     private Deduccion deduc = new Deduccion(ListadoIngresosDeducciones.this);
@@ -68,6 +70,16 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
 
         //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
         btnReintentarConexion.setOnClickListener(v -> {
+            pbReintentarConexion.setVisibility(View.VISIBLE); //Mostramos el ProgressBar
+
+            //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
+                @Override
+                public void run() {
+                    pbReintentarConexion.setVisibility(View.GONE); //Después de un segundo, ocultamos el ProgressBar
+                }
+            }, 1000);
+
             Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
         });
     }
@@ -87,6 +99,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
         swlRecargar = findViewById(R.id.swipeRefreshLayoutLI);
         viewNoInternet = findViewById(R.id.viewNoInternetLI);
         btnReintentarConexion = findViewById(R.id.btnReintentarConexion);
+        pbReintentarConexion = findViewById(R.id.pbReintentarConexion);
 
         swlRecargar.setOnRefreshListener(this); //Llamada al método "onRefresh"
 
@@ -477,7 +490,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
     @Override
     public void onRefresh() { //Método que detecta cuando se recarga la pantalla con SwipeRefreshLayout
         //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
             @Override
             public void run() {
                 Utilidades.mostrarMensajePorInternetCaido(ListadoIngresosDeducciones.this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya

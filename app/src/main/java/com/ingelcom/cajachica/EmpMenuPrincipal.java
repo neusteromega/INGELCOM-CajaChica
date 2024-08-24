@@ -5,9 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,6 +28,7 @@ public class EmpMenuPrincipal extends AppCompatActivity {
     private TextView btnReintentarConexion, lblDinero;
     private LinearLayout btnCerrarSesion;
     private View viewNoInternet;
+    private ProgressBar pbReintentarConexion;
     private String dineroDisponible;
 
     private FirebaseAuth auth; //Objeto que verifica la autenticación del usuario con Firebase
@@ -42,6 +46,7 @@ public class EmpMenuPrincipal extends AppCompatActivity {
         btnCerrarSesion = findViewById(R.id.LLCerrarSesionMenuEMP);
         viewNoInternet = findViewById(R.id.viewNoInternetMenuEMP);
         btnReintentarConexion = findViewById(R.id.btnReintentarConexion);
+        pbReintentarConexion = findViewById(R.id.pbReintentarConexion);
 
         ocultarBotonLogoutNoInternet();
 
@@ -57,6 +62,16 @@ public class EmpMenuPrincipal extends AppCompatActivity {
 
         //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
         btnReintentarConexion.setOnClickListener(v -> {
+            pbReintentarConexion.setVisibility(View.VISIBLE); //Mostramos el ProgressBar
+
+            //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
+                @Override
+                public void run() {
+                    pbReintentarConexion.setVisibility(View.GONE); //Después de un segundo, ocultamos el ProgressBar
+                }
+            }, 1000);
+
             ocultarBotonLogoutNoInternet();
         });
     }

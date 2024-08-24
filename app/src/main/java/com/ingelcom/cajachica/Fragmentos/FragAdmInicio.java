@@ -44,10 +44,9 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
     private String mParam2;
 
     private RecyclerView rvIngresos, rvGastos, rvCuadrillas;
-    private TextView btnVerIngresos, btnVerGastos, lblNoIngresos, lblNoGastos, lblNoCuadrillas;
+    private TextView btnReintentarConexion, btnVerIngresos, btnVerGastos, lblNoIngresos, lblNoGastos, lblNoCuadrillas;
     private SwipeRefreshLayout swlRecargar;
     private View viewNoInternet;
-    private TextView btnReintentarConexion;
     private ProgressBar pbReintentarConexion;
 
     private Ingreso ingr;
@@ -98,6 +97,16 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
         });
 
         btnReintentarConexion.setOnClickListener(v -> {
+            pbReintentarConexion.setVisibility(View.VISIBLE); //Mostramos el ProgressBar
+
+            //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
+                @Override
+                public void run() {
+                    pbReintentarConexion.setVisibility(View.GONE); //Después de un segundo, ocultamos el ProgressBar
+                }
+            }, 1000);
+
             Utilidades.mostrarMensajePorInternetCaido(getContext(), viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
         });
 
@@ -356,7 +365,7 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onRefresh() { //Método que detecta cuando se recarga la pantalla con SwipeRefreshLayout
         //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
             @Override
             public void run() {
                 Utilidades.mostrarMensajePorInternetCaido(getContext(), viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
