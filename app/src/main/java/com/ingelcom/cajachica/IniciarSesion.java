@@ -92,7 +92,7 @@ public class IniciarSesion extends AppCompatActivity {
                                 }
                                 else {
                                     String mensajeError = "CORREO O CONTRASEÑA INCORRECTA"; //Variable que servirá para almacenar el mensaje de error correspondiente
-                                    Exception exception = task.getException(); //Obtenemos la excepción lanzada tras que el proceso de creación del usuario ha fallado
+                                    Exception exception = task.getException(); //Obtenemos la excepción lanzada tras que el proceso inicio de sesión ha fallado
 
                                     //Varios condicionales que revisan el tipo de excepción, y tras ello, se guarda el mensaje de error correspondiente en la variable "mensajeError"
                                     if (exception instanceof FirebaseAuthInvalidCredentialsException) {

@@ -152,11 +152,17 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
                 @Override
                 public void onCallback(Map<String, Object> documento) {
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante la identidad
+                        String correoElec = (String) documento.get("Correo");
+
                         lblNombre.setText((String) documento.get("Nombre"));
-                        lblCorreo.setText((String) documento.get("Correo"));
                         lblIdentidad.setText((String) documento.get("Identidad"));
                         lblTelefono.setText((String) documento.get("Telefono"));
                         lblCuadrilla.setText((String) documento.get("Cuadrilla"));
+
+                        if (correoElec.isEmpty())
+                            lblCorreo.setText("Sin Correo");
+                        else
+                            lblCorreo.setText((String) documento.get("Correo"));
                     }
                     else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
                         Toast.makeText(Perfil.this, "USUARIO NO ENCONTRADO", Toast.LENGTH_SHORT).show();

@@ -168,7 +168,8 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
                             }
                         }
                         else { //En cambio, si "items" es null, o si está vacío (una de las dos) significa que no se encontraron datos en Firestore, por lo tanto, que entre a este else
-                            //Hacemos visible el TextView "lblNoDatos" y ocultamos los gráficos
+                            //Ponemos en 0 el total, hacemos visible el TextView "lblNoDatos" y ocultamos los gráficos
+                            lblTotal.setText("L. 0.00");
                             lblNoDatos.setVisibility(View.VISIBLE);
                             graficoLineas.setVisibility(View.GONE);
                             graficoBarras.setVisibility(View.GONE);
@@ -226,7 +227,8 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
                             }
                         }
                         else { //En cambio, si "items" es null, o si está vacío (una de las dos) significa que no se encontraron datos en Firestore, por lo tanto, que entre a este else
-                            //Hacemos visible el TextView "lblNoDatos" y ocultamos los gráficos
+                            //Ponemos en 0 el total, hacemos visible el TextView "lblNoDatos" y ocultamos los gráficos
+                            lblTotal.setText("L. 0.00");
                             lblNoDatos.setVisibility(View.VISIBLE);
                             graficoLineas.setVisibility(View.GONE);
                             graficoBarras.setVisibility(View.GONE);
