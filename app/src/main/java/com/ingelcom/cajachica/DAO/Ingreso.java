@@ -161,6 +161,7 @@ public class Ingreso {
                             //Creamos un "ProgressDialog" por mientras se están subiendo los datos a Firebase
                             progressDialog = new ProgressDialog(contexto);
                             progressDialog.setTitle("Confirmando Ingreso de Dinero...");
+                            progressDialog.setCancelable(false);
                             progressDialog.show();
 
                             cuad.actualizarDineroCuadrilla(cuadrilla, totalIngreso, "Ingreso"); //Llamamos el método "actualizarDineroCuadrilla" de la clase "Cuadrilla" y le mandamos el nombre de la cuadrilla, el total ingresado y la palabra "Ingreso" para indicar que se hizo un Ingreso y no un Gasto
@@ -234,6 +235,7 @@ public class Ingreso {
                     //Creamos un "ProgressDialog" por mientras se están subiendo los datos a Firebase
                     progressDialog = new ProgressDialog(contexto);
                     progressDialog.setTitle("Confirmando Ingreso de Dinero...");
+                    progressDialog.setCancelable(false);
                     progressDialog.show();
 
                     //Llamamos al método "agregarActualizarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar, el HashMap con los nuevos campos y datos (o los campos existentes para actualizar su contenido) e invocamos la interfaz "FirestoreInsertCallback"

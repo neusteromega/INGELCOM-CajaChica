@@ -1,5 +1,6 @@
 package com.ingelcom.cajachica.DAO;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ public class Deduccion {
 
     public Context contexto;
     private FirestoreOperaciones oper = new FirestoreOperaciones();
+    private ProgressDialog progressDialog;
 
     public Deduccion(Context contexto) {
         this.contexto = contexto;
@@ -84,10 +86,19 @@ public class Deduccion {
                 datos.put("Cuadrilla", cuadrilla);
                 datos.put("Total", totalIngreso);
 
+                //Creamos un "ProgressDialog" por mientras se están subiendo los datos a Firebase
+                progressDialog = new ProgressDialog(contexto);
+                progressDialog.setTitle("Confirmando Deducción por Planilla...");
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+
                 //Llamamos el método "insertarRegistros" de la clase "FirestoreOperaciones" y le mandamos el nombre de la colección, el HashMap con los datos a insertar. También invocamos los métodos "onSuccess" y "onFailure" de la interfaz FirestoreInsertCallback
                 oper.insertarRegistros("deducciones", datos, new FirestoreCallbacks.FirestoreTextCallback() {
                     @Override
                     public void onSuccess(String texto) {
+                        if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
+                            progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de inserción ha sido exitoso
+
                         cuad.actualizarDineroCuadrilla(cuadrilla, totalIngreso, "Deduccion"); //Llamamos el método "actualizarDineroCuadrilla" de la clase "Cuadrilla" y le mandamos el nombre de la cuadrilla, el total deducido y la palabra "Deduccion" para indicar que se hizo una Deducción por planilla
                         Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "DeduccionRegistrada", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "DeduccionRegistrada" para indicar que fue una Deducción la que se registró, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarIngresoDeduccion
                     }
@@ -134,10 +145,19 @@ public class Deduccion {
                 datos.put("Cuadrilla", cuadrilla);
                 datos.put("Total", segundoTotal);
 
+                //Creamos un "ProgressDialog" por mientras se están subiendo los datos a Firebase
+                progressDialog = new ProgressDialog(contexto);
+                progressDialog.setTitle("Confirmando Deducción por Planilla...");
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+
                 //Llamamos al método "agregarActualizarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar, el HashMap con los nuevos campos y datos (o los campos existentes para actualizar su contenido) e invocamos la interfaz "FirestoreInsertCallback"
                 oper.agregarActualizarRegistrosColeccion("deducciones", "ID", id, datos, new FirestoreCallbacks.FirestoreTextCallback() {
                     @Override
                     public void onSuccess(String texto) {
+                        if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
+                            progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de inserción ha sido exitoso
+
                         Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "DeduccionEditada", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "DeduccionEditada" para indicar que fue una Deducción el que se modificó, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarIngresoDeduccion
                     }
 

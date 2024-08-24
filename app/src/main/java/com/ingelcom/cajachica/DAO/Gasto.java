@@ -217,6 +217,7 @@ public class Gasto {
                                 //Creamos un "ProgressDialog" por mientras se están subiendo los datos a Firebase
                                 progressDialog = new ProgressDialog(contexto);
                                 progressDialog.setTitle("Confirmando Gasto de Dinero...");
+                                progressDialog.setCancelable(false);
                                 progressDialog.show();
 
                                 boolean activityEmpleado; //Variable booleana que nos ayudará a saber si el activity es de Empleado o Administrador
@@ -306,6 +307,7 @@ public class Gasto {
                         //Creamos un "ProgressDialog" por mientras se están subiendo los datos a Firebase
                         progressDialog = new ProgressDialog(contexto);
                         progressDialog.setTitle("Confirmando Gasto de Dinero...");
+                        progressDialog.setCancelable(false);
                         progressDialog.show();
 
                         //Llamamos al método "agregarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar, el HashMap con los nuevos campos y datos (o los campos existentes para actualizar su contenido) e invocamos la interfaz "FirestoreInsertCallback"
