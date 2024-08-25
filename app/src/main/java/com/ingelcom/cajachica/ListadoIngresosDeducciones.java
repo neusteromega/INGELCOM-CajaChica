@@ -8,6 +8,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -52,6 +53,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
     private SwipeRefreshLayout swlRecargar;
     private View viewNoInternet;
     private ProgressBar pbReintentarConexion;
+    private ProgressDialog progressDialog;
 
     private Ingreso ingr = new Ingreso(ListadoIngresosDeducciones.this);
     private Deduccion deduc = new Deduccion(ListadoIngresosDeducciones.this);
@@ -153,18 +155,35 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
                                 inicializarRecyclerView(items, "Ingresos"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items"
                             }
                             else if (tipo.equalsIgnoreCase("Exportar")) { //En cambio, si "tipo" tiene el texto "Exportar", significa que desean exportar los datos
-                                if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
-                                    if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
-                                        exp.exportarIngresosExcel(items, "_" + nombreCuadrilla); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
-                                    else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
-                                        exp.exportarIngresosPDF(items, "_" + nombreCuadrilla); //Llamamos el método "exportarIngresosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
-                                }
-                                else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
-                                    if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
-                                        exp.exportarIngresosExcel(items, "_" + nombreCuadrilla + "_" + mes); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
-                                    else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
-                                        exp.exportarIngresosPDF(items, "_" + nombreCuadrilla + "_" + mes); //Llamamos el método "exportarIngresosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
-                                }
+                                //Creamos un "ProgressDialog" por mientras se está realizando la exportación del archivo
+                                progressDialog = new ProgressDialog(ListadoIngresosDeducciones.this);
+                                progressDialog.setTitle("Exportando Ingresos...");
+                                progressDialog.setCancelable(false);
+                                progressDialog.show();
+
+                                List<IngresosItems> finalItems = items;
+
+                                //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
+                                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
+                                    @Override
+                                    public void run() {
+                                        if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                            if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
+                                                exp.exportarIngresosExcel(finalItems, "_" + nombreCuadrilla); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                            else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
+                                                exp.exportarIngresosPDF(finalItems, "_" + nombreCuadrilla); //Llamamos el método "exportarIngresosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                        }
+                                        else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
+                                            if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
+                                                exp.exportarIngresosExcel(finalItems, "_" + nombreCuadrilla + "_" + mes); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                            else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
+                                                exp.exportarIngresosPDF(finalItems, "_" + nombreCuadrilla + "_" + mes); //Llamamos el método "exportarIngresosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                        }
+
+                                        if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
+                                            progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de exportación
+                                    }
+                                }, 1000);
                             }
                         }
                     }
@@ -224,18 +243,35 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
                                 inicializarRecyclerView(items, "Ingresos"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items"
                             }
                             else if (tipo.equalsIgnoreCase("Exportar")) { //En cambio, si "tipo" tiene el texto "Exportar", significa que desean exportar los datos
-                                if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
-                                    if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
-                                        exp.exportarIngresosExcel(items, "Generales"); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
-                                    else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
-                                        exp.exportarIngresosPDF(items, "Generales"); //Llamamos el método "exportarIngresosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
-                                }
-                                else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
-                                    if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
-                                        exp.exportarIngresosExcel(items, "Generales_" + mes); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
-                                    else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
-                                        exp.exportarIngresosPDF(items, "Generales_" + mes); //Llamamos el método "exportarIngresosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
-                                }
+                                //Creamos un "ProgressDialog" por mientras se está realizando la exportación del archivo
+                                progressDialog = new ProgressDialog(ListadoIngresosDeducciones.this);
+                                progressDialog.setTitle("Exportando Ingresos...");
+                                progressDialog.setCancelable(false);
+                                progressDialog.show();
+
+                                List<IngresosItems> finalItems = items;
+
+                                //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
+                                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
+                                    @Override
+                                    public void run() {
+                                        if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                            if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
+                                                exp.exportarIngresosExcel(finalItems, "Generales"); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                            else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
+                                                exp.exportarIngresosPDF(finalItems, "Generales"); //Llamamos el método "exportarIngresosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                        }
+                                        else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
+                                            if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
+                                                exp.exportarIngresosExcel(finalItems, "Generales_" + mes); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                            else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
+                                                exp.exportarIngresosPDF(finalItems, "Generales_" + mes); //Llamamos el método "exportarIngresosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                        }
+
+                                        if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
+                                            progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de exportación
+                                    }
+                                }, 1000);
                             }
                         }
                     }
