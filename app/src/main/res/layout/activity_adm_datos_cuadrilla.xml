@@ -46,7 +46,7 @@
 
                         <ImageView
                             android:id="@+id/imgRegresarDC"
-                            android:layout_width="25dp"
+                            android:layout_width="25sp"
                             android:layout_height="match_parent"
                             android:contentDescription="@string/descripcion"
                             android:onClick="retroceder"
@@ -56,12 +56,12 @@
                         <TextView
                             android:id="@+id/lblNombreCuadrillaDC"
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
+                            android:layout_height="40sp"
                             android:fontFamily="@font/montserrat_bold"
                             android:gravity="center"
                             android:text="Nombre Cuadrilla"
                             android:textColor="@color/clr_fuente_primario"
-                            android:textSize="25dp" />
+                            android:textSize="25sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -86,7 +86,7 @@
                             android:gravity="center"
                             android:text="Dinero Disponible"
                             android:textColor="@color/clr_fuente_primario"
-                            android:textSize="17dp" />
+                            android:textSize="17sp" />
 
                         <TextView
                             android:id="@+id/lblCantDineroDC"
@@ -96,7 +96,7 @@
                             android:gravity="center"
                             android:text="L. 00.00"
                             android:textColor="@color/clr_fuente_secundario"
-                            android:textSize="40dp" />
+                            android:textSize="40sp" />
                     </LinearLayout>
 
                     <TextView
@@ -137,8 +137,8 @@
 
                         <ImageView
                             android:id="@+id/imgFechaDC"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
+                            android:layout_width="40sp"
+                            android:layout_height="40sp"
                             app:srcCompat="@mipmap/ico_azul_fecha" />
 
                         <LinearLayout
@@ -158,7 +158,7 @@
                                 <TextView
                                     android:id="@+id/lblFechaDC"
                                     android:layout_width="match_parent"
-                                    android:layout_height="50dp"
+                                    android:layout_height="50sp"
                                     android:layout_weight="1"
                                     android:background="@android:color/transparent"
                                     android:fontFamily="@font/montserrat_bold"
@@ -167,12 +167,12 @@
                                     android:paddingRight="10dp"
                                     android:text="Seleccionar Mes"
                                     android:textColor="@color/clr_fuente_secundario"
-                                    android:textSize="17dp" />
+                                    android:textSize="17sp" />
 
                                 <ImageView
                                     android:id="@+id/imgAbrirFechaDC"
-                                    android:layout_width="11dp"
-                                    android:layout_height="20dp"
+                                    android:layout_width="11sp"
+                                    android:layout_height="20sp"
                                     android:layout_marginRight="10dp"
                                     android:contentDescription="@string/descripcion"
                                     app:srcCompat="@mipmap/ico_gris_expandirabajo" />
@@ -180,8 +180,8 @@
 
                             <ImageView
                                 android:id="@+id/btnEliminarFechaDC"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"
+                                android:layout_width="25sp"
+                                android:layout_height="25sp"
                                 android:layout_marginLeft="15dp"
                                 android:contentDescription="@string/descripcion"
                                 android:onClick="eliminarMesTotales"

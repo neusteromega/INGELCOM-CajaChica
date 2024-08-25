@@ -26,6 +26,7 @@ import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.DAO.Usuario;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
+import com.ingelcom.cajachica.Herramientas.Validaciones;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -315,12 +316,20 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         //Obtenemos la selección hecha en los Spinners de Roles y Cuadrillas
         String rol = spRoles.getSelectedItem().toString();
 
-        if (rol.equalsIgnoreCase("Empleado")) { //Si el rol seleccionado fue "Empleado", que agarre la cuadrilla del "spCuadrillas"
-            String cuadrilla = spCuadrillas.getSelectedItem().toString();
-            usu.insertarUsuario(nombre, identidad, telefono, rol, cuadrilla); //Llamamos el método "insertarUsuario" de la clase "Usuario" donde se hará el proceso de inserción a Firestore y le mandamos los textboxes y selecciones de los spinners de esta pantalla
+        if (Validaciones.validarNombre(nombre)) {
+            if (Validaciones.validarIdentidad(identidad)) {
+                if (rol.equalsIgnoreCase("Empleado")) { //Si el rol seleccionado fue "Empleado", que agarre la cuadrilla del "spCuadrillas"
+                    String cuadrilla = spCuadrillas.getSelectedItem().toString();
+                    usu.insertarUsuario(nombre, identidad, telefono, rol, cuadrilla); //Llamamos el método "insertarUsuario" de la clase "Usuario" donde se hará el proceso de inserción a Firestore y le mandamos los textboxes y selecciones de los spinners de esta pantalla
+                }
+                else if (rol.equalsIgnoreCase("Administrador")) //En cambio, si el rol seleccionado fue "Administrador", que mande la cuadrilla vacía
+                    usu.insertarUsuario(nombre, identidad, telefono, rol, ""); //Llamamos el método "insertarUsuario" de la clase "Usuario" donde se hará el proceso de inserción a Firestore y le mandamos los textboxes y selecciones de los spinners de esta pantalla
+            }
+            else
+                Toast.makeText(this, "LA IDENTIDAD DEBE TENER 13 NÚMEROS", Toast.LENGTH_SHORT).show();
         }
-        else if (rol.equalsIgnoreCase("Administrador")) //En cambio, si el rol seleccionado fue "Administrador", que mande la cuadrilla vacía
-            usu.insertarUsuario(nombre, identidad, telefono, rol, ""); //Llamamos el método "insertarUsuario" de la clase "Usuario" donde se hará el proceso de inserción a Firestore y le mandamos los textboxes y selecciones de los spinners de esta pantalla
+        else
+            Toast.makeText(this, "INGRESE UN NOMBRE VÁLIDO", Toast.LENGTH_SHORT).show();
     }
 
     private void editarPerfilAdminEmpleado(String tipo) {
@@ -329,33 +338,40 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         String identidadNueva = txtIdentidad.getText().toString();
         String telefono = txtTelefono.getText().toString();
 
-        try {
-            usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
-                @Override
-                public void onCallback(Map<String, Object> documento) {
-                    if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
-                        String identidadVieja = (String) documento.get("Identidad");
+        if (Validaciones.validarNombre(nombre)) {
+            if (Validaciones.validarIdentidad(identidadNueva)) {
+                try {
+                    usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
+                        @Override
+                        public void onCallback(Map<String, Object> documento) {
+                            if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                                String identidadVieja = (String) documento.get("Identidad");
 
-                        if (tipo.equalsIgnoreCase("Administrador")) {
-                            setResult(RESULT_OK); //Con esto llamamos el método "onActivityResult" del Activity anterior (Perfil) y le mandamos "RESULT_OK" (setResult llama al "onActivityResult" de Perfil ya que si entra a este método "editarPerfilAdminEmpleado", si o sí está programado que el activity anterior fue "Perfil" y ahí iniciamos el activity actual con "startActivityForResult"). En el método "onActivityResult" se finaliza con "finish" el activity Perfil, lo finalizamos sólo cuando el usuario haya actualizado los datos de su perfil. Esto lo hacemos para evitar conflictos con el botón de retroceso entre pantallas
-                            usu.editarUsuario("PerfilAdmin", nombre, identidadVieja, identidadNueva, telefono, "", "");
+                                if (tipo.equalsIgnoreCase("Administrador")) {
+                                    setResult(RESULT_OK); //Con esto llamamos el método "onActivityResult" del Activity anterior (Perfil) y le mandamos "RESULT_OK" (setResult llama al "onActivityResult" de Perfil ya que si entra a este método "editarPerfilAdminEmpleado", si o sí está programado que el activity anterior fue "Perfil" y ahí iniciamos el activity actual con "startActivityForResult"). En el método "onActivityResult" se finaliza con "finish" el activity Perfil, lo finalizamos sólo cuando el usuario haya actualizado los datos de su perfil. Esto lo hacemos para evitar conflictos con el botón de retroceso entre pantallas
+                                    usu.editarUsuario("PerfilAdmin", nombre, identidadVieja, identidadNueva, telefono, "", "");
+                                } else if (tipo.equalsIgnoreCase("Empleado")) {
+                                    setResult(RESULT_OK); //Con esto llamamos el método "onActivityResult" del Activity anterior (Perfil) y le mandamos "RESULT_OK" (setResult llama al "onActivityResult" de Perfil ya que si entra a este método "editarPerfilAdminEmpleado", si o sí está programado que el activity anterior fue "Perfil" y ahí iniciamos el activity actual con "startActivityForResult"). En el método "onActivityResult" se finaliza con "finish" el activity Perfil, lo finalizamos sólo cuando el usuario haya actualizado los datos de su perfil. Esto lo hacemos para evitar conflictos con el botón de retroceso entre pantallas
+                                    usu.editarUsuario("PerfilEmpleado", nombre, identidadVieja, identidadNueva, telefono, "", "");
+                                }
+                            }
                         }
-                        else if (tipo.equalsIgnoreCase("Empleado")) {
-                            setResult(RESULT_OK); //Con esto llamamos el método "onActivityResult" del Activity anterior (Perfil) y le mandamos "RESULT_OK" (setResult llama al "onActivityResult" de Perfil ya que si entra a este método "editarPerfilAdminEmpleado", si o sí está programado que el activity anterior fue "Perfil" y ahí iniciamos el activity actual con "startActivityForResult"). En el método "onActivityResult" se finaliza con "finish" el activity Perfil, lo finalizamos sólo cuando el usuario haya actualizado los datos de su perfil. Esto lo hacemos para evitar conflictos con el botón de retroceso entre pantallas
-                            usu.editarUsuario("PerfilEmpleado", nombre, identidadVieja, identidadNueva, telefono, "", "");
-                        }
-                    }
-                }
 
-                @Override
-                public void onFailure(Exception e) {
-                    Log.w("BuscarDocumento", "Error al obtener el documento", e);
+                        @Override
+                        public void onFailure(Exception e) {
+                            Log.w("BuscarDocumento", "Error al obtener el documento", e);
+                        }
+                    });
                 }
-            });
+                catch (Exception e) {
+                    Log.w("ObtenerUsuario", e);
+                }
+            }
+            else
+                Toast.makeText(this, "LA IDENTIDAD DEBE TENER 13 NÚMEROS", Toast.LENGTH_SHORT).show();
         }
-        catch (Exception e) {
-            Log.w("ObtenerUsuario", e);
-        }
+        else
+            Toast.makeText(this, "INGRESE UN NOMBRE VÁLIDO", Toast.LENGTH_SHORT).show();
     }
 
     private void editarPerfilEmpleadoPorAdmin() {
@@ -366,7 +382,15 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         String cuadrilla = spCuadrillas.getSelectedItem().toString();
         String rol = spRoles.getSelectedItem().toString();
 
-        usu.editarUsuario("", nombre, identidadVieja, identidadNueva, telefono, cuadrilla, rol);
+        if (Validaciones.validarNombre(nombre)) {
+            if (Validaciones.validarIdentidad(identidadNueva)) {
+                usu.editarUsuario("", nombre, identidadVieja, identidadNueva, telefono, cuadrilla, rol);
+            }
+            else
+                Toast.makeText(this, "LA IDENTIDAD DEBE TENER 13 NÚMEROS", Toast.LENGTH_SHORT).show();
+        }
+        else
+            Toast.makeText(this, "INGRESE UN NOMBRE VÁLIDO", Toast.LENGTH_SHORT).show();
     }
 
     private void ocultarCuadrillas() {
