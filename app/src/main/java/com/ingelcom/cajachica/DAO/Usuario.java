@@ -249,7 +249,8 @@ public class Usuario {
                 public void onCallback(Map<String, Object> documento) {
                     if (documento == null) { //Si "documento" es nulo, quiere decir que no encontró la identidad entre los usuarios
                         callback.onResultado(true); //Llamamos a la interfaz "callBack" y le mandamos "true" para indicar que la identidad ingresada está disponible
-                    } else { //Pero si "documento" no es nulo, quiere decir que si encontró la identidad
+                    }
+                    else { //Pero si "documento" no es nulo, quiere decir que si encontró la identidad
                         callback.onResultado(false); //Llamamos a la interfaz "callBack" y le mandamos "false" para indicar que la identidad ingresada está ocupada
                     }
                 }

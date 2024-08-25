@@ -194,8 +194,6 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
                     catch (Exception e) {
                         Log.e("ObtenerIngreso", "Error al obtener el Ingreso: ", e);
                     }
-
-                    establecerElementos();
                     break;
             }
         }
@@ -447,8 +445,6 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
                         }
                         else if (tipo.equalsIgnoreCase("Supervisores")) { //Pero, si "tipo" es "Supervisores", significa que se está visualizando un gasto hecho por un supervisor a una cuadrilla
                             //Si el método utilitario "verificarMonthYearActual" no retorna un true, que entre al if y oculte el botón de editar ya que eso significa que el mes de la fecha del gasto/ingreso no coincide con el mes actual, por lo tanto, no puede editar
-                            Toast.makeText(DetalleGastoIngreso.this, fecha, Toast.LENGTH_SHORT).show();
-
                             if (rol.equalsIgnoreCase("Empleado") || !Utilidades.verificarMonthYearActual(fecha)) //Si el rol es "Empleado", que entre al if
                                 btnEditar.setVisibility(View.GONE); //Ocultamos el botón de Editar
                         }
