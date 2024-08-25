@@ -135,6 +135,27 @@ public class Utilidades {
         contexto.startActivity(intent);
     }
 
+    //Método que permite enviar un HashMap con diferentes datos a un activity e iniciar el mismo, con la diferencia de que lo inicia con "startActivityForResult", y esto permite acceder al método "onActivityResult" del Activity anterior
+    public static void iniciarActivityConDatosStartResult(Activity activity, Class<?> activityClase, HashMap<String, Object> datos, int requestCode) {
+        Intent intent = new Intent(activity, activityClase);
+
+        for (Map.Entry<String, Object> dato : datos.entrySet()) {
+            String clave = dato.getKey();
+            Object valor = dato.getValue();
+
+            if (valor instanceof String) {
+                String valorString = (String) valor;
+                intent.putExtra(clave, valorString);
+            }
+            else if (valor instanceof Uri) {
+                Uri valorUri = (Uri) valor;
+                intent.putExtra(clave, valorUri);
+            }
+        }
+
+        activity.startActivityForResult(intent, requestCode);
+    }
+
     //Método para obtener el texto (String) de un putExtra
     public static String obtenerStringExtra(Activity activity, String clave) {
         Intent intent = activity.getIntent(); //Creamos el intent usando el Activity que se recibe como parámetro (desde el activity, ponemos "this" para enviar este parámetro)

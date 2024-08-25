@@ -199,7 +199,7 @@ public class Usuario {
                         Toast.makeText(contexto, "USUARIO MODIFICADO EXITOSAMENTE", Toast.LENGTH_SHORT).show(); //Si la actualización de los datos del usuario fue exitosa, que muestre un Toast
 
                         if (activityPerfil.isEmpty())
-                            Utilidades.iniciarActivity(contexto, ListadoEmpleados.class, true);
+                            Utilidades.iniciarActivity(contexto, ListadoEmpleados.class, true); //Cuando el "activityPerfil" esté vacío, significa que es un admin quien está modificando los datos de un empleado, cuando es así, mandamos al usuario al "ListadoEmpleados" y no a la pantalla Perfil del empleado ya que este última, debe recibir una "identidad" para buscar los datos del empleado, pero si lo redireccionamos desde aquí, no recibiría esa identidad
                         else
                             Utilidades.iniciarActivityConString(contexto, Perfil.class, "ActivityPerfil", activityPerfil, true); //Redireccionamos al usuario al activity "Perfil" y mandamos el contenido de la variable "activityPerfil" que indica el tipo de usuario que está en la sesión actual (Empleado o administrador)
                     }

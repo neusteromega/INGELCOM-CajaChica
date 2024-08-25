@@ -1,5 +1,6 @@
 package com.ingelcom.cajachica;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -101,7 +102,6 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
     }
 
     private void establecerElementos() {
-
         if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
             //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
             switch (nombreActivity) {
@@ -237,26 +237,46 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
             //El "nombreActivity" nos sirve para saber la pantalla en la que estamos
             switch (nombreActivity) { //Dependiendo la pantalla en que estemos, al dar clic en el botón "Editar Perfil", que mande un String al Activity "AgregarEditarPerfil" indicando qué tipo de usuario es quien está editando el perfil
                 case "PerfilAdmin":
-                    Utilidades.iniciarActivityConString(this, AgregarEditarPerfil.class, "ActivityAEP", "EditarAdmin", false);
+                    HashMap<String,Object> datosAdmin = new HashMap<>(); //Creamos un HashMap para guardar el nombre del activity
+                    datosAdmin.put("ActivityAEP", "EditarAdmin"); //Guardamos el nombre del activity en el HashMap
+
+                    //Llamamos el método utilitario "iniciarActivityConDatosStartResult" para que el siguiente activity se inicie con "startActivityForResult". Aquí también mandamos el requestCode 1
+                    Utilidades.iniciarActivityConDatosStartResult(this, AgregarEditarPerfil.class, datosAdmin, 1);
                     break;
 
                 case "PerfilEmpleadoAdmin":
-                    HashMap<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos
+                    HashMap<String,Object> datosEmpAdmin = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos
 
                     //Guardamos las claves y datos en el HashMap
-                    datos.put("ActivityAEP", "EditarEmpleadoAdmin");
-                    datos.put("Nombre", nombre);
-                    datos.put("Identidad", identidad);
-                    datos.put("Telefono", telefono);
-                    datos.put("Cuadrilla", cuadrilla);
-                    datos.put("Rol", rol);
+                    datosEmpAdmin.put("ActivityAEP", "EditarEmpleadoAdmin");
+                    datosEmpAdmin.put("Nombre", nombre);
+                    datosEmpAdmin.put("Identidad", identidad);
+                    datosEmpAdmin.put("Telefono", telefono);
+                    datosEmpAdmin.put("Cuadrilla", cuadrilla);
+                    datosEmpAdmin.put("Rol", rol);
 
-                    Utilidades.iniciarActivityConDatos(this, AgregarEditarPerfil.class, datos);
+                    //Llamamos el método utilitario "iniciarActivityConDatosStartResult" para que el siguiente activity se inicie con "startActivityForResult". Aquí también mandamos el requestCode 1
+                    Utilidades.iniciarActivityConDatosStartResult(this, AgregarEditarPerfil.class, datosEmpAdmin, 1);
                     break;
 
                 case "PerfilEmpleado":
-                    Utilidades.iniciarActivityConString(this, AgregarEditarPerfil.class, "ActivityAEP", "EditarEmpleado", false);
+                    HashMap<String,Object> datosEmpleado = new HashMap<>(); //Creamos un HashMap para guardar el nombre del activity
+                    datosEmpleado.put("ActivityAEP", "EditarEmpleado"); //Guardamos el nombre del activity en el HashMap
+
+                    //Llamamos el método utilitario "iniciarActivityConDatosStartResult" para que el siguiente activity se inicie con "startActivityForResult". Aquí también mandamos el requestCode 1
+                    Utilidades.iniciarActivityConDatosStartResult(this, AgregarEditarPerfil.class, datosEmpleado, 1);
                     break;
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                finish();
             }
         }
     }

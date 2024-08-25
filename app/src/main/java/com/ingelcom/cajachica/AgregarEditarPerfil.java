@@ -3,7 +3,10 @@ package com.ingelcom.cajachica;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -32,7 +35,7 @@ import java.util.Map;
 public class AgregarEditarPerfil extends AppCompatActivity {
 
     private LinearLayout llCorreo, llRol, llCuadrilla;
-    private EditText txtNombreApellido, txtIdentidad, txtTelefono, txtCorreo;
+    private EditText txtNombreApellido, txtIdentidad, txtTelefono;
     private TextView btnReintentarConexion, lblTitulo, btnConfirmar;
     private Spinner spRoles, spCuadrillas;
     private ImageView btnRegresar;
@@ -78,7 +81,6 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         txtNombreApellido = findViewById(R.id.txtNombreApellidoAEP);
         txtIdentidad = findViewById(R.id.txtIdentidadAEP);
         txtTelefono = findViewById(R.id.txtTelefonoAEP);
-        txtCorreo = findViewById(R.id.txtCorreoAEP);
 
         lblTitulo = findViewById(R.id.lblTituloAEP);
         btnRegresar = findViewById(R.id.imgRegresarAEP);
@@ -334,10 +336,14 @@ public class AgregarEditarPerfil extends AppCompatActivity {
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
                         String identidadVieja = (String) documento.get("Identidad");
 
-                        if (tipo.equalsIgnoreCase("Administrador"))
+                        if (tipo.equalsIgnoreCase("Administrador")) {
+                            setResult(RESULT_OK); //Con esto llamamos el método "onActivityResult" del Activity anterior (Perfil) y le mandamos "RESULT_OK" (setResult llama al "onActivityResult" de Perfil ya que si entra a este método "editarPerfilAdminEmpleado", si o sí está programado que el activity anterior fue "Perfil" y ahí iniciamos el activity actual con "startActivityForResult"). En el método "onActivityResult" se finaliza con "finish" el activity Perfil, lo finalizamos sólo cuando el usuario haya actualizado los datos de su perfil. Esto lo hacemos para evitar conflictos con el botón de retroceso entre pantallas
                             usu.editarUsuario("PerfilAdmin", nombre, identidadVieja, identidadNueva, telefono, "", "");
-                        else if (tipo.equalsIgnoreCase("Empleado"))
+                        }
+                        else if (tipo.equalsIgnoreCase("Empleado")) {
+                            setResult(RESULT_OK); //Con esto llamamos el método "onActivityResult" del Activity anterior (Perfil) y le mandamos "RESULT_OK" (setResult llama al "onActivityResult" de Perfil ya que si entra a este método "editarPerfilAdminEmpleado", si o sí está programado que el activity anterior fue "Perfil" y ahí iniciamos el activity actual con "startActivityForResult"). En el método "onActivityResult" se finaliza con "finish" el activity Perfil, lo finalizamos sólo cuando el usuario haya actualizado los datos de su perfil. Esto lo hacemos para evitar conflictos con el botón de retroceso entre pantallas
                             usu.editarUsuario("PerfilEmpleado", nombre, identidadVieja, identidadNueva, telefono, "", "");
+                        }
                     }
                 }
 

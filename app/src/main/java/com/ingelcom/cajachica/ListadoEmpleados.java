@@ -69,9 +69,10 @@ public class ListadoEmpleados extends AppCompatActivity implements SwipeRefreshL
         });
     }
 
-    @Override
+    @Override //Método que detecta cuando el usuario presiona el botón de retroceso
     public void onBackPressed() {
-        Utilidades.iniciarActivity(ListadoEmpleados.this, AdmPantallas.class, true);
+        //Siempre que en "ListadoEmpledos" se presione el botón de retroceso, que redireccione al usuario al activity "AdmPantallas", y aquí mandamos un "SI" con la clave "ListadoEmpleados" para indicar que el activity anterior fue "ListadoEmpleados" y con ello, que pueda mostrar el "FragAdmUsuarios" en el "AdmPantallas"
+        Utilidades.iniciarActivityConString(ListadoEmpleados.this, AdmPantallas.class, "ListadoEmpleados", "SI", true);
     }
 
     private void obtenerDatos() {

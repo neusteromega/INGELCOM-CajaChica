@@ -8,12 +8,14 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.ingelcom.cajachica.Fragmentos.FragAdmCuadrillas;
 import com.ingelcom.cajachica.Fragmentos.FragAdmEstadisticas;
 import com.ingelcom.cajachica.Fragmentos.FragAdmInicio;
 import com.ingelcom.cajachica.Fragmentos.FragAdmRegistrar;
 import com.ingelcom.cajachica.Fragmentos.FragAdmUsuarios;
+import com.ingelcom.cajachica.Herramientas.Utilidades;
 
 public class AdmPantallas extends AppCompatActivity {
 
@@ -29,6 +31,21 @@ public class AdmPantallas extends AppCompatActivity {
         imgRegistrar = findViewById(R.id.imgRegistrar);
         imgCuadrillas = findViewById(R.id.imgCuadrillas);
         imgUsuarios = findViewById(R.id.imgUsuarios);
+
+        //Recibimos un texto del activity anterior, que en este caso puede ser "ListadoEmpleados"
+        String activityAnterior = Utilidades.obtenerStringExtra(this, "ListadoEmpleados"); //Si el texto guardado en la variable "activityAnterior" es nulo, significa que el activity anterior no fue "ListadoEmpleados", ya que sólo desde ahí se envié el texto
+
+        //Si "activityAnterior" no es nulo, y si contiene el texto "SI" significa que al activity anterior fue "ListadoEmpleados", por lo tanto, que entre al if y establecemos el fragmento "FragAdmUsuarios"
+        if (activityAnterior != null && activityAnterior.equalsIgnoreCase("SI")) {
+            replaceFragment(new FragAdmUsuarios()); //Llamamos al método "replaceFragment" y le mandamos el "FragAdmUsuarios"
+            //Cambios de iconos de la barra inferior llamando a "asignarIconos"
+            asignarIconos(
+                    R.mipmap.ico_azul_iniciovacio,
+                    R.mipmap.ico_azul_estadisticasvacio,
+                    R.mipmap.ico_azul_registrarvacio,
+                    R.mipmap.ico_azul_cuadrillasvacio,
+                    R.mipmap.ico_azul_usuariolleno);
+        }
     }
 
     public void verInicio(View view) {
