@@ -12,7 +12,7 @@
         android:id="@+id/LLEncabezadoEst"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="30sp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,12 +21,12 @@
         <TextView
             android:id="@+id/lblTituloEst"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="40sp"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center"
             android:text="Estadísticas"
             android:textColor="@color/clr_fuente_primario"
-            android:textSize="25dp" />
+            android:textSize="25sp" />
 
     </LinearLayout>
 
@@ -34,7 +34,7 @@
         android:id="@+id/LLContenidoEst"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="25sp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,22 +46,22 @@
             android:id="@+id/LLIngresosEst"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginStart="15sp"
+            android:layout_marginTop="10sp"
+            android:layout_marginEnd="15sp"
+            android:layout_marginBottom="10sp"
             android:background="@drawable/clr_casillablanca_semiredonda"
-            android:elevation="5dp"
+            android:elevation="5sp"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+            android:paddingTop="10sp"
+            android:paddingBottom="10sp">
 
             <ImageView
                 android:id="@+id/imgIngresosEst"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginBottom="10dp"
+                android:layout_width="100sp"
+                android:layout_height="100sp"
+                android:layout_marginBottom="10sp"
                 app:srcCompat="@mipmap/ico_color_ingreso" />
 
             <TextView
@@ -72,29 +72,29 @@
                 android:text="Ingresos"
                 android:textAlignment="center"
                 android:textColor="@color/clr_fuente_secundario"
-                android:textSize="22dp" />
+                android:textSize="22sp" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/LLGastosEst"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginStart="15sp"
+            android:layout_marginTop="10sp"
+            android:layout_marginEnd="15sp"
+            android:layout_marginBottom="10sp"
             android:background="@drawable/clr_casillablanca_semiredonda"
-            android:elevation="5dp"
+            android:elevation="5sp"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingTop="15dp"
-            android:paddingBottom="10dp">
+            android:paddingTop="15sp"
+            android:paddingBottom="10sp">
 
             <ImageView
                 android:id="@+id/imgGastosEst"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginBottom="5dp"
+                android:layout_width="100sp"
+                android:layout_height="100sp"
+                android:layout_marginBottom="5sp"
                 app:srcCompat="@mipmap/ico_color_gasto" />
 
             <TextView
@@ -105,7 +105,7 @@
                 android:text="Gastos"
                 android:textAlignment="center"
                 android:textColor="@color/clr_fuente_secundario"
-                android:textSize="22dp" />
+                android:textSize="22sp" />
         </LinearLayout>
 
     </LinearLayout>

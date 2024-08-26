@@ -10,8 +10,8 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragAdmPantallas"
         android:name="com.ingelcom.cajachica.Fragmentos.FragAdmInicio"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="0sp"
+        android:layout_height="0sp"
         app:layout_constraintBottom_toTopOf="@id/CLOpciones"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,13 +28,13 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="63dp"
+            android:layout_height="63sp"
             android:layout_gravity="bottom"
             android:background="@color/clr_casilla_blanca">
 
             <LinearLayout
                 android:id="@+id/LLInicio"
-                android:layout_width="0dp"
+                android:layout_width="0sp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.2"
                 android:gravity="center"
@@ -44,9 +44,9 @@
                 <ImageView
                     android:id="@+id/imgInicio"
                     android:layout_width="match_parent"
-                    android:layout_height="38dp"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp"
+                    android:layout_height="38sp"
+                    android:paddingTop="2sp"
+                    android:paddingBottom="2sp"
                     app:srcCompat="@mipmap/ico_azul_iniciolleno" />
 
                 <TextView
@@ -62,7 +62,7 @@
 
             <LinearLayout
                 android:id="@+id/LLEstadisticas"
-                android:layout_width="0dp"
+                android:layout_width="0sp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.2"
                 android:gravity="center"
@@ -72,9 +72,9 @@
                 <ImageView
                     android:id="@+id/imgEstadisticas"
                     android:layout_width="match_parent"
-                    android:layout_height="38dp"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp"
+                    android:layout_height="38sp"
+                    android:paddingTop="2sp"
+                    android:paddingBottom="2sp"
                     app:srcCompat="@mipmap/ico_azul_estadisticasvacio" />
 
                 <TextView
@@ -90,7 +90,7 @@
 
             <LinearLayout
                 android:id="@+id/LLRegistrar"
-                android:layout_width="0dp"
+                android:layout_width="0sp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.2"
                 android:gravity="center"
@@ -100,9 +100,9 @@
                 <ImageView
                     android:id="@+id/imgRegistrar"
                     android:layout_width="match_parent"
-                    android:layout_height="38dp"
-                    android:paddingTop="3dp"
-                    android:paddingBottom="3dp"
+                    android:layout_height="38sp"
+                    android:paddingTop="3sp"
+                    android:paddingBottom="3sp"
                     app:srcCompat="@mipmap/ico_azul_registrarvacio" />
 
                 <TextView
@@ -118,7 +118,7 @@
 
             <LinearLayout
                 android:id="@+id/LLCuadrillas"
-                android:layout_width="0dp"
+                android:layout_width="0sp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.2"
                 android:gravity="center"
@@ -128,9 +128,9 @@
                 <ImageView
                     android:id="@+id/imgCuadrillas"
                     android:layout_width="match_parent"
-                    android:layout_height="38dp"
-                    android:paddingTop="3dp"
-                    android:paddingBottom="3dp"
+                    android:layout_height="38sp"
+                    android:paddingTop="3sp"
+                    android:paddingBottom="3sp"
                     app:srcCompat="@mipmap/ico_azul_cuadrillasvacio" />
 
                 <TextView
@@ -146,7 +146,7 @@
 
             <LinearLayout
                 android:id="@+id/LLUsuarios"
-                android:layout_width="0dp"
+                android:layout_width="0sp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.2"
                 android:gravity="center"
@@ -156,9 +156,9 @@
                 <ImageView
                     android:id="@+id/imgUsuarios"
                     android:layout_width="match_parent"
-                    android:layout_height="38dp"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp"
+                    android:layout_height="38sp"
+                    android:paddingTop="2sp"
+                    android:paddingBottom="2sp"
                     app:srcCompat="@mipmap/ico_azul_usuariovacio" />
 
                 <TextView
