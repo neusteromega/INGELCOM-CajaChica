@@ -52,13 +52,13 @@ public class GastoIngresoRegistrado extends AppCompatActivity {
 
                 case "GastoRegistradoAdmin":
                     lblTitulo.setText("Gasto Registrado");
-                    lblExito.setText("¡EL GASTO HA SIDO REGISTRADO CON ÉXITO");
+                    lblExito.setText("¡EL GASTO HA SIDO REGISTRADO CON ÉXITO!");
                     lblMensaje.setText("Puede revisar el Listado de Gastos de la Cuadrilla para visualizar el Gasto Registrado.");
                     break;
 
                 case "GastoRegistradoEmpleado":
                     lblTitulo.setText("Gasto Registrado");
-                    lblExito.setText("¡EL GASTO HA SIDO REGISTRADO CON ÉXITO");
+                    lblExito.setText("¡EL GASTO HA SIDO REGISTRADO CON ÉXITO!");
                     lblMensaje.setText("Puede revisar el Listado de Gastos en el Menú Principal para visualizar el Gasto Registrado.");
                     break;
 
@@ -76,7 +76,7 @@ public class GastoIngresoRegistrado extends AppCompatActivity {
 
                 case "GastoEditado":
                     lblTitulo.setText("Gasto Modificado");
-                    lblExito.setText("¡EL GASTO HA SIDO MODIFICADO CON ÉXITO");
+                    lblExito.setText("¡EL GASTO HA SIDO MODIFICADO CON ÉXITO!");
                     lblMensaje.setText("Puede revisar el Listado de Gastos de la Cuadrilla para visualizar el Gasto Modificado.");
                     break;
 

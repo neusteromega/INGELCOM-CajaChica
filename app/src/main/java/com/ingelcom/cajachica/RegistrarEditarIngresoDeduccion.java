@@ -1,5 +1,6 @@
 package com.ingelcom.cajachica;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -67,7 +68,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
     private ProgressBar pbCargar, pbReintentarConexion;
     private View viewNoInternet;
 
-    private String nombreActivity, id, fechaHora, cuadrilla, cuadrillaVieja, usuario, transferencia, imagen, total;
+    private String nombreActivity, tipoSubida, id, fechaHora, cuadrilla, cuadrillaVieja, usuario, transferencia, imagen, total;
     private Timestamp timestamp = null;
     private Uri imageUri = null, imageUriVieja;
 
@@ -340,16 +341,26 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         tomarFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog.dismiss();
-                abrirCamara();
+                tipoSubida = "TomarFoto"; //Escribimos el texto "TomarFoto" en la variable global "tipoSubida". Esto para que luego de solicitar los permisos de almacenamiento, que sepa a qué método debe llamar, en este caso, al método "abrirCamara"
+
+                //Llamamos el método utilitario "verificarPermisosAlmacenamiento" donde mandamos el contexto de esta clase. Si este método devuelve un "true" significa que los permisos de almacenamiento externo ya han sido otorgados, en ese caso que entre al if
+                if (Utilidades.verificarPermisosAlmacenamiento(RegistrarEditarIngresoDeduccion.this)) {
+                    dialog.dismiss();
+                    abrirCamara();
+                }
             }
         });
 
         seleccionarFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog.dismiss();
-                seleccionarImagen();
+                tipoSubida = "SeleccionarImagen"; //Escribimos el texto "SeleccionarImagen" en la variable global "tipoSubida". Esto para que luego de solicitar los permisos de almacenamiento, que sepa a qué método debe llamar, en este caso, al método "seleccionarImagen"
+
+                //Llamamos el método utilitario "verificarPermisosAlmacenamiento" donde mandamos el contexto de esta clase. Si este método devuelve un "true" significa que los permisos de almacenamiento externo ya han sido otorgados, en ese caso que entre al if
+                if (Utilidades.verificarPermisosAlmacenamiento(RegistrarEditarIngresoDeduccion.this)) {
+                    dialog.dismiss();
+                    seleccionarImagen();
+                }
             }
         });
 
@@ -358,6 +369,21 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); //Asignamos el color transparente para el background del dialog
         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation; //Asignamos las animaciones para el dialog, dichas animaciones están asignadas en "R.style.DialogAnimation"
         dialog.getWindow().setGravity(Gravity.BOTTOM); //Asignamos un "Gravity.BOTTOM" para que el dialog se muestre en la parte inferior
+    }
+
+    @Override //Método Override que solicita los permisos de almacenamiento externo al usuario
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        //If que llama al método utilitario "manejarResultadoPermisos", y le manda los datos necesarios para verificar si los permisos han sido otorgados, si así lo fue, el método retornará un "true", por lo tanto, que entre al if
+        if (Utilidades.manejarResultadoPermisos(requestCode, permissions, grantResults, this)) {
+            if (tipoSubida.equalsIgnoreCase("TomarFoto")) { //Si "tipoSubida" tiene el texto "TomarFoto", llamámos al método "abrirCamara"
+                abrirCamara();
+            }
+            else if (tipoSubida.equalsIgnoreCase("SeleccionarImagen")) { //Si "tipoSubida" tiene el texto "SeleccionarImagen", llamámos al método "seleccionarImagen"
+                seleccionarImagen();
+            }
+        }
     }
 
     private void abrirCamara() {
