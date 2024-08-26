@@ -21,15 +21,15 @@
             android:id="@+id/LLEncabezadoCC"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="30sp"
             android:gravity="center|left"
             android:orientation="horizontal"
-            android:paddingLeft="20dp"
-            android:paddingRight="30dp">
+            android:paddingLeft="20sp"
+            android:paddingRight="30sp">
 
             <ImageView
                 android:id="@+id/imgRegresarCC"
-                android:layout_width="25dp"
+                android:layout_width="25sp"
                 android:layout_height="match_parent"
                 android:contentDescription="@string/descripcion"
                 android:onClick="retroceder"
@@ -39,12 +39,12 @@
             <TextView
                 android:id="@+id/lblTituloCC"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="40sp"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center"
                 android:text="Completar Usuario"
                 android:textColor="@color/clr_fuente_primario"
-                android:textSize="26dp"
+                android:textSize="26sp"
                 tools:ignore="TouchTargetSizeCheck" />
 
         </LinearLayout>
@@ -53,12 +53,12 @@
             android:id="@+id/lblSeparadorCC"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="30sp"
             android:background="@drawable/clr_casillaazul_separador"
             android:fontFamily="@font/poppins_semibold"
             android:gravity="center"
             android:text="Buscar Usuario"
-            android:textSize="2dp" />
+            android:textSize="2sp" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragBuscarUserCrearPass"
