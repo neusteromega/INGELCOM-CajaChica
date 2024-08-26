@@ -4,39 +4,39 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="false"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="8dp"
+    app:cardCornerRadius="10sp"
+    app:cardElevation="8sp"
     app:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingLeft="10dp"
-        android:paddingTop="20dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="20dp">
+        android:paddingLeft="10sp"
+        android:paddingTop="20sp"
+        android:paddingRight="10sp"
+        android:paddingBottom="20sp">
 
         <TextView
             android:id="@+id/lblNombreCuadrillaCuaItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
+            android:layout_marginBottom="2sp"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center"
             android:text="Nombre Cuadrilla"
             android:textColor="@color/clr_fuente_primario"
-            android:textSize="16dp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/lblDineroCuaItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="2sp"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center"
             android:text="L. 00,000.00"
             android:textColor="@color/clr_fuente_secundario"
-            android:textSize="23dp" />
+            android:textSize="23sp" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

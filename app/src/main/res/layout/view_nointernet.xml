@@ -7,13 +7,13 @@
     android:background="@color/clr_fondo_primario"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16sp">
 
     <ImageView
         android:id="@+id/imgNoInternet"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginBottom="15dp"
+        android:layout_height="100sp"
+        android:layout_marginBottom="15sp"
         app:srcCompat="@mipmap/ico_azul_nointernet" />
 
     <TextView
@@ -29,16 +29,16 @@
         android:id="@+id/btnReintentarConexion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20sp"
+        android:layout_marginBottom="20sp"
         android:background="@drawable/clr_casilladegradadoazul_redonda"
-        android:elevation="5dp"
+        android:elevation="5sp"
         android:fontFamily="@font/montserrat_bold"
         android:gravity="center"
-        android:paddingLeft="25dp"
-        android:paddingTop="8dp"
-        android:paddingRight="25dp"
-        android:paddingBottom="8dp"
+        android:paddingLeft="25sp"
+        android:paddingTop="8sp"
+        android:paddingRight="25sp"
+        android:paddingBottom="8sp"
         android:text="Reintentar"
         android:textColor="@color/clr_fuente_terciario"
         android:textSize="20sp"

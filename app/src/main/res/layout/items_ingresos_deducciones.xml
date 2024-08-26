@@ -3,15 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="15dp"
-    android:layout_marginTop="5dp"
-    android:layout_marginRight="15dp"
-    android:layout_marginBottom="5dp"
+    android:layout_marginLeft="15sp"
+    android:layout_marginTop="5sp"
+    android:layout_marginRight="15sp"
+    android:layout_marginBottom="5sp"
     android:animateLayoutChanges="true"
-    app:cardCornerRadius="7dp"
-    app:cardElevation="5dp"
+    app:cardCornerRadius="7sp"
+    app:cardElevation="5sp"
     app:cardUseCompatPadding="false">
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,15 +22,15 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="horizontal"
-            android:paddingLeft="13dp"
-            android:paddingRight="10dp">
+            android:paddingLeft="13sp"
+            android:paddingRight="10sp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp">
+                android:paddingTop="8sp"
+                android:paddingBottom="8sp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -41,25 +40,25 @@
                     <TextView
                         android:id="@+id/lblCuadrillaTituloIng"
                         android:layout_width="wrap_content"
-                        android:layout_height="25dp"
-                        android:layout_marginRight="4dp"
+                        android:layout_height="25sp"
+                        android:layout_marginRight="4sp"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center|left"
                         android:text="Cuadrilla:"
                         android:textColor="@color/clr_fuente_primario"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/lblCuadrillaIng"
                         android:layout_width="match_parent"
-                        android:layout_height="25dp"
+                        android:layout_height="25sp"
                         android:ellipsize="end"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center|left"
                         android:maxLines="1"
                         android:text="Nombre Cuadrilla"
                         android:textColor="@color/clr_fuente_primario"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -70,25 +69,25 @@
                     <TextView
                         android:id="@+id/lblTransfUserTituloIng"
                         android:layout_width="wrap_content"
-                        android:layout_height="25dp"
-                        android:layout_marginRight="4dp"
+                        android:layout_height="25sp"
+                        android:layout_marginRight="4sp"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center|left"
                         android:text="No. Transferencia:"
                         android:textColor="@color/clr_fuente_primario"
-                        android:textSize="13dp" />
+                        android:textSize="13sp" />
 
                     <TextView
                         android:id="@+id/lblTransfUserIng"
                         android:layout_width="match_parent"
-                        android:layout_height="25dp"
+                        android:layout_height="25sp"
                         android:ellipsize="end"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center|left"
                         android:maxLines="1"
                         android:text="000000000"
                         android:textColor="@color/clr_fuente_primario"
-                        android:textSize="13dp" />
+                        android:textSize="13sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -99,23 +98,23 @@
                     <TextView
                         android:id="@+id/lblFechaTituloIng"
                         android:layout_width="wrap_content"
-                        android:layout_height="25dp"
-                        android:layout_marginRight="4dp"
+                        android:layout_height="25sp"
+                        android:layout_marginRight="4sp"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center|left"
                         android:text="Fecha y Hora:"
                         android:textColor="@color/clr_fuente_secundario"
-                        android:textSize="13dp" />
+                        android:textSize="13sp" />
 
                     <TextView
                         android:id="@+id/lblFechaIng"
                         android:layout_width="wrap_content"
-                        android:layout_height="25dp"
+                        android:layout_height="25sp"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center|left"
                         android:text="00/00/0000 00:00:00"
                         android:textColor="@color/clr_fuente_secundario"
-                        android:textSize="13dp" />
+                        android:textSize="13sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -126,23 +125,23 @@
                     <TextView
                         android:id="@+id/lblTotalTituloIng"
                         android:layout_width="wrap_content"
-                        android:layout_height="28dp"
-                        android:layout_marginRight="4dp"
+                        android:layout_height="28sp"
+                        android:layout_marginRight="4sp"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center|left"
                         android:text="Total:"
                         android:textColor="@color/clr_fuente_primario"
-                        android:textSize="17dp" />
+                        android:textSize="17sp" />
 
                     <TextView
                         android:id="@+id/lblTotalIng"
-                        android:layout_width="250dp"
-                        android:layout_height="28dp"
+                        android:layout_width="250sp"
+                        android:layout_height="28sp"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center|left"
                         android:text="L.00.00"
                         android:textColor="@color/clr_fuente_primario"
-                        android:textSize="17dp" />
+                        android:textSize="17sp" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -155,11 +154,11 @@
 
                 <ImageView
                     android:id="@+id/imgExpandirEditarIng"
-                    android:layout_width="25dp"
-                    android:layout_height="20dp"
+                    android:layout_width="25sp"
+                    android:layout_height="20sp"
                     app:srcCompat="@mipmap/ico_azul_expandir" />
+
             </LinearLayout>
         </LinearLayout>
-
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -3,15 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="15dp"
-    android:layout_marginTop="5dp"
-    android:layout_marginRight="15dp"
-    android:layout_marginBottom="5dp"
+    android:layout_marginLeft="15sp"
+    android:layout_marginTop="5sp"
+    android:layout_marginRight="15sp"
+    android:layout_marginBottom="5sp"
     android:animateLayoutChanges="true"
-    app:cardCornerRadius="7dp"
-    app:cardElevation="5dp"
+    app:cardCornerRadius="7sp"
+    app:cardElevation="5sp"
     app:cardUseCompatPadding="false">
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,34 +18,34 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="210dp"
+            android:layout_width="210sp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="13dp"
+            android:layout_marginLeft="13sp"
             android:orientation="vertical"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp">
+            android:paddingTop="8sp"
+            android:paddingBottom="8sp">
 
             <TextView
                 android:id="@+id/lblTipoCompraGst"
                 android:layout_width="wrap_content"
-                android:layout_height="25dp"
+                android:layout_height="25sp"
                 android:ellipsize="end"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center|left"
                 android:maxLines="1"
                 android:text="Tipo de Compra"
                 android:textColor="@color/clr_fuente_primario"
-                android:textSize="14dp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/lblFechaGst"
                 android:layout_width="wrap_content"
-                android:layout_height="25dp"
+                android:layout_height="25sp"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center|left"
                 android:text="00/00/0000 00:00"
                 android:textColor="@color/clr_fuente_secundario"
-                android:textSize="13dp" />
+                android:textSize="13sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -56,45 +55,45 @@
                 <TextView
                     android:id="@+id/lblCuadrillaTituloGst"
                     android:layout_width="wrap_content"
-                    android:layout_height="25dp"
-                    android:layout_marginRight="4dp"
+                    android:layout_height="25sp"
+                    android:layout_marginRight="4sp"
                     android:fontFamily="@font/montserrat_bold"
                     android:gravity="center|left"
                     android:text="Cuadrilla:"
                     android:textColor="@color/clr_fuente_primario"
-                    android:textSize="13dp" />
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/lblCuadrillaGst"
                     android:layout_width="wrap_content"
-                    android:layout_height="25dp"
+                    android:layout_height="25sp"
                     android:ellipsize="end"
                     android:fontFamily="@font/montserrat_bold"
                     android:gravity="center|left"
                     android:maxLines="1"
                     android:text="Nombre Cuadrilla"
                     android:textColor="@color/clr_fuente_primario"
-                    android:textSize="13dp" />
+                    android:textSize="13sp" />
             </LinearLayout>
 
             <TextView
                 android:id="@+id/lblEmpleadoCuadrillaGst"
                 android:layout_width="wrap_content"
-                android:layout_height="22dp"
+                android:layout_height="22sp"
                 android:ellipsize="end"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center|left"
                 android:maxLines="1"
                 android:text="Nombre Completo"
                 android:textColor="@color/clr_fuente_primario"
-                android:textSize="13dp" />
+                android:textSize="13sp" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginRight="7dp"
+            android:layout_marginRight="7sp"
             android:gravity="right"
             android:orientation="horizontal">
 
@@ -103,21 +102,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginRight="5dp"
+                android:layout_marginRight="5sp"
                 android:layout_weight="1"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="right"
                 android:text="L.000.00"
                 android:textColor="@color/clr_fuente_primario"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
 
             <ImageView
                 android:id="@+id/btnExpandirGst"
-                android:layout_width="25dp"
-                android:layout_height="20dp"
+                android:layout_width="25sp"
+                android:layout_height="20sp"
                 android:layout_gravity="center"
                 app:srcCompat="@mipmap/ico_azul_expandir" />
-        </LinearLayout>
 
+        </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
