@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -293,10 +294,16 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
 
     @Override
     public void onRefresh() { //Método que detecta cuando se recarga la pantalla con SwipeRefreshLayout
+        swlRecargar.bringToFront();
+
         //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
             @Override
             public void run() {
+                ViewGroup parent = (ViewGroup) swlRecargar.getParent();
+                parent.removeView(swlRecargar);
+                parent.addView(swlRecargar, 0);
+
                 ocultarBotonEditarNoInternet();
                 establecerElementos();
                 swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
@@ -304,6 +311,7 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
         }, 1000);
     }
 
+    //Método que permite retroceder a la pantalla anterior
     public void retroceder(View view) {
         onBackPressed();
     }

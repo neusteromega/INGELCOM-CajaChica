@@ -7,62 +7,10 @@
     android:background="@color/clr_fondo_primario"
     tools:context=".Perfil">
 
-    <LinearLayout
-        android:id="@+id/LLEncabezadoPerfil"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30sp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center|left"
-            android:orientation="horizontal"
-            android:paddingLeft="20sp"
-            android:paddingRight="40sp">
-
-            <ImageView
-                android:id="@+id/imgRegresarPerfil"
-                android:layout_width="25sp"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/descripcion"
-                android:onClick="retroceder"
-                app:srcCompat="@mipmap/ico_azul_regresar"
-                tools:ignore="TouchTargetSizeCheck" />
-
-            <TextView
-                android:id="@+id/lblTituloPerfil"
-                android:layout_width="match_parent"
-                android:layout_height="40sp"
-                android:fontFamily="@font/montserrat_bold"
-                android:gravity="center"
-                android:text="Perfil"
-                android:textColor="@color/clr_fuente_primario"
-                android:textSize="24sp" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/lblSeparadorPerfil"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30sp"
-            android:background="@drawable/clr_casillaazul_separador"
-            android:fontFamily="@font/montserrat_bold"
-            android:gravity="center"
-            android:textSize="2sp"
-            android:visibility="gone" />
-
-    </LinearLayout>
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayoutPerfil"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -258,6 +206,58 @@
             </LinearLayout>
         </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <LinearLayout
+        android:id="@+id/LLEncabezadoPerfil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30sp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center|left"
+            android:orientation="horizontal"
+            android:paddingLeft="20sp"
+            android:paddingRight="35sp">
+
+            <ImageView
+                android:id="@+id/imgRegresarPerfil"
+                android:layout_width="25sp"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/descripcion"
+                android:onClick="retroceder"
+                app:srcCompat="@mipmap/ico_azul_regresar"
+                tools:ignore="TouchTargetSizeCheck" />
+
+            <TextView
+                android:id="@+id/lblTituloPerfil"
+                android:layout_width="match_parent"
+                android:layout_height="40sp"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:text="Perfil"
+                android:textColor="@color/clr_fuente_primario"
+                android:textSize="24sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/lblSeparadorPerfil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30sp"
+            android:background="@drawable/clr_casillaazul_separador"
+            android:fontFamily="@font/montserrat_bold"
+            android:gravity="center"
+            android:textSize="2sp"
+            android:visibility="gone" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/btnEditarPerfil"

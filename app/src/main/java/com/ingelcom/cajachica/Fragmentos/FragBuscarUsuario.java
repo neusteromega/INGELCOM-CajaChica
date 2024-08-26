@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
+import com.ingelcom.cajachica.Herramientas.Validaciones;
 import com.ingelcom.cajachica.R;
 
 import java.util.Map;
@@ -81,34 +82,37 @@ public class FragBuscarUsuario extends Fragment {
         String identidad = txtIdentidad.getText().toString(); //Extraemos el contenido de "txtIdentidad" y lo guardamos en la variable "identidad"
 
         if (!identidad.isEmpty()) { //Entrará al if si la identidad no está vacía
-            //Llamamos al método "obtenerUnRegistro" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo, el dato a buscar e invocamos la interfaz "FirestoreDocumentCallback"
-            oper.obtenerUnRegistro("usuarios", "Identidad", identidad, new FirestoreCallbacks.FirestoreDocumentCallback() {
-                @Override
-                public void onCallback(Map<String, Object> documento) {
-                    if (documento != null) { //Si el HashMap "documento" no es nulo, quiere decir que si se encontró el registro en la colección, por lo tanto, entrará al if
-                        String correo = (String) documento.get("Correo"); //Extraemos el correo del HashMap "documento"
+            if (Validaciones.validarIdentidad(identidad)) {
+                //Llamamos al método "obtenerUnRegistro" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo, el dato a buscar e invocamos la interfaz "FirestoreDocumentCallback"
+                oper.obtenerUnRegistro("usuarios", "Identidad", identidad, new FirestoreCallbacks.FirestoreDocumentCallback() {
+                    @Override
+                    public void onCallback(Map<String, Object> documento) {
+                        if (documento != null) { //Si el HashMap "documento" no es nulo, quiere decir que si se encontró el registro en la colección, por lo tanto, entrará al if
+                            String correo = (String) documento.get("Correo"); //Extraemos el correo del HashMap "documento"
 
-                        if (correo.isEmpty()) { //Si "correo está vacío, quiere decir que el usuario aún no ha registrado un correo y una contraseña, entonces que entre al if
-                            FragCrearCorreoContrasena.identidadUsuario = identidad; //Mandamos la identidad a la variable global estática "identidadUsuario" en el FragCrearCorreoContrasena
-                            Navigation.findNavController(vista).navigate(R.id.actionBuscarUsuario_CrearContrasena); //Indicamos que al dar clic en el botón Buscar, que redireccione al usuario usando la acción "actionBuscarUsuario_CrearContrasena" que establecimos en el fragment_buscar_usuario en el "nav_graphcrearcontrasena
+                            if (correo.isEmpty()) { //Si "correo está vacío, quiere decir que el usuario aún no ha registrado un correo y una contraseña, entonces que entre al if
+                                FragCrearCorreoContrasena.identidadUsuario = identidad; //Mandamos la identidad a la variable global estática "identidadUsuario" en el FragCrearCorreoContrasena
+                                Navigation.findNavController(vista).navigate(R.id.actionBuscarUsuario_CrearContrasena); //Indicamos que al dar clic en el botón Buscar, que redireccione al usuario usando la acción "actionBuscarUsuario_CrearContrasena" que establecimos en el fragment_buscar_usuario en el "nav_graphcrearcontrasena
+                            }
+                            else { //En cambio, si "correo" no está vacío, significa que el usuario ya creó un correo y una contraseña, entonces se le muestra un mensaje indicando eso
+                                Toast.makeText(getActivity(), "EL USUARIO YA CUENTA CON CORREO Y CONTRASEÑA", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                        else { //En cambio, si "correo" no está vacío, significa que el usuario ya creó un correo y una contraseña, entonces se le muestra un mensaje indicando eso
-                            Toast.makeText(getActivity(), "EL USUARIO YA CUENTA CON CORREO Y CONTRASEÑA", Toast.LENGTH_SHORT).show();
+                        else { //Si "documento" es nulo, no se encontró el registro en la colección, y entrará en este else
+                            Toast.makeText(getActivity(), "NO SE ENCONTRÓ EL USUARIO", Toast.LENGTH_SHORT).show();
                         }
                     }
-                    else { //Si "documento" es nulo, no se encontró el registro en la colección, y entrará en este else
-                        Toast.makeText(getActivity(), "NO SE ENCONTRÓ EL USUARIO", Toast.LENGTH_SHORT).show();
-                    }
-                }
 
-                @Override
-                public void onFailure(Exception e) {
-                    Log.w("Buscar Documento", "Error al obtener el documento", e);
-                }
-            });
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.w("Buscar Documento", "Error al obtener el documento", e);
+                    }
+                });
+            }
+            else
+                Toast.makeText(getActivity(), "LA IDENTIDAD DEBE TENER 13 NÚMEROS", Toast.LENGTH_SHORT).show();
         }
-        else {
+        else
             Toast.makeText(getActivity(), "INGRESE UN NÚMERO DE IDENTIDAD SIN GUIONES", Toast.LENGTH_SHORT).show();
-        }
     }
 }
