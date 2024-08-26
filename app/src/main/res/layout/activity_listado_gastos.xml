@@ -29,16 +29,16 @@
                 android:id="@+id/LLEncabezadoLG"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:layout_marginBottom="35dp"
+                android:layout_marginTop="25sp"
+                android:layout_marginBottom="35sp"
                 android:gravity="center|left"
                 android:orientation="horizontal"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp">
+                android:paddingLeft="20sp"
+                android:paddingRight="20sp">
 
                 <ImageView
                     android:id="@+id/imgRegresarLG"
-                    android:layout_width="25dp"
+                    android:layout_width="25sp"
                     android:layout_height="match_parent"
                     android:contentDescription="@string/descripcion"
                     android:onClick="retroceder"
@@ -53,17 +53,17 @@
                     <TextView
                         android:id="@+id/lblTituloLG"
                         android:layout_width="wrap_content"
-                        android:layout_height="40dp"
+                        android:layout_height="40sp"
                         android:layout_weight="1"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center"
                         android:text="Listado de Gastos"
                         android:textColor="@color/clr_fuente_primario"
-                        android:textSize="25dp" />
+                        android:textSize="25sp" />
 
                     <ImageView
                         android:id="@+id/imgExportarLG"
-                        android:layout_width="25dp"
+                        android:layout_width="25sp"
                         android:layout_height="match_parent"
                         android:contentDescription="@string/descripcion"
                         android:onClick="exportarGastos"
@@ -77,20 +77,20 @@
                 android:id="@+id/LLFechaLG"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="35dp"
+                android:layout_marginLeft="15sp"
+                android:layout_marginRight="15sp"
+                android:layout_marginBottom="35sp"
                 android:background="@drawable/clr_casillablanca_cuadrada"
-                android:elevation="5dp"
+                android:elevation="5sp"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp">
+                android:paddingLeft="12sp"
+                android:paddingRight="12sp">
 
                 <ImageView
                     android:id="@+id/imgFechaLG"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="40sp"
+                    android:layout_height="40sp"
                     app:srcCompat="@mipmap/ico_azul_fecha" />
 
                 <LinearLayout
@@ -110,31 +110,31 @@
                         <TextView
                             android:id="@+id/lblFechaLG"
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
+                            android:layout_height="50sp"
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:fontFamily="@font/montserrat_bold"
                             android:gravity="center|left"
-                            android:paddingLeft="15dp"
-                            android:paddingRight="10dp"
+                            android:paddingLeft="15sp"
+                            android:paddingRight="10sp"
                             android:text="Seleccionar Mes"
                             android:textColor="@color/clr_fuente_secundario"
-                            android:textSize="17dp" />
+                            android:textSize="17sp" />
 
                         <ImageView
                             android:id="@+id/imgAbrirFechaLG"
-                            android:layout_width="11dp"
-                            android:layout_height="20dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_width="11sp"
+                            android:layout_height="20sp"
+                            android:layout_marginRight="10sp"
                             android:contentDescription="@string/descripcion"
                             app:srcCompat="@mipmap/ico_gris_expandirabajo" />
                     </LinearLayout>
 
                     <ImageView
                         android:id="@+id/btnEliminarFechaLG"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_marginLeft="15dp"
+                        android:layout_width="25sp"
+                        android:layout_height="25sp"
+                        android:layout_marginLeft="15sp"
                         android:contentDescription="@string/descripcion"
                         android:onClick="eliminarMesGastos"
                         app:srcCompat="@mipmap/ico_azul_eliminar"
@@ -162,12 +162,12 @@
                         android:id="@+id/lblCuadrilla"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="8sp"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center"
                         android:text="Cuadrilla"
                         android:textColor="@color/clr_fuente_primario"
-                        android:textSize="20dp" />
+                        android:textSize="20sp" />
 
                     <TextView
                         android:id="@+id/lblCuadrillaLineaLG"
@@ -177,7 +177,7 @@
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center"
                         android:text="Buscar Usuario"
-                        android:textSize="1dp" />
+                        android:textSize="1sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -193,12 +193,12 @@
                         android:id="@+id/lblSupervisores"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="8sp"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center"
                         android:text="Supervisores"
                         android:textColor="@color/clr_fuente_primario"
-                        android:textSize="20dp" />
+                        android:textSize="20sp" />
 
                     <TextView
                         android:id="@+id/lblSupervisoresLineaLG"
@@ -208,17 +208,9 @@
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center"
                         android:text="Buscar Usuario"
-                        android:textSize="1dp" />
+                        android:textSize="1sp" />
                 </LinearLayout>
             </LinearLayout>
-
-            <!--<androidx.fragment.app.FragmentContainerView
-                android:id="@+id/fragListadoGastos"
-                android:name="com.ingelcom.cajachica.Fragmentos.FragGastosCuadrilla"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:defaultNavHost="true"
-                tools:layout="@layout/fragment_gastos_cuadrilla" />-->
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/vpListadoGastos"
