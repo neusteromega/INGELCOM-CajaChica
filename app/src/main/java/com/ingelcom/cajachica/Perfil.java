@@ -294,12 +294,13 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
 
     @Override
     public void onRefresh() { //Método que detecta cuando se recarga la pantalla con SwipeRefreshLayout
-        swlRecargar.bringToFront();
+        swlRecargar.bringToFront(); //Traer para el enfrente el SwipeRefreshLayout
 
         //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
             @Override
             public void run() {
+                //Mandar para atrás el SwipeRefreshLayout luego de que cargue
                 ViewGroup parent = (ViewGroup) swlRecargar.getParent();
                 parent.removeView(swlRecargar);
                 parent.addView(swlRecargar, 0);
