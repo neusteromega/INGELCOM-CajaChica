@@ -11,7 +11,7 @@
         android:id="@+id/LLEncabezadoPerfil"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="30sp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,12 +22,12 @@
             android:layout_height="wrap_content"
             android:gravity="center|left"
             android:orientation="horizontal"
-            android:paddingLeft="20dp"
-            android:paddingRight="40dp">
+            android:paddingLeft="20sp"
+            android:paddingRight="40sp">
 
             <ImageView
                 android:id="@+id/imgRegresarPerfil"
-                android:layout_width="25dp"
+                android:layout_width="25sp"
                 android:layout_height="match_parent"
                 android:contentDescription="@string/descripcion"
                 android:onClick="retroceder"
@@ -37,12 +37,12 @@
             <TextView
                 android:id="@+id/lblTituloPerfil"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="40sp"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center"
                 android:text="Perfil"
                 android:textColor="@color/clr_fuente_primario"
-                android:textSize="24dp" />
+                android:textSize="24sp" />
 
         </LinearLayout>
 
@@ -50,11 +50,11 @@
             android:id="@+id/lblSeparadorPerfil"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="30sp"
             android:background="@drawable/clr_casillaazul_separador"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center"
-            android:textSize="2dp"
+            android:textSize="2sp"
             android:visibility="gone" />
 
     </LinearLayout>
@@ -74,43 +74,43 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingBottom="25dp">
+            android:paddingBottom="25sp">
 
             <ImageView
                 android:id="@+id/imgUsuarioPerfil"
                 android:layout_width="match_parent"
-                android:layout_height="115dp"
+                android:layout_height="115sp"
                 app:srcCompat="@mipmap/ico_azul_perfilusuario" />
 
             <TextView
                 android:id="@+id/lblNombrePerfil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="15sp"
+                android:layout_marginTop="25sp"
+                android:layout_marginRight="15sp"
+                android:layout_marginBottom="20sp"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center"
                 android:text="Nombre Completo"
                 android:textColor="@color/clr_fuente_primario"
-                android:textSize="22dp" />
+                android:textSize="22sp" />
 
             <LinearLayout
                 android:id="@+id/LLDatosPerfil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="15sp"
+                android:layout_marginTop="15sp"
+                android:layout_marginRight="15sp"
+                android:layout_marginBottom="15sp"
                 android:background="@drawable/clr_casillablanca_cuadrada"
-                android:elevation="5dp"
+                android:elevation="5sp"
                 android:orientation="vertical"
-                android:paddingLeft="12dp"
-                android:paddingTop="15dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="15dp">
+                android:paddingLeft="12sp"
+                android:paddingTop="15sp"
+                android:paddingRight="12sp"
+                android:paddingBottom="15sp">
 
                 <LinearLayout
                     android:id="@+id/LLCorreoPerfil"
@@ -122,12 +122,12 @@
                         android:id="@+id/lblTituloCorreoPerfil"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginRight="5sp"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center"
                         android:text="Correo:"
                         android:textColor="@color/clr_fuente_primario"
-                        android:textSize="15dp" />
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/lblCorreoPerfil"
@@ -139,19 +139,19 @@
                         android:maxLines="2"
                         android:text="correo@correo.com"
                         android:textColor="@color/clr_fuente_secundario"
-                        android:textSize="15dp" />
+                        android:textSize="15sp" />
                 </LinearLayout>
 
                 <TextView
                     android:id="@+id/lblSepCorreoIdentidadPerfil"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10sp"
+                    android:layout_marginBottom="10sp"
                     android:background="@drawable/clr_casillagris_separador"
                     android:fontFamily="@font/montserrat_bold"
                     android:gravity="center"
-                    android:textSize="1dp" />
+                    android:textSize="1sp" />
 
                 <LinearLayout
                     android:id="@+id/LLIdentidadPerfil"
@@ -163,11 +163,11 @@
                         android:id="@+id/lblTituloIdentidadPerfil"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginRight="5sp"
                         android:fontFamily="@font/montserrat_bold"
                         android:text="Identidad:"
                         android:textColor="@color/clr_fuente_primario"
-                        android:textSize="15dp" />
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/lblIdentidadPerfil"
@@ -177,19 +177,19 @@
                         android:gravity="right"
                         android:text="0000-0000-00000"
                         android:textColor="@color/clr_fuente_secundario"
-                        android:textSize="15dp" />
+                        android:textSize="15sp" />
                 </LinearLayout>
 
                 <TextView
                     android:id="@+id/lblSepIdentidadTelefonoPerfil"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10sp"
+                    android:layout_marginBottom="10sp"
                     android:background="@drawable/clr_casillagris_separador"
                     android:fontFamily="@font/montserrat_bold"
                     android:gravity="center"
-                    android:textSize="1dp" />
+                    android:textSize="1sp" />
 
                 <LinearLayout
                     android:id="@+id/LLTelefonoPerfil"
@@ -201,11 +201,11 @@
                         android:id="@+id/lblTituloTelefonoPerfil"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginRight="5sp"
                         android:fontFamily="@font/montserrat_bold"
                         android:text="Teléfono:"
                         android:textColor="@color/clr_fuente_primario"
-                        android:textSize="15dp" />
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/lblTelefonoPerfil"
@@ -215,19 +215,19 @@
                         android:gravity="right"
                         android:text="00000000"
                         android:textColor="@color/clr_fuente_secundario"
-                        android:textSize="15dp" />
+                        android:textSize="15sp" />
                 </LinearLayout>
 
                 <TextView
                     android:id="@+id/lblSepTelefonoCuadrillaPerfil"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10sp"
+                    android:layout_marginBottom="10sp"
                     android:background="@drawable/clr_casillagris_separador"
                     android:fontFamily="@font/montserrat_bold"
                     android:gravity="center"
-                    android:textSize="1dp" />
+                    android:textSize="1sp" />
 
                 <LinearLayout
                     android:id="@+id/LLCuadrillaPerfil"
@@ -239,11 +239,11 @@
                         android:id="@+id/lblTituloCuadrillaPerfil"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginRight="5sp"
                         android:fontFamily="@font/montserrat_bold"
                         android:text="Cuadrilla:"
                         android:textColor="@color/clr_fuente_primario"
-                        android:textSize="15dp" />
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/lblCuadrillaPerfil"
@@ -253,7 +253,7 @@
                         android:gravity="right"
                         android:text="Nombre Cuadrilla"
                         android:textColor="@color/clr_fuente_secundario"
-                        android:textSize="15dp" />
+                        android:textSize="15sp" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -263,21 +263,21 @@
         android:id="@+id/btnEditarPerfil"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginLeft="15sp"
+        android:layout_marginRight="15sp"
+        android:layout_marginBottom="60sp"
         android:background="@drawable/clr_casilladegradadoazul_redonda"
-        android:elevation="5dp"
+        android:elevation="5sp"
         android:fontFamily="@font/montserrat_bold"
         android:gravity="center"
         android:onClick="editarPerfil"
-        android:paddingLeft="25dp"
-        android:paddingTop="10dp"
-        android:paddingRight="25dp"
-        android:paddingBottom="10dp"
+        android:paddingLeft="25sp"
+        android:paddingTop="10sp"
+        android:paddingRight="25sp"
+        android:paddingBottom="10sp"
         android:text="Editar Perfil"
         android:textColor="@color/clr_fuente_terciario"
-        android:textSize="22dp"
+        android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -290,6 +290,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

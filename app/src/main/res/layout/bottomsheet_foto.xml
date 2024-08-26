@@ -10,49 +10,49 @@
         android:id="@+id/LLTomarFotoBSFoto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="10sp"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/imgTomarFotoBSFoto"
-            android:layout_width="35dp"
+            android:layout_width="35sp"
             android:layout_height="match_parent"
-            android:layout_marginRight="15dp"
+            android:layout_marginRight="15sp"
             app:srcCompat="@mipmap/ico_azul_tomarfoto" />
 
         <TextView
             android:id="@+id/lblTomarFotoBSFoto"
             android:layout_width="match_parent"
-            android:layout_height="55dp"
+            android:layout_height="55sp"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center|left"
             android:text="Tomar Foto"
             android:textColor="@color/clr_fuente_primario"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/LLSeleccionarFotoBSFoto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="10sp"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/imgSeleccionarFotoBSFoto"
-            android:layout_width="35dp"
+            android:layout_width="35sp"
             android:layout_height="match_parent"
-            android:layout_marginRight="15dp"
+            android:layout_marginRight="15sp"
             app:srcCompat="@mipmap/ico_azul_seleccionarfoto" />
 
         <TextView
             android:id="@+id/lblSeleccionarFotoBSFoto"
             android:layout_width="match_parent"
-            android:layout_height="55dp"
+            android:layout_height="55sp"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center|left"
             android:text="Seleccionar Imagen"
             android:textColor="@color/clr_fuente_primario"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
     </LinearLayout>
 </LinearLayout>
