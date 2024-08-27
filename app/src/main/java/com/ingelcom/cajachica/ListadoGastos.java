@@ -25,8 +25,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +49,8 @@ import java.util.Map;
 public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, PopupMenu.OnMenuItemClickListener {
 
     private TextView btnReintentarConexion, lblTitulo, btnMes, btnAnio, lblFecha, lblLineaCuadrilla, lblLineaSupervisores;
+    private Spinner spUserCompra;
+    private LinearLayout llAbrirUserCompra;
     private String nombreActivity, nombreCuadrilla, fechaSeleccionada = "", tipoFecha = "Mes", tipoExportar;
     private ViewPager2 vpGastos;
     private SwipeRefreshLayout swlRecargar;
@@ -99,6 +103,8 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         lblFecha = findViewById(R.id.lblFechaLG);
         lblLineaCuadrilla = findViewById(R.id.lblCuadrillaLineaLG);
         lblLineaSupervisores = findViewById(R.id.lblSupervisoresLineaLG);
+        spUserCompra = findViewById(R.id.spUsuarioCompraLG);
+        llAbrirUserCompra = findViewById(R.id.LLAbrirUsuarioCompraLG);
         vpGastos = findViewById(R.id.vpListadoGastos); //Relacionamos la variable "vpGastos" con el ViewPager
         swlRecargar = findViewById(R.id.swipeRefreshLayoutLG);
         viewNoInternet = findViewById(R.id.viewNoInternetLG);
