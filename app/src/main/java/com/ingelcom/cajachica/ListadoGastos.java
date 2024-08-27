@@ -14,6 +14,7 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -45,8 +46,8 @@ import java.util.Map;
 
 public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, PopupMenu.OnMenuItemClickListener {
 
-    private TextView btnReintentarConexion, lblTitulo, lblFecha, lblLineaCuadrilla, lblLineaSupervisores;
-    private String nombreActivity, nombreCuadrilla, nombreMes = "", tipoExportar;
+    private TextView btnReintentarConexion, lblTitulo, btnMes, btnAnio, lblFecha, lblLineaCuadrilla, lblLineaSupervisores;
+    private String nombreActivity, nombreCuadrilla, fechaSeleccionada = "", tipoFecha = "Mes", tipoExportar;
     private ViewPager2 vpGastos;
     private SwipeRefreshLayout swlRecargar;
     private View viewNoInternet;
@@ -93,6 +94,8 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         nombreCuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
 
         lblTitulo = findViewById(R.id.lblTituloLG);
+        btnMes = findViewById(R.id.lblMesLG);
+        btnAnio = findViewById(R.id.lblAnioLG);
         lblFecha = findViewById(R.id.lblFechaLG);
         lblLineaCuadrilla = findViewById(R.id.lblCuadrillaLineaLG);
         lblLineaSupervisores = findViewById(R.id.lblSupervisoresLineaLG);
@@ -160,7 +163,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                                             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
                                                 @Override
                                                 public void run() {
-                                                    if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                                    if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar...")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
                                                         if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                             exp.exportarGastosExcel(finalItems, "_" + cuadrilla); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                                         else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
@@ -214,7 +217,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
                                     @Override
                                     public void run() {
-                                        if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                        if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar...")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
                                             if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                 exp.exportarGastosExcel(finalItems, "_" + nombreCuadrilla); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
@@ -260,7 +263,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
                                     @Override
                                     public void run() {
-                                        if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                        if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar...")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
                                             if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                 exp.exportarGastosExcel(finalItems, "Generales"); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
@@ -293,6 +296,28 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         }
     }
 
+    //Método Click del botón "Mes"
+    public void elegirMes(View view) {
+        //Establecemos el color del fondo y de la fuente para los botones de Mes y Año
+        btnMes.setBackground(getDrawable(R.drawable.clr_casilladegradadoazul_redonda));
+        btnMes.setTextColor(getColor(R.color.clr_fuente_terciario));
+        btnAnio.setBackgroundColor(Color.TRANSPARENT);
+        btnAnio.setTextColor(getColor(R.color.clr_fuente_secundario));
+
+        tipoFecha = "Mes"; //Asignamos la palabra "Mes" a la variable global "tipoFecha"
+    }
+
+    //Método Click del botón "Año"
+    public void elegirAnio(View view) {
+        //Establecemos el color del fondo y de la fuente para los botones de Mes y Año
+        btnAnio.setBackground(getDrawable(R.drawable.clr_casilladegradadoazul_redonda));
+        btnAnio.setTextColor(getColor(R.color.clr_fuente_terciario));
+        btnMes.setBackgroundColor(Color.TRANSPARENT);
+        btnMes.setTextColor(getColor(R.color.clr_fuente_secundario));
+
+        tipoFecha = "Año"; //Asignamos la palabra "Año" a la variable global "tipoFecha"
+    }
+
     //Método que detecta cuando el lblFecha cambia su valor
     private void cambioFecha() {
         try {
@@ -305,7 +330,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
 
                 @Override //Durante el texto del lblFecha está cambiando
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    nombreMes = charSequence.toString(); //Pasamos la fecha a la variable global "nombreMes"
+                    fechaSeleccionada = charSequence.toString(); //Pasamos la fecha a la variable global "nombreMes"
                     svmGastos.setFecha(charSequence.toString()); //Llamamos el método "setFecha" de la clase "SharedViewGastosModel" y le mandamos el "charSequence" que es el texto del TextView "lblFecha" y lo convertimos a String
                 }
 
@@ -358,15 +383,38 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
     }
 
     //Evento Clic del LinearLayout de Fecha, al dar clic en el mismo, se abrirá un "Popup DatePicker" en el que se podrá seleccionar un mes y año y esto servirá para filtrar los gastos
-    public void mostrarMesesGastos(View view) {
-        try {
-            //Creamos una instancia de la interfaz "DatePickerDialog.OnDateSetListener" y esta define el método "onDateSet" que se llama cuando el usuario selecciona una fecha en el DatePickerDialog
-            DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+    public void mostrarMesesAnios(View view) {
+        if (tipoFecha.equalsIgnoreCase("Mes")) { //Si la variable global "tipoFecha" obtiene la palabra "Mes", significa que el usuario tiene seleccionado el botón de mes en la pantalla; por lo tanto, que entre al if
+            try {
+                //Creamos una instancia de la interfaz "DatePickerDialog.OnDateSetListener" y esta define el método "onDateSet" que se llama cuando el usuario selecciona una fecha en el DatePickerDialog
+                DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int month, int day) { //Se ejecuta cuando el usuario ha seleccionado una fecha
+                        month = month + 1; //Al mes le sumamos +1 porque los meses por defecto empiezan en 0 y no en 1
+                        String fecha = Utilidades.convertirMonthYearString(month, year); //Guardamos el mes y año convertidos a String llamando al método "convertirMonthYearString" con los parámetros de mes y año, y esto retorna el String
+                        lblFecha.setText(fecha); //Asignamos la fecha ya convertida a String al TextView lblFecha
+                    }
+                };
+
+                Calendar cal = Calendar.getInstance(); //Creamos un objeto de tipo Calendar que representa la fecha y hora actuales en el dispositivo donde se está ejecutando el código
+                int year = cal.get(Calendar.YEAR); //Obtenemos el año actual
+                int month = cal.get(Calendar.MONTH); //Obtenemos el mes actual
+                int day = cal.get(Calendar.DAY_OF_MONTH); //Obtenemos el día actual
+                int style = AlertDialog.THEME_HOLO_LIGHT; //En una variable entera guardamos el estilo que tendrá la ventana emergente
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(ListadoGastos.this, style, dateSetListener, year, month, day); //Creamos un nuevo objeto de tipo DatePickerDialog y le mandamos como parámetros al constructor, un contexto, la variable "style" que guarda el estilo, el "dateSetListener", el año, mes y día, estos últimos para que al abrir el AlertDialog, se muestre el mes actual
+                datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("day", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de días asignando "GONE" en su visibilidad
+                datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo mes y año
+            }
+            catch (Exception e) {
+                Log.w("ObtenerMes", e);
+            }
+        }
+        else if (tipoFecha.equalsIgnoreCase("Año")) { //En cambio, si la variable global "tipoFecha" obtiene la palabra "Año", significa que el usuario tiene seleccionado el botón de año en la pantalla; por lo tanto, que entre al else if
+            DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() { //Creamos una instancia de la interfaz "DatePickerDialog.OnDateSetListener" y esta define el método "onDateSet" que se llama cuando el usuario selecciona una fecha en el DatePickerDialog
                 @Override
                 public void onDateSet(DatePicker datePicker, int year, int month, int day) { //Se ejecuta cuando el usuario ha seleccionado una fecha
-                    month = month + 1; //Al mes le sumamos +1 porque los meses por defecto empiezan en 0 y no en 1
-                    String fecha = Utilidades.convertirMonthYearString(month, year); //Guardamos el mes y año convertidos a String llamando al método "convertirMonthYearString" con los parámetros de mes y año, y esto retorna el String
-                    lblFecha.setText(fecha); //Asignamos la fecha ya convertida a String al TextView lblFecha
+                    lblFecha.setText(String.valueOf(year)); //Asignamos el año ya convertido a String al lblFechaSeleccionada
                 }
             };
 
@@ -378,16 +426,14 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
 
             DatePickerDialog datePickerDialog = new DatePickerDialog(ListadoGastos.this, style, dateSetListener, year, month, day); //Creamos un nuevo objeto de tipo DatePickerDialog y le mandamos como parámetros al constructor, un contexto, la variable "style" que guarda el estilo, el "dateSetListener", el año, mes y día, estos últimos para que al abrir el AlertDialog, se muestre el mes actual
             datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("day", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de días asignando "GONE" en su visibilidad
-            datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo mes y año
-        }
-        catch (Exception e) {
-            Log.w("ObtenerMes", e);
+            datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("month", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de meses asignando "GONE" en su visibilidad
+            datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo años
         }
     }
 
     //Método para eliminar la selección del Mes - Año
     public void eliminarMesGastos(View view) {
-        lblFecha.setText("Seleccionar Mes");
+        lblFecha.setText("Seleccionar...");
     }
 
     private void desactivarSwipeEnViewPager() {
@@ -395,14 +441,14 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         vpGastos.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageScrollStateChanged(int state) {
-                super.onPageScrollStateChanged(state);
-                // Desactivar SwipeRefreshLayout cuando se arrastra el ViewPager
-                if (state == ViewPager2.SCROLL_STATE_DRAGGING) {
-                    swlRecargar.setEnabled(false);
-                }
-                else {
-                    swlRecargar.setEnabled(true);
-                }
+            super.onPageScrollStateChanged(state);
+            // Desactivar SwipeRefreshLayout cuando se arrastra el ViewPager
+            if (state == ViewPager2.SCROLL_STATE_DRAGGING) {
+                swlRecargar.setEnabled(false);
+            }
+            else {
+                swlRecargar.setEnabled(true);
+            }
             }
         });
     }
@@ -423,7 +469,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
 
                 //Llamamos el método utilitario "verificarPermisosAlmacenamiento" donde mandamos el contexto de esta clase. Si este método devuelve un "true" significa que los permisos de almacenamiento externo ya han sido otorgados, en ese caso que entre al if
                 if (Utilidades.verificarPermisosAlmacenamiento(this)) {
-                    obtenerDatosExportar(nombreMes); //Como los permisos han sido otorgados, llamamos el método "obtenerDatosExportar" de arriba y le mandamos la variable global "nombreMes"
+                    obtenerDatosExportar(fechaSeleccionada); //Como los permisos han sido otorgados, llamamos el método "obtenerDatosExportar" de arriba y le mandamos la variable global "nombreMes"
                 }
 
                 return true;
@@ -433,7 +479,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
 
                 //Llamamos el método utilitario "verificarPermisosAlmacenamiento" donde mandamos el contexto de esta clase. Si este método devuelve un "true" significa que los permisos de almacenamiento externo ya han sido otorgados, en ese caso que entre al if
                 if (Utilidades.verificarPermisosAlmacenamiento(this)) {
-                    obtenerDatosExportar(nombreMes); //Como los permisos han sido otorgados, llamamos el método "obtenerDatosExportar" de arriba y le mandamos la variable global "nombreMes"
+                    obtenerDatosExportar(fechaSeleccionada); //Como los permisos han sido otorgados, llamamos el método "obtenerDatosExportar" de arriba y le mandamos la variable global "nombreMes"
                 }
 
                 return true;
@@ -451,9 +497,9 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         if (Utilidades.manejarResultadoPermisos(requestCode, permissions, grantResults, this)) {
             //Ya que los permisos de almacenamiento externo han sido otorgados, verificamos el contenido de la variable global "tipoExportar" para llamar al método "obtenerDatosExportar"
             if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                obtenerDatosExportar(nombreMes);
+                obtenerDatosExportar(fechaSeleccionada);
             else if (tipoExportar.equalsIgnoreCase("PDF"))
-                obtenerDatosExportar(nombreMes);
+                obtenerDatosExportar(fechaSeleccionada);
         }
     }
 

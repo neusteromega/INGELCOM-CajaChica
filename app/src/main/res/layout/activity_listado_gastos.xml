@@ -29,8 +29,7 @@
                 android:id="@+id/LLEncabezadoLG"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25sp"
-                android:layout_marginBottom="35sp"
+                android:layout_marginTop="30sp"
                 android:gravity="center|left"
                 android:orientation="horizontal"
                 android:paddingLeft="20sp"
@@ -74,10 +73,51 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/LLTiempoLG"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15sp"
+                android:layout_marginTop="30sp"
+                android:layout_marginRight="15sp"
+                android:layout_marginBottom="15sp"
+                android:background="@drawable/clr_casillablanca_redonda"
+                android:elevation="5sp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/lblMesLG"
+                    android:layout_width="match_parent"
+                    android:layout_height="40sp"
+                    android:layout_weight="1"
+                    android:background="@drawable/clr_casilladegradadoazul_redonda"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:onClick="elegirMes"
+                    android:text="Mes"
+                    android:textColor="@color/clr_fuente_terciario"
+                    android:textSize="20sp"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+                <TextView
+                    android:id="@+id/lblAnioLG"
+                    android:layout_width="match_parent"
+                    android:layout_height="40sp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:onClick="elegirAnio"
+                    android:text="Año"
+                    android:textColor="@color/clr_fuente_secundario"
+                    android:textSize="20sp"
+                    tools:ignore="TouchTargetSizeCheck" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/LLFechaLG"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15sp"
+                android:layout_marginTop="15sp"
                 android:layout_marginRight="15sp"
                 android:layout_marginBottom="35sp"
                 android:background="@drawable/clr_casillablanca_cuadrada"
@@ -104,7 +144,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:onClick="mostrarMesesGastos"
+                        android:onClick="mostrarMesesAnios"
                         android:orientation="horizontal">
 
                         <TextView
@@ -117,7 +157,7 @@
                             android:gravity="center|left"
                             android:paddingLeft="15sp"
                             android:paddingRight="10sp"
-                            android:text="Seleccionar Mes"
+                            android:text="Seleccionar..."
                             android:textColor="@color/clr_fuente_secundario"
                             android:textSize="17sp" />
 
