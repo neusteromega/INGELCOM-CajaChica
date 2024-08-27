@@ -81,7 +81,7 @@ public class ListadoEmpleados extends AppCompatActivity implements SwipeRefreshL
 
         try {
             //Llamamos el método "obtenerEmpleados" de la clase "Usuario" donde invocamos la interfaz "FirestoreAllSpecialDocumentsCallback" y le indicamos que debe ser de tipo "EmpleadosItems"
-            usuario.obtenerEmpleados(new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<EmpleadosItems>() {
+            usuario.obtenerUsuarios("Empleados", new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<EmpleadosItems>() {
                 @Override
                 public void onCallback(List<EmpleadosItems> items) { //Esto nos devuelve la lista de tipo "EmpleadosItems" ya con los empleados extraídos de Firestore
                     if (items != null) { //Si "items" no es null, que entre al if
