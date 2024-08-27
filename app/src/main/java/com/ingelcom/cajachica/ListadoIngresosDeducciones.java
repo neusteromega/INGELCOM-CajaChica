@@ -9,6 +9,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -46,8 +47,8 @@ import java.util.Map;
 public class ListadoIngresosDeducciones extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, PopupMenu.OnMenuItemClickListener {
 
     private LinearLayout llFecha;
-    private TextView btnReintentarConexion, lblTitulo, lblFecha, lblTotal, lblTotalTitulo;
-    private String nombreActivity, nombreCuadrilla, nombreMes = "", tipoExportar;
+    private TextView btnReintentarConexion, lblTitulo, btnMes, btnAnio, lblFecha, lblTotal, lblTotalTitulo;
+    private String nombreActivity, nombreCuadrilla, fechaSeleccionada = "", tipoFecha = "Mes", tipoExportar;
     private RecyclerView rvIngrDeduc;
     private ImageView btnExportar;
     private SwipeRefreshLayout swlRecargar;
@@ -93,6 +94,8 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
 
         llFecha = findViewById(R.id.LLFechaLI);
         lblTitulo = findViewById(R.id.lblTituloLI);
+        btnMes = findViewById(R.id.lblMesLI);
+        btnAnio = findViewById(R.id.lblAnioLI);
         lblFecha = findViewById(R.id.lblFechaLI);
         lblTotal = findViewById(R.id.lblCantIngresosLI);
         lblTotalTitulo = findViewById(R.id.lblTotalIngresosLI);
@@ -141,11 +144,11 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
         }
     }
 
-    private void obtenerDatos(String mes, String tipo) {
+    private void obtenerDatos(String mesAnio, String tipo) {
         try {
             if (nombreActivity.equalsIgnoreCase("ListadoIngresosAdmin")) {
                 //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla recibida en "nombreCuadrilla" y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores a una cuadrilla específica
-                ingr.obtenerIngresos(nombreCuadrilla, mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
+                ingr.obtenerIngresos(nombreCuadrilla, mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
                     @Override
                     public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados por cuadrilla
                         if (items != null) { //Si "items" no es null, que entre al if
@@ -167,7 +170,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
                                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
                                     @Override
                                     public void run() {
-                                        if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                        if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
                                             if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                 exp.exportarIngresosExcel(finalItems, "_" + nombreCuadrilla); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
@@ -175,9 +178,9 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
                                         }
                                         else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
                                             if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
-                                                exp.exportarIngresosExcel(finalItems, "_" + nombreCuadrilla + "_" + mes); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                                exp.exportarIngresosExcel(finalItems, "_" + nombreCuadrilla + "_" + mesAnio); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
-                                                exp.exportarIngresosPDF(finalItems, "_" + nombreCuadrilla + "_" + mes); //Llamamos el método "exportarIngresosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                                exp.exportarIngresosPDF(finalItems, "_" + nombreCuadrilla + "_" + mesAnio); //Llamamos el método "exportarIngresosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                         }
 
                                         if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
@@ -204,7 +207,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
                             String cuadrilla = (String) documento.get("Cuadrilla"); //Obtenemos la cuadrilla de "documento"
 
                             //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla obtenida de Firestore en "cuadrilla" y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores a la cuadrilla del usuario actual
-                            ingr.obtenerIngresos(cuadrilla, mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
+                            ingr.obtenerIngresos(cuadrilla, mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
                                 @Override
                                 public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados por cuadrilla
                                     if (items != null) {//Si "items" no es null, que entre al if
@@ -233,7 +236,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
             }
             else if (nombreActivity.equalsIgnoreCase("ListadoIngresosTodos")) {
                 //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla vacía para indicar que no queremos filtrar los ingresos, y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores sin ningún filtro
-                ingr.obtenerIngresos("", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
+                ingr.obtenerIngresos("", mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
                     @Override
                     public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados por cuadrilla
                         if (items != null) { //Si "items" no es null, que entre al if
@@ -255,7 +258,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
                                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
                                     @Override
                                     public void run() {
-                                        if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                        if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
                                             if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                 exp.exportarIngresosExcel(finalItems, "Generales"); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
@@ -263,9 +266,9 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
                                         }
                                         else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
                                             if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
-                                                exp.exportarIngresosExcel(finalItems, "Generales_" + mes); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                                exp.exportarIngresosExcel(finalItems, "Generales_" + mesAnio); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
-                                                exp.exportarIngresosPDF(finalItems, "Generales_" + mes); //Llamamos el método "exportarIngresosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                                exp.exportarIngresosPDF(finalItems, "Generales_" + mesAnio); //Llamamos el método "exportarIngresosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                         }
 
                                         if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
@@ -375,6 +378,28 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
         }
     }
 
+    //Método Click del botón "Mes"
+    public void elegirMes(View view) {
+        //Establecemos el color del fondo y de la fuente para los botones de Mes y Año
+        btnMes.setBackground(getDrawable(R.drawable.clr_casilladegradadoazul_redonda));
+        btnMes.setTextColor(getColor(R.color.clr_fuente_terciario));
+        btnAnio.setBackgroundColor(Color.TRANSPARENT);
+        btnAnio.setTextColor(getColor(R.color.clr_fuente_secundario));
+
+        tipoFecha = "Mes"; //Asignamos la palabra "Mes" a la variable global "tipoFecha"
+    }
+
+    //Método Click del botón "Año"
+    public void elegirAnio(View view) {
+        //Establecemos el color del fondo y de la fuente para los botones de Mes y Año
+        btnAnio.setBackground(getDrawable(R.drawable.clr_casilladegradadoazul_redonda));
+        btnAnio.setTextColor(getColor(R.color.clr_fuente_terciario));
+        btnMes.setBackgroundColor(Color.TRANSPARENT);
+        btnMes.setTextColor(getColor(R.color.clr_fuente_secundario));
+
+        tipoFecha = "Año"; //Asignamos la palabra "Año" a la variable global "tipoFecha"
+    }
+
     private void cambioFecha() {
         try {
             //Para detectar cuando el lblFecha cambia su valor, llamamos el método "addTextChangedListener"
@@ -386,8 +411,8 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
 
                 @Override //Durante el texto del lblFecha está cambiando
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    nombreMes = lblFecha.getText().toString();
-                    obtenerDatos(nombreMes, "Mostrar"); //Llamamos el método "obtenerIngresos" de arriba y le mandamos el contenido del lblFecha
+                    fechaSeleccionada = lblFecha.getText().toString();
+                    obtenerDatos(fechaSeleccionada, "Mostrar"); //Llamamos el método "obtenerIngresos" de arriba y le mandamos el contenido del lblFecha
                 }
 
                 @Override //Después de que el texto del lblFecha cambie
@@ -402,16 +427,39 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
     }
 
     //Evento Clic del LinearLayout de Fecha, al dar clic en el mismo, se abrirá un "Popup DatePicker" en el que se podrá seleccionar un mes y año y esto servirá para filtrar los gastos
-    public void mostrarMesesIngresos(View view) {
+    public void mostrarMesesAnios(View view) {
         if (nombreActivity.equalsIgnoreCase("ListadoIngresosAdmin") || nombreActivity.equalsIgnoreCase("ListadoIngresosTodos")) {
-            try {
-                //Creamos una instancia de la interfaz "DatePickerDialog.OnDateSetListener" y esta define el método "onDateSet" que se llama cuando el usuario selecciona una fecha en el DatePickerDialog
-                DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            if (tipoFecha.equalsIgnoreCase("Mes")) { //Si la variable global "tipoFecha" obtiene la palabra "Mes", significa que el usuario tiene seleccionado el botón de mes en la pantalla; por lo tanto, que entre al if
+                try {
+                    //Creamos una instancia de la interfaz "DatePickerDialog.OnDateSetListener" y esta define el método "onDateSet" que se llama cuando el usuario selecciona una fecha en el DatePickerDialog
+                    DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker datePicker, int year, int month, int day) { //Se ejecuta cuando el usuario ha seleccionado una fecha
+                            month = month + 1; //Al mes le sumamos +1 porque los meses por defecto empiezan en 0 y no en 1
+                            String fecha = Utilidades.convertirMonthYearString(month, year); //Guardamos el mes y año convertidos a String llamando al método "convertirMonthYearString" con los parámetros de mes y año, y esto retorna el String
+                            lblFecha.setText(fecha); //Asignamos la fecha ya convertida a String al TextView lblFecha
+                        }
+                    };
+
+                    Calendar cal = Calendar.getInstance(); //Creamos un objeto de tipo Calendar que representa la fecha y hora actuales en el dispositivo donde se está ejecutando el código
+                    int year = cal.get(Calendar.YEAR); //Obtenemos el año actual
+                    int month = cal.get(Calendar.MONTH); //Obtenemos el mes actual
+                    int day = cal.get(Calendar.DAY_OF_MONTH); //Obtenemos el día actual
+                    int style = AlertDialog.THEME_HOLO_LIGHT; //En una variable entera guardamos el estilo que tendrá la ventana emergente
+
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(ListadoIngresosDeducciones.this, style, dateSetListener, year, month, day); //Creamos un nuevo objeto de tipo DatePickerDialog y le mandamos como parámetros al constructor, un contexto, la variable "style" que guarda el estilo, el "dateSetListener", el año, mes y día, estos últimos para que al abrir el AlertDialog, se muestre el mes actual
+                    datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("day", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de días asignando "GONE" en su visibilidad
+                    datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo mes y año
+                }
+                catch (Exception e) {
+                    Log.w("ObtenerMes", e);
+                }
+            }
+            else if (tipoFecha.equalsIgnoreCase("Año")) { //En cambio, si la variable global "tipoFecha" obtiene la palabra "Año", significa que el usuario tiene seleccionado el botón de año en la pantalla; por lo tanto, que entre al else if
+                DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() { //Creamos una instancia de la interfaz "DatePickerDialog.OnDateSetListener" y esta define el método "onDateSet" que se llama cuando el usuario selecciona una fecha en el DatePickerDialog
                     @Override
                     public void onDateSet(DatePicker datePicker, int year, int month, int day) { //Se ejecuta cuando el usuario ha seleccionado una fecha
-                        month = month + 1; //Al mes le sumamos +1 porque los meses por defecto empiezan en 0 y no en 1
-                        String fecha = Utilidades.convertirMonthYearString(month, year); //Guardamos el mes y año convertidos a String llamando al método "convertirMonthYearString" con los parámetros de mes y año, y esto retorna el String
-                        lblFecha.setText(fecha); //Asignamos la fecha ya convertida a String al TextView lblFecha
+                        lblFecha.setText(String.valueOf(year)); //Asignamos el año ya convertido a String al lblFechaSeleccionada
                     }
                 };
 
@@ -423,10 +471,8 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
 
                 DatePickerDialog datePickerDialog = new DatePickerDialog(ListadoIngresosDeducciones.this, style, dateSetListener, year, month, day); //Creamos un nuevo objeto de tipo DatePickerDialog y le mandamos como parámetros al constructor, un contexto, la variable "style" que guarda el estilo, el "dateSetListener", el año, mes y día, estos últimos para que al abrir el AlertDialog, se muestre el mes actual
                 datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("day", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de días asignando "GONE" en su visibilidad
-                datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo mes y año
-            }
-            catch (Exception e) {
-                Log.w("ObtenerMes", e);
+                datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("month", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de meses asignando "GONE" en su visibilidad
+                datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo años
             }
         }
         else if (nombreActivity.equalsIgnoreCase("ListadoIngresosEmpleado")) {
@@ -467,7 +513,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
         switch (menuItem.getItemId()) {
             case R.id.menuMesAnterior:
             case R.id.menuMesActual:
-                nombreMes = mesSeleccionado;
+                fechaSeleccionada = mesSeleccionado;
                 lblFecha.setText(mesSeleccionado); //Establecemos el mes y año seleccionado en el "lblFecha"
                 return true;
 
@@ -476,7 +522,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
 
                 //Llamamos el método utilitario "verificarPermisosAlmacenamiento" donde mandamos el contexto de esta clase. Si este método devuelve un "true" significa que los permisos de almacenamiento externo ya han sido otorgados, en ese caso que entre al if
                 if (Utilidades.verificarPermisosAlmacenamiento(this)) {
-                    obtenerDatos(nombreMes, "Exportar"); //Como los permisos han sido otorgados, llamamos el método "obtenerDatos" de arriba y le mandamos la variable global "nombreMes" y el texto "Exportar"
+                    obtenerDatos(fechaSeleccionada, "Exportar"); //Como los permisos han sido otorgados, llamamos el método "obtenerDatos" de arriba y le mandamos la variable global "nombreMes" y el texto "Exportar"
                 }
 
                 return true;
@@ -486,7 +532,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
 
                 //Llamamos el método utilitario "verificarPermisosAlmacenamiento" donde mandamos el contexto de esta clase. Si este método devuelve un "true" significa que los permisos de almacenamiento externo ya han sido otorgados, en ese caso que entre al if
                 if (Utilidades.verificarPermisosAlmacenamiento(this)) {
-                    obtenerDatos(nombreMes, "Exportar"); //Como los permisos han sido otorgados, llamamos el método "obtenerDatos" de arriba y le mandamos la variable global "nombreMes" y el texto "Exportar"
+                    obtenerDatos(fechaSeleccionada, "Exportar"); //Como los permisos han sido otorgados, llamamos el método "obtenerDatos" de arriba y le mandamos la variable global "nombreMes" y el texto "Exportar"
                 }
 
                 return true;
@@ -498,7 +544,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
 
     //Método para eliminar la selección del Mes - Año
     public void eliminarMesIngresos(View view) {
-        lblFecha.setText("Seleccionar Mes");
+        lblFecha.setText("Seleccionar...");
     }
 
     public void exportarIngresos(View view) {
@@ -517,9 +563,9 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
         if (Utilidades.manejarResultadoPermisos(requestCode, permissions, grantResults, this)) {
             //Ya que los permisos de almacenamiento externo han sido otorgados, verificamos el contenido de la variable global "tipoExportar" para llamar al método "obtenerDatos"
             if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                obtenerDatos(nombreMes, "Exportar");
+                obtenerDatos(fechaSeleccionada, "Exportar");
             else if (tipoExportar.equalsIgnoreCase("PDF"))
-                obtenerDatos(nombreMes, "Exportar");
+                obtenerDatos(fechaSeleccionada, "Exportar");
         }
     }
 
@@ -530,7 +576,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
             @Override
             public void run() {
                 Utilidades.mostrarMensajePorInternetCaido(ListadoIngresosDeducciones.this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
-                obtenerDatos(nombreMes, "Mostrar");
+                obtenerDatos(fechaSeleccionada, "Mostrar");
                 swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
             }
         }, 1000);

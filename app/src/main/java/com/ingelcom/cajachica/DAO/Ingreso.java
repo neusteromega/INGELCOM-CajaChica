@@ -11,6 +11,7 @@ import com.ingelcom.cajachica.GastoIngresoRegistrado;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.StorageCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
+import com.ingelcom.cajachica.Modelos.GastosItems;
 import com.ingelcom.cajachica.Modelos.IngresosItems;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class Ingreso {
     }
 
     //Método que nos permitirá obtener todos los ingresos, pero dividiéndolos por la cuadrilla, y por el mes y año sólo si se desea filtrar los mismos
-    public void obtenerIngresos(String datoCuadrilla, String mes, FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems> callback) {
+    public void obtenerIngresos(String datoCuadrilla, String mesAnio, FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems> callback) {
         try {
             //Llamamos el método "obtenerRegistros" de "FirestoreOperaciones", le mandamos el nombre de la colección, e invocamos la interfaz "FirestoreAllDocumentsCallback"
             oper.obtenerRegistros("ingresos", new FirestoreCallbacks.FirestoreAllDocumentsCallback() {
@@ -52,29 +53,15 @@ public class Ingreso {
 
                         //Comprobamos la cuadrilla a la cual se le desea ver sus ingresos; si la cuadrilla se encuentra en el "ingreso", entrará al if, y por ende, habrán ingresos para visualizar en el ListadoIngresos
                         if (cuadrilla.equalsIgnoreCase(datoCuadrilla)) {
-                            if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si el "mes" está vacío o si contiene el texto "Seleccionar Mes", significa que no se hará ningún filtrado de ingresos por mes, y se obtendrán todos los ingresos por cuadrilla
+                            if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si el "mes" está vacío o si contiene el texto "Seleccionar Mes", significa que no se hará ningún filtrado de ingresos por mes, y se obtendrán todos los ingresos por cuadrilla
                                 IngresosItems ingreso = new IngresosItems(id, usuario, fechaHora, cuadrilla, transferencia, imagen, total); //Creamos un objeto de tipo "IngresosItems" en el cual guardamos los datos extraídos arriba
                                 listaIngresos.add(ingreso); //El objeto de tipo "IngresosItems" lo guardamos en la lista "listaIngresos"
                             }
                             else { //Si "mes" no está vacío, ni contiene el texto "Seleccionar Mes", significa que está recibiendo un mes (por ejemplo, "Julio - 2024"), por lo tanto, se está deseando filtrar los ingresos del RecyclerView por mes
-                                String fechaFormateada = Utilidades.convertirFechaAFormatoMonthYear(fechaHora); //Creamos un String donde se guarda el retorno del método utilitario "convertirFechaAFormatoMonthYear" al que le mandamos la variable "fechaHora". Este método retorna un String con el formato deseado (Mes - Año) de la fecha extraída de Firestore
-
-                                if (mes.equalsIgnoreCase(fechaFormateada)) { //Si el contenido de "mes" es igual al contenido de "fechaFormateada" (ignorando mayúsculas y minúsculas), significa que la selección del "Mes - Año" hecha por el usuario en el activity ListadoIngresos se encuentra entre las fechas de los ingresos obtenidos, por lo tanto que entre al if y pueda obtener el ingreso correspondiente al "Mes - Año" seleccionado
-                                    IngresosItems ingreso = new IngresosItems(id, usuario, fechaHora, cuadrilla, transferencia, imagen, total); //Creamos un objeto de tipo "IngresosItems" en el cual guardamos los datos extraídos arriba
-                                    listaIngresos.add(ingreso); //El objeto de tipo "IngresosItems" lo guardamos en la lista "listaIngresos"
-                                }
-                            }
-                        }
-                        else if (datoCuadrilla.isEmpty()) { //Si "datoCuadrilla" está vacío, significa que queremos obtener todos los ingresos sin filtrar
-                            if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar Mes")) { //Si el "mes" está vacío o si contiene el texto "Seleccionar Mes", significa que no se hará ningún filtrado de ingresos por mes, y se obtendrán todos los ingresos por cuadrilla
-                                IngresosItems ingreso = new IngresosItems(id, usuario, fechaHora, cuadrilla, transferencia, imagen, total); //Creamos un objeto de tipo "IngresosItems" en el cual guardamos los datos extraídos arriba
-                                listaIngresos.add(ingreso); //El objeto de tipo "IngresosItems" lo guardamos en la lista "listaIngresos"
-                            }
-                            else { //Si "mes" no está vacío, ni contiene el texto "Seleccionar Mes", significa que está recibiendo un mes (por ejemplo, "Julio - 2024"), por lo tanto, se está deseando filtrar los ingresos del RecyclerView por mes
-                                if (mes.matches("^\\d{4}$")) { //if que verifica si "mes" tiene solamente 4 digitos numéricos en su contenido, esto significa que está recibiendo sólo un año y no un Mes - Año
+                                if (mesAnio.matches("^\\d{4}$")) { //if que verifica si "mes" tiene solamente 4 digitos numéricos en su contenido, esto significa que está recibiendo sólo un año y no un Mes - Año
                                     String year = Utilidades.extraerYearDeFechaHora(fechaHora); //Creamos un String donde se guarda el retorno del método utilitario "extraerYearDeFechaHora" al que le mandamos la variable "fechaHora". Este método retorna un String con el formato deseado del año de la fecha extraída de Firestore
 
-                                    if (mes.equalsIgnoreCase(year)) { //Si el contenido de "mes" es igual al contenido de "year" (ignorando mayúsculas y minúsculas), significa que la selección del año hecha por el usuario se encuentra entre las fechas de los gastos obtenidos, por lo tanto que entre al if y pueda obtener el gasto correspondiente al año seleccionado
+                                    if (mesAnio.equalsIgnoreCase(year)) { //Si el contenido de "mes" es igual al contenido de "year" (ignorando mayúsculas y minúsculas), significa que la selección del año hecha por el usuario se encuentra entre las fechas de los gastos obtenidos, por lo tanto que entre al if y pueda obtener el gasto correspondiente al año seleccionado
                                         IngresosItems ingreso = new IngresosItems(id, usuario, fechaHora, cuadrilla, transferencia, imagen, total); //Creamos un objeto de tipo "IngresosItems" en el cual guardamos los datos extraídos arriba
                                         listaIngresos.add(ingreso); //El objeto de tipo "IngresosItems" lo guardamos en la lista "listaIngresos"lista "listaGastos"
                                     }
@@ -82,7 +69,31 @@ public class Ingreso {
                                 else {
                                     String fechaFormateada = Utilidades.convertirFechaAFormatoMonthYear(fechaHora); //Creamos un String donde se guarda el retorno del método utilitario "convertirFechaAFormatoMonthYear" al que le mandamos la variable "fechaHora". Este método retorna un String con el formato deseado (Mes - Año) de la fecha extraída de Firestore
 
-                                    if (mes.equalsIgnoreCase(fechaFormateada)) { //Si el contenido de "mes" es igual al contenido de "fechaFormateada" (ignorando mayúsculas y minúsculas), significa que la selección del "Mes - Año" hecha por el usuario en el activity ListadoIngresos se encuentra entre las fechas de los ingresos obtenidos, por lo tanto que entre al if y pueda obtener el ingreso correspondiente al "Mes - Año" seleccionado
+                                    if (mesAnio.equalsIgnoreCase(fechaFormateada)) { //Si el contenido de "mes" es igual al contenido de "fechaFormateada" (ignorando mayúsculas y minúsculas), significa que la selección del "Mes - Año" hecha por el usuario en el activity ListadoIngresos se encuentra entre las fechas de los ingresos obtenidos, por lo tanto que entre al if y pueda obtener el ingreso correspondiente al "Mes - Año" seleccionado
+                                        IngresosItems ingreso = new IngresosItems(id, usuario, fechaHora, cuadrilla, transferencia, imagen, total); //Creamos un objeto de tipo "IngresosItems" en el cual guardamos los datos extraídos arriba
+                                        listaIngresos.add(ingreso); //El objeto de tipo "IngresosItems" lo guardamos en la lista "listaIngresos"
+                                    }
+                                }
+                            }
+                        }
+                        else if (datoCuadrilla.isEmpty()) { //Si "datoCuadrilla" está vacío, significa que queremos obtener todos los ingresos sin filtrar
+                            if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si el "mes" está vacío o si contiene el texto "Seleccionar Mes", significa que no se hará ningún filtrado de ingresos por mes, y se obtendrán todos los ingresos por cuadrilla
+                                IngresosItems ingreso = new IngresosItems(id, usuario, fechaHora, cuadrilla, transferencia, imagen, total); //Creamos un objeto de tipo "IngresosItems" en el cual guardamos los datos extraídos arriba
+                                listaIngresos.add(ingreso); //El objeto de tipo "IngresosItems" lo guardamos en la lista "listaIngresos"
+                            }
+                            else { //Si "mes" no está vacío, ni contiene el texto "Seleccionar Mes", significa que está recibiendo un mes (por ejemplo, "Julio - 2024"), por lo tanto, se está deseando filtrar los ingresos del RecyclerView por mes
+                                if (mesAnio.matches("^\\d{4}$")) { //if que verifica si "mes" tiene solamente 4 digitos numéricos en su contenido, esto significa que está recibiendo sólo un año y no un Mes - Año
+                                    String year = Utilidades.extraerYearDeFechaHora(fechaHora); //Creamos un String donde se guarda el retorno del método utilitario "extraerYearDeFechaHora" al que le mandamos la variable "fechaHora". Este método retorna un String con el formato deseado del año de la fecha extraída de Firestore
+
+                                    if (mesAnio.equalsIgnoreCase(year)) { //Si el contenido de "mes" es igual al contenido de "year" (ignorando mayúsculas y minúsculas), significa que la selección del año hecha por el usuario se encuentra entre las fechas de los gastos obtenidos, por lo tanto que entre al if y pueda obtener el gasto correspondiente al año seleccionado
+                                        IngresosItems ingreso = new IngresosItems(id, usuario, fechaHora, cuadrilla, transferencia, imagen, total); //Creamos un objeto de tipo "IngresosItems" en el cual guardamos los datos extraídos arriba
+                                        listaIngresos.add(ingreso); //El objeto de tipo "IngresosItems" lo guardamos en la lista "listaIngresos"lista "listaGastos"
+                                    }
+                                }
+                                else {
+                                    String fechaFormateada = Utilidades.convertirFechaAFormatoMonthYear(fechaHora); //Creamos un String donde se guarda el retorno del método utilitario "convertirFechaAFormatoMonthYear" al que le mandamos la variable "fechaHora". Este método retorna un String con el formato deseado (Mes - Año) de la fecha extraída de Firestore
+
+                                    if (mesAnio.equalsIgnoreCase(fechaFormateada)) { //Si el contenido de "mes" es igual al contenido de "fechaFormateada" (ignorando mayúsculas y minúsculas), significa que la selección del "Mes - Año" hecha por el usuario en el activity ListadoIngresos se encuentra entre las fechas de los ingresos obtenidos, por lo tanto que entre al if y pueda obtener el ingreso correspondiente al "Mes - Año" seleccionado
                                         IngresosItems ingreso = new IngresosItems(id, usuario, fechaHora, cuadrilla, transferencia, imagen, total); //Creamos un objeto de tipo "IngresosItems" en el cual guardamos los datos extraídos arriba
                                         listaIngresos.add(ingreso); //El objeto de tipo "IngresosItems" lo guardamos en la lista "listaIngresos"
                                     }

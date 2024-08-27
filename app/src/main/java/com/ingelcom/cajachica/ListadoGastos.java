@@ -134,7 +134,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         vpGastos.setAdapter(vpAdapter); //Asignamos el adaptador al vpGastos
     }
 
-    private void obtenerDatosExportar(String mes) {
+    private void obtenerDatosExportar(String mesAnio) {
         try {
             switch (nombreActivity) { //Dependiendo del "nombreActivity" que se recibe de la pantalla anterior, obtenemos los gastos para exportar de diferentes maneras
                 case "ListadoGastosEmpleado":
@@ -146,7 +146,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                                 String cuadrilla = (String) documento.get("Cuadrilla"); //Obtenemos la cuadrilla de "documento"
 
                                 //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla del usuario actual, el rol vacío ya que no queremos filtrar por rol y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de la cuadrilla y por los supervisores a la cuadrilla
-                                gast.obtenerGastos(cuadrilla, "", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                                gast.obtenerGastos(cuadrilla, "", mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                                     @Override
                                     public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por cuadrilla
                                         if (items != null) {//Si "items" no es null, que entre al if
@@ -163,7 +163,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                                             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
                                                 @Override
                                                 public void run() {
-                                                    if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar...")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                                    if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
                                                         if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                             exp.exportarGastosExcel(finalItems, "_" + cuadrilla); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                                         else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
@@ -171,9 +171,9 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                                                     }
                                                     else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
                                                         if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
-                                                            exp.exportarGastosExcel(finalItems, "_" + cuadrilla + "_" + mes); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                                            exp.exportarGastosExcel(finalItems, "_" + cuadrilla + "_" + mesAnio); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                                         else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
-                                                            exp.exportarGastosPDF(finalItems, "_" + cuadrilla + "_" + mes); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                                            exp.exportarGastosPDF(finalItems, "_" + cuadrilla + "_" + mesAnio); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                                     }
 
                                                     if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
@@ -200,7 +200,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
 
                 case "ListadoGastosAdmin":
                     //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla recibida del activity anterior, el rol vacío ya que no queremos filtrar por rol y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de la cuadrilla y por los supervisores a la cuadrilla
-                    gast.obtenerGastos(nombreCuadrilla, "", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                    gast.obtenerGastos(nombreCuadrilla, "", mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                         @Override
                         public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por cuadrilla
                             if (items != null) {//Si "items" no es null, que entre al if
@@ -217,7 +217,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
                                     @Override
                                     public void run() {
-                                        if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar...")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                        if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
                                             if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                 exp.exportarGastosExcel(finalItems, "_" + nombreCuadrilla); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
@@ -225,9 +225,9 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                                         }
                                         else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
                                             if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
-                                                exp.exportarGastosExcel(finalItems, "_" + nombreCuadrilla + "_" + mes); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                                exp.exportarGastosExcel(finalItems, "_" + nombreCuadrilla + "_" + mesAnio); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
-                                                exp.exportarGastosPDF(finalItems, "_" + nombreCuadrilla + "_" + mes); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                                exp.exportarGastosPDF(finalItems, "_" + nombreCuadrilla + "_" + mesAnio); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                         }
 
                                         if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
@@ -246,7 +246,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
 
                 case "ListadoGastosTodos":
                     //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla vacía porque queremos obtener todos los gastos, el rol vacío ya que no queremos filtrar por rol y el "mes". Con esto se podrán obtener todos los gastos hechos en todas las cuadrillas por los empleados y supervisores
-                    gast.obtenerGastos("", "", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                    gast.obtenerGastos("", "", mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                         @Override
                         public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos sin filtro
                             if (items != null) {//Si "items" no es null, que entre al if
@@ -263,7 +263,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
                                     @Override
                                     public void run() {
-                                        if (mes.isEmpty() || mes.equalsIgnoreCase("Seleccionar...")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                        if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
                                             if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                 exp.exportarGastosExcel(finalItems, "Generales"); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
@@ -271,9 +271,9 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                                         }
                                         else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
                                             if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
-                                                exp.exportarGastosExcel(finalItems, "Generales_" + mes); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                                exp.exportarGastosExcel(finalItems, "Generales_" + mesAnio); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
-                                                exp.exportarGastosPDF(finalItems, "Generales_" + mes); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
+                                                exp.exportarGastosPDF(finalItems, "Generales_" + mesAnio); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                         }
 
                                         if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
