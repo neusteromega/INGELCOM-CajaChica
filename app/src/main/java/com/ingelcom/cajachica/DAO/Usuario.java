@@ -55,8 +55,13 @@ public class Usuario {
                             correo = "Sin Correo";
                         }
 
-                        //Filtramos solo los empleados con rol "Empleado"
-                        if (rol.equalsIgnoreCase("Empleado")) {
+                        if (tipo.equalsIgnoreCase("Empleados")) { //Si "tipo" contiene el texto "Empleados", filtramos solo los empleados con rol "Empleado"
+                            if (rol.equalsIgnoreCase("Empleado")) {
+                                EmpleadosItems empleado = new EmpleadosItems(nombre, correo, cuadrilla, identidad, telefono, rol, estado); //Creamos un objeto de tipo "EmpleadosItems" en el cual guardamos los datos extraídos arriba
+                                listaEmpleados.add(empleado); //El objeto de tipo "EmpleadosItems" lo guardamos en la lista "listaEmpleados"
+                            }
+                        }
+                        else if (tipo.equalsIgnoreCase("Todos")) { //En cambio, si "tipo" contiene el texto "Todos", no hacemos filtrado
                             EmpleadosItems empleado = new EmpleadosItems(nombre, correo, cuadrilla, identidad, telefono, rol, estado); //Creamos un objeto de tipo "EmpleadosItems" en el cual guardamos los datos extraídos arriba
                             listaEmpleados.add(empleado); //El objeto de tipo "EmpleadosItems" lo guardamos en la lista "listaEmpleados"
                         }

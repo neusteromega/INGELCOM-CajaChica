@@ -164,7 +164,7 @@
                         <ImageView
                             android:id="@+id/imgAbrirFechaLG"
                             android:layout_width="11sp"
-                            android:layout_height="20sp"
+                            android:layout_height="19sp"
                             android:layout_marginRight="19sp"
                             android:contentDescription="@string/descripcion"
                             app:srcCompat="@mipmap/ico_gris_expandirabajo" />
@@ -174,7 +174,7 @@
                         android:id="@+id/btnEliminarFechaLG"
                         android:layout_width="25sp"
                         android:layout_height="25sp"
-                        android:layout_marginLeft="15sp"
+                        android:layout_marginLeft="5sp"
                         android:contentDescription="@string/descripcion"
                         android:onClick="eliminarMesGastos"
                         app:srcCompat="@mipmap/ico_azul_eliminar"
@@ -201,7 +201,7 @@
                     android:id="@+id/imgUsuarioCompraLG"
                     android:layout_width="40sp"
                     android:layout_height="40sp"
-                    app:srcCompat="@mipmap/ico_azul_nombreapellido" />
+                    app:srcCompat="@mipmap/ico_azul_tipocompra" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -215,7 +215,6 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:onClick="mostrarMesesAnios"
                         android:orientation="horizontal"
                         android:visibility="gone">
 
@@ -225,8 +224,10 @@
                             android:layout_height="50sp"
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
+                            android:ellipsize="end"
                             android:fontFamily="@font/montserrat_bold"
                             android:gravity="center|left"
+                            android:maxLines="1"
                             android:paddingLeft="15sp"
                             android:paddingRight="10sp"
                             android:text="Seleccionar..."
@@ -236,7 +237,7 @@
                         <ImageView
                             android:id="@+id/imgAbrirUsuarioCompraLG"
                             android:layout_width="11sp"
-                            android:layout_height="20sp"
+                            android:layout_height="19sp"
                             android:layout_marginRight="19sp"
                             android:contentDescription="@string/descripcion"
                             app:srcCompat="@mipmap/ico_gris_expandirabajo" />
@@ -255,7 +256,7 @@
                         android:id="@+id/btnEliminarUsuarioCompraLG"
                         android:layout_width="25sp"
                         android:layout_height="25sp"
-                        android:layout_marginLeft="15sp"
+                        android:layout_marginLeft="5sp"
                         android:contentDescription="@string/descripcion"
                         android:onClick="eliminarMesGastos"
                         app:srcCompat="@mipmap/ico_azul_eliminar"

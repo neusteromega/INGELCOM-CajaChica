@@ -23,6 +23,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ingelcom.cajachica.Adaptadores.VPGastosAdapter;
+import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.DAO.Gasto;
 import com.ingelcom.cajachica.DAO.Usuario;
 import com.ingelcom.cajachica.Fragmentos.FragGastosCuadrilla;
@@ -48,9 +50,10 @@ import java.util.Map;
 
 public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, PopupMenu.OnMenuItemClickListener {
 
-    private TextView btnReintentarConexion, lblTitulo, btnMes, btnAnio, lblFecha, lblLineaCuadrilla, lblLineaSupervisores;
+    private TextView btnReintentarConexion, lblTitulo, btnMes, btnAnio, lblFecha, lblUserCompra, lblLineaCuadrilla, lblLineaSupervisores;
     private Spinner spUserCompra;
-    private LinearLayout llAbrirUserCompra;
+    private LinearLayout llUserCompra, llAbrirUserCompra;
+    private ImageView imgUserCompra;
     private String nombreActivity, nombreCuadrilla, fechaSeleccionada = "", tipoFecha = "Mes", tipoExportar;
     private ViewPager2 vpGastos;
     private SwipeRefreshLayout swlRecargar;
@@ -64,6 +67,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
     private Gasto gast = new Gasto(ListadoGastos.this);
     private Usuario usu = new Usuario(ListadoGastos.this);
     private Exportaciones exp = new Exportaciones(ListadoGastos.this);
+    private FirestoreOperaciones oper = new FirestoreOperaciones();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,10 +105,13 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         btnMes = findViewById(R.id.lblMesLG);
         btnAnio = findViewById(R.id.lblAnioLG);
         lblFecha = findViewById(R.id.lblFechaLG);
+        lblUserCompra = findViewById(R.id.lblAbrirUsuarioCompraLG);
         lblLineaCuadrilla = findViewById(R.id.lblCuadrillaLineaLG);
         lblLineaSupervisores = findViewById(R.id.lblSupervisoresLineaLG);
         spUserCompra = findViewById(R.id.spUsuarioCompraLG);
+        llUserCompra = findViewById(R.id.LLUsuarioCompraLG);
         llAbrirUserCompra = findViewById(R.id.LLAbrirUsuarioCompraLG);
+        imgUserCompra = findViewById(R.id.imgUsuarioCompraLG);
         vpGastos = findViewById(R.id.vpListadoGastos); //Relacionamos la variable "vpGastos" con el ViewPager
         swlRecargar = findViewById(R.id.swipeRefreshLayoutLG);
         viewNoInternet = findViewById(R.id.viewNoInternetLG);
@@ -123,14 +130,21 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         switch (nombreActivity) { //Según el texto de "nombreActivity" que se recibe de la pantalla anterior, establecemos los elementos gráficos de este Activity
             case "ListadoGastosEmpleado":
                 lblTitulo.setText("Listado de Gastos");
+                llUserCompra.setVisibility(View.GONE);
                 break;
 
             case "ListadoGastosAdmin":
                 lblTitulo.setText(nombreCuadrilla); //Establecemos el nombre de la cuadrilla en el titulo
+                lblUserCompra.setText("Seleccionar Categoría");
+                imgUserCompra.setImageResource(R.mipmap.ico_azul_tipocompra); //Asignamos el icono de tipoCompra ya que en "ListadoGastosAdmin" se filtrarán los gastos por tipo de compra
+                inicializarSpinners("TipoCompra");
                 break;
 
             case "ListadoGastosTodos":
                 lblTitulo.setText("Todos los Gastos");
+                lblUserCompra.setText("Seleccionar Usuario");
+                imgUserCompra.setImageResource(R.mipmap.ico_azul_nombreapellido); //Asignamos el icono de nombreApellido (o de Usuario) ya que en "ListadoGastosTodos" se filtrarán los gastos por usuario
+                inicializarSpinners("Usuario");
                 break;
         }
 
@@ -138,6 +152,55 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
 
         VPGastosAdapter vpAdapter = new VPGastosAdapter(this, nombreCuadrilla, nombreActivity); //Creamos un objeto de "VPGastosAdapter" y le mandamos el contexto "this" de este Activity, el nombre de la cuadrilla y el nombre del Activity
         vpGastos.setAdapter(vpAdapter); //Asignamos el adaptador al vpGastos
+    }
+
+    private void inicializarSpinners(String tipo) {
+        if (tipo.equalsIgnoreCase("TipoCompra")) {
+            try {
+                oper.obtenerRegistrosCampo("tipoCompras", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
+                    @Override
+                    public void onCallback(List<String> lista) {
+                        //Ordenamos la "lista" alfabéticamente llamando al método utilitario "ordenarListaPorAlfabetico" donde enviamos la lista, un String vacío ("") y el orden ascendente. El String vacío es para indicar que el "nombreCampo" por el cual se desea realizar el orden de la lista, en este caso no existe ya que es una lista sencilla y no de una clase
+                        lista = Utilidades.ordenarListaPorAlfabetico(lista, "", "Ascendente");
+
+                        //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(ListadoGastos.this, R.layout.spinner_items, lista);
+                        spUserCompra.setAdapter(adapter); //Asignamos el adapter al Spinner "spUserCompra"
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.w("Activity", "Error al obtener los tipos de compras.", e);
+                    }
+                });
+            }
+            catch (Exception e) {
+                Log.w("ObtenerTipoCompras", e);
+            }
+        }
+        else if (tipo.equalsIgnoreCase("Usuario")) {
+            try {
+                oper.obtenerRegistrosCampo("usuarios", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
+                    @Override
+                    public void onCallback(List<String> lista) {
+                        //Ordenamos la "lista" alfabéticamente llamando al método utilitario "ordenarListaPorAlfabetico" donde enviamos la lista, un String vacío ("") y el orden ascendente. El String vacío es para indicar que el "nombreCampo" por el cual se desea realizar el orden de la lista, en este caso no existe ya que es una lista sencilla y no de una clase
+                        lista = Utilidades.ordenarListaPorAlfabetico(lista, "", "Ascendente");
+
+                        //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(ListadoGastos.this, R.layout.spinner_items, lista);
+                        spUserCompra.setAdapter(adapter); //Asignamos el adapter al Spinner "spUserCompra"
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.w("Activity", "Error al obtener los usuarios.", e);
+                    }
+                });
+            }
+            catch (Exception e) {
+                Log.w("ObtenerUsuarios", e);
+            }
+        }
     }
 
     private void obtenerDatosExportar(String mesAnio) {
