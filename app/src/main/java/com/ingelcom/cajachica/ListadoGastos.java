@@ -129,7 +129,10 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         switch (nombreActivity) { //Según el texto de "nombreActivity" que se recibe de la pantalla anterior, establecemos los elementos gráficos de este Activity
             case "ListadoGastosEmpleado":
                 lblTitulo.setText("Listado de Gastos");
-                llUserCompra.setVisibility(View.GONE);
+                imgUserCompra.setImageResource(R.mipmap.ico_azul_tipocompra); //Asignamos el icono de tipoCompra ya que en "ListadoGastosEmpleado" se filtrarán los gastos por tipo de compra
+                lblUserCompra.setText("Seleccionar Categoría");
+                inicializarSpinners("TipoCompra");
+                //llUserCompra.setVisibility(View.GONE);
                 break;
 
             case "ListadoGastosAdmin":
@@ -266,7 +269,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                                 String cuadrilla = (String) documento.get("Cuadrilla"); //Obtenemos la cuadrilla de "documento"
 
                                 //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla del usuario actual, el rol vacío ya que no queremos filtrar por rol y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de la cuadrilla y por los supervisores a la cuadrilla
-                                gast.obtenerGastos(cuadrilla, "", "", "", mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                                gast.obtenerGastos(cuadrilla, "", "", userCompra, mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                                     @Override
                                     public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por cuadrilla
                                         if (items != null) {//Si "items" no es null, que entre al if
@@ -320,7 +323,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
 
                 case "ListadoGastosAdmin":
                     //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla recibida del activity anterior, el rol vacío ya que no queremos filtrar por rol y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de la cuadrilla y por los supervisores a la cuadrilla
-                    gast.obtenerGastos(nombreCuadrilla, "", "", "", mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                    gast.obtenerGastos(nombreCuadrilla, "", "", userCompra, mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                         @Override
                         public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por cuadrilla
                             if (items != null) {//Si "items" no es null, que entre al if
@@ -366,7 +369,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
 
                 case "ListadoGastosTodos":
                     //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla vacía porque queremos obtener todos los gastos, el rol vacío ya que no queremos filtrar por rol y el "mes". Con esto se podrán obtener todos los gastos hechos en todas las cuadrillas por los empleados y supervisores
-                    gast.obtenerGastos("", "", "", "", mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                    gast.obtenerGastos("", "", userCompra, "", mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                         @Override
                         public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos sin filtro
                             if (items != null) {//Si "items" no es null, que entre al if
