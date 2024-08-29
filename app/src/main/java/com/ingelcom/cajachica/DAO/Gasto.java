@@ -106,14 +106,14 @@ public class Gasto {
                             }
                         }
                         else if (datoCuadrilla.isEmpty() && datoRol.isEmpty()) { //Si "datoCuadrilla" y "datoRol" están vacíos, significa que queremos obtener todos los gastos sin filtrar (Esto se usa en FragAdmInicio y en ListadoGastos para Exportaciones)
-                            if (datoCompra.isEmpty()) {
+                            if (datoUsuario.isEmpty()) {
                                 GastosItems gasto = filtrarGastos(mesAnio, id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, imagen, total); //Creamos un objeto de tipo "GastosItems" donde guardamos el retorno del método "filtrarGastos" de abajo
 
                                 if (gasto != null)
                                     listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
                             }
                             else {
-                                if (datoCompra.equalsIgnoreCase(tipoCompra)) {
+                                if (datoUsuario.equalsIgnoreCase(usuario)) {
                                     GastosItems gasto = filtrarGastos(mesAnio, id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, imagen, total); //Creamos un objeto de tipo "GastosItems" donde guardamos el retorno del método "filtrarGastos" de abajo
 
                                     if (gasto != null)
