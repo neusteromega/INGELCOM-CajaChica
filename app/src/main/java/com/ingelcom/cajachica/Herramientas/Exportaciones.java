@@ -1,15 +1,22 @@
 package com.ingelcom.cajachica.Herramientas;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.FileProvider;
 
 import com.ingelcom.cajachica.Modelos.GastosItems;
 import com.ingelcom.cajachica.Modelos.IngresosItems;
@@ -85,7 +92,10 @@ public class Exportaciones {
             Bitmap bitmap = draw.getBitmap(); //Creamos un "Bitmap" del objeto "draw" con la imagen. Un Bitmap representa la imagen en un formato que se puede manipular o guardar, lo cual no es posible directamente con un Drawable, por eso se debe convertir
             fileOutputStream = new FileOutputStream(nuevoArchivo); //Con "fileOutputStream" inicializamos el flujo de salida para escribir datos en el "nuevoArchivo"
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream); //Comprimimos el Bitmap y lo escribimos en el archivo especificado por "fileOutputStream". Recibe el formato de compresión (Bitmap.CompressFormat.JPEG en este caso), y la calidad de la compresión, que varía de 0 a 100 (donde 100 significa calidad máxima sin pérdida)
+
+            crearNotificacionImagen(nuevoArchivo);
             Toast.makeText(contexto, "IMAGEN GUARDADA EN LA CARPETA DE IMÁGENES", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
+
             fileOutputStream.flush(); //Garantizamos que todos los datos en el buffer del "FileOutputStream" se escriban físicamente en el archivo
             fileOutputStream.close(); //Cerramos el flujo de salida
         }
@@ -164,6 +174,7 @@ public class Exportaciones {
             fileOut.flush(); //Garantizamos que todos los datos en el buffer del "FileOutputStream" se escriban físicamente en el archivo
             fileOut.close(); //Cerramos el flujo de salida
 
+            crearNotificacionExcel(nuevoArchivo);
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
         catch (Exception e) {
@@ -251,6 +262,7 @@ public class Exportaciones {
             document.close(); //Cerramos el documento PDF finalizando la escritura del archivo
             fos.close(); //Cerramos el flujo de salida
 
+            crearNotificacionPDF(nuevoArchivo);
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
         catch (Exception e) {
@@ -318,6 +330,7 @@ public class Exportaciones {
             fileOut.flush(); //Garantizamos que todos los datos en el buffer del "FileOutputStream" se escriban físicamente en el archivo
             fileOut.close(); //Cerramos el flujo de salida
 
+            crearNotificacionExcel(nuevoArchivo);
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
         catch (Exception e) {
@@ -402,6 +415,7 @@ public class Exportaciones {
             document.close(); //Cerramos el documento PDF finalizando la escritura del archivo
             fos.close(); //Cerramos el flujo de salida
 
+            crearNotificacionPDF(nuevoArchivo);
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
         catch (Exception e) {
@@ -409,5 +423,107 @@ public class Exportaciones {
             Log.e("CrearPDF", "Error al crear el PDF", e);
             Toast.makeText(contexto, "ERROR AL CREAR EL ARCHIVO PDF", Toast.LENGTH_LONG).show(); //Mostramos mensaje de error
         }
+    }
+
+    private void crearNotificacionImagen(File archivo) {
+        //Obtenemos una instancia del servicio del sistema llamado NotificationManager, que es responsable de gestionar las notificaciones en Android
+        NotificationManager notificationManager = (NotificationManager) contexto.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        //Definimos dos variables, "canalId" y "nombreCanal", que representan el identificador único y el nombre del canal de notificación, respectivamente. Estos canales de notificación son necesarios en dispositivos que ejecutan Android 8 (Oreo) o superior
+        String canalId = "canal_descarga_imagen";
+        String nombreCanal = "Descargas de Imagen";
+
+        //Este if sólo se ejecuta si la versión de Android del dispositivo es Android 8 o superior (Esto para evitar errores en la creación de la notificación)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(canalId, nombreCanal, NotificationManager.IMPORTANCE_DEFAULT); // Creamos un "NotificationChannel" con un ID, un nombre de canal y una importancia ("IMPORTANCE_DEFAULT", que establece la prioridad de la notificación)
+            notificationManager.createNotificationChannel(channel); // Luego, el "channel" se registra en el NotificationManager mediante el método "createNotificationChannel". Los canales permiten al usuario personalizar el comportamiento de las notificaciones (como el sonido o la vibración)
+        }
+
+        Uri archivoUri = FileProvider.getUriForFile(contexto, contexto.getPackageName() + ".provider", archivo); //Obtenemos el URI del archivo. Usamos "FileProvider.getUriForFile()" para obtener un URI seguro que apunte al archivo que se desea abrir. El "FileProvider" facilita el acceso a archivos de una manera segura, respetando los permisos
+        Intent intent = new Intent(Intent.ACTION_VIEW); //Creamos un Intent con la acción "ACTION_VIEW", lo que significa que el sistema intentará abrir el archivo con la aplicación adecuada
+        intent.setDataAndType(archivoUri, "image/jpeg"); //Especificamos el tipo MIME del archivo ("image/jpeg" para archivos JPEG)
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //Agregamos la bandera "FLAG_GRANT_READ_URI_PERMISSION" al Intent, lo que otorga temporalmente permisos de lectura al archivo para la aplicación que lo abra
+
+        //Creamos un "PendingIntent" que encapsula el "Intent" de arriba para abrir la imagen. Este PendingIntent será utilizado cuando el usuario toque la notificación
+        PendingIntent pendingIntent = PendingIntent.getActivity(contexto, 0, intent, PendingIntent.FLAG_IMMUTABLE); //Usamos "PendingIntent.FLAG_IMMUTABLE" el cual es un flag que indica que el PendingIntent no se podrá modificar una vez se ha creado; esta es una práctica recomendada para garantizar la seguridad y es obligatoria en dispositivos que ejecutan Android 12 (API 31) o superior
+
+        //Construimos la notificación. Aquí se usa la clase "NotificationCompat.Builder" para construir la notificación, y se pasa el contexto y el ID del canal de notificación
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(contexto, canalId)
+                .setSmallIcon(android.R.drawable.stat_sys_download_done) //Icono
+                .setContentTitle("Imagen Guardada") //Título
+                .setContentText("La imagen se ha guardado correctamente") //Texto indicativo
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT) //Establecemos una prioridad. "NotificationCompat.PRIORITY_DEFAULT" indica que la notificación tiene una importancia normal
+                .setContentIntent(pendingIntent) //Establecemos el "PendingIntent" creado anteriormente con setContentIntent, que permitirá al usuario abrir la imagen cuando toque la notificación
+                .setAutoCancel(true); //Aseguramos que la notificación se descartará automáticamente cuando el usuario toque la notificación
+
+        notificationManager.notify(3, builder.build()); //Utilizamos el "NotificationManager" para mostrar la notificación construida. El primer parámetro, 3, es un ID único para la notificación de una imagen que permite al sistema identificarla
+    }
+
+    private void crearNotificacionExcel(File archivo) {
+        //Obtenemos una instancia del servicio del sistema llamado NotificationManager, que es responsable de gestionar las notificaciones en Android
+        NotificationManager notificationManager = (NotificationManager) contexto.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        //Definimos dos variables, "canalId" y "nombreCanal", que representan el identificador único y el nombre del canal de notificación, respectivamente. Estos canales de notificación son necesarios en dispositivos que ejecutan Android 8 (Oreo) o superior
+        String canalId = "canal_descarga";
+        String nombreCanal = "Descargas";
+
+        //Este if sólo se ejecuta si la versión de Android del dispositivo es Android 8 o superior (Esto para evitar errores en la creación de la notificación)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(canalId, nombreCanal, NotificationManager.IMPORTANCE_DEFAULT); //Creamos un "NotificationChannel" con un ID, un nombre de canal y una importancia ("IMPORTANCE_DEFAULT", que establece la prioridad de la notificación)
+            notificationManager.createNotificationChannel(channel); //Luego, el "channel" se registra en el NotificationManager mediante el método "createNotificationChannel". Los canales permiten al usuario personalizar el comportamiento de las notificaciones (como el sonido o la vibración)
+        }
+
+        Uri archivoUri = FileProvider.getUriForFile(contexto, contexto.getPackageName() + ".provider", archivo); //Obtenemos el URI del archivo. Usamos "FileProvider.getUriForFile()" para obtener un URI seguro que apunte al archivo que se desea abrir. El "FileProvider" facilita el acceso a archivos de una manera segura, respetando los permisos
+        Intent intent = new Intent(Intent.ACTION_VIEW); //Creamos un Intent con la acción "ACTION_VIEW", lo que significa que el sistema intentará abrir el archivo con la aplicación adecuada
+        intent.setDataAndType(archivoUri, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"); //Especificamos el tipo MIME del archivo ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", que es el tipo para archivos Excel)
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //Agregamos la bandera "FLAG_GRANT_READ_URI_PERMISSION" al Intent, lo que otorga temporalmente permisos de lectura al archivo para la aplicación que lo abra
+
+        //Creamos un "PendingIntent" que encapsula el "Intent" de arriba para abrir el archivo. Este PendingIntent será utilizado cuando el usuario toque la notificación
+        PendingIntent pendingIntent = PendingIntent.getActivity(contexto, 0, intent, PendingIntent.FLAG_IMMUTABLE); //Usamos "PendingIntent.FLAG_IMMUTABLE" el cual es un flag que indica que el PendingIntent no se podrá modificar una vez se ha creado; esta es una práctica recomendada para garantizar la seguridad y es obligatoria en dispositivos que ejecutan Android 12 (API 31) o superior
+
+        //Construimos la notificación. Aquí se usa la clase "NotificationCompat.Builder" para construir la notificación, y se pasa el contexto y el ID del canal de notificación
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(contexto, canalId)
+                .setSmallIcon(android.R.drawable.stat_sys_download_done) //Icono
+                .setContentTitle("Descarga Completada") //Titulo
+                .setContentText("El archivo de Excel se ha guardado correctamente") //Texto indicativo
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT) //Establecemos una prioridad. "NotificationCompat.PRIORITY_DEFAULT" indica que la notificación tiene una importancia normal
+                .setContentIntent(pendingIntent) //Establecemos el "PendingIntent" creado anteriormente con setContentIntent, que permitirá al usuario abrir el archivo Excel cuando toque la notificación
+                .setAutoCancel(true); //Aseguramos que la notificación se descartará automáticamente cuando el usuario toque la notificación
+
+        notificationManager.notify(1, builder.build()); //Utilizamos el "NotificationManager" para mostrar la notificación construida. El primer parámetro, 1, es un ID único para la notificación de un archivo Excel que permite al sistema identificarla
+    }
+
+    private void crearNotificacionPDF(File archivo) {
+        //Obtenemos una instancia del servicio del sistema llamado NotificationManager, que es responsable de gestionar las notificaciones en Android
+        NotificationManager notificationManager = (NotificationManager) contexto.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        //Definimos dos variables, "canalId" y "nombreCanal", que representan el identificador único y el nombre del canal de notificación, respectivamente. Estos canales de notificación son necesarios en dispositivos que ejecutan Android 8 (Oreo) o superior
+        String canalId = "canal_descarga_pdf";
+        String nombreCanal = "Descargas PDF";
+
+        //Este if sólo se ejecuta si la versión de Android del dispositivo es Android 8 o superior (Esto para evitar errores en la creación de la notificación)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(canalId, nombreCanal, NotificationManager.IMPORTANCE_DEFAULT); //Creamos un "NotificationChannel" con un ID, un nombre de canal y una importancia ("IMPORTANCE_DEFAULT", que establece la prioridad de la notificación)
+            notificationManager.createNotificationChannel(channel); //Luego, el "channel" se registra en el NotificationManager mediante el método "createNotificationChannel". Los canales permiten al usuario personalizar el comportamiento de las notificaciones (como el sonido o la vibración)
+        }
+
+        Uri archivoUri = FileProvider.getUriForFile(contexto, contexto.getPackageName() + ".provider", archivo); //Obtenemos el URI del archivo. Usamos "FileProvider.getUriForFile()" para obtener un URI seguro que apunte al archivo que se desea abrir. El "FileProvider" facilita el acceso a archivos de una manera segura, respetando los permisos
+        Intent intent = new Intent(Intent.ACTION_VIEW); //Creamos un Intent con la acción "ACTION_VIEW", lo que significa que el sistema intentará abrir el archivo con la aplicación adecuada
+        intent.setDataAndType(archivoUri, "application/pdf"); //Especificamos el tipo MIME del archivo ("application/pdf", que es el tipo para archivos Excel)
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //Agregamos la bandera "FLAG_GRANT_READ_URI_PERMISSION" al Intent, lo que otorga temporalmente permisos de lectura al archivo para la aplicación que lo abra
+
+        //Creamos un "PendingIntent" que encapsula el "Intent" de arriba para abrir el archivo. Este PendingIntent será utilizado cuando el usuario toque la notificación
+        PendingIntent pendingIntent = PendingIntent.getActivity(contexto, 0, intent, PendingIntent.FLAG_IMMUTABLE); //Usamos "PendingIntent.FLAG_IMMUTABLE" el cual es un flag que indica que el PendingIntent no se podrá modificar una vez se ha creado; esta es una práctica recomendada para garantizar la seguridad y es obligatoria en dispositivos que ejecutan Android 12 (API 31) o superior
+
+        //Construimos la notificación. Aquí se usa la clase "NotificationCompat.Builder" para construir la notificación, y se pasa el contexto y el ID del canal de notificación
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(contexto, canalId)
+                .setSmallIcon(android.R.drawable.stat_sys_download_done) //Icono
+                .setContentTitle("Descarga Completada") //Título
+                .setContentText("El archivo PDF se ha guardado correctamente") //Texto indicativo
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT) //Establecemos una prioridad. "NotificationCompat.PRIORITY_DEFAULT" indica que la notificación tiene una importancia normal
+                .setContentIntent(pendingIntent) //Establecemos el "PendingIntent" creado anteriormente con setContentIntent, que permitirá al usuario abrir el archivo PDF cuando toque la notificación
+                .setAutoCancel(true); //Aseguramos que la notificación se descartará automáticamente cuando el usuario toque la notificación
+
+        notificationManager.notify(2, builder.build()); //Utilizamos el "NotificationManager" para mostrar la notificación construida. El primer parámetro, 2, es un ID único para la notificación de un archivo PDF que permite al sistema identificarla
     }
 }
