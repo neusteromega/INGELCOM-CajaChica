@@ -3,6 +3,7 @@ package com.ingelcom.cajachica;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
@@ -27,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -51,13 +53,14 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
     private Spinner spUserCompra;
     private LinearLayout llUserCompra, llAbrirUserCompra;
     private ImageView imgUserCompra;
-    private String nombreActivity, nombreCuadrilla, fechaSeleccionada = "", tipoFecha = "Mes", userCompra = "", tipoExportar;
-    private boolean userCompraSelectVisible = true;
+    private NestedScrollView nsvListadoGastos;
     private ViewPager2 vpGastos;
     private SwipeRefreshLayout swlRecargar;
     private View viewNoInternet;
     private ProgressBar pbReintentarConexion;
     private ProgressDialog progressDialog;
+    private String nombreActivity, nombreCuadrilla, fechaSeleccionada = "", tipoFecha = "Mes", userCompra = "", tipoExportar;
+    private boolean userCompraSelectVisible = true;
 
     //Instancia de la clase "SharedViewGastosModel" que nos ayuda a compartir datos con diferentes componentes de la interfaz de usuario, como ser fragmentos y actividades y que estos datos sobreviven a cambios de configuración como las rotaciones de pantalla
     private SharedViewGastosModel svmGastos;
@@ -77,7 +80,9 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         cambioFecha();
         cambioUserCompra();
         cambioViewPager();
+        desactivarSwipeEnScroll();
         desactivarSwipeEnViewPager();
+        desactivarScrollEnViewPager();
 
         //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
         btnReintentarConexion.setOnClickListener(v -> {
@@ -111,6 +116,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         llUserCompra = findViewById(R.id.LLUsuarioCompraLG);
         llAbrirUserCompra = findViewById(R.id.LLAbrirUsuarioCompraLG);
         imgUserCompra = findViewById(R.id.imgUsuarioCompraLG);
+        nsvListadoGastos = findViewById(R.id.nsvListadoGastos);
         vpGastos = findViewById(R.id.vpListadoGastos); //Relacionamos la variable "vpGastos" con el ViewPager
         swlRecargar = findViewById(R.id.swipeRefreshLayoutLG);
         viewNoInternet = findViewById(R.id.viewNoInternetLG);
@@ -663,12 +669,43 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
             @Override
             public void onPageScrollStateChanged(int state) {
                 super.onPageScrollStateChanged(state);
-                // Desactivar SwipeRefreshLayout cuando se arrastra el ViewPager
+                //Desactivar SwipeRefreshLayout cuando se arrastra el ViewPager
                 if (state == ViewPager2.SCROLL_STATE_DRAGGING) {
                     swlRecargar.setEnabled(false);
                 }
                 else {
                     swlRecargar.setEnabled(true);
+                }
+            }
+        });
+    }
+
+    private void desactivarScrollEnViewPager() {
+        // Desactivamos el ScrollView mientras se arrastra el ViewPager2
+        vpGastos.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+                if (state == ViewPager2.SCROLL_STATE_DRAGGING) {
+                    // Desactivar el desplazamiento del ScrollView
+                    nsvListadoGastos.requestDisallowInterceptTouchEvent(true);
+                } else {
+                    // Volver a habilitar el desplazamiento del ScrollView
+                    nsvListadoGastos.requestDisallowInterceptTouchEvent(false);
+                }
+            }
+        });
+    }
+
+    private void desactivarSwipeEnScroll() {
+        nsvListadoGastos.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (scrollY > oldScrollY || scrollY < oldScrollY) {
+                    swlRecargar.setEnabled(false); //Deshabilitamos el SwipeRefreshLayout durante el scroll
+                }
+                else {
+                    swlRecargar.setEnabled(true); //Volvemos a habilitar el SwipeRefreshLayout cuando se detiene el scroll
                 }
             }
         });

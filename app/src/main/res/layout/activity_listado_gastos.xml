@@ -16,332 +16,334 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nsvListadoGastos"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="match_parent">
 
             <LinearLayout
-                android:id="@+id/LLEncabezadoLG"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30sp"
-                android:gravity="center|left"
-                android:orientation="horizontal"
-                android:paddingLeft="20sp"
-                android:paddingRight="20sp">
-
-                <ImageView
-                    android:id="@+id/imgRegresarLG"
-                    android:layout_width="25sp"
-                    android:layout_height="match_parent"
-                    android:contentDescription="@string/descripcion"
-                    android:onClick="retroceder"
-                    app:srcCompat="@mipmap/ico_azul_regresar"
-                    tools:ignore="TouchTargetSizeCheck" />
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/LLEncabezadoLG"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="30sp"
+                    android:gravity="center|left"
+                    android:orientation="horizontal"
+                    android:paddingLeft="20sp"
+                    android:paddingRight="20sp">
+
+                    <ImageView
+                        android:id="@+id/imgRegresarLG"
+                        android:layout_width="25sp"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/descripcion"
+                        android:onClick="retroceder"
+                        app:srcCompat="@mipmap/ico_azul_regresar"
+                        tools:ignore="TouchTargetSizeCheck" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/lblTituloLG"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40sp"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:gravity="center"
+                            android:text="Listado de Gastos"
+                            android:textColor="@color/clr_fuente_primario"
+                            android:textSize="25sp" />
+
+                        <ImageView
+                            android:id="@+id/imgExportarLG"
+                            android:layout_width="25sp"
+                            android:layout_height="match_parent"
+                            android:contentDescription="@string/descripcion"
+                            android:onClick="exportarGastos"
+                            app:srcCompat="@mipmap/ico_azul_exportar"
+                            tools:ignore="TouchTargetSizeCheck" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/LLTiempoLG"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15sp"
+                    android:layout_marginTop="30sp"
+                    android:layout_marginRight="15sp"
+                    android:layout_marginBottom="15sp"
+                    android:background="@drawable/clr_casillablanca_redonda"
+                    android:elevation="5sp"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/lblTituloLG"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/lblMesLG"
+                        android:layout_width="match_parent"
+                        android:layout_height="40sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/clr_casilladegradadoazul_redonda"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center"
+                        android:onClick="elegirMes"
+                        android:text="Mes"
+                        android:textColor="@color/clr_fuente_terciario"
+                        android:textSize="20sp"
+                        tools:ignore="TouchTargetSizeCheck" />
+
+                    <TextView
+                        android:id="@+id/lblAnioLG"
+                        android:layout_width="match_parent"
                         android:layout_height="40sp"
                         android:layout_weight="1"
                         android:fontFamily="@font/montserrat_bold"
                         android:gravity="center"
-                        android:text="Listado de Gastos"
-                        android:textColor="@color/clr_fuente_primario"
-                        android:textSize="25sp" />
-
-                    <ImageView
-                        android:id="@+id/imgExportarLG"
-                        android:layout_width="25sp"
-                        android:layout_height="match_parent"
-                        android:contentDescription="@string/descripcion"
-                        android:onClick="exportarGastos"
-                        app:srcCompat="@mipmap/ico_azul_exportar"
+                        android:onClick="elegirAnio"
+                        android:text="Año"
+                        android:textColor="@color/clr_fuente_secundario"
+                        android:textSize="20sp"
                         tools:ignore="TouchTargetSizeCheck" />
                 </LinearLayout>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/LLTiempoLG"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15sp"
-                android:layout_marginTop="30sp"
-                android:layout_marginRight="15sp"
-                android:layout_marginBottom="15sp"
-                android:background="@drawable/clr_casillablanca_redonda"
-                android:elevation="5sp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/lblMesLG"
-                    android:layout_width="match_parent"
-                    android:layout_height="40sp"
-                    android:layout_weight="1"
-                    android:background="@drawable/clr_casilladegradadoazul_redonda"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center"
-                    android:onClick="elegirMes"
-                    android:text="Mes"
-                    android:textColor="@color/clr_fuente_terciario"
-                    android:textSize="20sp"
-                    tools:ignore="TouchTargetSizeCheck" />
-
-                <TextView
-                    android:id="@+id/lblAnioLG"
-                    android:layout_width="match_parent"
-                    android:layout_height="40sp"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center"
-                    android:onClick="elegirAnio"
-                    android:text="Año"
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="20sp"
-                    tools:ignore="TouchTargetSizeCheck" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/LLFechaLG"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15sp"
-                android:layout_marginTop="15sp"
-                android:layout_marginRight="15sp"
-                android:layout_marginBottom="15sp"
-                android:background="@drawable/clr_casillablanca_cuadrada"
-                android:elevation="5sp"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingLeft="12sp"
-                android:paddingRight="12sp">
-
-                <ImageView
-                    android:id="@+id/imgFechaLG"
-                    android:layout_width="40sp"
-                    android:layout_height="40sp"
-                    app:srcCompat="@mipmap/ico_azul_fecha" />
-
                 <LinearLayout
+                    android:id="@+id/LLFechaLG"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center|right"
-                    android:orientation="horizontal">
+                    android:layout_marginLeft="15sp"
+                    android:layout_marginTop="15sp"
+                    android:layout_marginRight="15sp"
+                    android:layout_marginBottom="15sp"
+                    android:background="@drawable/clr_casillablanca_cuadrada"
+                    android:elevation="5sp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingLeft="12sp"
+                    android:paddingRight="12sp">
+
+                    <ImageView
+                        android:id="@+id/imgFechaLG"
+                        android:layout_width="40sp"
+                        android:layout_height="40sp"
+                        app:srcCompat="@mipmap/ico_azul_fecha" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:onClick="mostrarMesesAnios"
+                        android:gravity="center|right"
                         android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/lblFechaLG"
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:onClick="mostrarMesesAnios"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/lblFechaLG"
+                                android:layout_width="match_parent"
+                                android:layout_height="50sp"
+                                android:layout_weight="1"
+                                android:background="@android:color/transparent"
+                                android:fontFamily="@font/montserrat_bold"
+                                android:gravity="center|left"
+                                android:paddingLeft="15sp"
+                                android:paddingRight="10sp"
+                                android:text="Seleccionar..."
+                                android:textColor="@color/clr_fuente_secundario"
+                                android:textSize="16sp" />
+
+                            <ImageView
+                                android:id="@+id/imgAbrirFechaLG"
+                                android:layout_width="11sp"
+                                android:layout_height="19sp"
+                                android:layout_marginRight="19sp"
+                                android:contentDescription="@string/descripcion"
+                                app:srcCompat="@mipmap/ico_gris_expandirabajo" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/btnEliminarFechaLG"
+                            android:layout_width="25sp"
+                            android:layout_height="25sp"
+                            android:layout_marginLeft="5sp"
+                            android:contentDescription="@string/descripcion"
+                            android:onClick="eliminarMesGastos"
+                            app:srcCompat="@mipmap/ico_azul_eliminar"
+                            tools:ignore="TouchTargetSizeCheck" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/LLUsuarioCompraLG"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15sp"
+                    android:layout_marginRight="15sp"
+                    android:layout_marginBottom="30sp"
+                    android:background="@drawable/clr_casillablanca_cuadrada"
+                    android:elevation="5sp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingLeft="12sp"
+                    android:paddingRight="12sp">
+
+                    <ImageView
+                        android:id="@+id/imgUsuarioCompraLG"
+                        android:layout_width="40sp"
+                        android:layout_height="40sp"
+                        app:srcCompat="@mipmap/ico_azul_tipocompra" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center|right"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:id="@+id/LLAbrirUsuarioCompraLG"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:onClick="mostrarSpinner"
+                            android:orientation="horizontal"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:id="@+id/lblAbrirUsuarioCompraLG"
+                                android:layout_width="match_parent"
+                                android:layout_height="50sp"
+                                android:layout_weight="1"
+                                android:background="@android:color/transparent"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/montserrat_bold"
+                                android:gravity="center|left"
+                                android:maxLines="1"
+                                android:paddingLeft="15sp"
+                                android:paddingRight="10sp"
+                                android:text="Seleccionar..."
+                                android:textColor="@color/clr_fuente_secundario"
+                                android:textSize="16sp" />
+
+                            <ImageView
+                                android:id="@+id/imgAbrirUsuarioCompraLG"
+                                android:layout_width="11sp"
+                                android:layout_height="19sp"
+                                android:layout_marginRight="19sp"
+                                android:contentDescription="@string/descripcion"
+                                app:srcCompat="@mipmap/ico_gris_expandirabajo" />
+                        </LinearLayout>
+
+                        <Spinner
+                            android:id="@+id/spUsuarioCompraLG"
                             android:layout_width="match_parent"
                             android:layout_height="50sp"
                             android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:fontFamily="@font/montserrat_bold"
-                            android:gravity="center|left"
-                            android:paddingLeft="15sp"
-                            android:paddingRight="10sp"
-                            android:text="Seleccionar..."
-                            android:textColor="@color/clr_fuente_secundario"
-                            android:textSize="16sp" />
+                            android:contentDescription="@string/descripcion"
+                            android:paddingLeft="10sp"
+                            tools:listitem="@layout/spinner_usercompraitems" />
 
                         <ImageView
-                            android:id="@+id/imgAbrirFechaLG"
-                            android:layout_width="11sp"
-                            android:layout_height="19sp"
-                            android:layout_marginRight="19sp"
+                            android:id="@+id/btnEliminarUsuarioCompraLG"
+                            android:layout_width="25sp"
+                            android:layout_height="25sp"
+                            android:layout_marginLeft="5sp"
                             android:contentDescription="@string/descripcion"
-                            app:srcCompat="@mipmap/ico_gris_expandirabajo" />
+                            android:onClick="eliminarSeleccionSpinner"
+                            app:srcCompat="@mipmap/ico_azul_eliminar"
+                            tools:ignore="TouchTargetSizeCheck" />
+
                     </LinearLayout>
 
-                    <ImageView
-                        android:id="@+id/btnEliminarFechaLG"
-                        android:layout_width="25sp"
-                        android:layout_height="25sp"
-                        android:layout_marginLeft="5sp"
-                        android:contentDescription="@string/descripcion"
-                        android:onClick="eliminarMesGastos"
-                        app:srcCompat="@mipmap/ico_azul_eliminar"
-                        tools:ignore="TouchTargetSizeCheck" />
                 </LinearLayout>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/LLUsuarioCompraLG"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15sp"
-                android:layout_marginRight="15sp"
-                android:layout_marginBottom="30sp"
-                android:background="@drawable/clr_casillablanca_cuadrada"
-                android:elevation="5sp"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingLeft="12sp"
-                android:paddingRight="12sp">
-
-                <ImageView
-                    android:id="@+id/imgUsuarioCompraLG"
-                    android:layout_width="40sp"
-                    android:layout_height="40sp"
-                    app:srcCompat="@mipmap/ico_azul_tipocompra" />
-
                 <LinearLayout
+                    android:id="@+id/LLListados"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center|right"
                     android:orientation="horizontal">
 
                     <LinearLayout
-                        android:id="@+id/LLAbrirUsuarioCompraLG"
+                        android:id="@+id/LLCuadrillaLG"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:gravity="center"
-                        android:onClick="mostrarSpinner"
-                        android:orientation="horizontal"
-                        android:visibility="gone">
+                        android:onClick="gastosCuadrilla"
+                        android:orientation="vertical"
+                        tools:ignore="TouchTargetSizeCheck">
 
                         <TextView
-                            android:id="@+id/lblAbrirUsuarioCompraLG"
+                            android:id="@+id/lblCuadrilla"
                             android:layout_width="match_parent"
-                            android:layout_height="50sp"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:ellipsize="end"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8sp"
                             android:fontFamily="@font/montserrat_bold"
-                            android:gravity="center|left"
-                            android:maxLines="1"
-                            android:paddingLeft="15sp"
-                            android:paddingRight="10sp"
-                            android:text="Seleccionar..."
-                            android:textColor="@color/clr_fuente_secundario"
-                            android:textSize="16sp" />
+                            android:gravity="center"
+                            android:text="Cuadrilla"
+                            android:textColor="@color/clr_fuente_primario"
+                            android:textSize="20sp" />
 
-                        <ImageView
-                            android:id="@+id/imgAbrirUsuarioCompraLG"
-                            android:layout_width="11sp"
-                            android:layout_height="19sp"
-                            android:layout_marginRight="19sp"
-                            android:contentDescription="@string/descripcion"
-                            app:srcCompat="@mipmap/ico_gris_expandirabajo" />
+                        <TextView
+                            android:id="@+id/lblCuadrillaLineaLG"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/clr_casillaazul_separador"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:gravity="center"
+                            android:text="Buscar Usuario"
+                            android:textSize="1sp" />
                     </LinearLayout>
 
-                    <Spinner
-                        android:id="@+id/spUsuarioCompraLG"
+                    <LinearLayout
+                        android:id="@+id/LLSupervisoresLG"
                         android:layout_width="match_parent"
-                        android:layout_height="50sp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:contentDescription="@string/descripcion"
-                        android:paddingLeft="10sp"
-                        tools:listitem="@layout/spinner_usercompraitems" />
+                        android:onClick="gastosSupervisores"
+                        android:orientation="vertical"
+                        tools:ignore="TouchTargetSizeCheck">
 
-                    <ImageView
-                        android:id="@+id/btnEliminarUsuarioCompraLG"
-                        android:layout_width="25sp"
-                        android:layout_height="25sp"
-                        android:layout_marginLeft="5sp"
-                        android:contentDescription="@string/descripcion"
-                        android:onClick="eliminarSeleccionSpinner"
-                        app:srcCompat="@mipmap/ico_azul_eliminar"
-                        tools:ignore="TouchTargetSizeCheck" />
+                        <TextView
+                            android:id="@+id/lblSupervisores"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8sp"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:gravity="center"
+                            android:text="Supervisores"
+                            android:textColor="@color/clr_fuente_primario"
+                            android:textSize="20sp" />
 
+                        <TextView
+                            android:id="@+id/lblSupervisoresLineaLG"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/clr_casillaazul_separador"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:gravity="center"
+                            android:text="Buscar Usuario"
+                            android:textSize="1sp" />
+                    </LinearLayout>
                 </LinearLayout>
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/vpListadoGastos"
+                    android:layout_width="match_parent"
+                    android:layout_height="800sp" />
 
             </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/LLListados"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:id="@+id/LLCuadrillaLG"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:onClick="gastosCuadrilla"
-                    android:orientation="vertical"
-                    tools:ignore="TouchTargetSizeCheck">
-
-                    <TextView
-                        android:id="@+id/lblCuadrilla"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8sp"
-                        android:fontFamily="@font/montserrat_bold"
-                        android:gravity="center"
-                        android:text="Cuadrilla"
-                        android:textColor="@color/clr_fuente_primario"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/lblCuadrillaLineaLG"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/clr_casillaazul_separador"
-                        android:fontFamily="@font/montserrat_bold"
-                        android:gravity="center"
-                        android:text="Buscar Usuario"
-                        android:textSize="1sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/LLSupervisoresLG"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:onClick="gastosSupervisores"
-                    android:orientation="vertical"
-                    tools:ignore="TouchTargetSizeCheck">
-
-                    <TextView
-                        android:id="@+id/lblSupervisores"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8sp"
-                        android:fontFamily="@font/montserrat_bold"
-                        android:gravity="center"
-                        android:text="Supervisores"
-                        android:textColor="@color/clr_fuente_primario"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/lblSupervisoresLineaLG"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/clr_casillaazul_separador"
-                        android:fontFamily="@font/montserrat_bold"
-                        android:gravity="center"
-                        android:text="Buscar Usuario"
-                        android:textSize="1sp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/vpListadoGastos"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <include
