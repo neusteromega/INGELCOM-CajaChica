@@ -33,7 +33,7 @@ public class Gasto {
     }
 
     //Método que nos permitirá obtener todos los gastos, pero diviéndolos por los roles de Empleado y Administrador, por la cuadrilla, y por el mes y año sólo si se desea filtrar los mismos
-    public void obtenerGastos(String datoCuadrilla, String datoRol, String mesAnio, FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems> callback) { //Recibe la cuadrilla, el rol y el mes para la obtención de los gastos, más el callback de la interfaz "FirestoreAllSpecialDocumentsCallback<GastosItems>"
+    public void obtenerGastos(String datoCuadrilla, String datoRol, String datoUsuario, String datoCompra, String mesAnio, FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems> callback) { //Recibe la cuadrilla, el rol y el mes para la obtención de los gastos, más el callback de la interfaz "FirestoreAllSpecialDocumentsCallback<GastosItems>"
         try {
             //Llamamos el método "obtenerRegistros" de "FirestoreOperaciones", le mandamos el nombre de la colección, e invocamos la interfaz "FirestoreAllDocumentsCallback"
             oper.obtenerRegistros("gastos", new FirestoreCallbacks.FirestoreAllDocumentsCallback() {
@@ -58,24 +58,44 @@ public class Gasto {
 
                         //Comprobamos la cuadrilla a la cual se le desea ver sus gastos, y el rol que en el listado de "gastosCuadrilla" será "Empleado" y en el listado de "gastosSupervisores" será "Administrador". Si ambos, cuadrilla y rol están en el gasto, entrará al if, y por ende, habrán gastos para visualizar en el ListadoGastos
                         if (cuadrilla.equalsIgnoreCase(datoCuadrilla) && rol.equalsIgnoreCase(datoRol)) {
+                            if (datoCompra.isEmpty()) {
+                                GastosItems gasto = filtrarGastos(mesAnio, id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, imagen, total); //Creamos un objeto de tipo "GastosItems" donde guardamos el retorno del método "filtrarGastos" de abajo
+
+                                if (gasto != null)
+                                    listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
+                            }
+                            else {
+                                if (datoCompra.equalsIgnoreCase(tipoCompra)) {
+                                    GastosItems gasto = filtrarGastos(mesAnio, id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, imagen, total); //Creamos un objeto de tipo "GastosItems" donde guardamos el retorno del método "filtrarGastos" de abajo
+
+                                    if (gasto != null)
+                                        listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
+                                }
+                            }
+                        }
+                        else if (datoCuadrilla.isEmpty() && rol.equalsIgnoreCase(datoRol)) { //En cambio, si "datoCuadrilla" si está vacío, pero "datoRol" no lo está, significa que queremos obtener todos los gastos sólo filtrados por rol (Esto se usa en ListadoGastosTodos y en Estadísticas)
+                            if (datoUsuario.isEmpty()) {
+                                GastosItems gasto = filtrarGastos(mesAnio, id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, imagen, total); //Creamos un objeto de tipo "GastosItems" donde guardamos el retorno del método "filtrarGastos" de abajo
+
+                                if (gasto != null)
+                                    listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
+                            }
+                            else {
+                                if (datoUsuario.equalsIgnoreCase(usuario)) {
+                                    GastosItems gasto = filtrarGastos(mesAnio, id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, imagen, total); //Creamos un objeto de tipo "GastosItems" donde guardamos el retorno del método "filtrarGastos" de abajo
+
+                                    if (gasto != null)
+                                        listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
+                                }
+                            }
+                        }
+                        else if (cuadrilla.equalsIgnoreCase(datoCuadrilla) && datoRol.isEmpty()) { //Si "datoRol" está vacío y "datoCuadrilla" no lo está, significa que queremos obtener todos los gastos hechos por los empleados de la cuadrilla y por los supervisores (Esto se usa en ListadoGastos para las Exportaciones)
                             GastosItems gasto = filtrarGastos(mesAnio, id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, imagen, total); //Creamos un objeto de tipo "GastosItems" donde guardamos el retorno del método "filtrarGastos" de abajo
 
                             if (gasto != null)
                                 listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
                         }
-                        else if (datoCuadrilla.isEmpty() && rol.equalsIgnoreCase(datoRol)) { //En cambio, si "datoCuadrilla" si está vacío, pero "datoRol" no lo está, significa que queremos obtener todos los gastos sólo filtrados por rol
-                            GastosItems gasto = filtrarGastos(mesAnio, id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, imagen, total); //Creamos un objeto de tipo "GastosItems" donde guardamos el retorno del método "filtrarGastos" de abajo
-
-                            if (gasto != null)
-                                listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
-                        }
-                        else if (cuadrilla.equalsIgnoreCase(datoCuadrilla) && datoRol.isEmpty()) { //Si "datoRol" está vacío y "datoCuadrilla" no lo está, significa que queremos obtener todos los gastos hechos por los empleados de la cuadrilla y por los supervisores
-                            GastosItems gasto = filtrarGastos(mesAnio, id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, imagen, total); //Creamos un objeto de tipo "GastosItems" donde guardamos el retorno del método "filtrarGastos" de abajo
-
-                            if (gasto != null)
-                                listaGastos.add(gasto); //El objeto de tipo "GastosItems" lo guardamos en la lista "listaGastos"
-                        }
-                        else if (datoCuadrilla.isEmpty() && datoRol.isEmpty()) { //Si "datoCuadrilla" y "datoRol" están vacíos, significa que queremos obtener todos los gastos sin filtrar
+                        else if (datoCuadrilla.isEmpty() && datoRol.isEmpty()) { //Si "datoCuadrilla" y "datoRol" están vacíos, significa que queremos obtener todos los gastos sin filtrar (Esto se usa en FragAdmInicio y en ListadoGastos para Exportaciones)
                             GastosItems gasto = filtrarGastos(mesAnio, id, fechaHora, cuadrilla, lugarCompra, tipoCompra, descripcion, numeroFactura, usuario, rol, imagen, total); //Creamos un objeto de tipo "GastosItems" donde guardamos el retorno del método "filtrarGastos" de abajo
 
                             if (gasto != null)

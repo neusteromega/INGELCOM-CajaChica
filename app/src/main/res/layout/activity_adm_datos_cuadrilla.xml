@@ -165,7 +165,7 @@
                                     android:gravity="center|left"
                                     android:paddingLeft="15sp"
                                     android:paddingRight="10sp"
-                                    android:text="Seleccionar Mes"
+                                    android:text="Seleccionar..."
                                     android:textColor="@color/clr_fuente_secundario"
                                     android:textSize="17sp" />
 

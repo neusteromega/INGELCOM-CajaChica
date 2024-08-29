@@ -159,7 +159,7 @@
                             android:paddingRight="10sp"
                             android:text="Seleccionar..."
                             android:textColor="@color/clr_fuente_secundario"
-                            android:textSize="17sp" />
+                            android:textSize="16sp" />
 
                         <ImageView
                             android:id="@+id/imgAbrirFechaLG"
@@ -215,6 +215,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
+                        android:onClick="mostrarSpinner"
                         android:orientation="horizontal"
                         android:visibility="gone">
 
@@ -232,7 +233,7 @@
                             android:paddingRight="10sp"
                             android:text="Seleccionar..."
                             android:textColor="@color/clr_fuente_secundario"
-                            android:textSize="17sp" />
+                            android:textSize="16sp" />
 
                         <ImageView
                             android:id="@+id/imgAbrirUsuarioCompraLG"
@@ -250,7 +251,7 @@
                         android:layout_weight="1"
                         android:contentDescription="@string/descripcion"
                         android:paddingLeft="10sp"
-                        tools:listitem="@layout/spinner_items" />
+                        tools:listitem="@layout/spinner_usercompraitems" />
 
                     <ImageView
                         android:id="@+id/btnEliminarUsuarioCompraLG"
@@ -258,7 +259,7 @@
                         android:layout_height="25sp"
                         android:layout_marginLeft="5sp"
                         android:contentDescription="@string/descripcion"
-                        android:onClick="eliminarMesGastos"
+                        android:onClick="eliminarSeleccionSpinner"
                         app:srcCompat="@mipmap/ico_azul_eliminar"
                         tools:ignore="TouchTargetSizeCheck" />
 

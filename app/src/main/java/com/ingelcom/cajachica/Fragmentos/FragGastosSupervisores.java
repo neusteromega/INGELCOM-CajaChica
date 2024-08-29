@@ -34,7 +34,7 @@ public class FragGastosSupervisores extends Fragment {
     private static final String ARG_NOMBRE_CUADRILLA = "cuadrilla_key";
     private static final String ARG_NOMBRE_ACTIVITY = "activity_key";
 
-    private String nombreCuadrilla, nombreActivity, fechaSeleccionada = "", recargar = "";
+    private String nombreCuadrilla, nombreActivity, fechaSeleccionada = "", userCompra = "", recargar = "";
     private RecyclerView rvGastos;
     private TextView lblTotalGastos;
     private Gasto gast;
@@ -95,7 +95,7 @@ public class FragGastosSupervisores extends Fragment {
 
                         if (nombreActivity.equalsIgnoreCase("ListadoGastosEmpleado")) { //Si "nombreActivity" contiene el texto "ListadoGastosEmpleado", quiere decir que un empleado está solicitando ver sus gastos, por lo tanto, que mande la cuadrilla obtenida del usuario actual al método "obtenerGastos"
                             //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla del usuario actual, el rol "Administrador" (ya que queremos ver los gastos hechos por los administrador a la cuadrilla) y el "mes". Con esto se podrán obtener todos los gastos hechos por los administradores a la cuadrilla del usuario actual
-                            gast.obtenerGastos(cuadrilla, "Administrador", mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                            gast.obtenerGastos(cuadrilla, "Administrador", "", userCompra, mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                                 @Override
                                 public void onCallback(List<GastosItems> items) { //En esta lista "items" están los gastos ya filtrados por cuadrilla y rol
                                     if (items != null) { //Si "items" no es null, que entre al if
@@ -113,7 +113,7 @@ public class FragGastosSupervisores extends Fragment {
                         }
                         else if (nombreActivity.equalsIgnoreCase("ListadoGastosAdmin")) { //En cambio, si "nombreActivity" contiene el texto "ListadoGastosAdmin" significa que es un admin que desea ver los gastos de una cuadrilla específica, en este caso, que mande la cuadrilla recibida como parámetro en este fragment al método "obtenerGastos"
                             //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla recibida como parámetro en este fragment, el rol "Administrador" (ya que queremos ver los gastos hechos por los administradores a la cuadrilla) y el "mes". Con esto se podrán obtener todos los gastos hechos por los administradores a la cuadrilla recibida como parámetro
-                            gast.obtenerGastos(nombreCuadrilla, "Administrador", mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                            gast.obtenerGastos(nombreCuadrilla, "Administrador", "", userCompra, mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                                 @Override
                                 public void onCallback(List<GastosItems> items) { //En esta lista "items" están los gastos ya filtrados por cuadrilla y rol
                                     if (items != null) {//Si "items" no es null, que entre al if
@@ -131,7 +131,7 @@ public class FragGastosSupervisores extends Fragment {
                         }
                         else if (nombreActivity.equalsIgnoreCase("ListadoGastosTodos")) { //Por último, si "nombreActivity" tiene el texto "ListadoGastosTodos", significa que un administrador quiere ver todos los gastos de todas las cuadrillas, y en este caso, también se manda el nombre de la cuadrilla que se recibe como parámetro al método "obtenerGastos"
                             //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla recibida como parámetro en este fragment, el rol "Administrador" (ya que queremos ver todos los gastos hechos por los administradores) y el "mes". Con esto se podrán obtener todos los gastos hechos por los administradores a la cuadrilla recibida como parámetro
-                            gast.obtenerGastos("", "Administrador", mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                            gast.obtenerGastos("", "Administrador", userCompra, "", mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                                 @Override
                                 public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por rol
                                     if (items != null) {//Si "items" no es null, que entre al if
@@ -215,6 +215,15 @@ public class FragGastosSupervisores extends Fragment {
                 public void onChanged(String fecha) { //Este método se llamará cada vez que el valor "fecha" cambie en el "LiveData<String>"
                     fechaSeleccionada = fecha;
                     obtenerGastos(fecha); //Llamamos el método "obtenerGastos" de arriba y le mandamos las instancias de las clases "Usuario" y "Gasto", y "mes" que contiene el "lblFecha" del activity ListadoGastos
+                }
+            });
+
+            //Llamamos el método "getUserCompra" del usando la instancia "svmGastos" de la clase "SharedViewGastosModel" que devuelve un "LiveData<String>", esto proporciona una referencia observable al valor de "userCompra"
+            svmGastos.getUserCompra().observe(getViewLifecycleOwner(), new Observer<String>() {
+                @Override
+                public void onChanged(String s) { //Este método se llamará cada vez que el valor "userCompra" cambie en el "LiveData<String>"
+                    userCompra = s; //Guardamos el texto recibido en la variable global "userCompra"
+                    obtenerGastos(fechaSeleccionada);
                 }
             });
 

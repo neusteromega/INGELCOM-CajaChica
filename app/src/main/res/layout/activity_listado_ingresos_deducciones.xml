@@ -159,7 +159,7 @@
                             android:paddingRight="10sp"
                             android:text="Seleccionar..."
                             android:textColor="@color/clr_fuente_secundario"
-                            android:textSize="17sp" />
+                            android:textSize="16sp" />
 
                         <ImageView
                             android:id="@+id/imgAbrirFechaLI"

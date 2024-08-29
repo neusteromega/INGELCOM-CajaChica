@@ -179,7 +179,7 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
     private void obtenerGastos() {
         try {
             //Llamamos el método "obtenerGastos" de la clase "Gasto", le mandamos la "cuadrilla", el "rol" y el "mes" vacíos para indicar que no se haga un filtrado de gastos. Con esto se podrán obtener todos los gastos hechos por los administradores y empleados
-            gast.obtenerGastos("", "", "", new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+            gast.obtenerGastos("", "", "", "", "", new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                 @Override
                 public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos
                     //Verificamos si "items" es nulo o si está vacío. Si cumple una de estas condiciones, que oculte el recyclerview y muestre el textview indicando que no hay datos

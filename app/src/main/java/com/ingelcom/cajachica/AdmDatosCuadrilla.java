@@ -102,7 +102,7 @@ public class AdmDatosCuadrilla extends AppCompatActivity implements SwipeRefresh
     private void obtenerGastos(String mes) {
         try {
             //Llamamos el método "obtenerGastos" de la clase "Gasto", le mandamos la cuadrilla recibida en "nombreCuadrilla", el rol "Empleado" (ya que queremos ver los gastos hechos por la cuadrilla y en la cuadrilla todos los usuarios tienen rol "Empleado") y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de la cuadrilla
-            gast.obtenerGastos(nombreCuadrilla, "Empleado", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+            gast.obtenerGastos(nombreCuadrilla, "Empleado", "", "", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                 @Override
                 public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por cuadrilla y rol
                     if (items != null) //Si "items" no es null, que entre al if
@@ -226,7 +226,7 @@ public class AdmDatosCuadrilla extends AppCompatActivity implements SwipeRefresh
 
     //Método para eliminar la selección del Mes - Año
     public void eliminarMesTotales(View view) {
-        lblFecha.setText("Seleccionar Mes");
+        lblFecha.setText("Seleccionar...");
     }
 
     public void verIngresos(View view) {

@@ -139,7 +139,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
         try {
             if (tipoDatos.equalsIgnoreCase("Gastos")) { //Si "tipoDatos" contiene el texto "Gastos", que entre al if para obtener los gastos
                 //Llamamos el método "obtenerGastos" de la clase "Gasto", le mandamos la cuadrilla vacía, y el texto "Empleado" ya que sólo queremos obtener los gastos hechos por los empleados, y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados
-                gast.obtenerGastos("", "Empleado", fecha, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                gast.obtenerGastos("", "Empleado", "", "", fecha, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                     @Override
                     public void onCallback(List<GastosItems> items) {
                         if (items != null && !items.isEmpty()) { //Si "items" no es null, y si no está vacío, que entre al if

@@ -2,18 +2,14 @@ package com.ingelcom.cajachica;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,6 +19,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -31,19 +29,18 @@ import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ingelcom.cajachica.Adaptadores.VPGastosAdapter;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.DAO.Gasto;
 import com.ingelcom.cajachica.DAO.Usuario;
-import com.ingelcom.cajachica.Fragmentos.FragGastosCuadrilla;
 import com.ingelcom.cajachica.Herramientas.Exportaciones;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.SharedViewGastosModel;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.Modelos.GastosItems;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +51,8 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
     private Spinner spUserCompra;
     private LinearLayout llUserCompra, llAbrirUserCompra;
     private ImageView imgUserCompra;
-    private String nombreActivity, nombreCuadrilla, fechaSeleccionada = "", tipoFecha = "Mes", tipoExportar;
+    private String nombreActivity, nombreCuadrilla, fechaSeleccionada = "", tipoFecha = "Mes", userCompra = "", tipoExportar;
+    private boolean userCompraSelectVisible = true;
     private ViewPager2 vpGastos;
     private SwipeRefreshLayout swlRecargar;
     private View viewNoInternet;
@@ -77,6 +75,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         inicializarElementos();
         establecerElementos();
         cambioFecha();
+        cambioUserCompra();
         cambioViewPager();
         desactivarSwipeEnViewPager();
 
@@ -162,10 +161,34 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                     public void onCallback(List<String> lista) {
                         //Ordenamos la "lista" alfabéticamente llamando al método utilitario "ordenarListaPorAlfabetico" donde enviamos la lista, un String vacío ("") y el orden ascendente. El String vacío es para indicar que el "nombreCampo" por el cual se desea realizar el orden de la lista, en este caso no existe ya que es una lista sencilla y no de una clase
                         lista = Utilidades.ordenarListaPorAlfabetico(lista, "", "Ascendente");
+                        List<String> listaNueva = new ArrayList<>();
+                        listaNueva.add("Seleccionar Categoría");
+                        listaNueva.addAll(lista);
 
                         //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(ListadoGastos.this, R.layout.spinner_items, lista);
-                        spUserCompra.setAdapter(adapter); //Asignamos el adapter al Spinner "spUserCompra"
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(ListadoGastos.this, R.layout.spinner_usercompraitems, listaNueva) {
+                            @Override //Este método se usa para personalizar cómo se ve cada elemento en la lista desplegable del Spinner
+                            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                                View view = super.getDropDownView(position, convertView, parent);
+
+                                if (position == 0) //Si la posición es 0, significa que es el primer elemento del Spinner
+                                    view.setVisibility(View.GONE); //Ocultamos el primer elemento en la lista desplegable
+                                else //Para los demás elementos del Spinner cuya posición no será 0
+                                    view.setVisibility(View.VISIBLE); //Nos aseguramos que dichos elementos sean visibles
+
+                                return view;
+                            }
+
+                            @Override //Este método se usa para personalizar cómo se ve el elemento actualmente seleccionado en el Spinner
+                            public View getView(int position, View convertView, ViewGroup parent) {
+                                View view = super.getView(position, convertView, parent);
+                                TextView textView = (TextView) view.findViewById(R.id.txtSpinnerUserCompra); //Obtenemos la referencia al TextView dentro del diseño del Spinner (R.layout.spinner_usercompraitems)
+
+                                return view;
+                            }
+                        };
+
+                        spUserCompra.setAdapter(adapter); //Configuramos el adaptador personalizado
                     }
 
                     @Override
@@ -185,10 +208,38 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                     public void onCallback(List<String> lista) {
                         //Ordenamos la "lista" alfabéticamente llamando al método utilitario "ordenarListaPorAlfabetico" donde enviamos la lista, un String vacío ("") y el orden ascendente. El String vacío es para indicar que el "nombreCampo" por el cual se desea realizar el orden de la lista, en este caso no existe ya que es una lista sencilla y no de una clase
                         lista = Utilidades.ordenarListaPorAlfabetico(lista, "", "Ascendente");
+                        List<String> listaNueva = new ArrayList<>();
+                        listaNueva.add("Seleccionar Usuario");
+                        listaNueva.addAll(lista);
 
                         //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(ListadoGastos.this, R.layout.spinner_items, lista);
-                        spUserCompra.setAdapter(adapter); //Asignamos el adapter al Spinner "spUserCompra"
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(ListadoGastos.this, R.layout.spinner_usercompraitems, listaNueva) {
+                            @Override //Este método se usa para personalizar cómo se ve cada elemento en la lista desplegable del Spinner
+                            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                                View view = super.getDropDownView(position, convertView, parent);
+
+                                if (position == 0) //Si la posición es 0, significa que es el primer elemento del Spinner
+                                    view.setVisibility(View.GONE); //Ocultamos el primer elemento en la lista desplegable
+                                else //Para los demás elementos del Spinner cuya posición no será 0
+                                    view.setVisibility(View.VISIBLE); //Nos aseguramos que dichos elementos sean visibles
+
+                                return view;
+                            }
+
+                            @Override //Este método se usa para personalizar cómo se ve el elemento actualmente seleccionado en el Spinner
+                            public View getView(int position, View convertView, ViewGroup parent) {
+                                View view = super.getView(position, convertView, parent);
+                                TextView textView = (TextView) view.findViewById(R.id.txtSpinnerUserCompra); //Obtenemos la referencia al TextView dentro del diseño del Spinner (R.layout.spinner_usercompraitems)
+
+                                return view;
+                            }
+                        };
+
+                        /*//Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(ListadoGastos.this, R.layout.spinner_usercompraitems, lista);
+                        spUserCompra.setAdapter(adapter); //Asignamos el adapter al Spinner "spUserCompra"*/
+
+                        spUserCompra.setAdapter(adapter); //Configuramos el adaptador personalizado
                     }
 
                     @Override
@@ -215,7 +266,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                                 String cuadrilla = (String) documento.get("Cuadrilla"); //Obtenemos la cuadrilla de "documento"
 
                                 //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla del usuario actual, el rol vacío ya que no queremos filtrar por rol y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de la cuadrilla y por los supervisores a la cuadrilla
-                                gast.obtenerGastos(cuadrilla, "", mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                                gast.obtenerGastos(cuadrilla, "", "", "", mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                                     @Override
                                     public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por cuadrilla
                                         if (items != null) {//Si "items" no es null, que entre al if
@@ -269,7 +320,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
 
                 case "ListadoGastosAdmin":
                     //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla recibida del activity anterior, el rol vacío ya que no queremos filtrar por rol y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de la cuadrilla y por los supervisores a la cuadrilla
-                    gast.obtenerGastos(nombreCuadrilla, "", mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                    gast.obtenerGastos(nombreCuadrilla, "", "", "", mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                         @Override
                         public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por cuadrilla
                             if (items != null) {//Si "items" no es null, que entre al if
@@ -315,7 +366,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
 
                 case "ListadoGastosTodos":
                     //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla vacía porque queremos obtener todos los gastos, el rol vacío ya que no queremos filtrar por rol y el "mes". Con esto se podrán obtener todos los gastos hechos en todas las cuadrillas por los empleados y supervisores
-                    gast.obtenerGastos("", "", mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
+                    gast.obtenerGastos("", "", "", "", mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                         @Override
                         public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos sin filtro
                             if (items != null) {//Si "items" no es null, que entre al if
@@ -414,6 +465,34 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         }
     }
 
+    //Método que detecta cuando el spinner "spUserCompra" cambia su selección
+    private void cambioUserCompra() {
+        try {
+            //Para detectar cuando "spUserCompra" cambia su selección, llamamos el método "setOnItemSelectedListener"
+            spUserCompra.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long id) {
+                    if (i == 0) { //Si la posición seleccionada "i" del Spinner es 0, mandamos un "" con el "svmGastos" y que "userCompra" también esté vacío
+                        userCompra = "";
+                        svmGastos.setUserCompra("");
+                    }
+                    else { //En cambio, si no es la posición 0, guardamos el texto del elemento seleccionado en "userCompra" y lo mandamos con el "svmGastos"
+                        userCompra = adapterView.getItemAtPosition(i).toString(); //Obtenemos la selección del "spUserCompra" en la variable global "userCompra"
+                        svmGastos.setUserCompra(userCompra); //Llamamos el método "setFecha" de la clase "SharedViewGastosModel" y le mandamos el contenido selecciondo del Spinner guardado en "userCompra"
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                    //Este método se ejecuta cuando no se selecciona ningún elemento
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("DetectarUserCompra", e);
+        }
+    }
+
     //Método que permite establecer las lineas bajo las palabras "Cuadrilla" y "Supervisores" cuando se arrastren los fragments del ViewPager
     private void cambioViewPager() {
         //Evento que detecta cuando el ViewPager cambia su posición o se está visualizando otro fragment en él
@@ -500,9 +579,31 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         }
     }
 
+    //Método clic que oculta el texto "Seleccionar Usuario" o "Seleccionar Categoría" y muestra el "spUserCompra"
+    public void mostrarSpinner(View view) {
+        /*llAbrirUserCompra.setVisibility(View.GONE);
+        spUserCompra.setVisibility(View.VISIBLE);
+        spUserCompra.performClick(); //Evento que abre el Spinner y muestra sus opciones
+
+        userCompraSelectVisible = false; //Guardamos un false en la variable global "userCompraSelectVisible" para indicar que el texto "Seleccionar Usuario" o "Seleccionar Categoría" está oculto
+        svmGastos.setUserCompra(spUserCompra.getSelectedItem().toString());*/
+    }
+
     //Método para eliminar la selección del Mes - Año
     public void eliminarMesGastos(View view) {
         lblFecha.setText("Seleccionar...");
+    }
+
+    //Método que permita mostrar el texto "Seleccionar Usuario" o "Seleccionar Categoría" y ocultar el "spUserCompra"
+    public void eliminarSeleccionSpinner(View view) {
+        /*llAbrirUserCompra.setVisibility(View.VISIBLE);
+        spUserCompra.setVisibility(View.GONE);
+
+        userCompraSelectVisible = true; //Guardamos un true en la variable global "userCompraSelectVisible" para indicar que el texto "Seleccionar Usuario" o "Seleccionar Categoría" está visible
+        */;
+
+        spUserCompra.setSelection(0);
+        svmGastos.setUserCompra("");
     }
 
     private void desactivarSwipeEnViewPager() {
