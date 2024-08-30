@@ -185,6 +185,16 @@ public class Usuario {
     public void editarUsuario(String activityPerfil, String nombre, String identidadVieja, String identidadNueva, String telefono, String cuadrilla, String rol) {
         if (!nombre.isEmpty() && !identidadNueva.isEmpty() && !telefono.isEmpty()) {
             try {
+                validarIdentidadOriginal(identidadNueva, new FirestoreCallbacks.FirestoreValidationCallback() {
+                    @Override
+                    public void onResultado(boolean esValido) {
+                        if (!esValido) { //Si "esValido" es false, quiere decir que se encontró la identidad y ya pertenece a otro usuario
+                            Toast.makeText(contexto, "LA IDENTIDAD YA PERTENECE A OTRO USUARIO", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+                });
+
                 Map<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos
 
                 //Guardamos las claves y datos en el HashMap
@@ -269,6 +279,29 @@ public class Usuario {
         }
         catch (Exception e) {
             Log.w("BuscarIdentidad", e);
+        }
+    }
+
+    public void validarIndentidadAlEditar(String identidad, String correo, FirestoreCallbacks.FirestoreValidationCallback callback) {
+        try {
+            oper.obtenerUnRegistro("usuarios", "Identidad", identidad, new FirestoreCallbacks.FirestoreDocumentCallback() {
+                @Override
+                public void onCallback(Map<String, Object> documento) {
+                    if (documento != null) {
+                        String correoFirestore = (String) documento.get("Correo");
+
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("BuscarIdentidadYCorreo", e);
         }
     }
 }

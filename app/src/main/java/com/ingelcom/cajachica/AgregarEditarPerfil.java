@@ -350,7 +350,8 @@ public class AgregarEditarPerfil extends AppCompatActivity {
                                 if (tipo.equalsIgnoreCase("Administrador")) {
                                     setResult(RESULT_OK); //Con esto llamamos el método "onActivityResult" del Activity anterior (Perfil) y le mandamos "RESULT_OK" (setResult llama al "onActivityResult" de Perfil ya que si entra a este método "editarPerfilAdminEmpleado", si o sí está programado que el activity anterior fue "Perfil" y ahí iniciamos el activity actual con "startActivityForResult"). En el método "onActivityResult" se finaliza con "finish" el activity Perfil, lo finalizamos sólo cuando el usuario haya actualizado los datos de su perfil. Esto lo hacemos para evitar conflictos con el botón de retroceso entre pantallas
                                     usu.editarUsuario("PerfilAdmin", nombre, identidadVieja, identidadNueva, telefono, "", "");
-                                } else if (tipo.equalsIgnoreCase("Empleado")) {
+                                }
+                                else if (tipo.equalsIgnoreCase("Empleado")) {
                                     setResult(RESULT_OK); //Con esto llamamos el método "onActivityResult" del Activity anterior (Perfil) y le mandamos "RESULT_OK" (setResult llama al "onActivityResult" de Perfil ya que si entra a este método "editarPerfilAdminEmpleado", si o sí está programado que el activity anterior fue "Perfil" y ahí iniciamos el activity actual con "startActivityForResult"). En el método "onActivityResult" se finaliza con "finish" el activity Perfil, lo finalizamos sólo cuando el usuario haya actualizado los datos de su perfil. Esto lo hacemos para evitar conflictos con el botón de retroceso entre pantallas
                                     usu.editarUsuario("PerfilEmpleado", nombre, identidadVieja, identidadNueva, telefono, "", "");
                                 }
