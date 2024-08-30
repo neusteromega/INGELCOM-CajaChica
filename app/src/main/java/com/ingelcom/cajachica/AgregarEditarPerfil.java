@@ -22,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.DAO.Usuario;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
@@ -42,7 +43,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
     private ImageView btnRegresar;
     private View viewNoInternet;
     private ProgressBar pbReintentarConexion;
-    private String nombreActivity, nombre, identidadVieja, telefono, cuadrilla, rol;
+    private String nombreActivity, nombre, identidadVieja, correo, telefono, cuadrilla, rol;
 
     private FirestoreOperaciones oper = new FirestoreOperaciones();
     private Usuario usu = new Usuario(AgregarEditarPerfil.this);
@@ -103,6 +104,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
             case "EditarEmpleadoAdmin":
                 nombre = Utilidades.obtenerStringExtra(this, "Nombre");
                 identidadVieja = Utilidades.obtenerStringExtra(this, "Identidad");
+                correo = Utilidades.obtenerStringExtra(this, "Correo");
                 telefono = Utilidades.obtenerStringExtra(this, "Telefono");
                 cuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
                 rol = Utilidades.obtenerStringExtra(this, "Rol");
@@ -346,14 +348,15 @@ public class AgregarEditarPerfil extends AppCompatActivity {
                         public void onCallback(Map<String, Object> documento) {
                             if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
                                 String identidadVieja = (String) documento.get("Identidad");
+                                String correoActual = (String) documento.get("Correo");
 
                                 if (tipo.equalsIgnoreCase("Administrador")) {
                                     setResult(RESULT_OK); //Con esto llamamos el método "onActivityResult" del Activity anterior (Perfil) y le mandamos "RESULT_OK" (setResult llama al "onActivityResult" de Perfil ya que si entra a este método "editarPerfilAdminEmpleado", si o sí está programado que el activity anterior fue "Perfil" y ahí iniciamos el activity actual con "startActivityForResult"). En el método "onActivityResult" se finaliza con "finish" el activity Perfil, lo finalizamos sólo cuando el usuario haya actualizado los datos de su perfil. Esto lo hacemos para evitar conflictos con el botón de retroceso entre pantallas
-                                    usu.editarUsuario("PerfilAdmin", nombre, identidadVieja, identidadNueva, telefono, "", "");
+                                    usu.editarUsuario("PerfilAdmin", nombre, correoActual, identidadVieja, identidadNueva, telefono, "", "");
                                 }
                                 else if (tipo.equalsIgnoreCase("Empleado")) {
                                     setResult(RESULT_OK); //Con esto llamamos el método "onActivityResult" del Activity anterior (Perfil) y le mandamos "RESULT_OK" (setResult llama al "onActivityResult" de Perfil ya que si entra a este método "editarPerfilAdminEmpleado", si o sí está programado que el activity anterior fue "Perfil" y ahí iniciamos el activity actual con "startActivityForResult"). En el método "onActivityResult" se finaliza con "finish" el activity Perfil, lo finalizamos sólo cuando el usuario haya actualizado los datos de su perfil. Esto lo hacemos para evitar conflictos con el botón de retroceso entre pantallas
-                                    usu.editarUsuario("PerfilEmpleado", nombre, identidadVieja, identidadNueva, telefono, "", "");
+                                    usu.editarUsuario("PerfilEmpleado", nombre, correoActual, identidadVieja, identidadNueva, telefono, "", "");
                                 }
                             }
                         }
@@ -385,7 +388,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
 
         if (Validaciones.validarNombre(nombre)) {
             if (Validaciones.validarIdentidad(identidadNueva)) {
-                usu.editarUsuario("", nombre, identidadVieja, identidadNueva, telefono, cuadrilla, rol);
+                usu.editarUsuario("", nombre, correo, identidadVieja, identidadNueva, telefono, cuadrilla, rol);
             }
             else
                 Toast.makeText(this, "LA IDENTIDAD DEBE TENER 13 NÚMEROS", Toast.LENGTH_SHORT).show();

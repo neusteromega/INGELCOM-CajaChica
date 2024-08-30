@@ -252,6 +252,7 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
                     datosEmpAdmin.put("ActivityAEP", "EditarEmpleadoAdmin");
                     datosEmpAdmin.put("Nombre", nombre);
                     datosEmpAdmin.put("Identidad", identidad);
+                    datosEmpAdmin.put("Correo", correo);
                     datosEmpAdmin.put("Telefono", telefono);
                     datosEmpAdmin.put("Cuadrilla", cuadrilla);
                     datosEmpAdmin.put("Rol", rol);

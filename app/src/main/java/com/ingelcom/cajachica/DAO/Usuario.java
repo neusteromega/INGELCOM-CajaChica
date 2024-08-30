@@ -182,56 +182,55 @@ public class Usuario {
     }
 
     //Método que nos permite editar los datos de un usuario
-    public void editarUsuario(String activityPerfil, String nombre, String identidadVieja, String identidadNueva, String telefono, String cuadrilla, String rol) {
-        if (!nombre.isEmpty() && !identidadNueva.isEmpty() && !telefono.isEmpty()) {
-            try {
-                validarIdentidadOriginal(identidadNueva, new FirestoreCallbacks.FirestoreValidationCallback() {
+    public void editarUsuario(String activityPerfil, String nombre, String correo, String identidadVieja, String identidadNueva, String telefono, String cuadrilla, String rol) {
+        try {
+            if (!nombre.isEmpty() && !identidadNueva.isEmpty() && !telefono.isEmpty()) {
+                validarIndentidadAlEditar(identidadNueva, correo, new FirestoreCallbacks.FirestoreValidationCallback() {
                     @Override
                     public void onResultado(boolean esValido) {
                         if (!esValido) { //Si "esValido" es false, quiere decir que se encontró la identidad y ya pertenece a otro usuario
                             Toast.makeText(contexto, "LA IDENTIDAD YA PERTENECE A OTRO USUARIO", Toast.LENGTH_SHORT).show();
                             return;
                         }
+
+                        Map<String, Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos
+
+                        //Guardamos las claves y datos en el HashMap
+                        datos.put("Nombre", nombre);
+                        datos.put("Identidad", identidadNueva);
+                        datos.put("Telefono", telefono);
+
+                        if (!cuadrilla.isEmpty()) //Si "cuadrilla" no está vacía, significa que un administrador está modificando un usuario, entonces que entre al if y guarde el dato de la cuadrilla en el HashMap
+                            datos.put("Cuadrilla", cuadrilla);
+                        if (!rol.isEmpty()) //Lo mismo que con la cuadrilla, si "rol" no está vacío, significa que un administrador está modificando un usuario, entonces que entre al if y guarde el dato del rol en el HashMap
+                            datos.put("Rol", rol);
+
+                        //Llamamos al método "agregarActualizarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar, el HashMap con los nuevos campos y datos (o los campos existentes para actualizar su contenido) e invocamos la interfaz "FirestoreInsertCallback"
+                        oper.agregarActualizarRegistrosColeccion("usuarios", "Identidad", identidadVieja, datos, new FirestoreCallbacks.FirestoreTextCallback() {
+                            @Override
+                            public void onSuccess(String texto) {
+                                Toast.makeText(contexto, "USUARIO MODIFICADO EXITOSAMENTE", Toast.LENGTH_SHORT).show(); //Si la actualización de los datos del usuario fue exitosa, que muestre un Toast
+
+                                if (activityPerfil.isEmpty())
+                                    Utilidades.iniciarActivity(contexto, ListadoEmpleados.class, true); //Cuando el "activityPerfil" esté vacío, significa que es un admin quien está modificando los datos de un empleado, cuando es así, mandamos al usuario al "ListadoEmpleados" y no a la pantalla Perfil del empleado ya que este última, debe recibir una "identidad" para buscar los datos del empleado, pero si lo redireccionamos desde aquí, no recibiría esa identidad
+                                else
+                                    Utilidades.iniciarActivityConString(contexto, Perfil.class, "ActivityPerfil", activityPerfil, true); //Redireccionamos al usuario al activity "Perfil" y mandamos el contenido de la variable "activityPerfil" que indica el tipo de usuario que está en la sesión actual (Empleado o administrador)
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                Toast.makeText(contexto, "ERROR AL MODIFICAR EL USUARIO", Toast.LENGTH_SHORT).show(); //Mostramos un mensaje de error en un Toast si la actualización de los datos del usuario fue errónea
+                            }
+                        });
                     }
                 });
-
-                Map<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos
-
-                //Guardamos las claves y datos en el HashMap
-                datos.put("Nombre", nombre);
-                datos.put("Identidad", identidadNueva);
-                datos.put("Telefono", telefono);
-
-                if (!cuadrilla.isEmpty()) //Si "cuadrilla" no está vacía, significa que un administrador está modificando un usuario, entonces que entre al if y guarde el dato de la cuadrilla en el HashMap
-                    datos.put("Cuadrilla", cuadrilla);
-                if (!rol.isEmpty()) //Lo mismo que con la cuadrilla, si "rol" no está vacío, significa que un administrador está modificando un usuario, entonces que entre al if y guarde el dato del rol en el HashMap
-                    datos.put("Rol", rol);
-
-                //Llamamos al método "agregarActualizarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar, el HashMap con los nuevos campos y datos (o los campos existentes para actualizar su contenido) e invocamos la interfaz "FirestoreInsertCallback"
-                oper.agregarActualizarRegistrosColeccion("usuarios", "Identidad", identidadVieja, datos, new FirestoreCallbacks.FirestoreTextCallback() {
-                    @Override
-                    public void onSuccess(String texto) {
-                        Toast.makeText(contexto, "USUARIO MODIFICADO EXITOSAMENTE", Toast.LENGTH_SHORT).show(); //Si la actualización de los datos del usuario fue exitosa, que muestre un Toast
-
-                        if (activityPerfil.isEmpty())
-                            Utilidades.iniciarActivity(contexto, ListadoEmpleados.class, true); //Cuando el "activityPerfil" esté vacío, significa que es un admin quien está modificando los datos de un empleado, cuando es así, mandamos al usuario al "ListadoEmpleados" y no a la pantalla Perfil del empleado ya que este última, debe recibir una "identidad" para buscar los datos del empleado, pero si lo redireccionamos desde aquí, no recibiría esa identidad
-                        else
-                            Utilidades.iniciarActivityConString(contexto, Perfil.class, "ActivityPerfil", activityPerfil, true); //Redireccionamos al usuario al activity "Perfil" y mandamos el contenido de la variable "activityPerfil" que indica el tipo de usuario que está en la sesión actual (Empleado o administrador)
-                    }
-
-                    @Override
-                    public void onFailure(Exception e) {
-                        Toast.makeText(contexto, "ERROR AL MODIFICAR EL USUARIO", Toast.LENGTH_SHORT).show(); //Mostramos un mensaje de error en un Toast si la actualización de los datos del usuario fue errónea
-                    }
-                });
-
             }
-            catch (Exception e) {
-                Log.w("ActualizarUsuario", e);
+            else {
+                    Toast.makeText(contexto, "TODOS LOS CAMPOS DEBEN ESTAR LLENOS", Toast.LENGTH_SHORT).show();
             }
         }
-        else {
-            Toast.makeText(contexto, "TODOS LOS CAMPOS DEBEN ESTAR LLENOS", Toast.LENGTH_SHORT).show();
+        catch (Exception e) {
+            Log.w("ActualizarUsuario", e);
         }
     }
 
@@ -259,20 +258,21 @@ public class Usuario {
     //Método que permite validar si la identidad del usuario a ingresar ya está usada por otro usuario o si está disponible
     public void validarIdentidadOriginal(String identidad, FirestoreCallbacks.FirestoreValidationCallback callback) { //Recibe la identidad e invoca la interfaz "FirestoreValidationCallback"
         try {
+            //Llamamos el método "obtenerUnRegistro" de la clase FirestoreOperaciones, le indicamos que debe buscar en la colección "usuarios", el campo "Identidad" que coincida con el contenido de la variable "identidad" que se recibe como parámetro
             oper.obtenerUnRegistro("usuarios", "Identidad", identidad, new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
                 public void onCallback(Map<String, Object> documento) {
                     if (documento == null) { //Si "documento" es nulo, quiere decir que no encontró la identidad entre los usuarios
                         callback.onResultado(true); //Llamamos a la interfaz "callBack" y le mandamos "true" para indicar que la identidad ingresada está disponible
                     }
-                    else { //Pero si "documento" no es nulo, quiere decir que si encontró la identidad
+                    else { //Pero si "documento" no es nulo, significa que si encontró un usuario con la identidad
                         callback.onResultado(false); //Llamamos a la interfaz "callBack" y le mandamos "false" para indicar que la identidad ingresada está ocupada
                     }
                 }
 
                 @Override
                 public void onFailure(Exception e) {
-                    Log.w("Verificar Identidad", "Error al obtener la identidad: ", e);
+                    Log.w("VerificarIdentidad", "Error al obtener la identidad: ", e);
                     callback.onResultado(false); //Devolvemos false por cualquier error
                 }
             });
@@ -282,21 +282,32 @@ public class Usuario {
         }
     }
 
-    public void validarIndentidadAlEditar(String identidad, String correo, FirestoreCallbacks.FirestoreValidationCallback callback) {
+    //Método que permite validar si la identidad del usuario a editar ya está usada por otro usuario o si está disponible
+    public void validarIndentidadAlEditar(String identidad, String correo, FirestoreCallbacks.FirestoreValidationCallback callback) { //Recibe la identidad, el correo del usuario a editar, e invoca la interfaz "FirestoreValidationCallback"
         try {
+            //Llamamos el método "obtenerUnRegistro" de la clase FirestoreOperaciones, le indicamos que debe buscar en la colección "usuarios", el campo "Identidad" que coincida con el contenido de la variable "identidad" que se recibe como parámetro
             oper.obtenerUnRegistro("usuarios", "Identidad", identidad, new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
                 public void onCallback(Map<String, Object> documento) {
-                    if (documento != null) {
+                    if (documento != null) { //Si "documento" no es nulo, significa que si encontró un usuario con la identidad
+                        //Una vez obtenidos los datos del usuario con la identidad guardada en la variable "identidad", vamos a obtener su correo
                         String correoFirestore = (String) documento.get("Correo");
 
-
+                        //Si el "correo" que se recibe como parámetro es igual al "correoFirestore" extraído de los datos del usuario encontrado con la "identidad", significa que el usuario que está editando su perfil está colocando su misma identidad (o en otras palabras, no está cambiando su identidad, está dejándola igual), en este caso, tenemos que devolver un true en el "callback" para permitir al usuario editar los datos de su perfil ya que la identidad establecida en el EditText en "AgregarEditarPerfil" es la misma del usuario y no pertenece a otro usuario
+                        if (correo.equalsIgnoreCase(correoFirestore))
+                            callback.onResultado(true); //Llamamos a la interfaz "callBack" y le mandamos "true" para indicar que la identidad está disponible
+                        else
+                            callback.onResultado(false); //Llamamos a la interfaz "callBack" y le mandamos "true" para indicar que la identidad está ocupada
+                    }
+                    else { //Pero si "documento" es nulo, quiere decir que no encontró la identidad entre los usuarios
+                        callback.onResultado(true); //Llamamos a la interfaz "callBack" y le mandamos "true" para indicar que la identidad está disponible
                     }
                 }
 
                 @Override
                 public void onFailure(Exception e) {
-
+                    Log.w("VerificarIdentidadCorreo", "Error al obtener la identidad: ", e);
+                    callback.onResultado(false); //Devolvemos false por cualquier error
                 }
             });
         }
