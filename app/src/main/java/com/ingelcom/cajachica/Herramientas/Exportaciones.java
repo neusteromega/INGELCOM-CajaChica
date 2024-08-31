@@ -93,7 +93,7 @@ public class Exportaciones {
             fileOutputStream = new FileOutputStream(nuevoArchivo); //Con "fileOutputStream" inicializamos el flujo de salida para escribir datos en el "nuevoArchivo"
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream); //Comprimimos el Bitmap y lo escribimos en el archivo especificado por "fileOutputStream". Recibe el formato de compresión (Bitmap.CompressFormat.JPEG en este caso), y la calidad de la compresión, que varía de 0 a 100 (donde 100 significa calidad máxima sin pérdida)
 
-            crearNotificacionImagen(nuevoArchivo);
+            crearNotificacionImagen(nuevoArchivo, nombre);
             Toast.makeText(contexto, "IMAGEN GUARDADA EN LA CARPETA DE IMÁGENES", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
 
             fileOutputStream.flush(); //Garantizamos que todos los datos en el buffer del "FileOutputStream" se escriban físicamente en el archivo
@@ -425,7 +425,7 @@ public class Exportaciones {
         }
     }
 
-    private void crearNotificacionImagen(File archivo) {
+    private void crearNotificacionImagen(File archivo, String nombreArchivo) {
         //Obtenemos una instancia del servicio del sistema llamado NotificationManager, que es responsable de gestionar las notificaciones en Android
         NotificationManager notificationManager = (NotificationManager) contexto.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -451,12 +451,13 @@ public class Exportaciones {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(contexto, canalId)
                 .setSmallIcon(android.R.drawable.stat_sys_download_done) //Icono
                 .setContentTitle("Imagen Guardada") //Título
-                .setContentText("La imagen se ha guardado correctamente") //Texto indicativo
+                .setContentText("La imagen " + nombreArchivo + " se ha guardado con éxito") //Texto indicativo
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT) //Establecemos una prioridad. "NotificationCompat.PRIORITY_DEFAULT" indica que la notificación tiene una importancia normal
                 .setContentIntent(pendingIntent) //Establecemos el "PendingIntent" creado anteriormente con setContentIntent, que permitirá al usuario abrir la imagen cuando toque la notificación
                 .setAutoCancel(true); //Aseguramos que la notificación se descartará automáticamente cuando el usuario toque la notificación
 
-        notificationManager.notify(3, builder.build()); //Utilizamos el "NotificationManager" para mostrar la notificación construida. El primer parámetro, 3, es un ID único para la notificación de una imagen que permite al sistema identificarla
+        int notificacionID = nombreArchivo.hashCode(); //Generamos un ID único para la notificación basada en el nombre del archivo
+        notificationManager.notify(notificacionID, builder.build()); //Utilizamos el "NotificationManager" para mostrar la notificación construida. Establecemos "notificacionID" como un ID único para la notificación de una imagen que permite al sistema identificarla
     }
 
     private void crearNotificacionExcel(File archivo, String nombreArchivo) {

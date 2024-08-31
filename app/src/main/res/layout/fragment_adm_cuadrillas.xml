@@ -50,7 +50,8 @@
                     android:background="@drawable/clr_casillaazul_separador"
                     android:fontFamily="@font/montserrat_bold"
                     android:gravity="center"
-                    android:textSize="2sp" />
+                    android:textSize="2sp"
+                    android:visibility="gone" />
 
                 <LinearLayout
                     android:id="@+id/LLDineroDispCua"
