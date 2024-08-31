@@ -157,7 +157,7 @@ public class Exportaciones {
                 directorio.mkdirs();
             }
 
-            String nombre = "/Gastos" + cuadrillaMes.replaceAll("[- ]", ""); //Creamos el nombre del archivo de excel, el cual empieza con la palabra "Gastos", recibe el resto del nombre en la variable "cuadrillaMes" en el cual, con una expresión regular, se le eliminan los guiones y espacios para evitar conflictos en la creación del archivo
+            String nombre = "Gastos" + cuadrillaMes.replaceAll("[- ]", ""); //Creamos el nombre del archivo de excel, el cual empieza con la palabra "Gastos", recibe el resto del nombre en la variable "cuadrillaMes" en el cual, con una expresión regular, se le eliminan los guiones y espacios para evitar conflictos en la creación del archivo
             String nombreXlsx = nombre + ".xlsx"; //Concatenamos el nombre con ".xlsx" que es la extensión del archivo de excel
             String rutaArchivo = directorio.getAbsolutePath() + "/" + nombreXlsx; //El nombre del archivo con el ".xlsx" lo concatenamos con "directorio.getAbsolutePath()" que tiene la ruta con las carpetas "INGELCOM_Reportes/Gastos/EXCEL", y con un separador de archivos "/"
             File nuevoArchivo = new File(rutaArchivo); //Guardamos la ruta completa del archivo en una variable de tipo File
@@ -174,7 +174,7 @@ public class Exportaciones {
             fileOut.flush(); //Garantizamos que todos los datos en el buffer del "FileOutputStream" se escriban físicamente en el archivo
             fileOut.close(); //Cerramos el flujo de salida
 
-            crearNotificacionExcel(nuevoArchivo);
+            crearNotificacionExcel(nuevoArchivo, nombreXlsx);
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
         catch (Exception e) {
@@ -262,7 +262,7 @@ public class Exportaciones {
             document.close(); //Cerramos el documento PDF finalizando la escritura del archivo
             fos.close(); //Cerramos el flujo de salida
 
-            crearNotificacionPDF(nuevoArchivo);
+            crearNotificacionPDF(nuevoArchivo, nombrePdf);
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
         catch (Exception e) {
@@ -313,7 +313,7 @@ public class Exportaciones {
                 directorio.mkdirs();
             }
 
-            String nombre = "/Ingresos" + cuadrillaMes.replaceAll("[- ]", ""); //Creamos el nombre del archivo de excel, el cual empieza con la palabra "Ingresos", recibe el resto del nombre en la variable "cuadrillaMes" en el cual, con una expresión regular, se le eliminan los guiones y espacios para evitar conflictos en la creación del archivo
+            String nombre = "Ingresos" + cuadrillaMes.replaceAll("[- ]", ""); //Creamos el nombre del archivo de excel, el cual empieza con la palabra "Ingresos", recibe el resto del nombre en la variable "cuadrillaMes" en el cual, con una expresión regular, se le eliminan los guiones y espacios para evitar conflictos en la creación del archivo
             String nombreXlsx = nombre + ".xlsx"; //Concatenamos el nombre con ".xlsx" que es la extensión del archivo de excel
             String rutaArchivo = directorio.getAbsolutePath() + "/" + nombreXlsx; //El nombre del archivo con el ".xlsx" lo concatenamos con "directorio.getAbsolutePath()" que tiene la ruta con las carpetas "INGELCOM_Reportes/Gastos/EXCEL", y con un separador de archivos "/"
             File nuevoArchivo = new File(rutaArchivo); //Guardamos la ruta completa del archivo en una variable de tipo File
@@ -330,7 +330,7 @@ public class Exportaciones {
             fileOut.flush(); //Garantizamos que todos los datos en el buffer del "FileOutputStream" se escriban físicamente en el archivo
             fileOut.close(); //Cerramos el flujo de salida
 
-            crearNotificacionExcel(nuevoArchivo);
+            crearNotificacionExcel(nuevoArchivo, nombreXlsx);
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
         catch (Exception e) {
@@ -415,7 +415,7 @@ public class Exportaciones {
             document.close(); //Cerramos el documento PDF finalizando la escritura del archivo
             fos.close(); //Cerramos el flujo de salida
 
-            crearNotificacionPDF(nuevoArchivo);
+            crearNotificacionPDF(nuevoArchivo, nombrePdf);
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
         catch (Exception e) {
@@ -459,13 +459,13 @@ public class Exportaciones {
         notificationManager.notify(3, builder.build()); //Utilizamos el "NotificationManager" para mostrar la notificación construida. El primer parámetro, 3, es un ID único para la notificación de una imagen que permite al sistema identificarla
     }
 
-    private void crearNotificacionExcel(File archivo) {
+    private void crearNotificacionExcel(File archivo, String nombreArchivo) {
         //Obtenemos una instancia del servicio del sistema llamado NotificationManager, que es responsable de gestionar las notificaciones en Android
         NotificationManager notificationManager = (NotificationManager) contexto.getSystemService(Context.NOTIFICATION_SERVICE);
 
         //Definimos dos variables, "canalId" y "nombreCanal", que representan el identificador único y el nombre del canal de notificación, respectivamente. Estos canales de notificación son necesarios en dispositivos que ejecutan Android 8 (Oreo) o superior
-        String canalId = "canal_descarga";
-        String nombreCanal = "Descargas";
+        String canalId = "canal_descarga_excel";
+        String nombreCanal = "Descargas de Excel";
 
         //Este if sólo se ejecuta si la versión de Android del dispositivo es Android 8 o superior (Esto para evitar errores en la creación de la notificación)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -485,15 +485,16 @@ public class Exportaciones {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(contexto, canalId)
                 .setSmallIcon(android.R.drawable.stat_sys_download_done) //Icono
                 .setContentTitle("Descarga Completada") //Titulo
-                .setContentText("El archivo de Excel se ha guardado correctamente") //Texto indicativo
+                .setContentText(nombreArchivo + " se ha guardado con éxito") //Texto indicativo
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT) //Establecemos una prioridad. "NotificationCompat.PRIORITY_DEFAULT" indica que la notificación tiene una importancia normal
                 .setContentIntent(pendingIntent) //Establecemos el "PendingIntent" creado anteriormente con setContentIntent, que permitirá al usuario abrir el archivo Excel cuando toque la notificación
                 .setAutoCancel(true); //Aseguramos que la notificación se descartará automáticamente cuando el usuario toque la notificación
 
-        notificationManager.notify(1, builder.build()); //Utilizamos el "NotificationManager" para mostrar la notificación construida. El primer parámetro, 1, es un ID único para la notificación de un archivo Excel que permite al sistema identificarla
+        int notificacionID = nombreArchivo.hashCode(); //Generamos un ID único para la notificación basada en el nombre del archivo
+        notificationManager.notify(notificacionID, builder.build()); //Utilizamos el "NotificationManager" para mostrar la notificación construida. Establecemos "notificacionID" como un ID único para la notificación de un archivo Excel que permite al sistema identificarla
     }
 
-    private void crearNotificacionPDF(File archivo) {
+    private void crearNotificacionPDF(File archivo, String nombreArchivo) {
         //Obtenemos una instancia del servicio del sistema llamado NotificationManager, que es responsable de gestionar las notificaciones en Android
         NotificationManager notificationManager = (NotificationManager) contexto.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -519,11 +520,12 @@ public class Exportaciones {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(contexto, canalId)
                 .setSmallIcon(android.R.drawable.stat_sys_download_done) //Icono
                 .setContentTitle("Descarga Completada") //Título
-                .setContentText("El archivo PDF se ha guardado correctamente") //Texto indicativo
+                .setContentText(nombreArchivo + " se ha guardado con éxito") //Texto indicativo
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT) //Establecemos una prioridad. "NotificationCompat.PRIORITY_DEFAULT" indica que la notificación tiene una importancia normal
                 .setContentIntent(pendingIntent) //Establecemos el "PendingIntent" creado anteriormente con setContentIntent, que permitirá al usuario abrir el archivo PDF cuando toque la notificación
                 .setAutoCancel(true); //Aseguramos que la notificación se descartará automáticamente cuando el usuario toque la notificación
 
-        notificationManager.notify(2, builder.build()); //Utilizamos el "NotificationManager" para mostrar la notificación construida. El primer parámetro, 2, es un ID único para la notificación de un archivo PDF que permite al sistema identificarla
+        int notificacionID = nombreArchivo.hashCode(); //Generamos un ID único para la notificación basada en el nombre del archivo
+        notificationManager.notify(notificacionID, builder.build()); //Utilizamos el "NotificationManager" para mostrar la notificación construida. Establecemos "notificacionID" como un ID único para la notificación de un archivo PDF que permite al sistema identificarla
     }
 }
