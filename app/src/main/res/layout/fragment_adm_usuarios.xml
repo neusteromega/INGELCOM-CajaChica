@@ -7,201 +7,205 @@
     android:background="@color/clr_fondo_primario"
     tools:context=".Fragmentos.FragAdmUsuarios">
 
-    <LinearLayout
-        android:id="@+id/LLEncabezadoUsu"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30sp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/lblTituloUsu"
-            android:layout_width="match_parent"
-            android:layout_height="40sp"
-            android:fontFamily="@font/montserrat_bold"
-            android:gravity="center"
-            android:text="Gestión de Usuarios"
-            android:textColor="@color/clr_fuente_primario"
-            android:textSize="25sp" />
-
-        <TextView
-            android:id="@+id/lblSeparadorUsu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30sp"
-            android:background="@drawable/clr_casillaazul_separador"
-            android:fontFamily="@font/montserrat_bold"
-            android:gravity="center"
-            android:textSize="3sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/LLOpcionesMenuUsu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/LLCerrarSesionUsu"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/LLEncabezadoUsu">
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/LLOpciones1MenuUsu"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/LLMiPerfilUsu"
+                android:id="@+id/LLEncabezadoUsu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15sp"
-                android:layout_marginTop="10sp"
-                android:layout_marginRight="7sp"
-                android:layout_marginBottom="10sp"
-                android:layout_weight="1"
-                android:background="@drawable/clr_casillablanca_semiredonda"
+                android:layout_marginTop="30sp"
+                android:layout_marginBottom="50sp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/lblTituloUsu"
+                    android:layout_width="match_parent"
+                    android:layout_height="40sp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:text="Gestión de Usuarios"
+                    android:textColor="@color/clr_fuente_primario"
+                    android:textSize="25sp" />
+
+                <TextView
+                    android:id="@+id/lblSeparadorUsu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30sp"
+                    android:background="@drawable/clr_casillaazul_separador"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:textSize="3sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/LLOpcionesMenuUsu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/LLOpciones1MenuUsu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/LLMiPerfilUsu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15sp"
+                        android:layout_marginTop="10sp"
+                        android:layout_marginRight="7sp"
+                        android:layout_marginBottom="10sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/clr_casillablanca_semiredonda"
+                        android:elevation="5sp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingTop="10sp"
+                        android:paddingBottom="10sp">
+
+                        <ImageView
+                            android:id="@+id/imgMiPerfilUsu"
+                            android:layout_width="80sp"
+                            android:layout_height="100sp"
+                            android:layout_marginBottom="5sp"
+                            app:srcCompat="@mipmap/ico_azul_miperfil" />
+
+                        <TextView
+                            android:id="@+id/lblMiPerfilUsu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:text="Mi\nPerfil"
+                            android:textAlignment="center"
+                            android:textColor="@color/clr_fuente_secundario"
+                            android:textSize="22sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/LLAgregarUsuarioUsu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="7sp"
+                        android:layout_marginTop="10sp"
+                        android:layout_marginRight="15sp"
+                        android:layout_marginBottom="10sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/clr_casillablanca_semiredonda"
+                        android:elevation="5sp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingTop="10sp"
+                        android:paddingBottom="10sp">
+
+                        <ImageView
+                            android:id="@+id/imgAgregarUsuarioUsu"
+                            android:layout_width="90sp"
+                            android:layout_height="100sp"
+                            android:layout_marginBottom="5sp"
+                            app:srcCompat="@mipmap/ico_azul_agregarusuario" />
+
+                        <TextView
+                            android:id="@+id/lblAgregarUsuarioUsu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:text="Agregar\nUsuario"
+                            android:textAlignment="center"
+                            android:textColor="@color/clr_fuente_secundario"
+                            android:textSize="22sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/LLOpciones2MenuUsu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/LLListadoEmpleadosUsu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15sp"
+                        android:layout_marginTop="10sp"
+                        android:layout_marginRight="15sp"
+                        android:layout_marginBottom="10sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/clr_casillablanca_semiredonda"
+                        android:elevation="5sp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingTop="10sp"
+                        android:paddingBottom="10sp">
+
+                        <ImageView
+                            android:id="@+id/imgListadoEmpleadosUsu"
+                            android:layout_width="105sp"
+                            android:layout_height="100sp"
+                            android:layout_marginBottom="5sp"
+                            app:srcCompat="@mipmap/ico_azul_listadoempleados" />
+
+                        <TextView
+                            android:id="@+id/lblListadoEmpleadosUsu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:text="Listado de Empleados"
+                            android:textAlignment="center"
+                            android:textColor="@color/clr_fuente_secundario"
+                            android:textSize="22sp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/LLCerrarSesionUsu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15sp"
+                android:layout_marginTop="50sp"
+                android:layout_marginEnd="15sp"
+                android:layout_marginBottom="35sp"
+                android:background="@drawable/clr_casilladegradadoazul_redonda"
                 android:elevation="5sp"
                 android:gravity="center"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:paddingTop="10sp"
                 android:paddingBottom="10sp">
 
                 <ImageView
-                    android:id="@+id/imgMiPerfilUsu"
-                    android:layout_width="80sp"
-                    android:layout_height="100sp"
-                    android:layout_marginBottom="5sp"
-                    app:srcCompat="@mipmap/ico_azul_miperfil" />
+                    android:id="@+id/imgCerrarSesionMenuEMP"
+                    android:layout_width="30sp"
+                    android:layout_height="match_parent"
+                    app:srcCompat="@mipmap/ico_blanco_cerrarsesion" />
 
                 <TextView
-                    android:id="@+id/lblMiPerfilUsu"
+                    android:id="@+id/lblCerrarSesionMenuEMP"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="15sp"
                     android:fontFamily="@font/montserrat_bold"
-                    android:text="Mi\nPerfil"
+                    android:text="Cerrar Sesión"
                     android:textAlignment="center"
-                    android:textColor="@color/clr_fuente_secundario"
+                    android:textColor="@color/clr_fuente_terciario"
                     android:textSize="22sp" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/LLAgregarUsuarioUsu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="7sp"
-                android:layout_marginTop="10sp"
-                android:layout_marginRight="15sp"
-                android:layout_marginBottom="10sp"
-                android:layout_weight="1"
-                android:background="@drawable/clr_casillablanca_semiredonda"
-                android:elevation="5sp"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:paddingTop="10sp"
-                android:paddingBottom="10sp">
-
-                <ImageView
-                    android:id="@+id/imgAgregarUsuarioUsu"
-                    android:layout_width="90sp"
-                    android:layout_height="100sp"
-                    android:layout_marginBottom="5sp"
-                    app:srcCompat="@mipmap/ico_azul_agregarusuario" />
-
-                <TextView
-                    android:id="@+id/lblAgregarUsuarioUsu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:text="Agregar\nUsuario"
-                    android:textAlignment="center"
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="22sp" />
-            </LinearLayout>
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/LLOpciones2MenuUsu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:id="@+id/LLListadoEmpleadosUsu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15sp"
-                android:layout_marginTop="10sp"
-                android:layout_marginRight="15sp"
-                android:layout_marginBottom="10sp"
-                android:layout_weight="1"
-                android:background="@drawable/clr_casillablanca_semiredonda"
-                android:elevation="5sp"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:paddingTop="10sp"
-                android:paddingBottom="10sp">
-
-                <ImageView
-                    android:id="@+id/imgListadoEmpleadosUsu"
-                    android:layout_width="105sp"
-                    android:layout_height="100sp"
-                    android:layout_marginBottom="5sp"
-                    app:srcCompat="@mipmap/ico_azul_listadoempleados" />
-
-                <TextView
-                    android:id="@+id/lblListadoEmpleadosUsu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:text="Listado de Empleados"
-                    android:textAlignment="center"
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="22sp" />
-            </LinearLayout>
-
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/LLCerrarSesionUsu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15sp"
-        android:layout_marginEnd="15sp"
-        android:layout_marginBottom="35sp"
-        android:background="@drawable/clr_casilladegradadoazul_redonda"
-        android:elevation="5sp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingTop="10sp"
-        android:paddingBottom="10sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <ImageView
-            android:id="@+id/imgCerrarSesionMenuEMP"
-            android:layout_width="30sp"
-            android:layout_height="30sp"
-            app:srcCompat="@mipmap/ico_blanco_cerrarsesion" />
-
-        <TextView
-            android:id="@+id/lblCerrarSesionMenuEMP"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15sp"
-            android:fontFamily="@font/montserrat_bold"
-            android:text="Cerrar Sesión"
-            android:textAlignment="center"
-            android:textColor="@color/clr_fuente_terciario"
-            android:textSize="22sp" />
-    </LinearLayout>
+    </ScrollView>
 
     <include
         android:id="@+id/viewNoInternetUsu"

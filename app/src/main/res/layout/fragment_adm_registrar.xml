@@ -7,138 +7,148 @@
     android:background="@color/clr_fondo_primario"
     tools:context=".Fragmentos.FragAdmRegistrar">
 
-    <LinearLayout
-        android:id="@+id/LLEncabezadoReg"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30sp"
-        android:orientation="vertical"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/lblTituloReg"
-            android:layout_width="match_parent"
-            android:layout_height="40sp"
-            android:fontFamily="@font/montserrat_bold"
-            android:gravity="center"
-            android:text="Registrar"
-            android:textColor="@color/clr_fuente_primario"
-            android:textSize="25sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/LLContenidoReg"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="25sp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/LLEncabezadoReg"
-        app:layout_constraintVertical_bias="0.5"> <!-- Esto centra verticalmente el contenido -->
-
         <LinearLayout
-            android:id="@+id/LLIngresoReg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15sp"
-            android:layout_marginTop="10sp"
-            android:layout_marginEnd="15sp"
-            android:layout_marginBottom="10sp"
-            android:background="@drawable/clr_casillablanca_semiredonda"
-            android:elevation="5sp"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingTop="10sp"
-            android:paddingBottom="10sp">
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/imgIngresoReg"
-                android:layout_width="100sp"
-                android:layout_height="100sp"
-                android:layout_marginBottom="10sp"
-                app:srcCompat="@mipmap/ico_color_ingreso" />
-
-            <TextView
-                android:id="@+id/lblIngresoReg"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/LLEncabezadoReg"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_bold"
-                android:text="Ingreso"
-                android:textAlignment="center"
-                android:textColor="@color/clr_fuente_secundario"
-                android:textSize="22sp" />
-        </LinearLayout>
+                android:layout_marginTop="30sp"
+                android:layout_marginBottom="40sp"
+                android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/LLGastoReg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15sp"
-            android:layout_marginTop="10sp"
-            android:layout_marginEnd="15sp"
-            android:layout_marginBottom="10sp"
-            android:background="@drawable/clr_casillablanca_semiredonda"
-            android:elevation="5sp"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingTop="15sp"
-            android:paddingBottom="10sp">
+                <TextView
+                    android:id="@+id/lblTituloReg"
+                    android:layout_width="match_parent"
+                    android:layout_height="40sp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:text="Registrar"
+                    android:textColor="@color/clr_fuente_primario"
+                    android:textSize="25sp" />
 
-            <ImageView
-                android:id="@+id/imgGastoReg"
-                android:layout_width="100sp"
-                android:layout_height="100sp"
-                android:layout_marginBottom="5sp"
-                app:srcCompat="@mipmap/ico_color_gasto" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/lblGastoReg"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/LLContenidoReg"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_bold"
-                android:text="Gasto"
-                android:textAlignment="center"
-                android:textColor="@color/clr_fuente_secundario"
-                android:textSize="22sp" />
+                android:layout_marginBottom="25sp"
+                android:orientation="vertical"> <!-- Esto centra verticalmente el contenido -->
+
+                <LinearLayout
+                    android:id="@+id/LLIngresoReg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15sp"
+                    android:layout_marginTop="10sp"
+                    android:layout_marginEnd="15sp"
+                    android:layout_marginBottom="10sp"
+                    android:background="@drawable/clr_casillablanca_semiredonda"
+                    android:elevation="5sp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingTop="10sp"
+                    android:paddingBottom="10sp">
+
+                    <ImageView
+                        android:id="@+id/imgIngresoReg"
+                        android:layout_width="100sp"
+                        android:layout_height="100sp"
+                        android:layout_marginBottom="10sp"
+                        app:srcCompat="@mipmap/ico_color_ingreso" />
+
+                    <TextView
+                        android:id="@+id/lblIngresoReg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="Ingreso"
+                        android:textAlignment="center"
+                        android:textColor="@color/clr_fuente_secundario"
+                        android:textSize="22sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/LLGastoReg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15sp"
+                    android:layout_marginTop="10sp"
+                    android:layout_marginEnd="15sp"
+                    android:layout_marginBottom="10sp"
+                    android:background="@drawable/clr_casillablanca_semiredonda"
+                    android:elevation="5sp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingTop="15sp"
+                    android:paddingBottom="10sp">
+
+                    <ImageView
+                        android:id="@+id/imgGastoReg"
+                        android:layout_width="100sp"
+                        android:layout_height="100sp"
+                        android:layout_marginBottom="5sp"
+                        app:srcCompat="@mipmap/ico_color_gasto" />
+
+                    <TextView
+                        android:id="@+id/lblGastoReg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="Gasto"
+                        android:textAlignment="center"
+                        android:textColor="@color/clr_fuente_secundario"
+                        android:textSize="22sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/LLDeduccionReg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15sp"
+                    android:layout_marginTop="10sp"
+                    android:layout_marginEnd="15sp"
+                    android:layout_marginBottom="10sp"
+                    android:background="@drawable/clr_casillablanca_semiredonda"
+                    android:elevation="5sp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingTop="15sp"
+                    android:paddingBottom="10sp">
+
+                    <ImageView
+                        android:id="@+id/imgDeduccionReg"
+                        android:layout_width="100sp"
+                        android:layout_height="100sp"
+                        android:layout_marginBottom="5sp"
+                        app:srcCompat="@mipmap/ico_color_deduccion" />
+
+                    <TextView
+                        android:id="@+id/lblDeduccionReg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="Deducción por Planilla"
+                        android:textAlignment="center"
+                        android:textColor="@color/clr_fuente_secundario"
+                        android:textSize="22sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
         </LinearLayout>
+    </ScrollView>
 
-        <LinearLayout
-            android:id="@+id/LLDeduccionReg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15sp"
-            android:layout_marginTop="10sp"
-            android:layout_marginEnd="15sp"
-            android:layout_marginBottom="10sp"
-            android:background="@drawable/clr_casillablanca_semiredonda"
-            android:elevation="5sp"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingTop="15sp"
-            android:paddingBottom="10sp">
-
-            <ImageView
-                android:id="@+id/imgDeduccionReg"
-                android:layout_width="100sp"
-                android:layout_height="100sp"
-                android:layout_marginBottom="5sp"
-                app:srcCompat="@mipmap/ico_color_deduccion" />
-
-            <TextView
-                android:id="@+id/lblDeduccionReg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_bold"
-                android:text="Deducción por Planilla"
-                android:textAlignment="center"
-                android:textColor="@color/clr_fuente_secundario"
-                android:textSize="22sp" />
-        </LinearLayout>
-
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

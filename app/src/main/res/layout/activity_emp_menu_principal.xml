@@ -7,267 +7,269 @@
     android:background="@color/clr_fondo_primario"
     tools:context=".EmpMenuPrincipal">
 
-    <LinearLayout
-        android:id="@+id/LLEncabezadoMenuEMP"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/lblMenuPrincipalEMP"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30sp"
-            android:fontFamily="@font/montserrat_bold"
-            android:gravity="center"
-            android:text="Menú Principal"
-            android:textColor="@color/clr_fuente_primario"
-            android:textSize="29sp" />
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/LLDineroMenuEMP"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15sp"
-            android:layout_marginTop="35sp"
-            android:layout_marginRight="15sp"
-            android:layout_marginBottom="5sp"
-            android:background="@drawable/clr_casillablanca_cuadrada"
-            android:elevation="5sp"
-            android:orientation="vertical"
-            android:paddingTop="12sp"
-            android:paddingBottom="10sp">
+            android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/lblDineroMenuEMP"
+            <LinearLayout
+                android:id="@+id/LLEncabezadoMenuEMP"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_bold"
-                android:gravity="center"
-                android:text="Dinero Disponible"
-                android:textColor="@color/clr_fuente_primario"
-                android:textSize="17sp" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/lblCantDineroMenuEMP"
+                <TextView
+                    android:id="@+id/lblMenuPrincipalEMP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30sp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:text="Menú Principal"
+                    android:textColor="@color/clr_fuente_primario"
+                    android:textSize="29sp" />
+
+                <LinearLayout
+                    android:id="@+id/LLDineroMenuEMP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15sp"
+                    android:layout_marginTop="35sp"
+                    android:layout_marginRight="15sp"
+                    android:layout_marginBottom="5sp"
+                    android:background="@drawable/clr_casillablanca_cuadrada"
+                    android:elevation="5sp"
+                    android:orientation="vertical"
+                    android:paddingTop="12sp"
+                    android:paddingBottom="10sp">
+
+                    <TextView
+                        android:id="@+id/lblDineroMenuEMP"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center"
+                        android:text="Dinero Disponible"
+                        android:textColor="@color/clr_fuente_primario"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:id="@+id/lblCantDineroMenuEMP"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center"
+                        android:text="L. 0.00"
+                        android:textColor="@color/clr_fuente_secundario"
+                        android:textSize="40sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/LLOpcionesMenuEMP"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_bold"
+                android:layout_marginTop="40sp"
+                android:layout_marginBottom="40sp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/LLOpciones1MenuEMP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/LLRegistrarGastoMenuEMP"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15sp"
+                        android:layout_marginTop="10sp"
+                        android:layout_marginRight="7sp"
+                        android:layout_marginBottom="10sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/clr_casillablanca_semiredonda"
+                        android:elevation="5sp"
+                        android:gravity="center"
+                        android:onClick="registrarGasto"
+                        android:orientation="vertical"
+                        android:paddingTop="10sp"
+                        android:paddingBottom="10sp">
+
+                        <ImageView
+                            android:id="@+id/imgRegistrarGastoMenuEMP"
+                            android:layout_width="100sp"
+                            android:layout_height="100sp"
+                            android:layout_marginBottom="5sp"
+                            app:srcCompat="@mipmap/ico_azul_registrargasto" />
+
+                        <TextView
+                            android:id="@+id/lblRegistrarGastoMenuEMP"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:text="Registrar\nun Gasto"
+                            android:textAlignment="center"
+                            android:textColor="@color/clr_fuente_secundario"
+                            android:textSize="22sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/LLListadoGastosMenuEMP"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="7sp"
+                        android:layout_marginTop="10sp"
+                        android:layout_marginRight="15sp"
+                        android:layout_marginBottom="10sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/clr_casillablanca_semiredonda"
+                        android:elevation="5sp"
+                        android:gravity="center"
+                        android:onClick="listadoGastos"
+                        android:orientation="vertical"
+                        android:paddingTop="10sp"
+                        android:paddingBottom="10sp">
+
+                        <ImageView
+                            android:id="@+id/imgListadoGastosMenuEMP"
+                            android:layout_width="95sp"
+                            android:layout_height="100sp"
+                            android:layout_marginBottom="5sp"
+                            app:srcCompat="@mipmap/ico_azul_gastos" />
+
+                        <TextView
+                            android:id="@+id/lblListadoGastosMenuEMP"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:text="Listado\nde Gastos"
+                            android:textAlignment="center"
+                            android:textColor="@color/clr_fuente_secundario"
+                            android:textSize="22sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/LLOpciones2MenuEMP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/LLMiPerfilMenuEMP"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15sp"
+                        android:layout_marginTop="10sp"
+                        android:layout_marginRight="7sp"
+                        android:layout_marginBottom="10sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/clr_casillablanca_semiredonda"
+                        android:elevation="5sp"
+                        android:gravity="center"
+                        android:onClick="miPerfil"
+                        android:orientation="vertical"
+                        android:paddingTop="10sp"
+                        android:paddingBottom="10sp">
+
+                        <ImageView
+                            android:id="@+id/imgMiPerfilMenuEMP"
+                            android:layout_width="80sp"
+                            android:layout_height="100sp"
+                            android:layout_marginBottom="5sp"
+                            app:srcCompat="@mipmap/ico_azul_miperfil" />
+
+                        <TextView
+                            android:id="@+id/lblMiPerfilMenuEMP"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:text="Mi\nPerfil"
+                            android:textAlignment="center"
+                            android:textColor="@color/clr_fuente_secundario"
+                            android:textSize="22sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/LLListadoIngresosMenuEMP"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="7sp"
+                        android:layout_marginTop="10sp"
+                        android:layout_marginRight="15sp"
+                        android:layout_marginBottom="10sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/clr_casillablanca_semiredonda"
+                        android:elevation="5sp"
+                        android:gravity="center"
+                        android:onClick="listadoIngresos"
+                        android:orientation="vertical"
+                        android:paddingTop="10sp"
+                        android:paddingBottom="10sp">
+
+                        <ImageView
+                            android:id="@+id/imgListadoIngresosMenuEMP"
+                            android:layout_width="95sp"
+                            android:layout_height="100sp"
+                            android:layout_marginBottom="5sp"
+                            app:srcCompat="@mipmap/ico_azul_ingresos" />
+
+                        <TextView
+                            android:id="@+id/lblListadoIngresosMenuEMP"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:text="Listado\nde Ingresos"
+                            android:textAlignment="center"
+                            android:textColor="@color/clr_fuente_secundario"
+                            android:textSize="22sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/LLCerrarSesionMenuEMP"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15sp"
+                android:layout_marginEnd="15sp"
+                android:layout_marginBottom="35sp"
+                android:background="@drawable/clr_casilladegradadoazul_redonda"
+                android:elevation="5sp"
                 android:gravity="center"
-                android:text="L. 0.00"
-                android:textColor="@color/clr_fuente_secundario"
-                android:textSize="40sp" />
+                android:onClick="cerrarSesion"
+                android:orientation="horizontal"
+                android:paddingTop="10sp"
+                android:paddingBottom="10sp">
+
+                <ImageView
+                    android:id="@+id/imgCerrarSesionMenuEMP"
+                    android:layout_width="30sp"
+                    android:layout_height="30sp"
+                    app:srcCompat="@mipmap/ico_blanco_cerrarsesion" />
+
+                <TextView
+                    android:id="@+id/lblCerrarSesionMenuEMP"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15sp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="Cerrar Sesión"
+                    android:textAlignment="center"
+                    android:textColor="@color/clr_fuente_terciario"
+                    android:textSize="22sp" />
+            </LinearLayout>
         </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/LLOpcionesMenuEMP"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5sp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/LLCerrarSesionMenuEMP"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/LLEncabezadoMenuEMP">
-
-        <LinearLayout
-            android:id="@+id/LLOpciones1MenuEMP"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:id="@+id/LLRegistrarGastoMenuEMP"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15sp"
-                android:layout_marginTop="10sp"
-                android:layout_marginRight="7sp"
-                android:layout_marginBottom="10sp"
-                android:layout_weight="1"
-                android:background="@drawable/clr_casillablanca_semiredonda"
-                android:elevation="5sp"
-                android:gravity="center"
-                android:onClick="registrarGasto"
-                android:orientation="vertical"
-                android:paddingTop="10sp"
-                android:paddingBottom="10sp">
-
-                <ImageView
-                    android:id="@+id/imgRegistrarGastoMenuEMP"
-                    android:layout_width="100sp"
-                    android:layout_height="100sp"
-                    android:layout_marginBottom="5sp"
-                    app:srcCompat="@mipmap/ico_azul_registrargasto" />
-
-                <TextView
-                    android:id="@+id/lblRegistrarGastoMenuEMP"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:text="Registrar\nun Gasto"
-                    android:textAlignment="center"
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="22sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/LLListadoGastosMenuEMP"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="7sp"
-                android:layout_marginTop="10sp"
-                android:layout_marginRight="15sp"
-                android:layout_marginBottom="10sp"
-                android:layout_weight="1"
-                android:background="@drawable/clr_casillablanca_semiredonda"
-                android:elevation="5sp"
-                android:gravity="center"
-                android:onClick="listadoGastos"
-                android:orientation="vertical"
-                android:paddingTop="10sp"
-                android:paddingBottom="10sp">
-
-                <ImageView
-                    android:id="@+id/imgListadoGastosMenuEMP"
-                    android:layout_width="95sp"
-                    android:layout_height="100sp"
-                    android:layout_marginBottom="5sp"
-                    app:srcCompat="@mipmap/ico_azul_gastos" />
-
-                <TextView
-                    android:id="@+id/lblListadoGastosMenuEMP"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:text="Listado\nde Gastos"
-                    android:textAlignment="center"
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="22sp" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/LLOpciones2MenuEMP"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:id="@+id/LLMiPerfilMenuEMP"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15sp"
-                android:layout_marginTop="10sp"
-                android:layout_marginRight="7sp"
-                android:layout_marginBottom="10sp"
-                android:layout_weight="1"
-                android:background="@drawable/clr_casillablanca_semiredonda"
-                android:elevation="5sp"
-                android:gravity="center"
-                android:onClick="miPerfil"
-                android:orientation="vertical"
-                android:paddingTop="10sp"
-                android:paddingBottom="10sp">
-
-                <ImageView
-                    android:id="@+id/imgMiPerfilMenuEMP"
-                    android:layout_width="80sp"
-                    android:layout_height="100sp"
-                    android:layout_marginBottom="5sp"
-                    app:srcCompat="@mipmap/ico_azul_miperfil" />
-
-                <TextView
-                    android:id="@+id/lblMiPerfilMenuEMP"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:text="Mi\nPerfil"
-                    android:textAlignment="center"
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="22sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/LLListadoIngresosMenuEMP"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="7sp"
-                android:layout_marginTop="10sp"
-                android:layout_marginRight="15sp"
-                android:layout_marginBottom="10sp"
-                android:layout_weight="1"
-                android:background="@drawable/clr_casillablanca_semiredonda"
-                android:elevation="5sp"
-                android:gravity="center"
-                android:onClick="listadoIngresos"
-                android:orientation="vertical"
-                android:paddingTop="10sp"
-                android:paddingBottom="10sp">
-
-                <ImageView
-                    android:id="@+id/imgListadoIngresosMenuEMP"
-                    android:layout_width="95sp"
-                    android:layout_height="100sp"
-                    android:layout_marginBottom="5sp"
-                    app:srcCompat="@mipmap/ico_azul_ingresos" />
-
-                <TextView
-                    android:id="@+id/lblListadoIngresosMenuEMP"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:text="Listado\nde Ingresos"
-                    android:textAlignment="center"
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="22sp" />
-            </LinearLayout>
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/LLCerrarSesionMenuEMP"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15sp"
-        android:layout_marginEnd="15sp"
-        android:layout_marginBottom="35sp"
-        android:background="@drawable/clr_casilladegradadoazul_redonda"
-        android:elevation="5sp"
-        android:gravity="center"
-        android:onClick="cerrarSesion"
-        android:orientation="horizontal"
-        android:paddingTop="10sp"
-        android:paddingBottom="10sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <ImageView
-            android:id="@+id/imgCerrarSesionMenuEMP"
-            android:layout_width="30sp"
-            android:layout_height="30sp"
-            app:srcCompat="@mipmap/ico_blanco_cerrarsesion" />
-
-        <TextView
-            android:id="@+id/lblCerrarSesionMenuEMP"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15sp"
-            android:fontFamily="@font/montserrat_bold"
-            android:text="Cerrar Sesión"
-            android:textAlignment="center"
-            android:textColor="@color/clr_fuente_terciario"
-            android:textSize="22sp" />
-    </LinearLayout>
+    </ScrollView>
 
     <include
         android:id="@+id/viewNoInternetMenuEMP"
