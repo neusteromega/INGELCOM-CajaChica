@@ -16,215 +16,221 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nsvListadoIngresos"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="match_parent">
 
             <LinearLayout
-                android:id="@+id/LLEncabezadoLI"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25sp"
-                android:gravity="center|left"
-                android:orientation="horizontal"
-                android:paddingLeft="20sp"
-                android:paddingRight="20sp">
-
-                <ImageView
-                    android:id="@+id/imgRegresarLI"
-                    android:layout_width="25sp"
-                    android:layout_height="match_parent"
-                    android:contentDescription="@string/descripcion"
-                    android:onClick="retroceder"
-                    app:srcCompat="@mipmap/ico_azul_regresar"
-                    tools:ignore="TouchTargetSizeCheck" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <LinearLayout
+                    android:id="@+id/LLEncabezadoLI"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/lblTituloLI"
-                        android:layout_width="match_parent"
-                        android:layout_height="60sp"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/montserrat_bold"
-                        android:gravity="center"
-                        android:text="Listado de Ingresos"
-                        android:textColor="@color/clr_fuente_primario"
-                        android:textSize="25sp" />
+                    android:layout_marginTop="25sp"
+                    android:gravity="center|left"
+                    android:orientation="horizontal"
+                    android:paddingLeft="20sp"
+                    android:paddingRight="20sp">
 
                     <ImageView
-                        android:id="@+id/imgExportarLI"
+                        android:id="@+id/imgRegresarLI"
                         android:layout_width="25sp"
                         android:layout_height="match_parent"
                         android:contentDescription="@string/descripcion"
-                        android:onClick="exportarIngresos"
-                        app:srcCompat="@mipmap/ico_azul_exportar"
+                        android:onClick="retroceder"
+                        app:srcCompat="@mipmap/ico_azul_regresar"
                         tools:ignore="TouchTargetSizeCheck" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/LLTiempoLI"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15sp"
-                android:layout_marginTop="25sp"
-                android:layout_marginRight="15sp"
-                android:layout_marginBottom="15sp"
-                android:background="@drawable/clr_casillablanca_redonda"
-                android:elevation="5sp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/lblMesLI"
-                    android:layout_width="match_parent"
-                    android:layout_height="40sp"
-                    android:layout_weight="1"
-                    android:background="@drawable/clr_casilladegradadoazul_redonda"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center"
-                    android:onClick="elegirMes"
-                    android:text="Mes"
-                    android:textColor="@color/clr_fuente_terciario"
-                    android:textSize="20sp"
-                    tools:ignore="TouchTargetSizeCheck" />
-
-                <TextView
-                    android:id="@+id/lblAnioLI"
-                    android:layout_width="match_parent"
-                    android:layout_height="40sp"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center"
-                    android:onClick="elegirAnio"
-                    android:text="Año"
-                    android:textColor="@color/clr_fuente_secundario"
-                    android:textSize="20sp"
-                    tools:ignore="TouchTargetSizeCheck" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/LLFechaLI"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15sp"
-                android:layout_marginTop="15sp"
-                android:layout_marginRight="15sp"
-                android:layout_marginBottom="10sp"
-                android:background="@drawable/clr_casillablanca_cuadrada"
-                android:elevation="5sp"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingLeft="12sp"
-                android:paddingRight="12sp">
-
-                <ImageView
-                    android:id="@+id/imgFechaLI"
-                    android:layout_width="40sp"
-                    android:layout_height="40sp"
-                    app:srcCompat="@mipmap/ico_azul_fecha" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center|right"
-                    android:orientation="horizontal">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:onClick="mostrarMesesAnios"
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/lblFechaLI"
+                            android:id="@+id/lblTituloLI"
                             android:layout_width="match_parent"
-                            android:layout_height="50sp"
+                            android:layout_height="60sp"
                             android:layout_weight="1"
-                            android:background="@android:color/transparent"
                             android:fontFamily="@font/montserrat_bold"
-                            android:gravity="center|left"
-                            android:paddingLeft="15sp"
-                            android:paddingRight="10sp"
-                            android:text="Seleccionar..."
-                            android:textColor="@color/clr_fuente_secundario"
-                            android:textSize="16sp" />
+                            android:gravity="center"
+                            android:text="Listado de Ingresos"
+                            android:textColor="@color/clr_fuente_primario"
+                            android:textSize="25sp" />
 
                         <ImageView
-                            android:id="@+id/imgAbrirFechaLI"
-                            android:layout_width="11sp"
-                            android:layout_height="20sp"
-                            android:layout_marginRight="10sp"
+                            android:id="@+id/imgExportarLI"
+                            android:layout_width="25sp"
+                            android:layout_height="match_parent"
                             android:contentDescription="@string/descripcion"
-                            app:srcCompat="@mipmap/ico_gris_expandirabajo" />
+                            android:onClick="exportarIngresos"
+                            app:srcCompat="@mipmap/ico_azul_exportar"
+                            tools:ignore="TouchTargetSizeCheck" />
                     </LinearLayout>
 
-                    <ImageView
-                        android:id="@+id/btnEliminarFechaLI"
-                        android:layout_width="25sp"
-                        android:layout_height="25sp"
-                        android:layout_marginLeft="15sp"
-                        android:contentDescription="@string/descripcion"
-                        android:onClick="eliminarMesIngresos"
-                        app:srcCompat="@mipmap/ico_azul_eliminar"
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/LLTiempoLI"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15sp"
+                    android:layout_marginTop="25sp"
+                    android:layout_marginRight="15sp"
+                    android:layout_marginBottom="15sp"
+                    android:background="@drawable/clr_casillablanca_redonda"
+                    android:elevation="5sp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/lblMesLI"
+                        android:layout_width="match_parent"
+                        android:layout_height="40sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/clr_casilladegradadoazul_redonda"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center"
+                        android:onClick="elegirMes"
+                        android:text="Mes"
+                        android:textColor="@color/clr_fuente_terciario"
+                        android:textSize="20sp"
+                        tools:ignore="TouchTargetSizeCheck" />
+
+                    <TextView
+                        android:id="@+id/lblAnioLI"
+                        android:layout_width="match_parent"
+                        android:layout_height="40sp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center"
+                        android:onClick="elegirAnio"
+                        android:text="Año"
+                        android:textColor="@color/clr_fuente_secundario"
+                        android:textSize="20sp"
                         tools:ignore="TouchTargetSizeCheck" />
                 </LinearLayout>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/LLTotalIngresosLI"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15sp"
-                android:layout_marginTop="10sp"
-                android:layout_marginRight="15sp"
-                android:layout_marginBottom="15sp"
-                android:background="@drawable/clr_casillablanca_cuadrada"
-                android:elevation="5sp"
-                android:orientation="vertical"
-                android:paddingTop="12sp"
-                android:paddingBottom="10sp">
-
-                <TextView
-                    android:id="@+id/lblTotalIngresosLI"
+                <LinearLayout
+                    android:id="@+id/LLFechaLI"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
+                    android:layout_marginLeft="15sp"
+                    android:layout_marginTop="15sp"
+                    android:layout_marginRight="15sp"
+                    android:layout_marginBottom="10sp"
+                    android:background="@drawable/clr_casillablanca_cuadrada"
+                    android:elevation="5sp"
                     android:gravity="center"
-                    android:text="Total de Ingresos"
-                    android:textColor="@color/clr_fuente_primario"
-                    android:textSize="17sp" />
+                    android:orientation="horizontal"
+                    android:paddingLeft="12sp"
+                    android:paddingRight="12sp">
 
-                <TextView
-                    android:id="@+id/lblCantIngresosLI"
+                    <ImageView
+                        android:id="@+id/imgFechaLI"
+                        android:layout_width="40sp"
+                        android:layout_height="40sp"
+                        app:srcCompat="@mipmap/ico_azul_fecha" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center|right"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:onClick="mostrarMesesAnios"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/lblFechaLI"
+                                android:layout_width="match_parent"
+                                android:layout_height="50sp"
+                                android:layout_weight="1"
+                                android:background="@android:color/transparent"
+                                android:fontFamily="@font/montserrat_bold"
+                                android:gravity="center|left"
+                                android:paddingLeft="15sp"
+                                android:paddingRight="10sp"
+                                android:text="Seleccionar..."
+                                android:textColor="@color/clr_fuente_secundario"
+                                android:textSize="16sp" />
+
+                            <ImageView
+                                android:id="@+id/imgAbrirFechaLI"
+                                android:layout_width="11sp"
+                                android:layout_height="20sp"
+                                android:layout_marginRight="10sp"
+                                android:contentDescription="@string/descripcion"
+                                app:srcCompat="@mipmap/ico_gris_expandirabajo" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/btnEliminarFechaLI"
+                            android:layout_width="25sp"
+                            android:layout_height="25sp"
+                            android:layout_marginLeft="15sp"
+                            android:contentDescription="@string/descripcion"
+                            android:onClick="eliminarMesIngresos"
+                            app:srcCompat="@mipmap/ico_azul_eliminar"
+                            tools:ignore="TouchTargetSizeCheck" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/LLTotalIngresosLI"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:gravity="center"
-                    android:text="L. 0.00"
-                    android:textColor="@color/clr_fuente_ingresos"
-                    android:textSize="40sp" />
-            </LinearLayout>
+                    android:layout_marginLeft="15sp"
+                    android:layout_marginTop="10sp"
+                    android:layout_marginRight="15sp"
+                    android:layout_marginBottom="15sp"
+                    android:background="@drawable/clr_casillablanca_cuadrada"
+                    android:elevation="5sp"
+                    android:orientation="vertical"
+                    android:paddingTop="12sp"
+                    android:paddingBottom="10sp">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvListadoIngrDeduc"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingBottom="10sp"
-                tools:listitem="@layout/items_ingresos_deducciones" />
-        </LinearLayout>
+                    <TextView
+                        android:id="@+id/lblTotalIngresosLI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center"
+                        android:text="Total de Ingresos"
+                        android:textColor="@color/clr_fuente_primario"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:id="@+id/lblCantIngresosLI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:gravity="center"
+                        android:text="L. 0.00"
+                        android:textColor="@color/clr_fuente_ingresos"
+                        android:textSize="40sp" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvListadoIngrDeduc"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingBottom="10sp"
+                    tools:listitem="@layout/items_ingresos_deducciones" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <include

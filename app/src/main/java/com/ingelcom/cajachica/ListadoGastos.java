@@ -60,7 +60,6 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
     private ProgressBar pbReintentarConexion;
     private ProgressDialog progressDialog;
     private String nombreActivity, nombreCuadrilla, fechaSeleccionada = "", tipoFecha = "Mes", userCompra = "", tipoExportar;
-    private boolean userCompraSelectVisible = true;
 
     //Instancia de la clase "SharedViewGastosModel" que nos ayuda a compartir datos con diferentes componentes de la interfaz de usuario, como ser fragmentos y actividades y que estos datos sobreviven a cambios de configuración como las rotaciones de pantalla
     private SharedViewGastosModel svmGastos;
