@@ -117,6 +117,39 @@ public class Ingreso {
         }
     }
 
+    //Método que nos permitirá obtener todos los ingresos de los últimos dos meses, pero dividiéndolos por la cuadrilla, y por el mes y año sólo si se desea filtrar los mismos
+    public void obtenerIngresosDosMeses(String datoCuadrilla, String mesAnio, FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems> callback) {
+        try {
+            //Llamamos el método "obtenerRegistros" de "FirestoreOperaciones", le mandamos el nombre de la colección, e invocamos la interfaz "FirestoreAllDocumentsCallback"
+            oper.obtenerRegistros("ingresos", new FirestoreCallbacks.FirestoreAllDocumentsCallback() {
+                @Override
+                public void onCallback(List<Map<String, Object>> documentos) { //Al invocar la interfaz, nos devuelve una lista de tipo "Map<String,Object>" llamada "documentos" en la cual se almacenarán todos los campos de todos los documentos de la colección
+                    List<IngresosItems> listaIngresos = new ArrayList<>(); //Creamos una lista de tipo "IngresosItems"
+
+                    //Hacemos un for que recorra los documentos de la lista "documentos" y los vaya guardando uno por uno en la variable temporal "documento" de tipo "Map<String,Object>"
+                    for (Map<String,Object> documento : documentos) {
+                        //Extraemos los campos del HashMap "documento", los campos necesarios en "IngresosItems"
+                        String id = (String) documento.get("ID");
+                        String usuario = (String) documento.get("Usuario");
+                        String fechaHora = Utilidades.convertirTimestampAString((Timestamp) documento.get("Fecha"), "dd/MM/yyyy - HH:mm"); //En este campo, al ser un Timestamp y no un String, llamamos al método utilitario "convertirTimestampAString" que convierte un objeto Timestamp y retorna un string. Aquí mandamos el formato "dd/MM/yyyy - HH:mm" para que nos retorne la fecha y hora de esa forma
+                        String cuadrilla = (String) documento.get("Cuadrilla");
+                        String transferencia = (String) documento.get("Transferencia");
+                        double total = Utilidades.convertirObjectADouble(documento.get("Total")); //En este campo, al ser un number (o double) y no un String, llamamos al método utilitario "convertirObjectADouble" que convierte un object de Firestore y retorna un double
+                        String imagen = (String) documento.get("Imagen");
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.w("ObtenerIngresos", e);
+        }
+    }
+
     //Método que nos permite obtener el documento de un ingreso específico mediante su "ID", e invocamos el "FirestoreDocumentCallback" para que al llamar este método, se pueda recibir el "documento" con el contenido del ingreso
     public void obtenerUnIngreso(String id, FirestoreCallbacks.FirestoreDocumentCallback callback) {
         try {
@@ -204,7 +237,8 @@ public class Ingreso {
                             Toast.makeText(contexto, "ERROR AL REGISTRAR EL INGRESO", Toast.LENGTH_SHORT).show();
                         }
                     });
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     Log.w("RegistrarIngreso", e);
                 }
             }
