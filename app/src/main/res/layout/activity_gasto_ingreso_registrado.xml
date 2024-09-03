@@ -7,90 +7,93 @@
     android:background="@color/clr_fondo_primario"
     tools:context=".GastoIngresoRegistrado">
 
-    <TextView
-        android:id="@+id/lblTituloGIR"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30sp"
-        android:fontFamily="@font/montserrat_bold"
-        android:gravity="center"
-        android:text="Gasto Registrado"
-        android:textColor="@color/clr_fuente_primario"
-        android:textSize="26sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/LLRegistrado"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15sp"
-        android:layout_marginRight="15sp"
-        android:background="@drawable/clr_casillablanca_semiredonda"
-        android:elevation="5sp"
-        android:orientation="vertical"
-        android:paddingLeft="10sp"
-        android:paddingTop="20sp"
-        android:paddingRight="10sp"
-        android:paddingBottom="20sp"
-        app:layout_constraintTop_toBottomOf="@id/lblTituloGIR"
-        app:layout_constraintBottom_toTopOf="@id/btnRegresarMenúGIR"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.5">
-
-        <ImageView
-            android:id="@+id/imgRegistrado"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/ico_color_registrado" />
+            android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/lblExitoGIR"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="35sp"
-            android:fontFamily="@font/montserrat_extrabold"
-            android:gravity="center"
-            android:text="¡EL GASTO HA SIDO REGISTRADO CON ÉXITO!"
-            android:textColor="@color/clr_fuente_primario"
-            android:textSize="24sp" />
+            <TextView
+                android:id="@+id/lblTituloGIR"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30sp"
+                android:layout_marginBottom="80sp"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:text="Gasto Registrado"
+                android:textColor="@color/clr_fuente_primario"
+                android:textSize="26sp" />
 
-        <TextView
-            android:id="@+id/lblMensajeGIR"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25sp"
-            android:fontFamily="@font/montserrat_bold"
-            android:gravity="center"
-            android:text="Puede revisar el Listado de Gastos en el Menú Principal para visualizar el Gasto Registrado."
-            android:textColor="@color/clr_fuente_secundario"
-            android:textSize="20sp" />
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/LLRegistrado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15sp"
+                android:layout_marginRight="15sp"
+                android:layout_marginBottom="20sp"
+                android:background="@drawable/clr_casillablanca_semiredonda"
+                android:elevation="5sp"
+                android:orientation="vertical"
+                android:paddingLeft="10sp"
+                android:paddingTop="20sp"
+                android:paddingRight="10sp"
+                android:paddingBottom="20sp">
 
-    <TextView
-        android:id="@+id/btnRegresarMenúGIR"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15sp"
-        android:layout_marginTop="50sp"
-        android:layout_marginRight="15sp"
-        android:layout_marginBottom="50sp"
-        android:background="@drawable/clr_casilladegradadoazul_redonda"
-        android:elevation="5sp"
-        android:fontFamily="@font/montserrat_bold"
-        android:gravity="center"
-        android:onClick="regresarAlMenu"
-        android:paddingLeft="25sp"
-        android:paddingTop="10sp"
-        android:paddingRight="25sp"
-        android:paddingBottom="10sp"
-        android:text="Regresar al Menú"
-        android:textColor="@color/clr_fuente_terciario"
-        android:textSize="22sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+                <ImageView
+                    android:id="@+id/imgRegistrado"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@mipmap/ico_color_registrado" />
+
+                <TextView
+                    android:id="@+id/lblExitoGIR"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="35sp"
+                    android:fontFamily="@font/montserrat_extrabold"
+                    android:gravity="center"
+                    android:text="¡EL GASTO HA SIDO REGISTRADO CON ÉXITO!"
+                    android:textColor="@color/clr_fuente_primario"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/lblMensajeGIR"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25sp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:text="Puede revisar el Listado de Gastos en el Menú Principal para visualizar el Gasto Registrado."
+                    android:textColor="@color/clr_fuente_secundario"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btnRegresarMenúGIR"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15sp"
+                android:layout_marginTop="60sp"
+                android:layout_marginRight="15sp"
+                android:layout_marginBottom="50sp"
+                android:background="@drawable/clr_casilladegradadoazul_redonda"
+                android:elevation="5sp"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:onClick="regresarAlMenu"
+                android:paddingLeft="25sp"
+                android:paddingTop="10sp"
+                android:paddingRight="25sp"
+                android:paddingBottom="10sp"
+                android:text="Regresar al Menú"
+                android:textColor="@color/clr_fuente_terciario"
+                android:textSize="22sp" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

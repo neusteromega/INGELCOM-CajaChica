@@ -46,7 +46,7 @@ import java.util.Map;
 
 public class ListadoIngresosDeducciones extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, PopupMenu.OnMenuItemClickListener {
 
-    private LinearLayout llFecha;
+    private LinearLayout llFecha, llTiempo;
     private TextView btnReintentarConexion, lblTitulo, btnMes, btnAnio, lblFecha, lblTotal, lblTotalTitulo;
     private String nombreActivity, nombreCuadrilla, fechaSeleccionada = "", tipoFecha = "Mes", tipoExportar;
     private RecyclerView rvIngrDeduc;
@@ -93,6 +93,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
         nombreCuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
 
         llFecha = findViewById(R.id.LLFechaLI);
+        llTiempo = findViewById(R.id.LLTiempoLI);
         lblTitulo = findViewById(R.id.lblTituloLI);
         btnMes = findViewById(R.id.lblMesLI);
         btnAnio = findViewById(R.id.lblAnioLI);
@@ -123,6 +124,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
 
             case "ListadoIngresosEmpleado":
                 lblTitulo.setText("Listado de Ingresos");
+                llTiempo.setVisibility(View.GONE);
                 lblTotalTitulo.setText("Total de Ingresos");
                 lblTotal.setTextColor(getResources().getColor(R.color.clr_fuente_ingresos));
                 btnExportar.setVisibility(View.GONE);
@@ -136,6 +138,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
 
             case "ListadoDeducciones":
                 llFecha.setVisibility(View.GONE);
+                llTiempo.setVisibility(View.GONE);
                 lblTitulo.setText(nombreCuadrilla);
                 lblTotalTitulo.setText("Total de Deducciones");
                 lblTotal.setTextColor(getResources().getColor(R.color.clr_fuente_secundario));

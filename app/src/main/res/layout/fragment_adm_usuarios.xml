@@ -27,7 +27,7 @@
                 <TextView
                     android:id="@+id/lblTituloUsu"
                     android:layout_width="match_parent"
-                    android:layout_height="40sp"
+                    android:layout_height="60sp"
                     android:fontFamily="@font/montserrat_bold"
                     android:gravity="center"
                     android:text="Gestión de Usuarios"
@@ -38,7 +38,7 @@
                     android:id="@+id/lblSeparadorUsu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="30sp"
+                    android:layout_marginTop="15sp"
                     android:background="@drawable/clr_casillaazul_separador"
                     android:fontFamily="@font/montserrat_bold"
                     android:gravity="center"

@@ -198,6 +198,9 @@ public class Ingreso {
 
                         @Override
                         public void onFailure(Exception e) {
+                            if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
+                                progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de inserción de la imagen a Storage haya fallado
+
                             Toast.makeText(contexto, "ERROR AL REGISTRAR EL INGRESO", Toast.LENGTH_SHORT).show();
                         }
                     });

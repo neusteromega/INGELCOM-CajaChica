@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="15sp"
@@ -12,22 +13,27 @@
     app:cardElevation="5sp"
     app:cardUseCompatPadding="false">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:paddingLeft="12sp"
+        android:paddingRight="8sp">
 
         <LinearLayout
-            android:layout_width="210sp"
+            android:id="@+id/textContainerGst"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="13sp"
             android:orientation="vertical"
             android:paddingTop="8sp"
-            android:paddingBottom="8sp">
+            android:paddingBottom="8sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/LLFinalGst"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/lblTipoCompraGst"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="25sp"
                 android:ellipsize="end"
                 android:fontFamily="@font/montserrat_bold"
@@ -39,10 +45,12 @@
 
             <TextView
                 android:id="@+id/lblFechaGst"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="25sp"
+                android:ellipsize="end"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center|left"
+                android:maxLines="1"
                 android:text="00/00/0000 00:00"
                 android:textColor="@color/clr_fuente_secundario"
                 android:textSize="13sp" />
@@ -91,24 +99,27 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/LLFinalGst"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginRight="7sp"
             android:gravity="right"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/lblTotalGst"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginLeft="5sp"
                 android:layout_marginRight="5sp"
-                android:layout_weight="1"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="right"
                 android:text="L.000.00"
                 android:textColor="@color/clr_fuente_primario"
-                android:textSize="15sp" />
+                android:textSize="14sp" />
 
             <ImageView
                 android:id="@+id/btnExpandirGst"
@@ -118,5 +129,5 @@
                 app:srcCompat="@mipmap/ico_azul_expandir" />
 
         </LinearLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

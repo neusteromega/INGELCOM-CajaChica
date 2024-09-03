@@ -276,7 +276,7 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
             lblUsuario.setText(Utilidades.obtenerStringDosColores("Usuario: ", usuario, colorInicial, colorFinal));
             lblCuadrilla.setText(Utilidades.obtenerStringDosColores("Cuadrilla: ", cuadrilla, colorInicial, colorFinal));
             lblLugar.setText(Utilidades.obtenerStringDosColores("Lugar: ", lugarCompra, colorInicial, colorFinal));
-            lblTipoCompra.setText(Utilidades.obtenerStringDosColores("Compra: ", tipoCompra, colorInicial, colorFinal));
+            lblTipoCompra.setText(Utilidades.obtenerStringDosColores("Categoría: ", tipoCompra, colorInicial, colorFinal));
             lblDescripcion.setText(Utilidades.obtenerStringDosColores("Descripción: ", descripcion, colorInicial, colorFinal));
             lblFactura.setText(Utilidades.obtenerStringDosColores("No. Factura: ", factura, colorInicial, colorFinal));
 
@@ -287,9 +287,14 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
                 stor.obtenerImagen(imagen, new StorageCallbacks.StorageURICallback() {
                     @Override
                     public void onCallback(Uri uri) { //En este "Uri" se encuentra el URI de la imagen obtenida de Firebase Storage
-                        imageUri = uri; //Como la imagen ya se cargó, asignamos el URI de la imagen obtenido a la variable global "imageUri"
-                        Glide.with(DetalleGastoIngreso.this).load(uri).into(imgFoto); //Asignamos el URI de la imagen obtenida al "imgFoto", pero usando la biblioteca "Glide" para evitar errores
-                        pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen se ha cargado
+                        if (uri != null) {
+                            imageUri = uri; //Como la imagen ya se cargó, asignamos el URI de la imagen obtenido a la variable global "imageUri"
+                            Glide.with(DetalleGastoIngreso.this).load(uri).into(imgFoto); //Asignamos el URI de la imagen obtenida al "imgFoto", pero usando la biblioteca "Glide" para evitar errores
+                            pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen se ha cargado
+                        }
+                        else {
+                            Toast.makeText(DetalleGastoIngreso.this, "ERROR AL CARGAR LA IMAGEN", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -316,9 +321,14 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
                 stor.obtenerImagen(imagen, new StorageCallbacks.StorageURICallback() {
                     @Override
                     public void onCallback(Uri uri) { //En este "Uri" se encuentra el URI de la imagen obtenida de Firebase Storage
-                        imageUri = uri; //Como la imagen ya se cargó, asignamos el URI de la imagen obtenido a la variable global "imageUri"
-                        Glide.with(DetalleGastoIngreso.this).load(uri).into(imgFoto); //Asignamos el URI de la imagen obtenida al "imgFoto", pero usando la biblioteca "Glide" para evitar errores
-                        pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen se ha cargado
+                        if (uri != null) {
+                            imageUri = uri; //Como la imagen ya se cargó, asignamos el URI de la imagen obtenido a la variable global "imageUri"
+                            Glide.with(DetalleGastoIngreso.this).load(uri).into(imgFoto); //Asignamos el URI de la imagen obtenida al "imgFoto", pero usando la biblioteca "Glide" para evitar errores
+                            pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen se ha cargado
+                        }
+                        else {
+                            Toast.makeText(DetalleGastoIngreso.this, "ERROR AL CARGAR LA IMAGEN", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override

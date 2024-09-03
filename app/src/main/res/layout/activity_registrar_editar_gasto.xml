@@ -28,7 +28,7 @@
                 android:id="@+id/LLEncabezadoRG"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="30sp"
+                android:layout_marginTop="20sp"
                 android:layout_marginBottom="25sp"
                 android:gravity="center|left"
                 android:orientation="horizontal"
@@ -47,7 +47,7 @@
                 <TextView
                     android:id="@+id/lblTituloRG"
                     android:layout_width="match_parent"
-                    android:layout_height="40sp"
+                    android:layout_height="60sp"
                     android:fontFamily="@font/montserrat_bold"
                     android:gravity="center"
                     android:text="Registrar Gasto"

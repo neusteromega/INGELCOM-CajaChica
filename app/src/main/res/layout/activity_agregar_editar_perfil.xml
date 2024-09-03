@@ -37,7 +37,7 @@
             <TextView
                 android:id="@+id/lblTituloAEP"
                 android:layout_width="match_parent"
-                android:layout_height="40sp"
+                android:layout_height="60sp"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center"
                 android:text="Editar Perfil"

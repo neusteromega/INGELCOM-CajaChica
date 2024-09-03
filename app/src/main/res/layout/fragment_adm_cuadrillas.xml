@@ -35,7 +35,7 @@
                 <TextView
                     android:id="@+id/lblTituloCua"
                     android:layout_width="match_parent"
-                    android:layout_height="40sp"
+                    android:layout_height="60sp"
                     android:fontFamily="@font/montserrat_bold"
                     android:gravity="center"
                     android:text="Listado de Cuadrillas"
@@ -57,7 +57,7 @@
                     android:id="@+id/LLDineroDispCua"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="30sp"
+                    android:layout_marginTop="15sp"
                     android:layout_marginBottom="15sp"
                     android:gravity="center"
                     android:orientation="horizontal"

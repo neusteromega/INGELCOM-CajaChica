@@ -21,7 +21,8 @@
             android:id="@+id/LLEncabezadoCC"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30sp"
+            android:layout_marginTop="25sp"
+            android:layout_marginBottom="10sp"
             android:gravity="center|left"
             android:orientation="horizontal"
             android:paddingLeft="20sp"
@@ -39,7 +40,7 @@
             <TextView
                 android:id="@+id/lblTituloCC"
                 android:layout_width="match_parent"
-                android:layout_height="40sp"
+                android:layout_height="60sp"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center"
                 android:text="Completar Usuario"
@@ -58,7 +59,8 @@
             android:fontFamily="@font/poppins_semibold"
             android:gravity="center"
             android:text="Buscar Usuario"
-            android:textSize="2sp" />
+            android:textSize="2sp"
+            android:visibility="gone" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragBuscarUserCrearPass"

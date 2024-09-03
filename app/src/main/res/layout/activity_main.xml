@@ -9,8 +9,10 @@
 
     <ImageView
         android:id="@+id/imgLogoIngelcom"
-        android:layout_width="345sp"
+        android:layout_width="0dp"
         android:layout_height="165sp"
+        android:layout_marginLeft="10sp"
+        android:layout_marginRight="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
