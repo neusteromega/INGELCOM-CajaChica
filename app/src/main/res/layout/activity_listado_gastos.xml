@@ -30,7 +30,7 @@
                     android:id="@+id/LLEncabezadoLG"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="30sp"
+                    android:layout_marginTop="20sp"
                     android:gravity="center|left"
                     android:orientation="horizontal"
                     android:paddingLeft="20sp"
