@@ -22,8 +22,8 @@ public class VPGastosAdapter extends FragmentStateAdapter {
     }
 
     @NonNull
-    @Override
-    public Fragment createFragment(int position) { //Método que crea y devuelve un fragmento basado en la posición actual del ViewPager.
+    @Override //Método que crea y devuelve un fragmento basado en la posición actual del ViewPager
+    public Fragment createFragment(int position) {
         switch (position) { //Este Switch sirve para determinar qué fragmento crear basado en la posición del ViewPager. Al arrastrar con el dedo el ViewPager, este toma una nueva posición y dependiendo esa posición, retornamos el fragmento correspondiente
             //En estos 3 returns, llamamos el método "newInstance" de los fragmentos y le mandamos el "nombreCuadrilla"
             case 0:
@@ -35,8 +35,8 @@ public class VPGastosAdapter extends FragmentStateAdapter {
         }
     }
 
-    @Override
-    public int getItemCount() { //Método que devuelve el número de elementos (fragmentos) que el adaptador manejará
+    @Override //Método que devuelve el número de elementos (fragmentos) que el adaptador manejará
+    public int getItemCount() {
         return 2; //Devuelve el número de fragmentos que vamos a manejar. En este caso, son 2 fragmentos (FragGastosCuadrilla y FragGastosSupervisores).
     }
 }
