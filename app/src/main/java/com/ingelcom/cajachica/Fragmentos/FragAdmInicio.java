@@ -147,7 +147,7 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
     private void obtenerIngresos() {
         try {
             //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la "cuadrilla" y el "mes" vacíos para indicar que no se haga un filtrado de ingresos. Con esto se podrán obtener todos los ingresos hechos por los administradores
-            ingr.obtenerIngresos("", "", new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
+            ingr.obtenerIngresos("", "", false, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
                 @Override
                 public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos
                     //Verificamos si "items" es nulo o si está vacío. Si cumple una de estas condiciones, que oculte el recyclerview y muestre el textview indicando que no hay datos

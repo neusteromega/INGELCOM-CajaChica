@@ -151,7 +151,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
         try {
             if (nombreActivity.equalsIgnoreCase("ListadoIngresosAdmin")) {
                 //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla recibida en "nombreCuadrilla" y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores a una cuadrilla específica
-                ingr.obtenerIngresos(nombreCuadrilla, mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
+                ingr.obtenerIngresos(nombreCuadrilla, mesAnio, false, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
                     @Override
                     public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados por cuadrilla
                         if (items != null) { //Si "items" no es null, que entre al if
@@ -210,7 +210,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
                             String cuadrilla = (String) documento.get("Cuadrilla"); //Obtenemos la cuadrilla de "documento"
 
                             //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla obtenida de Firestore en "cuadrilla" y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores a la cuadrilla del usuario actual
-                            ingr.obtenerIngresos(cuadrilla, mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
+                            ingr.obtenerIngresos(cuadrilla, mesAnio, true, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
                                 @Override
                                 public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados por cuadrilla
                                     if (items != null) {//Si "items" no es null, que entre al if
@@ -239,7 +239,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
             }
             else if (nombreActivity.equalsIgnoreCase("ListadoIngresosTodos")) {
                 //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla vacía para indicar que no queremos filtrar los ingresos, y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores sin ningún filtro
-                ingr.obtenerIngresos("", mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
+                ingr.obtenerIngresos("", mesAnio, false, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
                     @Override
                     public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados por cuadrilla
                         if (items != null) { //Si "items" no es null, que entre al if
@@ -480,10 +480,10 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
         }
         else if (nombreActivity.equalsIgnoreCase("ListadoIngresosEmpleado")) {
             try {
-                // Obtener los meses actual y anterior
+                //Obtenemos los meses actual y anterior
                 Calendar calendar = Calendar.getInstance();
 
-                // Configurar el formato de fecha en español
+                //Configuramos el formato de fecha en español
                 SimpleDateFormat sdf = new SimpleDateFormat("MMMM - yyyy", new Locale("es", "ES"));
                 String mesActual = sdf.format(calendar.getTime());
 

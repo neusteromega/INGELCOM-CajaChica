@@ -14,9 +14,12 @@ import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.Modelos.GastosItems;
 import com.ingelcom.cajachica.Modelos.IngresosItems;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -32,7 +35,7 @@ public class Ingreso {
     }
 
     //Método que nos permitirá obtener todos los ingresos, pero dividiéndolos por la cuadrilla, y por el mes y año sólo si se desea filtrar los mismos
-    public void obtenerIngresos(String datoCuadrilla, String mesAnio, FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems> callback) {
+    public void obtenerIngresos(String datoCuadrilla, String mesAnio, boolean datosEmpleado, FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems> callback) {
         try {
             //Llamamos el método "obtenerRegistros" de "FirestoreOperaciones", le mandamos el nombre de la colección, e invocamos la interfaz "FirestoreAllDocumentsCallback"
             oper.obtenerRegistros("ingresos", new FirestoreCallbacks.FirestoreAllDocumentsCallback() {
@@ -51,8 +54,8 @@ public class Ingreso {
                         double total = Utilidades.convertirObjectADouble(documento.get("Total")); //En este campo, al ser un number (o double) y no un String, llamamos al método utilitario "convertirObjectADouble" que convierte un object de Firestore y retorna un double
                         String imagen = (String) documento.get("Imagen");
 
-                        //Comprobamos la cuadrilla a la cual se le desea ver sus ingresos; si la cuadrilla se encuentra en el "ingreso", entrará al if, y por ende, habrán ingresos para visualizar en el ListadoIngresos
-                        if (cuadrilla.equalsIgnoreCase(datoCuadrilla)) {
+                        //Comprobamos la cuadrilla a la cual se le desea ver sus ingresos; si la cuadrilla se encuentra en el "ingreso", y si "datosEmpleado" es falso, entrará al if, y por ende, habrán ingresos para visualizar en el ListadoIngresos
+                        if (cuadrilla.equalsIgnoreCase(datoCuadrilla) && !datosEmpleado) {
                             if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si el "mes" está vacío o si contiene el texto "Seleccionar Mes", significa que no se hará ningún filtrado de ingresos por mes, y se obtendrán todos los ingresos por cuadrilla
                                 IngresosItems ingreso = new IngresosItems(id, usuario, fechaHora, cuadrilla, transferencia, imagen, total); //Creamos un objeto de tipo "IngresosItems" en el cual guardamos los datos extraídos arriba
                                 listaIngresos.add(ingreso); //El objeto de tipo "IngresosItems" lo guardamos en la lista "listaIngresos"
@@ -76,7 +79,7 @@ public class Ingreso {
                                 }
                             }
                         }
-                        else if (datoCuadrilla.isEmpty()) { //Si "datoCuadrilla" está vacío, significa que queremos obtener todos los ingresos sin filtrar
+                        else if (datoCuadrilla.isEmpty() && !datosEmpleado) { //Si "datoCuadrilla" está vacío y "datosEmpleado" es falso, significa que queremos obtener todos los ingresos sin filtrar
                             if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si el "mes" está vacío o si contiene el texto "Seleccionar Mes", significa que no se hará ningún filtrado de ingresos por mes, y se obtendrán todos los ingresos por cuadrilla
                                 IngresosItems ingreso = new IngresosItems(id, usuario, fechaHora, cuadrilla, transferencia, imagen, total); //Creamos un objeto de tipo "IngresosItems" en el cual guardamos los datos extraídos arriba
                                 listaIngresos.add(ingreso); //El objeto de tipo "IngresosItems" lo guardamos en la lista "listaIngresos"
@@ -97,6 +100,36 @@ public class Ingreso {
                                         IngresosItems ingreso = new IngresosItems(id, usuario, fechaHora, cuadrilla, transferencia, imagen, total); //Creamos un objeto de tipo "IngresosItems" en el cual guardamos los datos extraídos arriba
                                         listaIngresos.add(ingreso); //El objeto de tipo "IngresosItems" lo guardamos en la lista "listaIngresos"
                                     }
+                                }
+                            }
+                        }
+                        else if (cuadrilla.equalsIgnoreCase(datoCuadrilla) && datosEmpleado) { //Comprobamos la cuadrilla a la cual se le desea ver sus ingresos; si la cuadrilla se encuentra en el "ingreso", y si "datosEmpleado" es verdadero, entrará al else if. Este es para el "ListadoIngresosEmpleado" en el cual, solamente puede ver los ingresos recibidos en el mes actual y el anterior, nada más
+                            if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si el "mes" está vacío o si contiene el texto "Seleccionar Mes", significa que no se hará ningún filtrado de ingresos por mes, y se obtendrán todos los ingresos por cuadrilla
+                                Calendar calendar = Calendar.getInstance(); //Obtenemos los meses actual y anterior
+
+                                //Configuramos el formato de fecha en español
+                                SimpleDateFormat sdf = new SimpleDateFormat("MMMM - yyyy", new Locale("es", "ES"));
+                                String mesActual = sdf.format(calendar.getTime());
+
+                                calendar.add(Calendar.MONTH, -1);
+                                String mesAnterior = sdf.format(calendar.getTime());
+
+                                mesActual = mesActual.substring(0, 1).toUpperCase() + mesActual.substring(1); //Aquí establecemos en mayúscula la primera letra del mes
+                                mesAnterior = mesAnterior.substring(0, 1).toUpperCase() + mesAnterior.substring(1); //Aquí establecemos en mayúscula la primera letra del mes
+
+                                String fechaFormateada = Utilidades.convertirFechaAFormatoMonthYear(fechaHora); //Creamos un String donde se guarda el retorno del método utilitario "convertirFechaAFormatoMonthYear" al que le mandamos la variable "fechaHora". Este método retorna un String con el formato deseado (Mes - Año) de la fecha extraída de Firestore
+
+                                if (mesActual.equalsIgnoreCase(fechaFormateada) || mesAnterior.equalsIgnoreCase(fechaFormateada)) { //Si el contenido de "mesActual" o "mesAnterior" es igual al contenido de "fechaFormateada" (ignorando mayúsculas y minúsculas), significa que el mes actual y el anterior se encuentra entre las fechas de los ingresos obtenidos, por lo tanto que entre al if y pueda obtener el ingreso correspondiente al mes actual y mes anterior
+                                    IngresosItems ingreso = new IngresosItems(id, usuario, fechaHora, cuadrilla, transferencia, imagen, total); //Creamos un objeto de tipo "IngresosItems" en el cual guardamos los datos extraídos arriba
+                                    listaIngresos.add(ingreso); //El objeto de tipo "IngresosItems" lo guardamos en la lista "listaIngresos"
+                                }
+                            }
+                            else { //Si "mes" no está vacío, ni contiene el texto "Seleccionar Mes", significa que está recibiendo un mes (por ejemplo, "Julio - 2024"), por lo tanto, se está deseando filtrar los ingresos del RecyclerView por mes
+                                String fechaFormateada = Utilidades.convertirFechaAFormatoMonthYear(fechaHora); //Creamos un String donde se guarda el retorno del método utilitario "convertirFechaAFormatoMonthYear" al que le mandamos la variable "fechaHora". Este método retorna un String con el formato deseado (Mes - Año) de la fecha extraída de Firestore
+
+                                if (mesAnio.equalsIgnoreCase(fechaFormateada)) { //Si el contenido de "mes" es igual al contenido de "fechaFormateada" (ignorando mayúsculas y minúsculas), significa que la selección del "Mes - Año" hecha por el usuario en el activity ListadoIngresos se encuentra entre las fechas de los ingresos obtenidos, por lo tanto que entre al if y pueda obtener el ingreso correspondiente al "Mes - Año" seleccionado
+                                    IngresosItems ingreso = new IngresosItems(id, usuario, fechaHora, cuadrilla, transferencia, imagen, total); //Creamos un objeto de tipo "IngresosItems" en el cual guardamos los datos extraídos arriba
+                                    listaIngresos.add(ingreso); //El objeto de tipo "IngresosItems" lo guardamos en la lista "listaIngresos"
                                 }
                             }
                         }
@@ -109,39 +142,6 @@ public class Ingreso {
                 public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
                     Log.e("FirestoreError", "Error al obtener los documentos", e);
                     callback.onFailure(e);
-                }
-            });
-        }
-        catch (Exception e) {
-            Log.w("ObtenerIngresos", e);
-        }
-    }
-
-    //Método que nos permitirá obtener todos los ingresos de los últimos dos meses, pero dividiéndolos por la cuadrilla, y por el mes y año sólo si se desea filtrar los mismos
-    public void obtenerIngresosDosMeses(String datoCuadrilla, String mesAnio, FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems> callback) {
-        try {
-            //Llamamos el método "obtenerRegistros" de "FirestoreOperaciones", le mandamos el nombre de la colección, e invocamos la interfaz "FirestoreAllDocumentsCallback"
-            oper.obtenerRegistros("ingresos", new FirestoreCallbacks.FirestoreAllDocumentsCallback() {
-                @Override
-                public void onCallback(List<Map<String, Object>> documentos) { //Al invocar la interfaz, nos devuelve una lista de tipo "Map<String,Object>" llamada "documentos" en la cual se almacenarán todos los campos de todos los documentos de la colección
-                    List<IngresosItems> listaIngresos = new ArrayList<>(); //Creamos una lista de tipo "IngresosItems"
-
-                    //Hacemos un for que recorra los documentos de la lista "documentos" y los vaya guardando uno por uno en la variable temporal "documento" de tipo "Map<String,Object>"
-                    for (Map<String,Object> documento : documentos) {
-                        //Extraemos los campos del HashMap "documento", los campos necesarios en "IngresosItems"
-                        String id = (String) documento.get("ID");
-                        String usuario = (String) documento.get("Usuario");
-                        String fechaHora = Utilidades.convertirTimestampAString((Timestamp) documento.get("Fecha"), "dd/MM/yyyy - HH:mm"); //En este campo, al ser un Timestamp y no un String, llamamos al método utilitario "convertirTimestampAString" que convierte un objeto Timestamp y retorna un string. Aquí mandamos el formato "dd/MM/yyyy - HH:mm" para que nos retorne la fecha y hora de esa forma
-                        String cuadrilla = (String) documento.get("Cuadrilla");
-                        String transferencia = (String) documento.get("Transferencia");
-                        double total = Utilidades.convertirObjectADouble(documento.get("Total")); //En este campo, al ser un number (o double) y no un String, llamamos al método utilitario "convertirObjectADouble" que convierte un object de Firestore y retorna un double
-                        String imagen = (String) documento.get("Imagen");
-                    }
-                }
-
-                @Override
-                public void onFailure(Exception e) {
-
                 }
             });
         }

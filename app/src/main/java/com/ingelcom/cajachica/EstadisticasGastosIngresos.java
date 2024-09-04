@@ -198,7 +198,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
             }
             else if (tipoDatos.equalsIgnoreCase("Ingresos")) { //En cambio, si "tipoDatos" contiene el texto "Ingresos", que entre al if para obtener los ingresos
                 //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla vacía ya que no queremos filtrar y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores
-                ingr.obtenerIngresos("", fecha, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
+                ingr.obtenerIngresos("", fecha, false, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
                     @Override
                     public void onCallback(List<IngresosItems> items) {
                         if (items != null && !items.isEmpty()) {//Si "items" no es null, que entre al if

@@ -124,7 +124,7 @@ public class AdmDatosCuadrilla extends AppCompatActivity implements SwipeRefresh
     private void obtenerIngresos(String mes) {
         try {
             //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla recibida en "nombreCuadrilla" y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores
-            ingr.obtenerIngresos(nombreCuadrilla, mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
+            ingr.obtenerIngresos(nombreCuadrilla, mes, false, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
                 @Override
                 public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados por cuadrilla
                     if (items != null) //Si "items" no es null, que entre al if
