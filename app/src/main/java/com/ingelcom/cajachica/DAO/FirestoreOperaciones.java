@@ -23,33 +23,32 @@ public class FirestoreOperaciones {
     }
 
     //Método para obtener los registros de un campo específico de todos los documentos de una colección de Firestore
-    public void obtenerRegistrosCampo(String nombreColeccion, String campo, final FirestoreCallbacks.FirestoreListCallback callback) { //Recibe como parámetros el nombre de la colección, el nombre del campo y el "callback"
+    public void obtenerRegistrosCampo(String nombreColeccion, String campo, final FirestoreCallbacks.FirestoreListCallback callback) { //Recibe como parámetros el nombre de la colección, el nombre del campo y el "callback" de la interfaz "FirestoreListCallback"
         //Asignamos el nombre de la colección guardado en "nombreColeccion"
         db.collection(nombreColeccion)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) { //Si la extracción de datos fue exitosa, entrará a este if
-                        List<String> listaRegistros = new ArrayList<>(); //Lista donde se almacenarán los registros a obtener de Firestore
+            .get()
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful()) { //Si la extracción de datos fue exitosa, entrará a este if
+                    List<String> listaRegistros = new ArrayList<>(); //Lista donde se almacenarán los registros a obtener de Firestore
 
-                        //For que recorrerá todos los "documents" de la colección cuyo nombre está en "nombreColeccion", y los irá almecenando uno por uno en la variable temporal "document"
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            //Si "document" contiene el campo cuyo nombre está guardado en "campo", que entre al if
-                            if (document.contains(campo)) {
-                                String registro = document.getString(campo); //Extraemos el contenido del campo específico y lo guardamos en la variable "registro"
-                                listaRegistros.add(registro); //Añadimos el contenido almacenado en "registro" a la lista "listaRegistros"
-                            }
+                    //For que recorrerá todos los "documents" de la colección cuyo nombre está en "nombreColeccion", y los irá almecenando uno por uno en la variable temporal "document"
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        if (document.contains(campo)) { //Si "document" contiene el campo cuyo nombre está guardado en "campo", que entre al if
+                            String registro = document.getString(campo); //Extraemos el contenido del campo específico y lo guardamos en la variable "registro"
+                            listaRegistros.add(registro); //Añadimos el contenido almacenado en "registro" a la lista "listaRegistros"
                         }
-                        callback.onCallback(listaRegistros); //Invocamos la interfaz "FirestoreCallback" con el objeto "callback" y con su método "onCallback" y le mandamos la lista de registros
+                    }
+                    callback.onCallback(listaRegistros); //Invocamos la interfaz "FirestoreCallback" con el objeto "callback" y con su método "onCallback" y le mandamos la lista de registros
 
-                    }
-                    else {
-                        callback.onFailure(task.getException()); //Invocamos la interfaz "FirestoreCallback" con el objeto "callback" y con su método "onFailure", a este le mandamos la excepción obtenida en la variable "task"
-                    }
-                });
+                }
+                else {
+                    callback.onFailure(task.getException()); //Invocamos la interfaz "FirestoreCallback" con el objeto "callback" y con su método "onFailure", a este le mandamos la excepción obtenida en la variable "task"
+                }
+            });
     }
 
     //Método para obtener un registro (un document con todos los campos y datos) de Firestore, utilizando una sentencia WHERE
-    public void obtenerUnRegistro(String nombreColeccion, String campo, String dato, final FirestoreCallbacks.FirestoreDocumentCallback callback) { //Recibe como parámetros el nombre de la colección, el nombre del campo, el dato (estos dos sirven para la sentencia WHERE) y el "callback"
+    public void obtenerUnRegistro(String nombreColeccion, String campo, String dato, final FirestoreCallbacks.FirestoreDocumentCallback callback) { //Recibe como parámetros el nombre de la colección, el nombre del campo, el dato (estos dos sirven para la sentencia WHERE) y el "callback" de la interfaz "FirestoreDocumentCallback"
         //Asignamos el nombre de la colección guardado en "nombreColeccion". En el ".whereEqualTo" asignamos el campo y el dato que servirán para la sentencia WHERE
         db.collection(nombreColeccion)
             .whereEqualTo(campo, dato)
@@ -61,15 +60,15 @@ public class FirestoreOperaciones {
                         QuerySnapshot querySnapshot = task.getResult(); //Guardamos el resultado obtenido con "task.getResult()" (todos los documents de Firestore obtenidos tras la búsqueda) en la variable "QuerySnapshot" que es un objeto que contiene los resultados de una consulta a Firestore
 
                         if (!querySnapshot.isEmpty()) { //Si el querySnapshot no está vacío, quiere decir que la sentencia WHERE si encontró el dato en la colección, y entrará a este if
-                            QueryDocumentSnapshot documentSnapshot = (QueryDocumentSnapshot) querySnapshot.getDocuments().get(0); //En una variable de tipo "QueryDocumentSnapshot" guardamos los datos del document en la posición 0 (la posición inicial) del "querySnapshot", sólo la posición inicial ya que sólo debería encontrar un document porque los números de identidad no deben repetirse
-                            callback.onCallback(documentSnapshot.getData()); //Llamamos la interface "callback" y le mandamos los datos del "documentSnapshot" y estos datos están óptimos para ser guardados en un HashMap
+                            QueryDocumentSnapshot documentSnapshot = (QueryDocumentSnapshot) querySnapshot.getDocuments().get(0); //En una variable de tipo "QueryDocumentSnapshot" guardamos los datos del document en la posición 0 (la posición inicial) del "querySnapshot"; sólo la posición inicial ya que sólo debería encontrar un document porque el contenido de "dato" debe ser algo único (como una identidad o un ID)
+                            callback.onCallback(documentSnapshot.getData()); //Llamamos la interfaz "callback" y le mandamos los datos del "documentSnapshot"; estos datos están aptos para ser guardados en un HashMap
                         }
                         else { //Entrará a este else si el querySnapshot está vacío, y eso quiere decir que la sentencia WHERE no encontró el dato en la colección
                             callback.onCallback(null); //Mandamos un "null" al HashMap de "onCallback". Esto nos servirá para darnos cuenta que no se encontró el dato en la colección
                         }
                     }
                     else {
-                        callback.onFailure(task.getException()); //Invocamos la interfaz "FirestoreDocumentCallback" con el objeto "callback" y con su método "onFailure", a este le mandamos la excepción obtenido en la variable "task"
+                        callback.onFailure(task.getException()); //Invocamos la interfaz "FirestoreDocumentCallback" con el objeto "callback" y con su método "onFailure", a este le mandamos la excepción obtenida en la variable "task"
                     }
                 }
             });
@@ -93,14 +92,14 @@ public class FirestoreOperaciones {
                     callback.onCallback(listaDocumentos); //Llama al método onCallback de la interfaz y le pasa la lista de documentos
                 }
                 else {
-                    callback.onFailure(task.getException()); //Invocamos la interfaz "FirestoreDocumentCallback" con el objeto "callback" y con su método "onFailure", a este le mandamos la excepción obtenido en la variable "task"
+                    callback.onFailure(task.getException()); //Invocamos la interfaz "FirestoreDocumentCallback" con el objeto "callback" y con su método "onFailure", a este le mandamos la excepción obtenida en la variable "task"
                 }
             }
         });
     }
 
     //Método que permite insertar registros (y crear un document) a una colección de Firestore
-    public void insertarRegistros(String nombreColeccion, Map<String,Object> registros, final FirestoreCallbacks.FirestoreTextCallback callback) { //Recibe como parámetros el nombre de la colección, el HashMap con el nombre de los campos y datos a insertar, y el "callback"
+    public void insertarRegistros(String nombreColeccion, Map<String,Object> registros, final FirestoreCallbacks.FirestoreTextCallback callback) { //Recibe como parámetros el nombre de la colección, el HashMap con el nombre de los campos y datos a insertar, y el "callback" de la interfaz "FirestoreTextCallback"
         //Asignamos el nombre de la colección guardado en "nombreColeccion", y el HashMap "registros"
         db.collection(nombreColeccion)
             .add(registros)
@@ -121,7 +120,7 @@ public class FirestoreOperaciones {
             .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) { //Si la inserción de datos fue exitosa, entrará a este if
+                    if (task.isSuccessful()) { //Si la extracción de datos fue exitosa, entrará a este if
                         QuerySnapshot querySnapshot = task.getResult(); //Guardamos el resultado obtenido con "task.getResult()" (todos los documents de Firestore obtenidos tras la búsqueda, que en teoría solo debe ser uno, pero pueden ser varios tras la sentencia WHERE) en la variable "QuerySnapshot" que es un objeto que contiene los resultados de una consulta a Firestore
 
                         if (!querySnapshot.isEmpty()) { //Si "querySnapshot" no está vacío, entrará al if
@@ -142,7 +141,7 @@ public class FirestoreOperaciones {
                         }
                     }
                     else {
-                        callback.onFailure(task.getException());
+                        callback.onFailure(task.getException()); //Invocamos la interfaz "FirestoreTextCallback" con el objeto "callback" y con su método "onFailure", a este le mandamos la excepción obtenida en la variable "task"
                     }
                 }
             });
