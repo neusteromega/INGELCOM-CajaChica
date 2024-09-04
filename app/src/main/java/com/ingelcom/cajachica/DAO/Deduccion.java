@@ -29,8 +29,8 @@ public class Deduccion {
         this.contexto = contexto;
     }
 
-    //Método que nos permitirá obtener todos los ingresos, pero dividiéndolos por la cuadrilla
-    public void obtenerDeducciones(String datoCuadrilla, FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<DeduccionesItems> callback) {
+    //Método que nos permitirá obtener todas las deducciones, pero dividiéndolas por la cuadrilla
+    public void obtenerDeducciones(String datoCuadrilla, FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<DeduccionesItems> callback) { //Llamamos la interfaz genérica "FirestoreAllSpecialDocumentsCallback" y le indicamos que debe ser de tipo "DeduccionesItems"
         try {
             //Llamamos el método "obtenerRegistros" de "FirestoreOperaciones", le mandamos el nombre de la colección, e invocamos la interfaz "FirestoreAllDocumentsCallback"
             oper.obtenerRegistros("deducciones", new FirestoreCallbacks.FirestoreAllDocumentsCallback() {
@@ -53,19 +53,20 @@ public class Deduccion {
                             listaDeducciones.add(deduccion); //El objeto de tipo "DeduccionesItems" lo guardamos en la lista "listaDeducciones"
                         }
                     }
+
                     //Cuando salga del "for", ya tendremos todas las deducciones en la "listaDeducciones", y esta lista es la que mandamos al método "onCallback" de la interfaz
                     callback.onCallback(listaDeducciones);
                 }
 
                 @Override
                 public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
-                    Log.e("FirestoreError", "Error al obtener los documentos", e);
+                    Log.e("ObtenerDeducciones", "Error al obtener las deducciones", e);
                     callback.onFailure(e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerDeducciones", e);
+            Log.e("ObtenerDeducciones", "Error al obtener las deducciones", e);
         }
     }
 
@@ -92,7 +93,7 @@ public class Deduccion {
                 progressDialog.setCancelable(false);
                 progressDialog.show();
 
-                //Llamamos el método "insertarRegistros" de la clase "FirestoreOperaciones" y le mandamos el nombre de la colección, el HashMap con los datos a insertar. También invocamos los métodos "onSuccess" y "onFailure" de la interfaz FirestoreInsertCallback
+                //Llamamos el método "insertarRegistros" de la clase "FirestoreOperaciones" y le mandamos el nombre de la colección y el HashMap con los datos a insertar. También invocamos los métodos "onSuccess" y "onFailure" de la interfaz FirestoreInsertCallback
                 oper.insertarRegistros("deducciones", datos, new FirestoreCallbacks.FirestoreTextCallback() {
                     @Override
                     public void onSuccess(String texto) {
@@ -104,7 +105,7 @@ public class Deduccion {
                     }
 
                     @Override
-                    public void onFailure(Exception e) {
+                    public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
                         if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
                             progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de inserción ha fallado
 
@@ -113,7 +114,7 @@ public class Deduccion {
                 });
             }
             catch (Exception e) {
-                Log.w("RegistrarDeduccion", e);
+                Log.e("RegistrarDeduccion", "Error al registrar la deducción por planilla", e);
             }
         }
         else {
@@ -161,11 +162,11 @@ public class Deduccion {
                         if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
                             progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de inserción ha sido exitoso
 
-                        Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "DeduccionEditada", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "DeduccionEditada" para indicar que fue una Deducción el que se modificó, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarIngresoDeduccion
+                        Utilidades.iniciarActivityConString(contexto, GastoIngresoRegistrado.class, "ActivityGIR", "DeduccionEditada", true); //Redireccionamos a la clase "GastoIngresoRegistrado" y mandamos el mensaje "DeduccionEditada" para indicar que fue una Deducción la que se modificó, y mandamos un "true" para indicar que debe finalizar el activity de RegistrarEditarIngresoDeduccion
                     }
 
                     @Override
-                    public void onFailure(Exception e) {
+                    public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
                         if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
                             progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de inserción ha fallado
 
@@ -174,7 +175,7 @@ public class Deduccion {
                 });
             }
             catch (Exception e) {
-                Log.w("ActualizarDeduccion", e);
+                Log.e("ActualizarDeduccion", "Error al modificar la deducción por planilla", e);
             }
         }
         else {

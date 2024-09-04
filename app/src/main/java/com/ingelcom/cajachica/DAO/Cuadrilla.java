@@ -22,8 +22,8 @@ public class Cuadrilla {
         this.contexto = contexto;
     }
 
-    //Método que nos permitirá obtener todas las cuadrillas en Firestore
-    public void obtenerCuadrillas(FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<CuadrillasItems> callback) { //Llamamos la interfaz "FirestoreAllSpecialDocumentsCallback" y le indicamos que debe ser de tipo "CuadrillasItems"
+    //Método que nos permitirá obtener todas las cuadrillas de Firestore
+    public void obtenerCuadrillas(FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<CuadrillasItems> callback) { //Llamamos la interfaz genérica "FirestoreAllSpecialDocumentsCallback" y le indicamos que debe ser de tipo "CuadrillasItems"
         try {
             //Llamamos el método "obtenerRegistros" de "FirestoreOperaciones", le mandamos el nombre de la colección, e invocamos la interfaz "FirestoreAllDocumentsCallback"
             oper.obtenerRegistros("cuadrillas", new FirestoreCallbacks.FirestoreAllDocumentsCallback() {
@@ -40,29 +40,30 @@ public class Cuadrilla {
                         CuadrillasItems cuadrilla = new CuadrillasItems(nombre, dinero); //Creamos un objeto de tipo "CuadrillasItems" en el cual guardamos los datos extraídos arriba
                         listaCuadrillas.add(cuadrilla); //El objeto de tipo "CuadrillasItems" lo guardamos en la lista "listaCuadrillas"
                     }
+
                     //Cuando salga del "for", ya tendremos todos los gastos en la "listaCuadrillas", y esta lista es la que mandamos al método "onCallback" de la interfaz
                     callback.onCallback(listaCuadrillas);
                 }
 
                 @Override
                 public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
-                    Log.e("FirestoreError", "Error al obtener los documentos", e);
+                    Log.e("ObtenerCuadrillas", "Error al obtener las cuadrillas", e);
                     callback.onFailure(e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerCuadrillas", e);
+            Log.e("ObtenerCuadrillas", "Error al obtener las cuadrillas", e);
         }
     }
 
     //Método que nos permite obtener el documento de una cuadrilla específica mediante su "Nombre", e invocamos el "FirestoreDocumentCallback" para que al llamar este método, se pueda recibir el "documento" con el contenido de la cuadrilla
     public void obtenerUnaCuadrilla(String nombre, FirestoreCallbacks.FirestoreDocumentCallback callback) {
         try {
-            //Llamamos el método "obtenerUnRegistro" de la clase FirestoreOperaciones y le mamdamos el nombre de la colección, el campo, y el dato a buscar, e invocamos el "FirestoreDocumentCallback"
+            //Llamamos el método "obtenerUnRegistro" de la clase FirestoreOperaciones, le mamdamos el nombre de la colección, el campo, y el dato a buscar, e invocamos la interfaz "FirestoreDocumentCallback"
             oper.obtenerUnRegistro("cuadrillas", "Nombre", nombre, new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
-                public void onCallback(Map<String, Object> documento) {
+                public void onCallback(Map<String,Object> documento) { //Al invocar la interfaz, nos devuelve un "Map<String,Object>" llamado "documento" en el cual se almacenarán todos los datos del documento encontrado por el campo "Nombre"
                     if (documento != null) //Si "documento" no es nulo, quiere decir que encontró la cuadrilla
                         callback.onCallback(documento); //Guardamos el "documento" con los datos de la cuadrilla en el "onCallback"
                     else //Si "documento" es nulo, no se encontró la cuadrilla en la colección, y entrará en este else
@@ -70,24 +71,24 @@ public class Cuadrilla {
                 }
 
                 @Override
-                public void onFailure(Exception e) {
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerCuadrilla", "Error al obtener la Cuadrilla", e);
                     callback.onFailure(e);
-                    Log.w("BuscarCuadrilla", "Error al obtener la Cuadrilla", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerCuadrilla", e);
+            Log.e("ObtenerCuadrilla", "Error al obtener la Cuadrilla", e);
         }
     }
 
-    //Método que nos ayudará a actualizar el dinero de una cuadrilla, dependiendo su recibe un ingreso o si se realiza un gasto
+    //Método que nos ayudará a actualizar el dinero de una cuadrilla, dependiendo si recibe un ingreso o si se realiza un gasto
     public void actualizarDineroCuadrilla(String cuadrilla, double total, String operacion) {
         try {
             //Llamamos el método "obtenerUnRegistro" de la clase "FirestoreOperaciones", este nos ayudará a buscar la cuadrilla usando su nombre
             oper.obtenerUnRegistro("cuadrillas", "Nombre", cuadrilla, new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
-                public void onCallback(Map<String, Object> documento) {
+                public void onCallback(Map<String, Object> documento) { //Al invocar la interfaz, nos devuelve un "Map<String,Object>" llamado "documento" en el cual se almacenarán todos los datos del documento encontrado por el campo "Nombre"
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró la cuadrilla mediante su nombre
                         //Obtenemos el valor guardado en el campo "Dinero" de la colección "cuadrillas" y lo guardamos en la variable Object llamada "valor"
                         Object valor = documento.get("Dinero"); //Lo obtenemos como Object ya que Firestore puede almacenar números en varios formatos (por ejemplo, Long y Double) y esto puede causar problemas con el casting del contenido del campo
@@ -95,11 +96,11 @@ public class Cuadrilla {
 
                         //Condición que determina qué operación se hará, si es un "Ingreso" se hará una suma, si es un "Gasto" o "Deduccion" se hará una resta
                         if (operacion.contentEquals("Ingreso"))
-                            dinero += total; //Sumamemos el ingreso registrado por el administrador, y que está guardado en la variable "total"
+                            dinero += total; //Sumamos el ingreso registrado por el administrador, y que está guardado en la variable "total"
                         else if (operacion.contentEquals("Gasto") || operacion.contentEquals("Deduccion"))
                             dinero -= total; //Restamos la deducción o gasto registrado, y que está guardado en la variable "total"
 
-                        //Creamos el HashMap y le insertamos el nuevo valor de "dinero" para el campo "Dinero"
+                        //Creamos un HashMap y le insertamos el nuevo valor de "dinero" para el campo "Dinero"
                         Map<String,Object> datosNuevos = new HashMap<>();
                         datosNuevos.put("Dinero", dinero);
 
@@ -115,8 +116,8 @@ public class Cuadrilla {
                             }
 
                             @Override
-                            public void onFailure(Exception e) {
-                                Log.w("ActualizarDinero", "No se encontró la cuadrilla para actualizar su dinero: " + e);
+                            public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                                Log.e("ActualizarDinero", "No se encontró la cuadrilla para actualizar su dinero: ", e);
                             }
                         });
                     }
@@ -127,38 +128,12 @@ public class Cuadrilla {
 
                 @Override
                 public void onFailure(Exception e) {
-                    Log.w("ObtenerCuadrilla", "Error al obtener la cuadrilla: ", e);
+                    Log.e("ObtenerCuadrilla", "Error al obtener la cuadrilla", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("DineroCuadrilla", e);
+            Log.e("ObtenerCuadrilla", "Error al obtener la cuadrilla", e);
         }
     }
-
-    /*//Método para obtener los nombres de las cuadrillas almacenados en Firestore
-    public void obtenerCuadrillas(final FirestoreCallback callback) {
-        //El dato "cuadrillas" dentro de "db.collection" es el nombre de la colección de Firestore
-        db.collection("cuadrillas")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) { //Si la extracción de datos fue exitosa, entrará a este if
-                        List<String> listaCuadrillas = new ArrayList<>(); //Lista donde se almacenarán las cuadrillas
-
-                        //For que recorrerá todos los "documents" de la colección "cuadrillas", y los irá almecenando uno por uno en la variable temporal "document"
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            //Si "document" contiene el campo "Nombre", que entre al if
-                            if (document.contains("Nombre")) {
-                                String cuadrilla = document.getString("Nombre"); //Extraemos el contenido del campo "Nombre" y lo guardamos en la variable "cuadrilla"
-                                listaCuadrillas.add(cuadrilla); //Añadimos el contenido almacenado en "cuadrilla" que será el nombre de la cuadrilla
-                            }
-                        }
-
-                        callback.onCallback(listaCuadrillas);
-                    }
-                    else {
-                        callback.onFailure(task.getException());
-                    }
-                });
-    }*/
 }
