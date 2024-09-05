@@ -18,8 +18,7 @@ public class SharedViewGastosModel extends ViewModel {
 
     //Método que devuelve un "LiveData<String>"
     public LiveData<String> getFecha() {
-        //Devuelve el MutableLiveData "fecha" como LiveData. Esto significa que otros componentes pueden observar este LiveData pero no pueden modificarlo directamente
-        return fecha;
+        return fecha; //Devuelve el MutableLiveData "fecha" como LiveData. Esto significa que otros componentes pueden observar este LiveData pero no pueden modificarlo directamente
     }
 
     public void setUserCompra(String userCompra) {

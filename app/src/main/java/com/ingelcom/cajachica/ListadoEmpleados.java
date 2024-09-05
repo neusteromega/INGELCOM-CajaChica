@@ -41,6 +41,7 @@ public class ListadoEmpleados extends AppCompatActivity implements SwipeRefreshL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listado_empleados);
 
+        //Enlazamos las variables globales con los elementos gráficos
         rvEmpleados = findViewById(R.id.rvListadoEmpleados);
         swlRecargar = findViewById(R.id.swipeRefreshLayoutLE);
         viewNoInternet = findViewById(R.id.viewNoInternetLE);
@@ -76,7 +77,7 @@ public class ListadoEmpleados extends AppCompatActivity implements SwipeRefreshL
     }
 
     private void obtenerDatos() {
-        LinearLayoutManager managerEmp = new LinearLayoutManager(this); //Creamos un manager para que el RecyclerView se vea en forma de tarjetas
+        LinearLayoutManager managerEmp = new LinearLayoutManager(this); //Creamos un LinearLayoutManager para que el RecyclerView se vea en forma de tarjetas
         rvEmpleados.setLayoutManager(managerEmp); //Asignamos el manager al RecyclerView
 
         try {
@@ -84,20 +85,21 @@ public class ListadoEmpleados extends AppCompatActivity implements SwipeRefreshL
             usuario.obtenerUsuarios("Empleados", new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<EmpleadosItems>() {
                 @Override
                 public void onCallback(List<EmpleadosItems> items) { //Esto nos devuelve la lista de tipo "EmpleadosItems" ya con los empleados extraídos de Firestore
-                    if (items != null) { //Si "items" no es null, que entre al if
+                    if (items != null) {
                         items = Utilidades.ordenarListaPorAlfabetico(items, "nombre", "Ascendente"); //Llamamos el método utilitario "ordenarListaPorAlfabetico". Le mandamos la lista "items", el nombre del campo String "nombre", y el tipo de orden "Ascendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                         inicializarRecyclerView(items); //Llamamos el método "inicializarGridView" y le mandamos la lista "items"
                     }
                 }
 
                 @Override
-                public void onFailure(Exception e) {
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
                     Toast.makeText(ListadoEmpleados.this, "ERROR AL CARGAR LOS EMPLEADOS", Toast.LENGTH_SHORT).show();
+                    Log.e("ObtenerEmpleados", "Error al obtener los empleados", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerEmpleados", e);
+            Log.e("ObtenerEmpleados", "Error al obtener los empleados", e);
         }
     }
 
@@ -139,6 +141,7 @@ public class ListadoEmpleados extends AppCompatActivity implements SwipeRefreshL
         }, 1000);
     }
 
+    //Método que permite retroceder a la pantalla anterior
     public void retroceder(View view) {
         onBackPressed();
     }

@@ -100,13 +100,14 @@ public class RegistrarEditarGasto extends AppCompatActivity {
     }
 
     private void inicializarElementos() {
+        //Enlazamos las variables globales con los elementos gráficos
         llFecha = findViewById(R.id.LLFechaRG);
         llCuadrilla = findViewById(R.id.LLCuadrillaRG);
         llDinero = findViewById(R.id.LLDineroRG);
 
         lblTitulo = findViewById(R.id.lblTituloRG);
         lblDinero = findViewById(R.id.lblCantDineroRG);
-        lblFecha = findViewById(R.id.lblFechaRG); //POSIBLE ELIMINACIÓN
+        lblFecha = findViewById(R.id.lblFechaRG);
         txtLugar = findViewById(R.id.txtLugarCompraRG);
         txtDescripcion = findViewById(R.id.txtDescripcionRG);
         txtFactura = findViewById(R.id.txtFacturaRG);
@@ -133,8 +134,8 @@ public class RegistrarEditarGasto extends AppCompatActivity {
         dineroDisponible = Utilidades.obtenerStringExtra(this, "DineroDisponible");
 
         switch (nombreActivity) {
+            //Obtenemos los datos de la pantalla anterior sólo si "nombreActivity" es "EditarGastoEmpleado" o "EditarGastoAdmin". En este caso, la pantalla anterior será "DetalleGastoIngreso"
             case "EditarGastoEmpleado":
-
             case "EditarGastoAdmin":
                 id = Utilidades.obtenerStringExtra(this, "ID");
                 fechaHora = Utilidades.obtenerStringExtra(this, "FechaHora");
@@ -196,13 +197,14 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onFailure(Exception e) {
-                                Log.w("ObtenerImagen", "Error al obtener el URI de la imagen: " + e);
+                            public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                                Log.e("ObtenerImagen", "Error al obtener el URI de la imagen", e);
+                                pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen haya fallado
                             }
                         });
                     }
                     catch (Exception e) {
-                        Log.w("ObtenerImagenStorage", e);
+                        Log.e("ObtenerImagen", "Error al obtener el URI de la imagen", e);
                     }
                     break;
 
@@ -235,20 +237,21 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onFailure(Exception e) {
-                                Log.w("ObtenerImagen", "Error al obtener el URI de la imagen: " + e);
+                            public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                                Log.e("ObtenerImagen", "Error al obtener el URI de la imagen: " + e);
+                                pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen se ha cargado
                             }
                         });
                     }
                     catch (Exception e) {
-                        Log.w("ObtenerImagenStorage", e);
+                        Log.e("ObtenerImagen", "Error al obtener el URI de la imagen" + e);
                     }
                     break;
             }
         }
     }
 
-    //Método Click del LinearLayout de Fecha, el cual al dar clic en él, se mostrará un calendario emergente para seleccionar una fecha, y luego un reloj para seleccionar la hora
+    //Evento Clic del LinearLayout de Fecha, el cual al dar clic en él, se mostrará un calendario emergente para seleccionar una fecha, y luego un reloj para seleccionar la hora
     public void seleccionarFecha(View view) {
         final Calendar calendar = Calendar.getInstance(); //Creamos una instancia de Calendar que representa la fecha y hora actuales. Y en ella se irán almacenando las selecciones de fecha y hora que haga el usuario en el calendario y reloj
 
@@ -288,11 +291,11 @@ public class RegistrarEditarGasto extends AppCompatActivity {
 
     private void inicializarSpinners() {
         try {
-            //Para inicializar los spinners, llamamos al método "obtenerRegistros" de la clase "FirestoreOperaciones" a la cual le mandamos el nombre de la colección y el nombre del campo de Firestore de los cuales queremos obtener los registros. También invocamos los métodos "onCallback" y "onFailure" de la interfaz FirestoreCallback
+            //Para inicializar los spinners, llamamos al método "obtenerRegistros" de la clase "FirestoreOperaciones" a la cual le mandamos el nombre de la colección y el nombre del campo de Firestore de los cuales queremos obtener los registros. También invocamos los métodos "onCallback" y "onFailure" de la interfaz FirestoreListCallback
             //CUADRILLAS
             oper.obtenerRegistrosCampo("cuadrillas", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
                 @Override
-                public void onCallback(List<String> lista) {
+                public void onCallback(List<String> lista) { //Aquí está la lista con el nombre de las cuadrillas
                     //Ordenamos la "lista" alfabéticamente llamando al método utilitario "ordenarListaPorAlfabetico" donde enviamos la lista, un String vacío ("") y el orden ascendente. El String vacío es para indicar que el "nombreCampo" por el cual se desea realizar el orden de la lista, en este caso no existe ya que es una lista sencilla y no de una clase
                     lista = Utilidades.ordenarListaPorAlfabetico(lista, "", "Ascendente");
 
@@ -307,20 +310,20 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Exception e) {
-                    Log.w("Activity", "Error al obtener las cuadrillas.", e);
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerCuadrillas", "Error al obtener las cuadrillas", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerCuadrillas", e);
+            Log.e("ObtenerCuadrillas", "Error al obtener las cuadrillas", e);
         }
 
         try {
             //TIPO DE COMPRAS
             oper.obtenerRegistrosCampo("tipoCompras", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
                 @Override
-                public void onCallback(List<String> lista) {
+                public void onCallback(List<String> lista) { //Aquí está la lista con el nombre de los tipos de compras
                     //Ordenamos la "lista" alfabéticamente llamando al método utilitario "ordenarListaPorAlfabetico" donde enviamos la lista, un String vacío ("") y el orden ascendente. El String vacío es para indicar que el "nombreCampo" por el cual se desea realizar el orden de la lista, en este caso no existe ya que es una lista sencilla y no de una clase
                     lista = Utilidades.ordenarListaPorAlfabetico(lista, "", "Ascendente");
 
@@ -335,28 +338,32 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Exception e) {
-                    Log.w("Activity", "Error al obtener los tipos de compras.", e);
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerTipoCompras", "Error al obtener los tipos de compras", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerTipoCompras", e);
+            Log.e("ObtenerTipoCompras", "Error al obtener los tipos de compras", e);
         }
     }
 
+    //Evento clic del botón de subir fotografía
     public void subirFoto(View view) {
         mostrarDialogBottomSheet();
     }
 
+    //Método que permite mostrar el "DialogBottomSheet" (la ventana emergente que permite seleccionar entre tomar una foto o seleccionar imagen de la galería)
     private void mostrarDialogBottomSheet() {
         final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); //Establecemos que el DialogBottomSheet no tenga un titulo
         dialog.setContentView(R.layout.bottomsheet_foto); //Asignamos la vista que tendrá el bottomSheet, en este caso, es el elemento layout "bottomsheet_foto"
 
+        //Enlazamos estas variables con los LinearLayouts de la vista "R.layout.bottomsheet_foto"
         LinearLayout tomarFoto = dialog.findViewById(R.id.LLTomarFotoBSFoto);
         LinearLayout seleccionarFoto = dialog.findViewById(R.id.LLSeleccionarFotoBSFoto);
 
+        //Eventos clic de los LinearLayouts
         tomarFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -364,7 +371,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
 
                 //Llamamos el método utilitario "verificarPermisosAlmacenamiento" donde mandamos el contexto de esta clase. Si este método devuelve un "true" significa que los permisos de almacenamiento externo ya han sido otorgados, en ese caso que entre al if
                 if (Utilidades.verificarPermisosAlmacenamiento(RegistrarEditarGasto.this)) {
-                    dialog.dismiss();
+                    dialog.dismiss(); //Ocultamos el dialog cuando se seleccione la opción de "Tomar Foto"
                     abrirCamara();
                 }
             }
@@ -377,7 +384,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
 
                 //Llamamos el método utilitario "verificarPermisosAlmacenamiento" donde mandamos el contexto de esta clase. Si este método devuelve un "true" significa que los permisos de almacenamiento externo ya han sido otorgados, en ese caso que entre al if
                 if (Utilidades.verificarPermisosAlmacenamiento(RegistrarEditarGasto.this)) {
-                    dialog.dismiss();
+                    dialog.dismiss(); //Ocultamos el dialog cuando se seleccione la opción de "Seleccionar Imagen"
                     seleccionarImagen();
                 }
             }
@@ -405,6 +412,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
         }
     }
 
+    //Método que permite abrir la cámara para tomar una foto
     private void abrirCamara() {
         try {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); //Creamos un nuevo intent con la acción de "Capturar Imagen" (Image Capture) de "MediaStore"
@@ -424,10 +432,11 @@ public class RegistrarEditarGasto extends AppCompatActivity {
             }
         }
         catch (Exception e) {
-            Log.e("AbrirCamara", "Error al abrir la cámara: ", e);
+            Log.e("AbrirCamara", "Error al abrir la cámara", e);
         }
     }
 
+    //Método que permite abrir la galería para seleccionar una imagen
     private void seleccionarImagen() {
         try {
             Intent intent = new Intent();
@@ -436,7 +445,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
             startActivityForResult(intent, 100);
         }
         catch (Exception e) {
-            Log.e("ElegirImagen", "Error al abrir la galería: ", e);
+            Log.e("ElegirImagen", "Error al abrir la galería", e);
         }
     }
 
@@ -472,16 +481,13 @@ public class RegistrarEditarGasto extends AppCompatActivity {
             }
         }
         catch (Exception e) {
-            Log.w("SeleccionarImagen", e);
+            Log.e("CargarImagen", "Error al cargar la imagen en el ImageView", e);
         }
     }
 
+    //Evento clic que al dar clic en la imagen cargada, nos manda al Activity "ImagenCompleta" donde también envía el URI de la imagen cargada para mostrarla en pantalla completa
     public void mostrarImagenCompleta(View view) {
         HashMap<String, Object> datosImagen = new HashMap<>();
-
-        /*Intent intent = new Intent(this, ImagenCompleta.class);
-        intent.putExtra("imageUri", imageUri); // Enviar el URI de la imagen
-        startActivity(intent);*/
 
         if (imageUri != null) //Si "imageUri" no es nulo, que muestre en pantalla completa la foto recién cargada
             datosImagen.put("imageUri", imageUri); //Enviamos el URI de la imagen
@@ -493,29 +499,31 @@ public class RegistrarEditarGasto extends AppCompatActivity {
         Utilidades.iniciarActivityConDatos(RegistrarEditarGasto.this, ImagenCompleta.class, datosImagen);
     }
 
+    //Evento clic del botón de eliminar foto
     public void eliminarFoto(View view) {
         //Creamos un alertDialog que pregunte si se desea eliminar la imagen seleccionada
         new AlertDialog.Builder(this).setTitle("ELIMINAR IMAGEN").setMessage("¿Está seguro que desea eliminar la imagen?")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        //Establecemos ambos "imageUri" en null para recalcar que no hay ninguna imagen cargada
-                        imageUri = null;
-                        imageUriVieja = null;
+            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    //Establecemos ambos "imageUri" en null para recalcar que no hay ninguna imagen cargada
+                    imageUri = null;
+                    imageUriVieja = null;
 
-                        //Ocultamos el imageView con la foto, el botón de eliminar Foto, y le cambiamos el texto al botón de subir y cambiar foto
-                        imgFoto.setVisibility(View.GONE);
-                        btnEliminarFoto.setVisibility(View.GONE);
-                        btnSubirCambiarFoto.setText("Subir Fotografía");
-                    }
-                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
-                    }
-                }).show();
+                    //Ocultamos el imageView con la foto, el botón de eliminar Foto, y le cambiamos el texto al botón de subir y cambiar foto
+                    imgFoto.setVisibility(View.GONE);
+                    btnEliminarFoto.setVisibility(View.GONE);
+                    btnSubirCambiarFoto.setText("Subir Fotografía");
+                }
+            }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                }
+            }).show();
     }
 
+    //Evento clic del botón de confirmar
     public void confirmar(View view) {
         //Llamamos el método utilitario "mostrarMensajePorInternetCaidoBoolean" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya. Este retorna un booleano indicando si hay internet o no
         boolean internetDisponible = Utilidades.mostrarMensajePorInternetCaidoBoolean(this, viewNoInternet);
@@ -527,74 +535,75 @@ public class RegistrarEditarGasto extends AppCompatActivity {
 
                         //Creamos un alertDialog que pregunte si se desea registrar el gasto de dinero a la cuadrilla seleccionada
                         new AlertDialog.Builder(this).setTitle("REGISTRAR GASTO").setMessage("¿Está seguro que desea registrar el gasto de dinero a la cuadrilla seleccionada?")
-                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "insertarGasto()"
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        insertarGasto("GastoAdmin");
-                                    }
-                                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
-                                    }
-                                }).show();
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "insertarGasto()"
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    insertarGasto("GastoAdmin"); //Llamamos el método "insertarGasto" de abajo para que se complete el registro de los datos, y le mandamos la palabra "GastoAdmin" para que sepa que registrará un gasto hecho por un administrador
+                                }
+                            }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                }
+                            }).show();
                         break;
 
                     case "RegistrarGastoEmpleado":
 
                         //Creamos un alertDialog que pregunte si se desea registrar el gasto de dinero
                         new AlertDialog.Builder(this).setTitle("REGISTRAR GASTO").setMessage("¿Está seguro que desea registrar el gasto de dinero?")
-                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "insertarGasto()"
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        insertarGasto("GastoEmpleado");
-                                    }
-                                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
-                                    }
-                                }).show();
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "insertarGasto()"
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    insertarGasto("GastoEmpleado"); //Llamamos el método "insertarGasto" de abajo para que se complete el registro de los datos, y le mandamos la palabra "GastoEmpleado" para que sepa que registrará un gasto hecho por un empleado
+                                }
+                            }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en Logcat
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                }
+                            }).show();
                         break;
 
                     case "EditarGastoEmpleado":
 
                         //Creamos un alertDialog que pregunte si se desea editar el ingreso de dinero
                         new AlertDialog.Builder(this).setTitle("EDITAR GASTO").setMessage("¿Está seguro que desea modificar los datos del gasto?")
-                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarGasto()"
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        editarGasto("Empleado"); //Llamamos el método "editarGasto" de abajo para que se complete la modificación de los datos, y le mandamos la palabra "Empleado" para que sepa que modificará un gasto hecho por un empleado
-                                    }
-                                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
-                                    }
-                                }).show();
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarGasto()"
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    editarGasto("Empleado"); //Llamamos el método "editarGasto" de abajo para que se complete la modificación de los datos, y le mandamos la palabra "Empleado" para que sepa que modificará un gasto hecho por un empleado
+                                }
+                            }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                }
+                            }).show();
                         break;
 
                     case "EditarGastoAdmin":
 
                         //Creamos un alertDialog que pregunte si se desea editar el gasto de dinero a la cuadrilla seleccionada
                         new AlertDialog.Builder(this).setTitle("EDITAR GASTO").setMessage("¿Está seguro que desea modificar los datos del gasto?")
-                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarGasto()"
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        editarGasto("Admin"); //Llamamos el método "editarGasto" de abajo para que se complete la modificación de los datos, y le mandamos la palabra "Admin" para que sepa que modificará un gasto hecho por un administrador
-                                    }
-                                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
-                                    }
-                                }).show();
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarGasto()"
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    editarGasto("Admin"); //Llamamos el método "editarGasto" de abajo para que se complete la modificación de los datos, y le mandamos la palabra "Admin" para que sepa que modificará un gasto hecho por un administrador
+                                }
+                            }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                }
+                            }).show();
                         break;
                 }
             }
         }
     }
 
+    //Método que permite registrar un gasto y recibe el tipo de Gasto para saber si es un gasto de empleado o administrador
     private void insertarGasto(String tipoGasto) {
         //Enlazamos los EditText con las siguientes variables String
         String lugarCompra = txtLugar.getText().toString();
@@ -611,7 +620,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
             usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
                 public void onCallback(Map<String, Object> documento) { //Los datos del usuario están guardados en el HashMap "documento"
-                    if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                    if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario actual
                         //Obtenemos estos 3 datos del usuario y los guardamos en sus respectivas variables
                         String nombre = (String) documento.get("Nombre");
                         String cuadrillaBDD = (String) documento.get("Cuadrilla");
@@ -623,19 +632,16 @@ public class RegistrarEditarGasto extends AppCompatActivity {
                         else if (tipoGasto.equalsIgnoreCase("GastoEmpleado"))
                             gast.registrarGasto(nombre, timestamp, rol, cuadrillaBDD, lugarCompra, tipoCompra, descripcion, factura, total, imageUri, true, false); //Si el gasto lo registra un empleado, mandamos "cuadrillaBDD" que es la extracción de la cuadrilla a la que pertenece el usuario actual, y un true indicando que SI debe restar el gasto registrado del dinero disponible de la cuadrilla del usuario
                     }
-                    else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
-                        Log.w("ObtenerUsuario", "Usuario no encontrado");
-                    }
                 }
 
                 @Override
-                public void onFailure(Exception e) {
-                    Log.w("BuscarUsuario", "Error al obtener el usuario", e);
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerUsuario", "Error al obtener el usuario actual");
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerUsuario", e);
+            Log.e("ObtenerUsuario", "Error al obtener el usuario actual");
         }
     }
 
@@ -662,6 +668,7 @@ public class RegistrarEditarGasto extends AppCompatActivity {
         }
     }
 
+    //Método que permite retroceder a la pantalla anterior
     public void retroceder(View view) {
         onBackPressed();
     }

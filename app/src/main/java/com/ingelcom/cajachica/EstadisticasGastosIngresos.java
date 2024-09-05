@@ -101,6 +101,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
     private void inicializarElementos() {
         tipoDatos = Utilidades.obtenerStringExtra(this, "ActivityEGI"); //Obtenemos el tipoDatos de la pantalla anterior (FragAdmEstadisticas) el cual puede ser "Gastos" o "Ingresos"
 
+        //Enlazamos las variables globales con los elementos gráficos
         lblTitulo = findViewById(R.id.lblTituloEstGI);
         btnMes = findViewById(R.id.lblMesEstGI);
         btnAnio = findViewById(R.id.lblAnioEstGI);
@@ -138,7 +139,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
     private void obtenerDatos(String fecha, String grafico) { //Recibe la "fecha" el cual puede ser el año o mes seleccionado por el usuario para filtrar los datos de las gráficas, y el "grafico" que indica cuál gráfico se desea visualizar
         try {
             if (tipoDatos.equalsIgnoreCase("Gastos")) { //Si "tipoDatos" contiene el texto "Gastos", que entre al if para obtener los gastos
-                //Llamamos el método "obtenerGastos" de la clase "Gasto", le mandamos la cuadrilla vacía, y el texto "Empleado" ya que sólo queremos obtener los gastos hechos por los empleados, y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados
+                //Llamamos el método "obtenerGastos" de la clase "Gasto", le mandamos la cuadrilla vacía, el texto "Empleado" ya que sólo queremos obtener los gastos hechos por los empleados, el usuario vacío, el tipo de compra vacío y el "mesAnio". Con esto se podrán obtener todos los gastos hechos por los empleados
                 gast.obtenerGastos("", "Empleado", "", "", fecha, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                     @Override
                     public void onCallback(List<GastosItems> items) {
@@ -168,7 +169,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
                                 graficoLineas.setVisibility(View.GONE);
                                 lblNoDatos.setVisibility(View.GONE);
 
-                                establecerGraficoAnillo(listaEstadisticas); //Llamamos el método "establecerGraficoPastel" y le mandamos la "listaEstadisticas"
+                                establecerGraficoAnillo(listaEstadisticas); //Llamamos el método "establecerGraficoAnillo" y le mandamos la "listaEstadisticas"
                             }
                             else if (grafico.equalsIgnoreCase("Lineas")) { //Si "grafico" contiene el texto "Lineas" que entre al if
                                 //Hacemos visible el "graficoLineas" y ocultamos los demás, incluso el TextView "lblNoDatos"
@@ -191,17 +192,17 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
                     }
 
                     @Override
-                    public void onFailure(Exception e) {
-                        Log.w("ObtenerGastos", e);
+                    public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                        Log.e("ObtenerGastos", "Error al obtener los gastos", e);
                     }
                 });
             }
             else if (tipoDatos.equalsIgnoreCase("Ingresos")) { //En cambio, si "tipoDatos" contiene el texto "Ingresos", que entre al if para obtener los ingresos
-                //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla vacía ya que no queremos filtrar y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores
+                //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla vacía ya que no queremos filtrar, un false para "datosEmpleado" (ya que no queremos reducir la lista de ingresos para el mes actual y anterior) y el "mesAnio". Con esto se podrán obtener todos los ingresos hechos por los administradores
                 ingr.obtenerIngresos("", fecha, false, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
                     @Override
                     public void onCallback(List<IngresosItems> items) {
-                        if (items != null && !items.isEmpty()) {//Si "items" no es null, que entre al if
+                        if (items != null && !items.isEmpty()) { //Si "items" no es null y no está vacío, que entre al if
                             List<EstadisticasItems> listaEstadisticas = Utilidades.sumarTotalesCuadrillas(items, "cuadrilla", "total"); //Llamamos al método utilitario "sumarTotalesCuadrillas", donde le mandamos la lista "items" con los ingresos obtenidos, el texto "cuadrilla", y el texto "total", estos últimos indican que así se llaman los campos de los cuales queremos eliminar sus repetidos y sumar sus totales. Esto retorna una lista de tipo "EstadisticasItems" y por ende, guardamos el retorno en "listaEstadisticas" del mismo tipo de dato
 
                             double total = 0; //Creamos una variable double donde se guardará el total de Ingresos
@@ -227,7 +228,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
                                 graficoLineas.setVisibility(View.GONE);
                                 lblNoDatos.setVisibility(View.GONE);
 
-                                establecerGraficoAnillo(listaEstadisticas); //Llamamos el método "establecerGraficoPastel" y le mandamos la "listaEstadisticas"
+                                establecerGraficoAnillo(listaEstadisticas); //Llamamos el método "establecerGraficoAnillo" y le mandamos la "listaEstadisticas"
                             }
                             else if (grafico.equalsIgnoreCase("Lineas")) { //Si "grafico" contiene el texto "Lineas" que entre al if
                                 //Hacemos visible el "graficoLineas" y ocultamos los demás, incluso el TextView "lblNoDatos"
@@ -250,14 +251,14 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
                     }
 
                     @Override
-                    public void onFailure(Exception e) {
-                        Log.w("ObtenerIngresos", e);
+                    public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                        Log.e("ObtenerIngresos", "Error al obtener los ingresos", e);
                     }
                 });
             }
         }
         catch (Exception e) {
-            Log.w("ObtenerDatos", e);
+            Log.e("ObtenerDatos", "Error al obtener los datos", e);
         }
     }
 
@@ -299,7 +300,6 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
         graficoBarras.animateY(1000); //Establecemos una animación de entrada que durará un segundo
         graficoBarras.getDescription().setEnabled(false); //Eliminamos la descripción
         graficoBarras.getLegend().setEnabled(false); //Eliminamos la leyenda
-        //graficoBarras.setDrawValueAboveBar(false); //Meter los números dentro de las barras
 
         YAxis axisLeft = graficoBarras.getAxisLeft(); //Obtenemos una instancia del eje izquierdo del gráfico (en este caso, el eje izquierdo está en la parte superior ya que es un gráfico horizontal y sus propiedades cambian)
         axisLeft.setAxisMinimum(0f); //Aseguramos que los valores de referencia comiencen desde 0
@@ -399,7 +399,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
         graficoLineas.invalidate(); //Refrescamos el gráfico
     }
 
-    //Método Click del botón "Mes"
+    //Evento clic del botón "Mes"
     public void elegirMes(View view) {
         //Establecemos el color del fondo y de la fuente para los botones de Mes y Año
         btnMes.setBackground(getDrawable(R.drawable.clr_casilladegradadoazul_redonda));
@@ -410,7 +410,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
         tipoFecha = "Mes"; //Asignamos la palabra "Mes" a la variable global "tipoFecha"
     }
 
-    //Método Click del botón "Año"
+    //Evento clic del botón "Año"
     public void elegirAnio(View view) {
         //Establecemos el color del fondo y de la fuente para los botones de Mes y Año
         btnAnio.setBackground(getDrawable(R.drawable.clr_casilladegradadoazul_redonda));
@@ -434,11 +434,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
                 @Override //Durante el texto del lblFecha está cambiando
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     fechaSeleccionada = lblFecha.getText().toString(); //Guardamos el texto cambiado de "lblFecha" en la variable global "fechaSeleccionada"
-
-                    if (fechaSeleccionada.equalsIgnoreCase("Seleccionar...")) //Si "fechaSeleccionada" contiene el texto "Seleccionar...", que entre al if
-                        fechaSeleccionada = "Seleccionar Mes"; //Cambiamos el texto de "fechaSeleccionada" y le establecemos "Seleccionar Mes"; esto se hace para obtener los gastos o ingresos sin ningún filtrado, y en las clases DAO de Gasto e Ingreso, para que devuelva los datos sin filtro, debe detectar que el texto esté vacío o tenga el texto específico: "Seleccionar Mes"
-
-                    obtenerDatos(fechaSeleccionada, tipoGrafico); //Llamamos el método "obtenerIngresos" de arriba y le mandamos el contenido de "fechaSeleccionada"
+                    obtenerDatos(fechaSeleccionada, tipoGrafico); //Llamamos el método "obtenerIngresos" de arriba y le mandamos el contenido de "fechaSeleccionada" y el contenido de "tipoGrafico"
                 }
 
                 @Override //Después de que el texto del lblFecha cambie
@@ -448,7 +444,7 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
             });
         }
         catch (Exception e) {
-            Log.w("DetectarFecha", e);
+            Log.e("DetectarFecha", "Error al detectar la fecha", e);
         }
     }
 
@@ -477,27 +473,32 @@ public class EstadisticasGastosIngresos extends AppCompatActivity implements Swi
                 datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo mes y año
             }
             catch (Exception e) {
-                Log.w("ObtenerMes", e);
+                Log.e("ObtenerMes", "Error al obtener mes", e);
             }
         }
         else if (tipoFecha.equalsIgnoreCase("Año")) { //En cambio, si la variable global "tipoFecha" obtiene la palabra "Año", significa que el usuario tiene seleccionado el botón de año en la pantalla; por lo tanto, que entre al else if
-            DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() { //Creamos una instancia de la interfaz "DatePickerDialog.OnDateSetListener" y esta define el método "onDateSet" que se llama cuando el usuario selecciona una fecha en el DatePickerDialog
-                @Override
-                public void onDateSet(DatePicker datePicker, int year, int month, int day) { //Se ejecuta cuando el usuario ha seleccionado una fecha
-                    lblFecha.setText(String.valueOf(year)); //Asignamos el año ya convertido a String al lblFechaSeleccionada
-                }
-            };
+            try {
+                DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() { //Creamos una instancia de la interfaz "DatePickerDialog.OnDateSetListener" y esta define el método "onDateSet" que se llama cuando el usuario selecciona una fecha en el DatePickerDialog
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int month, int day) { //Se ejecuta cuando el usuario ha seleccionado una fecha
+                        lblFecha.setText(String.valueOf(year)); //Asignamos el año ya convertido a String al lblFechaSeleccionada
+                    }
+                };
 
-            Calendar cal = Calendar.getInstance(); //Creamos un objeto de tipo Calendar que representa la fecha y hora actuales en el dispositivo donde se está ejecutando el código
-            int year = cal.get(Calendar.YEAR); //Obtenemos el año actual
-            int month = cal.get(Calendar.MONTH); //Obtenemos el mes actual
-            int day = cal.get(Calendar.DAY_OF_MONTH); //Obtenemos el día actual
-            int style = AlertDialog.THEME_HOLO_LIGHT; //En una variable entera guardamos el estilo que tendrá la ventana emergente
+                Calendar cal = Calendar.getInstance(); //Creamos un objeto de tipo Calendar que representa la fecha y hora actuales en el dispositivo donde se está ejecutando el código
+                int year = cal.get(Calendar.YEAR); //Obtenemos el año actual
+                int month = cal.get(Calendar.MONTH); //Obtenemos el mes actual
+                int day = cal.get(Calendar.DAY_OF_MONTH); //Obtenemos el día actual
+                int style = AlertDialog.THEME_HOLO_LIGHT; //En una variable entera guardamos el estilo que tendrá la ventana emergente
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(EstadisticasGastosIngresos.this, style, dateSetListener, year, month, day); //Creamos un nuevo objeto de tipo DatePickerDialog y le mandamos como parámetros al constructor, un contexto, la variable "style" que guarda el estilo, el "dateSetListener", el año, mes y día, estos últimos para que al abrir el AlertDialog, se muestre el mes actual
-            datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("day", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de días asignando "GONE" en su visibilidad
-            datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("month", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de meses asignando "GONE" en su visibilidad
-            datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo años
+                DatePickerDialog datePickerDialog = new DatePickerDialog(EstadisticasGastosIngresos.this, style, dateSetListener, year, month, day); //Creamos un nuevo objeto de tipo DatePickerDialog y le mandamos como parámetros al constructor, un contexto, la variable "style" que guarda el estilo, el "dateSetListener", el año, mes y día, estos últimos para que al abrir el AlertDialog, se muestre el mes actual
+                datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("day", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de días asignando "GONE" en su visibilidad
+                datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("month", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de meses asignando "GONE" en su visibilidad
+                datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo años
+            }
+            catch (Exception e) {
+                Log.e("ObtenerYear", "Error al obtener año", e);
+            }
         }
     }
 

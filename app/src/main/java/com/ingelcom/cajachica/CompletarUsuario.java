@@ -22,6 +22,7 @@ public class CompletarUsuario extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_completar_usuario);
 
+        //Enlazamos las variables globales con los elementos gráficos
         viewNoInternet = findViewById(R.id.viewNoInternetCC);
         btnReintentarConexion = findViewById(R.id.btnReintentarConexion);
         pbReintentarConexion = findViewById(R.id.pbReintentarConexion);
@@ -44,6 +45,7 @@ public class CompletarUsuario extends AppCompatActivity {
         });
     }
 
+    //Método que permite retroceder a la pantalla anterior
     public void retroceder(View view) {
         onBackPressed();
     }

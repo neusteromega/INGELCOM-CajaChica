@@ -54,7 +54,7 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
     private Cuadrilla cuad;
 
     public FragAdmInicio() {
-        // Required empty public constructor
+
     }
 
     public static FragAdmInicio newInstance(String param1, String param2) {
@@ -77,7 +77,7 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_adm_inicio, container, false);
+        View view = inflater.inflate(R.layout.fragment_adm_inicio, container, false); //Guardamos la vista inflada del fragment en una variable tipo "view"
 
         inicializarElementos(view);
 
@@ -88,11 +88,14 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
 
         obtenerDatos();
 
+        //Eventos clic de botones
         btnVerIngresos.setOnClickListener(v -> {
+            //Redireccionamos al usuario al activity de "ListadoIngresosDeducciones" llamando el método utilitario "iniciarActivityConString" donde indicamos que el activity a mostrar será "ListadoIngresosTodos"
             Utilidades.iniciarActivityConString(getContext(), ListadoIngresosDeducciones.class, "ActivityLID", "ListadoIngresosTodos", false);
         });
 
         btnVerGastos.setOnClickListener(v -> {
+            //Redireccionamos al usuario al activity de "ListadoGastos" llamando el método utilitario "iniciarActivityConString" donde indicamos que el activity a mostrar será "ListadoGastosTodos"
             Utilidades.iniciarActivityConString(getContext(), ListadoGastos.class, "ActivityLG", "ListadoGastosTodos", false);
         });
 
@@ -114,6 +117,7 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void inicializarElementos(View view) {
+        //Enlazamos las variables globales con los elementos gráficos
         rvIngresos = view.findViewById(R.id.rvIngresosInicio);
         rvGastos = view.findViewById(R.id.rvGastosInicio);
         rvCuadrillas = view.findViewById(R.id.rvCuadrillasInicio);
@@ -146,7 +150,7 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
     //Método que permite obtener los Ingresos de Firestore
     private void obtenerIngresos() {
         try {
-            //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la "cuadrilla" y el "mes" vacíos para indicar que no se haga un filtrado de ingresos. Con esto se podrán obtener todos los ingresos hechos por los administradores
+            //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la "cuadrilla", un false para "datosEmpleado" (ya que no queremos reducir la lista de ingresos para el mes actual y anterior) y el "mesAnio" vacíos para indicar que no se haga un filtrado de ingresos. Con esto se podrán obtener todos los ingresos hechos por los administradores
             ingr.obtenerIngresos("", "", false, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
                 @Override
                 public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos
@@ -165,20 +169,20 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
                 }
 
                 @Override
-                public void onFailure(Exception e) {
-                    Log.w("ObtenerIngresos", e);
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerIngresos", "Error al obtener los ingresos", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerIngresos", e);
+            Log.e("ObtenerIngresos", "Error al obtener los ingresos", e);
         }
     }
 
     //Método que permite obtener los Gastos de Firestore
     private void obtenerGastos() {
         try {
-            //Llamamos el método "obtenerGastos" de la clase "Gasto", le mandamos la "cuadrilla", el "rol" y el "mes" vacíos para indicar que no se haga un filtrado de gastos. Con esto se podrán obtener todos los gastos hechos por los administradores y empleados
+            //Llamamos el método "obtenerGastos" de la clase "Gasto", le mandamos la "cuadrilla", el "rol", el "usuario", el "tipoCompra" y el "mesAnio" vacíos para indicar que no se haga un filtrado de gastos. Con esto se podrán obtener todos los gastos hechos por los administradores y empleados
             gast.obtenerGastos("", "", "", "", "", new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                 @Override
                 public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos
@@ -197,13 +201,13 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
                 }
 
                 @Override
-                public void onFailure(Exception e) {
-                    Log.w("ObtenerGastos", e);
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerGastos", "Error al obtener los gastos", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerGastos", e);
+            Log.e("ObtenerGastos", "Error al obtener los gastos", e);
         }
     }
 
@@ -227,23 +231,23 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
                     }
                 }
                 @Override
-                public void onFailure(Exception e) {
-                    Log.w("ObtenerCuadrillas", e);
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerCuadrillas", "Error al obtener las cuadrillas", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerCuadrillas", e);
+            Log.e("ObtenerCuadrillas", "Error al obtener las cuadrillas", e);
         }
     }
 
     //Método genérico que nos ayuda a inicializar los RecyclerView
     private <T> void inicializarRecyclerView(List<T> items, String tipo) { //Recibe una lista de tipo "T", esto quiere decir que puede ser cualquier tipo de lista
-        LinearLayoutManager manager = new LinearLayoutManager(getContext()); //Creamos un nuevo LinearLayoutManager para que el RecyclerView se vea en forma de tarjetas
+        LinearLayoutManager manager = new LinearLayoutManager(getContext()); //Creamos un nuevo LinearLayoutManager para que los RecyclerViews se vean en forma de tarjetas
         manager.setOrientation(LinearLayoutManager.HORIZONTAL); //Asignamos que la orientación de los recyclerviews sea horizontal, estableciendo esa propiedad en el "LinearLayoutManager"
 
         if (tipo.contentEquals("Ingreso")) { //Si "tipo" es "Ingreso", que asigne los elementos al rvIngresos
-            rvIngresos.setLayoutManager(manager); //Creamos un nuevo LinearLayoutManager para que el RecyclerView "rvIngresos" se vea en forma de tarjetas
+            rvIngresos.setLayoutManager(manager); //Asignamos el LinearLayoutManager al "rvIngresos"
 
             InicioAdapter<T> adapterIngresos = new InicioAdapter<>(items); //Creamos un adapter al instanciar la clase genérica "InicioAdapter" y le mandamos la lista "items"
             rvIngresos.setAdapter(adapterIngresos); //Asignamos el adapter al recyclerView de Ingresos
@@ -258,27 +262,19 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
 
                         //Agregamos las claves y datos al HashMap
                         datosIngreso.put("ActivityDGI", "DetalleIngreso");
-
-                        //Llamamos el método utilitario "obtenerCampo" y le mandamos el "item" clickeado, y los nombres de los métodos getter de la clase IngresosItems para que nos retorne los valores que devuelven estos métodos y poder guardarlos en el HashMap
-                        datosIngreso.put("ID", Utilidades.obtenerCampo(item, "getId"));
-                        /*datosIngreso.put("Usuario", Utilidades.obtenerCampo(item, "getUsuario"));
-                        datosIngreso.put("FechaHora", Utilidades.obtenerCampo(item, "getFechaHora"));
-                        datosIngreso.put("Cuadrilla", Utilidades.obtenerCampo(item, "getCuadrilla"));
-                        datosIngreso.put("Transferencia", Utilidades.obtenerCampo(item, "getTransferencia"));
-                        datosIngreso.put("Imagen", Utilidades.obtenerCampo(item, "getImagen"));
-                        datosIngreso.put("Total", String.format("%.2f", Utilidades.obtenerCampo(item, "getTotal")));*/
+                        datosIngreso.put("ID", Utilidades.obtenerCampo(item, "getId")); //Llamamos el método utilitario "obtenerCampo" y le mandamos el "item" clickeado, y los nombres de los métodos getter de la clase IngresosItems para que nos retorne los valores que devuelven estos métodos y poder guardarlos en el HashMap
 
                         //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
                         Utilidades.iniciarActivityConDatos(getActivity(), DetalleGastoIngreso.class, datosIngreso);
                     }
                     catch (Exception e) {
-                        Log.w("ObtenerIngreso", e);
+                        Log.e("ObtenerIngreso", "Error al obtener el ingreso", e);
                     }
                 }
             });
         }
         else if (tipo.contentEquals("Gasto")) { //En cambio, si "tipo" es "Gasto", que asigne los elementos al rvGastos
-            rvGastos.setLayoutManager(manager); //Creamos un nuevo LinearLayoutManager para que el RecyclerView "rvGastos" se vea en forma de tarjetas
+            rvGastos.setLayoutManager(manager); //Asignamos el LinearLayoutManager al "rvGastos"
 
             InicioAdapter<T> adapterGastos = new InicioAdapter<>(items); //Creamos un adapter al instanciar la clase genérica "InicioAdapter" y le mandamos la lista "items"
             rvGastos.setAdapter(adapterGastos); //Asignamos el adapter al recyclerView de Gastos
@@ -293,31 +289,19 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
 
                         //Agregamos las claves y datos al HashMap
                         datosGasto.put("ActivityDGI", "DetalleGastoSupervisores");
-
-                        //Llamamos el método utilitario "obtenerCampo" y le mandamos el "item" clickeado, y los nombres de los métodos getter de la clase GastosItems para que nos retorne los valores que devuelven estos métodos y poder guardarlos en el HashMap
-                        datosGasto.put("ID", Utilidades.obtenerCampo(item, "getId"));
-                        /*datosGasto.put("FechaHora", Utilidades.obtenerCampo(item, "getFechaHora"));
-                        datosGasto.put("Cuadrilla", Utilidades.obtenerCampo(item, "getCuadrilla"));
-                        datosGasto.put("LugarCompra", Utilidades.obtenerCampo(item, "getLugarCompra"));
-                        datosGasto.put("TipoCompra", Utilidades.obtenerCampo(item, "getTipoCompra"));
-                        datosGasto.put("Descripcion", Utilidades.obtenerCampo(item, "getDescripcion"));
-                        datosGasto.put("NumeroFactura", Utilidades.obtenerCampo(item, "getNumeroFactura"));
-                        datosGasto.put("Usuario", Utilidades.obtenerCampo(item, "getUsuario"));
-                        datosGasto.put("Rol", Utilidades.obtenerCampo(item, "getRol"));
-                        datosGasto.put("Imagen", Utilidades.obtenerCampo(item, "getImagen"));
-                        datosGasto.put("Total", String.format("%.2f", Utilidades.obtenerCampo(item, "getTotal")));*/
+                        datosGasto.put("ID", Utilidades.obtenerCampo(item, "getId")); //Llamamos el método utilitario "obtenerCampo" y le mandamos el "item" clickeado, y los nombres de los métodos getter de la clase GastosItems para que nos retorne los valores que devuelven estos métodos y poder guardarlos en el HashMap
 
                         //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
                         Utilidades.iniciarActivityConDatos(getActivity(), DetalleGastoIngreso.class, datosGasto);
                     }
                     catch (Exception e) {
-                        Log.w("ObtenerGasto", e);
+                        Log.e("ObtenerGasto", "Error al obtener el gasto", e);
                     }
                 }
             });
         }
         else if (tipo.contentEquals("Cuadrilla")) { //En cambio, si "tipo" es "Cuadrilla", que asigne los elementos al rvCuadrillas
-            rvCuadrillas.setLayoutManager(manager); //Creamos un nuevo LinearLayoutManager para que el RecyclerView "rvCuadrillas" se vea en forma de tarjetas
+            rvCuadrillas.setLayoutManager(manager); //Asignamos el LinearLayoutManager al "rvCuadrillas"
 
             InicioAdapter<T> adapterCuadrillas = new InicioAdapter<>(items); //Creamos un adapter al instanciar la clase genérica "InicioAdapter" y le mandamos la lista "items"
             rvCuadrillas.setAdapter(adapterCuadrillas); //Asignamos el adapter al recyclerView de Cuadrillas
@@ -338,26 +322,28 @@ public class FragAdmInicio extends Fragment implements SwipeRefreshLayout.OnRefr
                         Utilidades.iniciarActivityConDatos(getActivity(), AdmDatosCuadrilla.class, datosCuadrilla);
                     }
                     catch (Exception e) {
-                        Log.w("ObtenerCuadrilla", e);
+                        Log.e("ObtenerCuadrilla", "Error al obtener la cuadrilla", e);
                     }
                 }
             });
         }
     }
 
+    //Método que desactiva el SwipeRefreshLayout mientras se está desplazando en un RecyclerView
     private void desactivarSwipeDuranteScroll(RecyclerView recyclerView) {
+        //Evento del "recyclerView" que detecta cuando se está haciendo scroll en el mismo
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    // Desactiva el SwipeRefreshLayout cuando el RecyclerView está siendo arrastrado
-                    swlRecargar.setEnabled(false);
-                }
-                else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    // Reactiva el SwipeRefreshLayout cuando el RecyclerView deja de arrastrarse
-                    swlRecargar.setEnabled(true);
-                }
+            super.onScrollStateChanged(recyclerView, newState);
+            if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                //Desactivamos el SwipeRefreshLayout cuando el RecyclerView está siendo arrastrado
+                swlRecargar.setEnabled(false);
+            }
+            else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                //Reactivamos el SwipeRefreshLayout cuando el RecyclerView deja de arrastrarse
+                swlRecargar.setEnabled(true);
+            }
             }
         });
     }

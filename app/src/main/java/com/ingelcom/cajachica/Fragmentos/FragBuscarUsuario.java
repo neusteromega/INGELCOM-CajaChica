@@ -35,7 +35,7 @@ public class FragBuscarUsuario extends Fragment {
     private TextView btnBuscar;
 
     public FragBuscarUsuario() {
-        // Required empty public constructor
+
     }
 
     public static FragBuscarUsuario newInstance(String param1, String param2) {
@@ -59,17 +59,16 @@ public class FragBuscarUsuario extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_buscar_usuario, container, false); //Guardar la vista inflada del fragment en una variable tipo "view"
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_buscar_usuario, container, false); //Guardamos la vista inflada del fragment en una variable tipo "view"
 
-        //Enlazamos los componentes gráficos a la variable global
+        //Enlazamos las variables globales con los elementos gráficos
         btnBuscar = view.findViewById(R.id.btnBuscarBC);
         txtIdentidad = view.findViewById(R.id.txtIdentidadBC);
 
-        usu = new Usuario(getContext());
+        usu = new Usuario(getContext()); //Instancia de la clase "Usuario"
 
-        //Evento OnClick del botón de buscar
+        //Evento clic del botón de buscar
         btnBuscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,7 +76,6 @@ public class FragBuscarUsuario extends Fragment {
             }
         });
 
-        // Inflate the layout for this fragment
         return view;
     }
 
@@ -86,7 +84,7 @@ public class FragBuscarUsuario extends Fragment {
         String identidad = txtIdentidad.getText().toString(); //Extraemos el contenido de "txtIdentidad" y lo guardamos en la variable "identidad"
 
         if (!identidad.isEmpty()) { //Entrará al if si la identidad no está vacía
-            if (Validaciones.validarIdentidad(identidad)) {
+            if (Validaciones.validarIdentidad(identidad)) { //Entrará al if si "validarIdentidad" retorna true (ese método valida que se registre una identidad correcta)
                 try {
                     //Llamamos al método "obtenerUnRegistro" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo, el dato a buscar e invocamos la interfaz "FirestoreDocumentCallback"
                     oper.obtenerUnRegistro("usuarios", "Identidad", identidad, new FirestoreCallbacks.FirestoreDocumentCallback() {
@@ -95,29 +93,31 @@ public class FragBuscarUsuario extends Fragment {
                             if (documento != null) { //Si el HashMap "documento" no es nulo, quiere decir que si se encontró el registro en la colección, por lo tanto, entrará al if
                                 String correo = (String) documento.get("Correo"); //Extraemos el correo del HashMap "documento"
 
-                                if (correo.isEmpty()) { //Si "correo está vacío, quiere decir que el usuario aún no ha registrado un correo y una contraseña, entonces que entre al if
+                                if (correo.isEmpty()) { //Si "correo" está vacío, quiere decir que el usuario aún no ha registrado un correo y una contraseña, entonces que entre al if
                                     FragCrearCorreoContrasena.identidadUsuario = identidad; //Mandamos la identidad a la variable global estática "identidadUsuario" en el FragCrearCorreoContrasena
-                                    Navigation.findNavController(vista).navigate(R.id.actionBuscarUsuario_CrearContrasena); //Indicamos que al dar clic en el botón Buscar, que redireccione al usuario usando la acción "actionBuscarUsuario_CrearContrasena" que establecimos en el fragment_buscar_usuario en el "nav_graphcrearcontrasena
-                                } else { //En cambio, si "correo" no está vacío, significa que el usuario ya creó un correo y una contraseña, entonces se le muestra un mensaje indicando eso
+                                    Navigation.findNavController(vista).navigate(R.id.actionBuscarUsuario_CrearContrasena); //Indicamos que al dar clic en el botón Buscar, que redireccione al usuario usando la acción "actionBuscarUsuario_CrearContrasena" que establecimos en el "fragBuscarUsuario" en el "nav_graphcrearcontrasena"
+                                }
+                                else { //En cambio, si "correo" no está vacío, significa que el usuario ya creó un correo y una contraseña, entonces se le muestra un mensaje indicando eso
                                     Toast.makeText(getActivity(), "EL USUARIO YA CUENTA CON CORREO Y CONTRASEÑA", Toast.LENGTH_SHORT).show();
                                 }
-                            } else { //Si "documento" es nulo, no se encontró el registro en la colección, y entrará en este else
+                            }
+                            else { //Si "documento" es nulo, no se encontró el registro en la colección, y entrará en este else
                                 Toast.makeText(getActivity(), "NO SE ENCONTRÓ EL USUARIO", Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
-                        public void onFailure(Exception e) {
-                            Log.w("Buscar Documento", "Error al obtener el documento", e);
+                        public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                            Log.w("BuscarUsuario", "Error al encontrar el usuario", e);
                         }
                     });
                 }
                 catch (Exception e) {
-                    Log.e("BuscarUsuario", "Error al encontrar el usuario: ", e);
+                    Log.e("BuscarUsuario", "Error al encontrar el usuario", e);
                 }
             }
             else
-                Toast.makeText(getActivity(), "LA IDENTIDAD DEBE TENER 13 NÚMEROS", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "INGRESE UNA IDENTIDAD VÁLIDA", Toast.LENGTH_SHORT).show();
         }
         else
             Toast.makeText(getActivity(), "INGRESE UN NÚMERO DE IDENTIDAD SIN GUIONES", Toast.LENGTH_SHORT).show();

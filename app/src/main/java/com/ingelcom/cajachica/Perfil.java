@@ -68,6 +68,8 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
     private void inicializarElementos() {
         mAuth = FirebaseAuth.getInstance(); //Creamos la instancia de Firebase Authentication
         currentUser = mAuth.getCurrentUser(); //Obtenemos el usuario actual
+
+        //Enlazamos las variables globales con los elementos gráficos
         llCuadrilla = findViewById(R.id.LLCuadrillaPerfil);
         lblSeparadorTelCua = findViewById(R.id.lblSepTelefonoCuadrillaPerfil);
 
@@ -104,20 +106,16 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
 
     private void establecerElementos() {
         if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
-            //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
-            switch (nombreActivity) {
-                //Establecemos los elementos gráficos si la pantalla es "PerfilAdmin"
-                case "PerfilAdmin":
+            switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
+                case "PerfilAdmin": //Establecemos los elementos gráficos si la pantalla es "PerfilAdmin"
                     perfilAdmin();
                     break;
 
-                //Establecemos los elementos gráficos si la pantalla es "PerfilEmpleadoAdmin"
-                case "PerfilEmpleadoAdmin":
+                case "PerfilEmpleadoAdmin": //Establecemos los elementos gráficos si la pantalla es "PerfilEmpleadoAdmin"
                     perfilEmpleadoAdmin();
                     break;
 
-                //Establecemos los elementos gráficos si la pantalla es "PerfilEmpleado"
-                case "PerfilEmpleado":
+                case "PerfilEmpleado": //Establecemos los elementos gráficos si la pantalla es "PerfilEmpleado"
                     perfilEmpleado();
                     break;
             }
@@ -132,11 +130,12 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
         llCuadrilla.setVisibility(View.GONE);
 
         try {
+            //Llamamos el método "obtenerUsuarioActual" de la clase "Usuario" que obtiene el usuario actual
             usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
                 public void onCallback(Map<String, Object> documento) {
-                    if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
-                        //Asignamos la información del usuario en los elementos gráficos de la pantalla. Esta información se extrae del hashMap "documento"
+                    if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario actual
+                        //Asignamos la información del usuario en los elementos gráficos de la pantalla
                         lblNombre.setText((String) documento.get("Nombre"));
                         lblCorreo.setText((String) documento.get("Correo"));
                         lblIdentidad.setText((String) documento.get("Identidad"));
@@ -148,13 +147,13 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
                 }
 
                 @Override
-                public void onFailure(Exception e) {
-                    Log.w("BuscarDocumento", "Error al obtener el documento", e);
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerUsuario", "Error al obtener el usuario actual", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("PerfilAdmin", e);
+            Log.e("ObtenerUsuario", "Error al obtener el usuario actual", e);
         }
     }
 
@@ -162,12 +161,14 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
         lblTitulo.setText("Perfil de Empleado"); //Asignamos el titulo
 
         try {
+            //Llamamos el método "obtenerUnUsuario" de la clase Usuario, donde le mandamos la "identidad" que se recibe de la pantalla anterior (ListadoEmpleados)
             usu.obtenerUnUsuario(identidad, new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
                 public void onCallback(Map<String, Object> documento) {
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante la identidad
                         String correoElec = (String) documento.get("Correo");
 
+                        //Asignamos la información del usuario en los elementos gráficos de la pantalla
                         lblNombre.setText((String) documento.get("Nombre"));
                         lblIdentidad.setText((String) documento.get("Identidad"));
                         lblTelefono.setText((String) documento.get("Telefono"));
@@ -184,31 +185,31 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
                 }
 
                 @Override
-                public void onFailure(Exception e) {
-                    Log.w("BuscarDocumento", "Error al obtener el documento", e);
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerUsuario", "Error al obtener el usuario", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("PerfilEmpleadoAdmin", e);
+            Log.e("ObtenerUsuario", "Error al obtener el usuario", e);
         }
     }
 
     private void perfilEmpleado() {
-        //Asignamos el titulo
-        lblTitulo.setText("Mi Perfil");
+        lblTitulo.setText("Mi Perfil"); //Asignamos el titulo
 
         try {
             usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
                 public void onCallback(Map<String, Object> documento) {
-                    if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                    if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario actual
                         nombre = (String) documento.get("Nombre");
                         correo = (String) documento.get("Correo");
                         identidad = (String) documento.get("Identidad");
                         telefono = (String) documento.get("Telefono");
                         cuadrilla = (String) documento.get("Cuadrilla");
 
+                        //Asignamos la información del usuario en los elementos gráficos de la pantalla
                         lblNombre.setText(nombre);
                         lblCorreo.setText(correo);
                         lblIdentidad.setText(identidad);
@@ -221,20 +222,19 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
                 }
 
                 @Override
-                public void onFailure(Exception e) {
-                    Log.w("Buscar Documento", "Error al obtener el documento", e);
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerUsuario", "Error al obtener el usuario actual", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("PerfilEmpleado", e);
+            Log.e("ObtenerUsuario", "Error al obtener el usuario actual", e);
         }
     }
 
     //Método que redirecciona al activity "AgregarEditarPerfil" donde manda los datos necesarios dependiendo del contenido recibido del Activity anterior y guardado en la variable global "nombreActivity"
     public void editarPerfil(View view) {
-        //Que entre al if si "nombreActivity" no es nulo
-        if (nombreActivity != null) {
+        if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
             //El "nombreActivity" nos sirve para saber la pantalla en la que estamos
             switch (nombreActivity) { //Dependiendo la pantalla en que estemos, al dar clic en el botón "Editar Perfil", que mande un String al Activity "AgregarEditarPerfil" indicando qué tipo de usuario es quien está editando el perfil
                 case "PerfilAdmin":
@@ -272,17 +272,18 @@ public class Perfil extends AppCompatActivity implements SwipeRefreshLayout.OnRe
         }
     }
 
-    @Override
+    @Override //Podemos acceder a este método desde el activity siguiente (AgregarEditarPerfil) y desde ahí podemos indicar que finalice el activity actual cuando se presione el botón de "Confirmar" en ese siguiente activity
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                finish();
+                finish(); //Finalizamos el activity
             }
         }
     }
 
+    //Método que permite ocultar el botón de editar perfil cuando no hay internet
     private void ocultarBotonEditarNoInternet() {
         //Llamamos el método utilitario "mostrarMensajePorInternetCaidoBoolean" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya. Este retorna un booleano indicando si hay internet o no
         boolean internetDisponible = Utilidades.mostrarMensajePorInternetCaidoBoolean(this, viewNoInternet);

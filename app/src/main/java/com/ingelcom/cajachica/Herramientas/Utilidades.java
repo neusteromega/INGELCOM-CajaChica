@@ -30,6 +30,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.ingelcom.cajachica.AdmPantallas;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.EmpMenuPrincipal;
+import com.ingelcom.cajachica.IniciarSesion;
 import com.ingelcom.cajachica.Modelos.EstadisticasItems;
 import com.ingelcom.cajachica.R;
 import com.itextpdf.text.Element;
@@ -59,20 +60,21 @@ public class Utilidades {
     //Método que permite verificar si el dispositivo cuenta con internet mientras se ejecuta la aplicación
     public static boolean verificarConexionInternet(Context contexto) {
         try {
-            ConnectivityManager connectivityManager = (ConnectivityManager) contexto.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo infoRed = connectivityManager.getActiveNetworkInfo();
-            return infoRed != null && infoRed.isConnected();
+            ConnectivityManager connectivityManager = (ConnectivityManager) contexto.getSystemService(Context.CONNECTIVITY_SERVICE); //Obtenemos una instancia del ConnectivityManager, que es el servicio del sistema responsable de gestionar las conexiones de red del dispositivo
+            NetworkInfo infoRed = connectivityManager.getActiveNetworkInfo(); //Este método devuelve un objeto "NetworkInfo", que contiene detalles sobre la red actualmente activa (si hay alguna); puede ser una red wifi, móvil, etc.
+
+            //"infoRed != null" verifica si hay información sobre la red activa. Si es null, significa que no hay ninguna conexión de red activa. "infoRed.isConnected()" verifica si la red activa está conectada
+            return infoRed != null && infoRed.isConnected(); //Si ambas condiciones son verdaderas, retornamos true, lo que significa que hay una conexión a internet activa
         }
         catch (Exception e) {
             Log.e("ObtenerInternet", "Error al obtener la disponibilidad del internet: ", e);
-            return false;
+            return false; //Retornamos false en caso de error
         }
     }
 
     //Método que permite hacer visible la vista "view_nointernet" que se recibe como parámetro cuando no haya una conexión a internet, y también, ocultará dicha vista cuando la conexión a internet esté activa
     public static void mostrarMensajePorInternetCaido(Context contexto, View vista) {
-        //Si al llamar el método de arriba "verificarConexionInternet" retorna un "true", significa que si hay internet, entonces que entre al if
-        if (verificarConexionInternet(contexto))
+        if (verificarConexionInternet(contexto)) //Si al llamar el método de arriba "verificarConexionInternet" retorna un "true", significa que si hay internet, entonces que entre al if
             vista.setVisibility(View.GONE); //Ocultamos la vista "view_nointernet"
         else //En cambio, si al llamar el método de arriba "verificarConexionInternet" retorna un "false", significa que no hay internet, entonces que entre al else
             vista.setVisibility(View.VISIBLE); //Mostramos la vista "view_nointernet"
@@ -80,8 +82,7 @@ public class Utilidades {
 
     //Método que permite hacer visible la vista "view_nointernet" que se recibe como parámetro cuando no haya una conexión a internet, y también, ocultará dicha vista cuando la conexión a internet esté activa. La diferencia de este, es cuando detecta que no hay internet retorna un false, pero cuando detecta que si lo hay retorna un true
     public static Boolean mostrarMensajePorInternetCaidoBoolean(Context contexto, View vista) {
-        //Si al llamar el método de arriba "verificarConexionInternet" retorna un "true", significa que si hay internet, entonces que entre al if
-        if (verificarConexionInternet(contexto)) {
+        if (verificarConexionInternet(contexto)) { //Si al llamar el método de arriba "verificarConexionInternet" retorna un "true", significa que si hay internet, entonces que entre al if
             vista.setVisibility(View.GONE); //Ocultamos la vista "view_nointernet"
             return true;
         }
@@ -116,44 +117,46 @@ public class Utilidades {
 
     //Método que permite enviar un HashMap con diferentes datos a un activity e iniciar el mismo
     public static void iniciarActivityConDatos(Context contexto, Class<?> activityClase, HashMap<String,Object> datos) {
-        Intent intent = new Intent(contexto, activityClase);
+        Intent intent = new Intent(contexto, activityClase); //Creamos el intent y le establecemos el contexto y el nombre del activity
 
+        //For que itera sobre las entradas del HashMap, donde cada entrada contiene una clave de tipo String, y un valor de tipo Object
         for (Map.Entry<String,Object> dato : datos.entrySet()) {
-            String clave = dato.getKey();
-            Object valor = dato.getValue();
+            String clave = dato.getKey(); //Obtenemos la clave del HashMap
+            Object valor = dato.getValue(); //Obtenemos el valor asociado a la clave del HashMap
 
-            if (valor instanceof String) {
-                String valorString = (String) valor;
-                intent.putExtra(clave, valorString);
+            if (valor instanceof String) { //Si el objeto "valor" del HashMap es una instancia de String
+                String valorString = (String) valor; //Convertimos el "valor" a String
+                intent.putExtra(clave, valorString); //Añadimos el "valorString" al "putExtra" del intent
             }
-            else if (valor instanceof Uri) {
-                Uri valorUri = (Uri) valor;
-                intent.putExtra(clave, valorUri);
+            else if (valor instanceof Uri) { //Si el objeto "valor" del HashMap es una instancia de URI
+                Uri valorUri = (Uri) valor; //Convertimos el "valor" a Uri
+                intent.putExtra(clave, valorUri); //Añadimos el "valorUri" al "putExtra" del intent
             }
         }
 
-        contexto.startActivity(intent);
+        contexto.startActivity(intent); //Iniciamos el activity
     }
 
-    //Método que permite enviar un HashMap con diferentes datos a un activity e iniciar el mismo, con la diferencia de que lo inicia con "startActivityForResult", y esto permite acceder al método "onActivityResult" del Activity anterior
+    //Método que permite enviar un HashMap con diferentes datos a un activity e iniciar el mismo, con la diferencia es que lo inicia con "startActivityForResult", y esto permite acceder al método "onActivityResult" del Activity anterior
     public static void iniciarActivityConDatosStartResult(Activity activity, Class<?> activityClase, HashMap<String, Object> datos, int requestCode) {
-        Intent intent = new Intent(activity, activityClase);
+        Intent intent = new Intent(activity, activityClase); //Creamos el intent y le establecemos el contexto y el nombre del activity
 
+        //For que itera sobre las entradas del HashMap, donde cada entrada contiene una clave de tipo String, y un valor de tipo Object
         for (Map.Entry<String, Object> dato : datos.entrySet()) {
-            String clave = dato.getKey();
-            Object valor = dato.getValue();
+            String clave = dato.getKey(); //Obtenemos la clave del HashMap
+            Object valor = dato.getValue(); //Obtenemos el valor asociado a la clave del HashMap
 
-            if (valor instanceof String) {
-                String valorString = (String) valor;
-                intent.putExtra(clave, valorString);
+            if (valor instanceof String) { //Si el objeto "valor" del HashMap es una instancia de String
+                String valorString = (String) valor; //Convertimos el "valor" a String
+                intent.putExtra(clave, valorString); //Añadimos el "valorString" al "putExtra" del intent
             }
-            else if (valor instanceof Uri) {
-                Uri valorUri = (Uri) valor;
-                intent.putExtra(clave, valorUri);
+            else if (valor instanceof Uri) { //Si el objeto "valor" del HashMap es una instancia de URI
+                Uri valorUri = (Uri) valor; //Convertimos el "valor" a Uri
+                intent.putExtra(clave, valorUri); //Añadimos el "valorUri" al "putExtra" del intent
             }
         }
 
-        activity.startActivityForResult(intent, requestCode);
+        activity.startActivityForResult(intent, requestCode); //Iniciamos el activity con "startActivityForResult" y le mandamos el "intent" y el "requestCode
     }
 
     //Método para obtener el texto (String) de un putExtra
@@ -162,7 +165,7 @@ public class Utilidades {
 
         //Si el intent no es nulo, y si la clave guardada en "clave" contiene datos (hasExtra(clave)), que entre al if
         if (intent != null && intent.hasExtra(clave)) {
-            return intent.getStringExtra(clave); //Retornamos el texto extraído
+            return intent.getStringExtra(clave); //Retornamos el texto extraído y finaliza la ejecución del método
         }
 
         return null; //Si no entra al if, que retorne un null
@@ -210,7 +213,7 @@ public class Utilidades {
         return fechaHoraString; //Retornamos la fechaHora convertida a String
     }
 
-    //Método que nos permite convertir un String con fecha y hora con el formato "dd/MM/yyyy - HH:mm" a un objeto de tipo "Timestamp"
+    //Método que permite convertir un String con fecha y hora con el formato "dd/MM/yyyy - HH:mm" a un objeto de tipo "Timestamp"
     public static Timestamp convertirFechaHoraATimestamp(String fechaHoraStr) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy - HH:mm", Locale.getDefault()); //Con "SimpleDateFormat" creamos el formato que nos ayudará a hacer la conversión
 
@@ -218,7 +221,7 @@ public class Utilidades {
             Date date = sdf.parse(fechaHoraStr); //Convertimos el String con la fecha y hora a un objeto "Date" usando la variable de tipo "SimpleDateFormat"
 
             if (date != null) //Si "date" no es nulo (esto quiere decir que la fechaHora recibida como parámetro si tiene el formato "dd/MM/yyyy - HH:mm" y si se realizó bien la conversión), que entre al if
-                return new Timestamp(date); //Convertimos el objeto "date" a "Timestamp" y retornamos el mismo
+                return new Timestamp(date); //Convertimos el objeto "date" a "Timestamp" y retornamos el mismo. Aquí finaliza la ejecución del método
         }
         catch (Exception e) {
             Log.w("ConvertirATimestamp", e);
@@ -231,12 +234,12 @@ public class Utilidades {
     public static int mostrarOcultarContrasena(int clicks, EditText txtContra, ImageView imgContra) { //Recibe como parámetros la cantidad de clicks, el EditText de la contraseña, y el ImageView de ver y ocultar la contraseña
         //En este if verificamos si la variable "clicks" es divisible entre 2 y si al realizar la división su residuo es 1
         if (clicks % 2 == 1) { //La cantidad de clicks al principio es 0 (Lo inicializamos en 0 en la clase que llama a este método)
-            //Si el residuo del número de "cantidadClicks" al dividirlo entre 2 es 1, se ocultará la contraseña y se mostrará el icono del ojo normal
+            //Si el residuo del número de "cantidadClicks" al dividirlo entre 2 es igual a 1, se ocultará la contraseña y se mostrará el icono del ojo normal
             txtContra.setTransformationMethod(PasswordTransformationMethod.getInstance()); //El EditText ofrece diferentes formas de transformar el texto que se muestra. La clase "PasswordTransformationMethod" es una implementación de "TransformationMethod" diseñada específicamente para ocultar contraseñas al reemplazar el texto visible con caracteres ocultos, como puntos o asteriscos
             imgContra.setImageResource(R.mipmap.ico_azul_mostrarcontrasena); //Cambiamos el icono del ojo
         }
         else {
-            //Si el residuo del número de "clicks" al dividirlo entre 2 no es 0, se mostrará la contraseña y también el icono cambiará al ojo tachado
+            //Si el residuo del número de "clicks" al dividirlo entre 2 es igual a 0, se mostrará la contraseña y también el icono cambiará al ojo tachado
             txtContra.setTransformationMethod(null);
             imgContra.setImageResource(R.mipmap.ico_azul_ocultarcontrasena); //Cambiamos el icono del ojo
         }
@@ -259,19 +262,24 @@ public class Utilidades {
                         //Verificamos el rol, si es "Administrador" que mande al usuario al Activity "AdmPantallas" y cierre el Activity actual
                         if (rol.contentEquals("Administrador")) {
                             Utilidades.iniciarActivity(contexto, AdmPantallas.class, true);
-                        } else if (rol.contentEquals("Empleado")) { //Si el rol es "Empleado" que mande al usuario al Activity "EmpMenuPrincipal" y cierre el Activity actual
+                        }
+                        else if (rol.contentEquals("Empleado")) { //Si el rol es "Empleado" que mande al usuario al Activity "EmpMenuPrincipal" y cierre el Activity actual
                             Utilidades.iniciarActivity(contexto, EmpMenuPrincipal.class, true);
-                        } else { //Si de casualidad, el rol no es "Administrador" ni "Empleado", que muestre un mensaje de error
+                        }
+                        else { //Si de casualidad, el rol no es "Administrador" ni "Empleado", que muestre un mensaje de error
                             Toast.makeText(contexto, "ERROR AL OBTENER EL ROL DEL USUARIO", Toast.LENGTH_SHORT).show();
                         }
-                    } else { //Si "documento" es nulo, no se encontró el registro en la colección, y entrará en este else
+                    }
+                    else { //Si "documento" es nulo, no se encontró el registro en la colección, y entrará en este else
                         Toast.makeText(contexto, "NO SE ENCONTRÓ EL USUARIO", Toast.LENGTH_SHORT).show();
+                        FirebaseAuth.getInstance().signOut(); //Método de firebase que permite cerrar sesión cuando no se encontró el usuario
+                        Utilidades.iniciarActivity(contexto, IniciarSesion.class, true);
                     }
                 }
 
                 @Override
                 public void onFailure(Exception e) {
-                    Log.w("Activity", "Error al obtener los roles.", e); //Por cualquier error, que muestre la excepción en el Logcat
+                    Log.e("RedireccionarUsuario", "Error al obtener los roles", e); //Por cualquier error, que muestre la excepción en el Logcat
                 }
             });
         }
@@ -280,7 +288,7 @@ public class Utilidades {
         }
     }
 
-    //Método que nos ayuda a convertir una FechaHora (00/00/0000 00:00) a un formato de "Mes - Año"
+    //Método que permite convertir una FechaHora (00/00/0000 - 00:00) a un formato de "Mes - Año"
     public static String convertirFechaAFormatoMonthYear(String fechaHora) {
         //Creamos un SimpleDateFormat que nos ayudará a darle formato al contenido de "fechaHora" que se extrae de Firestore. Aquí en "new Locale("es", "ES")" especificamos que queremos un formato de fecha y hora en Español (esto para que los meses sean en español y no en inglés)
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yy - HH:mm", new Locale("es", "ES"));
@@ -306,7 +314,7 @@ public class Utilidades {
         return fechaFormateada; //Retornamos la fecha ya con el formato de Mes - Año
     }
 
-    //Método que nos ayuda a extraer solo el año de una FechaHora (00/00/0000 00:00)
+    //Método que permite extraer solo el año de una FechaHora (00/00/0000 00:00)
     public static String extraerYearDeFechaHora(String fechaHora) {
         //Creamos un SimpleDateFormat que nos ayudará a darle formato al contenido de "fechaHora". Aquí en "new Locale("es", "ES")" especificamos que queremos un formato de fecha y hora en Español (esto para que los meses sean en español y no en inglés)
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yy - HH:mm", new Locale("es", "ES"));
@@ -327,7 +335,7 @@ public class Utilidades {
         return anio; //Retornamos el año extraído
     }
 
-    //Método que nos ayuda a comprobar si un Mes - Año coincide con el Mes - Año actual
+    //Método que permite comprobar si un Mes - Año coincide con el Mes - Año actual
     public static boolean verificarMonthYearActual(String fechaHora) {
         String monthYear = convertirFechaAFormatoMonthYear(fechaHora); //Como el parámetro recibido es la fechaHora, la convertimos a formato Mes - Año llamando el método de arriba "convertirFechaAFormatoMonthYear"
         Calendar fechaActual = Calendar.getInstance(); //Obtenemos la fecha actual
@@ -337,12 +345,12 @@ public class Utilidades {
         return monthYearActual.equalsIgnoreCase(monthYear); //Comparamos el mes y año actual con el pasado como parámetro, si coinciden, retornará true, sino retornará false
     }
 
-    //Método que nos ayuda a convertir el mes y el año (que primero están en números) en una cadena String (por ejemplo, "Marzo - 2024")
+    //Método que permite convertir el mes y el año (que primero están en números) en una cadena String (por ejemplo, "Marzo - 2024")
     public static String convertirMonthYearString(int month, int year) {
-        return obtenerFormatoMes(month) + " - " + year; //Retornamos la cadena String a mostrar en el lblFechaSeleccionada, para ello primero convertir el número del mes al nombre del mes (valga la redundancia) llamando al método "obtenerFormatoMes" y le enviamos el número del mes "month" como parámetro
+        return obtenerFormatoMes(month) + " - " + year; //Retornamos la cadena String a mostrar en el lblFechaSeleccionada, para ello primero convertimos el número del mes al nombre del mes (valga la redundancia) llamando al método "obtenerFormatoMes" y le enviamos el número del mes "month" como parámetro
     }
 
-    //Método que nos ayuda a obtener el nombre del mes dependiendo su número (1 = Enero, 2 = Febrero, 3 = Marzo...)
+    //Método que permite obtener el nombre del mes dependiendo su número (1 = Enero, 2 = Febrero, 3 = Marzo...)
     private static String obtenerFormatoMes(int month) {
         switch (month) { //Usamos un switch para trabajar con la variable "month", y en cada case retornará el nombre del mes dependiendo el número
             case 1:
@@ -375,8 +383,8 @@ public class Utilidades {
     }
 
     //Método genérico que permite ordenar una lista genérica basada en un campo específico de tipo "double" o "Double"
-    public static <T> List<T> ordenarListaPorDouble(List<T> items, String nombreCampo, String orden) { //Recibe la lista genérica de tipo "T", el nombreCampo es el campo double por el cual se hará el ordenamiento, y el String "Orden" recibe un "Menor" si el orden es ascendente, y un "Mayor" si el orden es descendente
-        //Si la lista es nula, el nombre del campo, y el tipo de orden algunos es nulo o está vacío, se retorna la lista tal como está
+    public static <T> List<T> ordenarListaPorDouble(List<T> items, String nombreCampo, String orden) { //Recibe la lista genérica de tipo "T", el nombreCampo es el campo double por el cual se hará el ordenamiento, y el String "Orden" puede recibir las palabras "Ascendente" o "Descendente"
+        //Si la lista, el nombre del campo, y el tipo de orden, alguno de ellos es nulo o está vacío, se retorna la lista tal como está
         if (items == null || items.isEmpty() || nombreCampo == null || nombreCampo.isEmpty() || orden == null || orden.isEmpty()) {
             return items;
         }
@@ -415,15 +423,15 @@ public class Utilidades {
             }
         }
         catch (Exception e) {
-            Log.w("OrdenarListaDouble", e);
+            Log.e("OrdenarListaDouble", "Error al ordenar lista por double", e);
         }
 
         return items; //Retornamos la lista "items", que ha sido ordenada si ha ido bien, o la lista original si no se realizó ningún ordenamiento
     }
 
     //Método genérico que permite ordenar una lista genérica basada en una FechaHora
-    public static <T> List<T> ordenarListaPorFechaHora(List<T> items, String nombreCampo, String orden) {
-        //Si la lista es nula, el nombre del campo, y el tipo de orden algunos es nulo o está vacío, se retorna la lista tal como está
+    public static <T> List<T> ordenarListaPorFechaHora(List<T> items, String nombreCampo, String orden) { //Recibe la lista genérica de tipo "T", el nombreCampo es el campo String con la fechaHora por el cual se hará el ordenamiento, y el String "Orden" puede recibir las palabras "Ascendente" o "Descendente"
+        //Si la lista, el nombre del campo, y el tipo de orden, alguno de ellos es nulo o está vacío, se retorna la lista tal como está
         if (items == null || items.isEmpty() || nombreCampo == null || nombreCampo.isEmpty() || orden == null || orden.isEmpty()) {
             return items;
         }
@@ -432,7 +440,7 @@ public class Utilidades {
             //Hacemos una búsqueda en la lista "items" mediante el "nombreCampo", y tras los resultados, obtenemos el elemento encontrado en la posición 0, la primera y única posición porque el nombre del campo guardado en "nombreCampo" no se repite en la lista (por ejemplo, si buscamos el campo "fechaHora" en la lista items, ese nombre de campo no se repetirá)
             Field campo = items.get(0).getClass().getDeclaredField(nombreCampo); //Obtenemos el nombre del tipo de dato con "getDeclaredField" y lo guardamos en la variable "campo" de tipo Field
             campo.setAccessible(true); //Lo utilizamos para permitir el acceso a un campo privado o protegido de una clase
-            SimpleDateFormat formatoFechaHora = new SimpleDateFormat("dd/MM/yyyy - HH:mm", Locale.getDefault()); //Creamos una variable de tipo "SimpleDateFormat" con el formato "dd/MM/yyyy HH:mm"
+            SimpleDateFormat formatoFechaHora = new SimpleDateFormat("dd/MM/yyyy - HH:mm", Locale.getDefault()); //Creamos una variable de tipo "SimpleDateFormat" con el formato "dd/MM/yyyy - HH:mm"
 
             //Utilizamos el método "Collections.sort" para ordenar la lista "items"
             Collections.sort(items, new Comparator<T>() { //"Comparator<T>" es una interfaz que se usa para definir la lógica de comparación entre dos objetos del mismo tipo (T)
@@ -463,15 +471,16 @@ public class Utilidades {
                 }
             });
 
-        } catch (Exception e) {
-            Log.w("OrdenarListaFechaHora", e);
+        }
+        catch (Exception e) {
+            Log.e("OrdenarListaFechaHora", "Error al ordenar la lista por fecha y hora", e);
         }
 
         return items; //Retornamos la lista "items", que ha sido ordenada si ha ido bien, o la lista original si no se realizó ningún ordenamiento
     }
 
     //Método genérico que permite ordenar una lista genérica por orden alfabético basada en un String
-    public static <T> List<T> ordenarListaPorAlfabetico(List<T> items, String nombreCampo, String orden) {
+    public static <T> List<T> ordenarListaPorAlfabetico(List<T> items, String nombreCampo, String orden) { //Recibe la lista genérica de tipo "T", el nombreCampo es el campo String con la fechaHora por el cual se hará el ordenamiento, y el String "Orden" puede recibir las palabras "Ascendente" o "Descendente"
         //Si la lista es nula o está vacía o el tipo de orden es nulo o está vacío, se retorna la lista tal como está
         if (items == null || items.isEmpty() || orden == null || orden.isEmpty()) {
             return items;
@@ -525,7 +534,7 @@ public class Utilidades {
 
         }
         catch (Exception e) {
-            Log.w("OrdenarListaAlfabetico", e);
+            Log.e("OrdenarListaAlfabetico", "Error al ordenar la lista por orden alfabético", e);
         }
 
         return items; //Retornamos la lista ordenada o la original si no se realizó ningún ordenamiento
@@ -533,7 +542,7 @@ public class Utilidades {
 
     //Método genérico que recibe una lista y devuelve los últimos elementos de la lista (la cantidad de elementos que devulve están en la variable "cantidadItems")
     public static <T> List<T> obtenerPrimerosItemsLista(List<T> itemsOriginal, int cantidadItems) {
-        //Verificamos que "itemsOriginal" no sea nula, que no esté vacía y que tenga menos o la misma cantidad de elementos de "cantidadItems"; si no se cumplen estas condiciones, se retorna la lista sin cambios
+        //Verificamos que "itemsOriginal" no sea nula, que no esté vacía o que tenga menos o la misma cantidad de elementos de "cantidadItems"; si no se cumplen estas condiciones, se retorna la lista sin cambios
         if (itemsOriginal == null || itemsOriginal.isEmpty() || itemsOriginal.size() <= cantidadItems) {
             return itemsOriginal;
         }
@@ -545,13 +554,13 @@ public class Utilidades {
     //Método que utiliza una reflexión para llamar a los métodos getter (por ejemplo, los getter de la clase GastosItems) en los objetos de tipo "T", y retorna un "Object"
     public static Object obtenerCampo(Object obj, String nombreMetodo) { //Recibe un objeto genérico del que se quiere obtener un campo, y el nombre del método getter de la clase modelo
         try {
-            //"obj.getClass()" obtiene la clase del objeto "obj"
             Method metodo = obj.getClass().getMethod(nombreMetodo); //"getMethod(nombreMetodo)" busca y obtiene el método público con el nombre "nombreMetodo" en la clase modelo del objeto "obj". Este método debe coincidir exactamente con el nombre proporcionado en "nombreMetodo", incluyendo mayúsculas y minúsculas
+
             //Retornamos el resultado de la invocación del método (por ejemplo, si el método encontrado fue "public void setId(String id) { this.id = id; }", devolverá el "id" que devuelve este método getter). El resultado es de tipo Object para permitir la máxima flexibilidad en el tipo de retorno
             return metodo.invoke(obj); //Invocamos el método obtenido en el objeto "obj". Si el método getter no requiere argumentos (lo cual es típico), "invoke" se llama con solo el objeto "obj"
         }
         catch (Exception e) {
-            Log.w("ObtenerCampo", e);
+            Log.e("ObtenerCampo", "Error al obtener un campo específico", e);
             return null; //Devuelve null en caso de que ocurra una excepción, indicando que no se pudo obtener el valor del campo
         }
     }
@@ -603,13 +612,13 @@ public class Utilidades {
         //Foreach que itera sobre cada entrada en el conjunto (entrySet). Cada entrada se almacena temporalmente en la variable "entry" de tipo "Map.Entry<String, Double>". El método "entrySet()" del Map devuelve un conjunto (Set) de todas las entradas (pares clave-valor) en el Map, y cada entrada es un objeto de tipo "Map.Entry"
         for (Map.Entry<String, Double> entry : cuadrillaTotales.entrySet()) {
             String cuadrilla = entry.getKey(); //Obtenemos la clave de la entrada actual (entry) usando el método getKey() de Map.Entry. Cabe mencionar que las claves del Map tienen como nombre las cuadrillas sin repetir
-            double totalSumado = entry.getValue(); //Obtenemos el valor asociado a la clave (cuadrilla) de la entrada actual usando el método getValue() de Map.Entry. Cabe mencionar que todos los valores de las claves son los totales de las cuadrillas
+            double totalSumado = entry.getValue(); //Obtenemos el valor asociado a la clave (cuadrilla) de la entrada actual usando el método getValue() de Map.Entry. Cabe mencionar que todos los valores de las claves son los totales sumados de las cuadrillas
 
             EstadisticasItems estadisticasItem = new EstadisticasItems(cuadrilla, totalSumado); //Creamos un nuevo objeto de tipo "EstadisticasItems" en el que le mandamos la cuadrilla y el totalSumado
             listaEstadisticas.add(estadisticasItem); //Añadimos el objeto "estadisticasItem" a la "listaEstadisticas"
         }
 
-        listaEstadisticas = ordenarListaPorAlfabetico(listaEstadisticas, "cuadrilla", "Descendente");
+        listaEstadisticas = ordenarListaPorAlfabetico(listaEstadisticas, "cuadrilla", "Descendente"); //Ordenamos la lista por orden alfabético llamando al método "ordenarListaPorAlfabetico" de arriba
         return listaEstadisticas; //Retornamos la "listaEstadisticas" con las cuadrillas sin repetir y sus totales sumados
     }
 
@@ -656,10 +665,8 @@ public class Utilidades {
 
     //Método que devuelve una lista de 25 colores que nos servirán para establecer los colores en los gráficos del apartado de estadísticas
     public static List<Integer> obtenerColores() {
-        //Definimos una lista de 31 colores preestablecidos
+        //Definimos una lista de 25 colores preestablecidos
         List<Integer> colores = Arrays.asList(
-                /*Color.parseColor("#101750"),
-                Color.parseColor("#151d65"),*/
                 Color.parseColor("#1d298f"),
                 Color.parseColor("#222fa4"),
                 Color.parseColor("#2635b9"),
@@ -676,11 +683,7 @@ public class Utilidades {
                 Color.parseColor("#2b3bce"),
                 Color.parseColor("#2635b9"),
                 Color.parseColor("#222fa4"),
-                Color.parseColor("#1d298f"),
-                /*Color.parseColor("#151d65"),
-                Color.parseColor("#101750"), //
-                Color.parseColor("#151d65"),
-                Color.parseColor("#1d298f"),*/
+                Color.parseColor("#1d298f"), //
                 Color.parseColor("#222fa4"),
                 Color.parseColor("#2635b9"),
                 Color.parseColor("#2b3bce"),

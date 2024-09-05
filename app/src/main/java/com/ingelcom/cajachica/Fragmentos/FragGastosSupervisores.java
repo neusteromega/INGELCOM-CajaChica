@@ -40,11 +40,10 @@ public class FragGastosSupervisores extends Fragment {
     private Gasto gast;
     private Usuario usu;
 
-    //Instancia de la clase "SharedViewGastosModel" que nos ayuda a compartir datos con diferentes componentes de la interfaz de usuario, como ser fragmentos y actividades y que estos datos sobreviven a cambios de configuración como las rotaciones de pantalla
-    private SharedViewGastosModel svmGastos;
+    private SharedViewGastosModel svmGastos; //Instancia de la clase "SharedViewGastosModel" que nos ayuda a compartir datos con diferentes componentes de la interfaz de usuario, como ser fragmentos y actividades y que estos datos sobreviven a cambios de configuración como las rotaciones de pantalla
 
     public FragGastosSupervisores() {
-        // Required empty public constructor
+
     }
 
     public static FragGastosSupervisores newInstance(String nombreCuadrilla, String nombreActivity) {
@@ -67,7 +66,7 @@ public class FragGastosSupervisores extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_gastos_supervisores, container, false);
+        View view = inflater.inflate(R.layout.fragment_gastos_supervisores, container, false); //Guardamos la vista inflada del fragment en una variable tipo "view"
 
         //Ponemos las instancias de las clases aquí y no de forma global ya que el "getContext()" se genera cuando se crea el fragment, aquí en "onCreateView"
         gast = new Gasto(getContext());
@@ -77,73 +76,73 @@ public class FragGastosSupervisores extends Fragment {
         lblTotalGastos = view.findViewById(R.id.lblTotalGastosSup);
         rvGastos = view.findViewById(R.id.rvGastosSupervisores);
 
-        obtenerGastos(""); //Llamamos al método "obtenerGastos" y le mandamos la instancias de las clases Usuario y Gasto, y el "mes" vacío, ya que al crear el fragment no se realiza un filtrado de gastos por mes
-        obtenerDatos(); //Llamamos al método "obtenerMes" para recibir la selección del mes hecha por el usuario
+        obtenerGastos(""); //Llamamos al método "obtenerGastos" y le mandamos el "mesAnio" vacío, ya que al crear el fragment no se realiza un filtrado de gastos por mes o año
+        obtenerDatos(); //Llamamos al método "obtenerDatos" para recibir la selección del mesAnio hecha por el usuario
 
         return view;
     }
 
     //Método que nos ayuda a obtener los gastos de la colección "gastos" de Firestore y asignarlos al RecyclerView
-    private void obtenerGastos(String mesAnio) { //Recibe las instancias de las clases "Usuario" y "Gasto", y el String con el mes y año (por ejemplo, "Julio - 2024") para hacer el filtrado de gastos
+    private void obtenerGastos(String mesAnio) { //Recibe el String con el mes y año (por ejemplo, "Julio - 2024") o sólo el año, para hacer el filtrado de gastos
         try {
             //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" que obtiene el usuario actual
             usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
                 public void onCallback(Map<String, Object> documento) {
-                    if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                    if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario actual
                         String cuadrilla = (String) documento.get("Cuadrilla"); //Obtenemos la cuadrilla de "documento"
 
-                        if (nombreActivity.equalsIgnoreCase("ListadoGastosEmpleado")) { //Si "nombreActivity" contiene el texto "ListadoGastosEmpleado", quiere decir que un empleado está solicitando ver sus gastos, por lo tanto, que mande la cuadrilla obtenida del usuario actual al método "obtenerGastos"
-                            //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla del usuario actual, el rol "Administrador" (ya que queremos ver los gastos hechos por los administrador a la cuadrilla) y el "mes". Con esto se podrán obtener todos los gastos hechos por los administradores a la cuadrilla del usuario actual
+                        if (nombreActivity.equalsIgnoreCase("ListadoGastosEmpleado")) { //Si "nombreActivity" contiene el texto "ListadoGastosEmpleado", quiere decir que un empleado está solicitando ver sus gastos
+                            //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla del usuario actual, el rol "Administrador" (ya que queremos ver los gastos hechos por los administrador a la cuadrilla), el "datoUsuario" vacío, la variable "userCompra" donde va el "datoCompra" (porque el "ListadoGastosEmpleado" puede filtrar por tipo de compra) y el "mesAnio". Con esto se podrán obtener todos los gastos hechos por los administradores a la cuadrilla del usuario actual
                             gast.obtenerGastos(cuadrilla, "Administrador", "", userCompra, mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                                 @Override
                                 public void onCallback(List<GastosItems> items) { //En esta lista "items" están los gastos ya filtrados por cuadrilla y rol
-                                    if (items != null) { //Si "items" no es null, que entre al if
+                                    if (items != null) {
                                         items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                                         inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
                                     }
                                 }
 
                                 @Override
-                                public void onFailure(Exception e) {
+                                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
                                     Toast.makeText(getContext(), "ERROR AL CARGAR LOS GASTOS", Toast.LENGTH_SHORT).show();
-                                    Log.w("ObtenerGastos", e);
+                                    Log.e("ObtenerGastos", "Error al obtener los gastos", e);
                                 }
                             });
                         }
-                        else if (nombreActivity.equalsIgnoreCase("ListadoGastosAdmin")) { //En cambio, si "nombreActivity" contiene el texto "ListadoGastosAdmin" significa que es un admin que desea ver los gastos de una cuadrilla específica, en este caso, que mande la cuadrilla recibida como parámetro en este fragment al método "obtenerGastos"
-                            //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla recibida como parámetro en este fragment, el rol "Administrador" (ya que queremos ver los gastos hechos por los administradores a la cuadrilla) y el "mes". Con esto se podrán obtener todos los gastos hechos por los administradores a la cuadrilla recibida como parámetro
+                        else if (nombreActivity.equalsIgnoreCase("ListadoGastosAdmin")) { //En cambio, si "nombreActivity" contiene el texto "ListadoGastosAdmin" significa que es un admin que desea ver los gastos de una cuadrilla específica
+                            //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla recibida como parámetro en este fragment, el rol "Administrador" (ya que queremos ver los gastos hechos por los administradores a la cuadrilla), el "datoUsuario" vacío, la variable "userCompra" donde va el "datoCompra" (porque el "ListadoGastosAdmin" puede filtrar por tipo de compra) y el "mesAnio". Con esto se podrán obtener todos los gastos hechos por los administradores a la cuadrilla recibida como parámetro
                             gast.obtenerGastos(nombreCuadrilla, "Administrador", "", userCompra, mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                                 @Override
                                 public void onCallback(List<GastosItems> items) { //En esta lista "items" están los gastos ya filtrados por cuadrilla y rol
-                                    if (items != null) {//Si "items" no es null, que entre al if
+                                    if (items != null) {
                                         items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                                         inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
                                     }
                                 }
 
                                 @Override
-                                public void onFailure(Exception e) {
+                                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
                                     Toast.makeText(getContext(), "ERROR AL CARGAR LOS GASTOS", Toast.LENGTH_SHORT).show();
-                                    Log.w("ObtenerGastos", e);
+                                    Log.e("ObtenerGastos", "Error al obtener los gastos", e);
                                 }
                             });
                         }
-                        else if (nombreActivity.equalsIgnoreCase("ListadoGastosTodos")) { //Por último, si "nombreActivity" tiene el texto "ListadoGastosTodos", significa que un administrador quiere ver todos los gastos de todas las cuadrillas, y en este caso, también se manda el nombre de la cuadrilla que se recibe como parámetro al método "obtenerGastos"
-                            //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla recibida como parámetro en este fragment, el rol "Administrador" (ya que queremos ver todos los gastos hechos por los administradores) y el "mes". Con esto se podrán obtener todos los gastos hechos por los administradores a la cuadrilla recibida como parámetro
+                        else if (nombreActivity.equalsIgnoreCase("ListadoGastosTodos")) { //Por último, si "nombreActivity" tiene el texto "ListadoGastosTodos", significa que un administrador quiere ver todos los gastos de todas las cuadrillas
+                            //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla recibida como parámetro en este fragment, el rol "Administrador" (ya que queremos ver todos los gastos hechos por los administradores), la variable global "userCompra" donde va el "datoUsuario" (porque el "ListadoGastosTodos" puede filtrar por usuario), el "datoCompra" vacío y el "mesAnio". Con esto se podrán obtener todos los gastos hechos por los administradores a todas las cuadrillas
                             gast.obtenerGastos("", "Administrador", userCompra, "", mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                                 @Override
                                 public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por rol
-                                    if (items != null) {//Si "items" no es null, que entre al if
+                                    if (items != null) {
                                         items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                                         inicializarRecyclerView(items); //Llamamos el método "inicializarRecyclerView" y le mandamos la lista "items"
                                     }
                                 }
 
                                 @Override
-                                public void onFailure(Exception e) {
+                                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
                                     Toast.makeText(getContext(), "ERROR AL CARGAR LOS GASTOS", Toast.LENGTH_SHORT).show();
-                                    Log.w("ObtenerGastos", e);
+                                    Log.e("ObtenerGastos", "Error al obtener los gastos", e);
                                 }
                             });
                         }
@@ -154,13 +153,13 @@ public class FragGastosSupervisores extends Fragment {
                 }
 
                 @Override
-                public void onFailure(Exception e) {
-                    Log.w("BuscarUsuario", "Error al obtener el usuario", e);
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerUsuario", "Error al obtener el usuario", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerUsuario", e);
+            Log.e("ObtenerUsuario", "Error al obtener el usuario", e);
         }
     }
 
@@ -204,8 +203,8 @@ public class FragGastosSupervisores extends Fragment {
         });
     }
 
-    //Método que nos permite obtener el mes y el año seleccionado por el usuario. Aquí se obtiene literalmente el contenido del TextView lblFecha del Activity ListadoGastos, y se obtiene cada vez que el contenido de dicho TextView cambia
-    private void obtenerDatos() { //Recibe las instancias de las clases "Usuario" y "Gasto"
+    //Método que nos permite obtener el Mes - Año, o sólo el año seleccionado por el usuario. Aquí se obtiene literalmente el contenido del TextView "lblFecha" del Activity ListadoGastos, y se obtiene cada vez que el contenido de dicho TextView cambia
+    private void obtenerDatos() {
         try {
             svmGastos = new ViewModelProvider(getActivity()).get(SharedViewGastosModel.class); //Obtenemos el ViewModel compartido, haciendo referencia a la clase "SharedViewGastosModel"
 
@@ -213,8 +212,8 @@ public class FragGastosSupervisores extends Fragment {
             svmGastos.getFecha().observe(getViewLifecycleOwner(), new Observer<String>() { //Configuramos un observador del "LiveData<String>" que devuelve "getFecha()". "getViewLifecycleOwner()" se usa para obtener el ciclo de vida del fragmento actual, asegurando que las actualizaciones solo se envíen cuando el fragmento esté en un estado activo (es decir, no cuando está destruido o detenido)
                 @Override
                 public void onChanged(String fecha) { //Este método se llamará cada vez que el valor "fecha" cambie en el "LiveData<String>"
-                    fechaSeleccionada = fecha;
-                    obtenerGastos(fecha); //Llamamos el método "obtenerGastos" de arriba y le mandamos las instancias de las clases "Usuario" y "Gasto", y "mes" que contiene el "lblFecha" del activity ListadoGastos
+                    fechaSeleccionada = fecha; //Guardamos el mes o año recibido en la variable global "fechaSeleccionada"
+                    obtenerGastos(fecha); //Llamamos el método "obtenerGastos" de arriba y le mandamos "fecha" que contiene el "lblFecha" del activity ListadoGastos
                 }
             });
 
@@ -239,7 +238,7 @@ public class FragGastosSupervisores extends Fragment {
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerMes", e);
+            Log.e("ObtenerDatos", "Error al obtener los datos con el SharedViewGastosModel", e);
         }
     }
 }

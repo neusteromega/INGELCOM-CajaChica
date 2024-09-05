@@ -92,6 +92,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
         nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityLID");
         nombreCuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
 
+        //Enlazamos las variables globales con los elementos gráficos
         llFecha = findViewById(R.id.LLFechaLI);
         llTiempo = findViewById(R.id.LLTiempoLI);
         lblTitulo = findViewById(R.id.lblTituloLI);
@@ -150,15 +151,15 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
     private void obtenerDatos(String mesAnio, String tipo) {
         try {
             if (nombreActivity.equalsIgnoreCase("ListadoIngresosAdmin")) {
-                //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla recibida en "nombreCuadrilla" y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores a una cuadrilla específica
+                //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla recibida en "nombreCuadrilla", el "mesAnio", y un false para "datosEmpleado" (ya que no queremos reducir la lista de ingresos para el mes actual y anterior). Con esto se podrán obtener todos los ingresos hechos por los administradores a una cuadrilla específica
                 ingr.obtenerIngresos(nombreCuadrilla, mesAnio, false, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
                     @Override
-                    public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados por cuadrilla
-                        if (items != null) { //Si "items" no es null, que entre al if
+                    public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados
+                        if (items != null) {
                             items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
 
                             if (tipo.equalsIgnoreCase("Mostrar")) { //Si la variable "tipo" que se recibe como parámetro tiene el texto "Mostrar", significa que solamente se desean mostrar los datos
-                                inicializarRecyclerView(items, "Ingresos"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items"
+                                inicializarRecyclerView(items, "Ingresos"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items" junto con el tipo "Ingresos"
                             }
                             else if (tipo.equalsIgnoreCase("Exportar")) { //En cambio, si "tipo" tiene el texto "Exportar", significa que desean exportar los datos
                                 //Creamos un "ProgressDialog" por mientras se está realizando la exportación del archivo
@@ -173,13 +174,13 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
                                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
                                     @Override
                                     public void run() {
-                                        if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                        if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si "mesAnio" que se recibe como parámetro está vacío o tiene el texto "Seleccionar..." significa que no se hará algún filtrado al momento de exportar los datos
                                             if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                 exp.exportarIngresosExcel(finalItems, "_" + nombreCuadrilla); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
                                                 exp.exportarIngresosPDF(finalItems, "_" + nombreCuadrilla); //Llamamos el método "exportarIngresosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                         }
-                                        else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
+                                        else { //En cambio, si "mesAnio" contiene un texto diferente a "Seleccionar...", eso quiere decir que si se hizo un filtrado en los datos
                                             if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                 exp.exportarIngresosExcel(finalItems, "_" + nombreCuadrilla + "_" + mesAnio); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
@@ -187,7 +188,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
                                         }
 
                                         if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
-                                            progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de exportación
+                                            progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de exportación ha finalizado
                                     }
                                 }, 1000);
                             }
@@ -195,58 +196,58 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
                     }
 
                     @Override
-                    public void onFailure(Exception e) {
+                    public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
                         Toast.makeText(ListadoIngresosDeducciones.this, "ERROR AL CARGAR LOS INGRESOS", Toast.LENGTH_SHORT).show();
-                        Log.w("ObtenerIngresos", e);
+                        Log.e("ObtenerIngresos", "Error al obtener los ingresos", e);
                     }
                 });
             }
             else if (nombreActivity.equalsIgnoreCase("ListadoIngresosEmpleado")) {
-                //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" que obtiene el usuario actual
+                //Llamamos el método "obtenerUsuarioActual" de la clase "Usuario" que obtiene el usuario actual
                 usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
                     @Override
                     public void onCallback(Map<String, Object> documento) {
-                        if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                        if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario actual
                             String cuadrilla = (String) documento.get("Cuadrilla"); //Obtenemos la cuadrilla de "documento"
 
-                            //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla obtenida de Firestore en "cuadrilla" y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores a la cuadrilla del usuario actual
+                            //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla obtenida de Firestore en "cuadrilla", el "mesAnio" y un true para "datosEmpleado" indicando que que es un empleado que está consultando los ingresos y él sólo puede visualizar los ingresos del mes actual y el mes anterior. Con esto se podrán obtener los ingresos hechos por los administradores a la cuadrilla del usuario actual
                             ingr.obtenerIngresos(cuadrilla, mesAnio, true, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
                                 @Override
-                                public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados por cuadrilla
-                                    if (items != null) {//Si "items" no es null, que entre al if
+                                public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados
+                                    if (items != null) {
                                         items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
-                                        inicializarRecyclerView(items, "Ingresos"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items"
+                                        inicializarRecyclerView(items, "Ingresos"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items" junto con el tipo "Ingresos"
                                     }
                                 }
 
                                 @Override
-                                public void onFailure(Exception e) {
+                                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
                                     Toast.makeText(ListadoIngresosDeducciones.this, "ERROR AL CARGAR LOS INGRESOS", Toast.LENGTH_SHORT).show();
-                                    Log.w("ObtenerIngresos", e);
+                                    Log.e("ObtenerIngresos", "Error al obtener los ingresos", e);
                                 }
                             });
                         }
                         else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
-                            Log.w("ObtenerUsuario", "Usuario no encontrado");
+                            Log.e("ObtenerUsuario", "Error al obtener el usuario actual");
                         }
                     }
 
                     @Override
-                    public void onFailure(Exception e) {
-                        Log.w("BuscarUsuario", "Error al obtener el usuario", e);
+                    public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                        Log.e("ObtenerUsuario", "Error al obtener el usuario actual");
                     }
                 });
             }
             else if (nombreActivity.equalsIgnoreCase("ListadoIngresosTodos")) {
-                //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla vacía para indicar que no queremos filtrar los ingresos, y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores sin ningún filtro
+                //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla vacía para indicar que no queremos filtrar los ingresos, un false para "datosEmpleado" (ya que no queremos reducir la lista de ingresos para el mes actual y anterior) y el "mesAnio". Con esto se podrán obtener todos los ingresos hechos por los administradores sin ningún filtro
                 ingr.obtenerIngresos("", mesAnio, false, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
                     @Override
-                    public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados por cuadrilla
-                        if (items != null) { //Si "items" no es null, que entre al if
+                    public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrado
+                        if (items != null) {
                             items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
 
                             if (tipo.equalsIgnoreCase("Mostrar")) { //Si la variable "tipo" que se recibe como parámetro tiene el texto "Mostrar", significa que solamente se desean mostrar los datos
-                                inicializarRecyclerView(items, "Ingresos"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items"
+                                inicializarRecyclerView(items, "Ingresos"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items" junto con el tipo "Ingresos"
                             }
                             else if (tipo.equalsIgnoreCase("Exportar")) { //En cambio, si "tipo" tiene el texto "Exportar", significa que desean exportar los datos
                                 //Creamos un "ProgressDialog" por mientras se está realizando la exportación del archivo
@@ -255,19 +256,20 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
                                 progressDialog.setCancelable(false);
                                 progressDialog.show();
 
+                                items = Utilidades.ordenarListaPorAlfabetico(items, "cuadrilla", "Ascendente"); //Llamamos el método utilitario "ordenarListaPorAlfabetico". Le mandamos la lista "items", el nombre del campo String "cuadrilla", y el tipo de orden "Ascendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                                 List<IngresosItems> finalItems = items;
 
                                 //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
                                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
                                     @Override
                                     public void run() {
-                                        if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                        if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si "mesAnio" que se recibe como parámetro está vacío o tiene el texto "Seleccionar..." significa que no se hará algún filtrado al momento de exportar los datos
                                             if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                 exp.exportarIngresosExcel(finalItems, "Generales"); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
                                                 exp.exportarIngresosPDF(finalItems, "Generales"); //Llamamos el método "exportarIngresosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                         }
-                                        else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
+                                        else { //En cambio, si "mesAnio" contiene un texto diferente a "Seleccionar...", eso quiere decir que si se hizo un filtrado en los datos
                                             if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                 exp.exportarIngresosExcel(finalItems, "Generales_" + mesAnio); //Llamamos el método "exportarIngresosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
@@ -283,33 +285,33 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
                     }
 
                     @Override
-                    public void onFailure(Exception e) {
+                    public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
                         Toast.makeText(ListadoIngresosDeducciones.this, "ERROR AL CARGAR LOS INGRESOS", Toast.LENGTH_SHORT).show();
-                        Log.w("ObtenerIngresos", e);
+                        Log.e("ObtenerIngresos", "Error al obtener los ingresos", e);
                     }
                 });
             }
             else if (nombreActivity.equalsIgnoreCase("ListadoDeducciones")) {
-                //Llamamos el método "obtenerDeducciones" de la clase "Deduccion", le mandamos la cuadrilla recibida en "nombreCuadrilla". Con esto se podrán obtener todas las deducciones por planilla hechas por los administradores
+                //Llamamos el método "obtenerDeducciones" de la clase "Deduccion", le mandamos la cuadrilla recibida en "nombreCuadrilla". Con esto se podrán obtener todas las deducciones por planilla hechas por los administradores a la cuadrilla específica
                 deduc.obtenerDeducciones(nombreCuadrilla, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<DeduccionesItems>() {
                     @Override
-                    public void onCallback(List<DeduccionesItems> items) { //En esta lista "items" están todas las deducciones ya filtradas por cuadrilla
-                        if (items != null) { //Si "items" no es null, que entre al if
+                    public void onCallback(List<DeduccionesItems> items) { //En esta lista "items" están todas las deducciones ya filtradas
+                        if (items != null) {
                             items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
-                            inicializarRecyclerView(items, "Deducciones"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items"
+                            inicializarRecyclerView(items, "Deducciones"); //Llamamos el método "inicializarRecyclerView" de abajo y le mandamos la lista "items" junto con el tipo "Deducciones"
                         }
                     }
 
                     @Override
-                    public void onFailure(Exception e) {
+                    public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
                         Toast.makeText(ListadoIngresosDeducciones.this, "ERROR AL CARGAR LAS DEDUCCIONES", Toast.LENGTH_SHORT).show();
-                        Log.w("ObtenerDeducciones", e);
+                        Log.e("ObtenerDeducciones", "Error al obtener las deducciones por planilla", e);
                     }
                 });
             }
         }
         catch (Exception e) {
-            Log.w("ObtenerIngresos", e);
+            Log.e("ObtenerDatos", "Error al obtener los datos", e);
         }
     }
 
@@ -320,15 +322,14 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
         if (tipo.contentEquals("Ingresos")) {
             List<IngresosItems> ingresosItems = (List<IngresosItems>) items;
             IngresosAdapter adapter = new IngresosAdapter(ingresosItems, nombreActivity); //Creamos un nuevo objeto de tipo IngresosAdapter en el cual enviamos la lista "items"
-            rvIngrDeduc.setAdapter(adapter); //Asignamos el adapter al recyclerView de Ingresos
-            double totalIngresos = 0; //Variable que nos servirá para calcular el total de los ingresos que se muestren en el RecyclerView
+            rvIngrDeduc.setAdapter(adapter); //Asignamos el adapter al recyclerView
 
-            //Recorremos la lista "items" y cada elemento de ella se guardará en la variable temporal "item" de tipo "IngresosItems"
-            for (IngresosItems item : ingresosItems) {
+            double totalIngresos = 0; //Variable que nos servirá para calcular el total de los ingresos que se muestren en el RecyclerView
+            for (IngresosItems item : ingresosItems) { //Recorremos la lista "items" y cada elemento de ella se guardará en la variable temporal "item" de tipo "IngresosItems"
                 totalIngresos += item.getTotal(); //Obtenemos el "total" de cada elemento de la lista "items" y lo vamos sumando en la variable "totalIngresos"
             }
 
-            lblTotal.setText("L. " + String.format("%.2f", totalIngresos)); //Asignamos el totalIngresos al TextView "lblTotalIngresos" y formateamos la variable "totalIngresos" para que se muestre con dos digitos después del punto decimal
+            lblTotal.setText("L. " + String.format("%.2f", totalIngresos)); //Asignamos el totalIngresos al TextView "lblTotal" y formateamos la variable "totalIngresos" para que se muestre con dos digitos después del punto decimal
 
             adapter.setOnClickListener(new View.OnClickListener() { //Usando el objeto de "adapter" llamamos al método "setOnClickListener" de la clase IngresosAdapter
                 @Override
@@ -352,20 +353,20 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
         }
         else if (tipo.contentEquals("Deducciones")) {
             List<DeduccionesItems> deduccionesItems = (List<DeduccionesItems>) items;
-            DeduccionesAdapter adapter = new DeduccionesAdapter(deduccionesItems);
-            rvIngrDeduc.setAdapter(adapter);
-            double totalDeducciones = 0;
+            DeduccionesAdapter adapter = new DeduccionesAdapter(deduccionesItems); //Creamos un nuevo objeto de tipo DeduccionesAdapter en el cual enviamos la lista "items"
+            rvIngrDeduc.setAdapter(adapter); //Asignamos el adapter al recyclerView
 
-            for (DeduccionesItems item : deduccionesItems) {
-                totalDeducciones += item.getTotal();
+            double totalDeducciones = 0; //Variable que nos servirá para calcular el total de los deducciones que se muestren en el RecyclerView
+            for (DeduccionesItems item : deduccionesItems) { //Recorremos la lista "items" y cada elemento de ella se guardará en la variable temporal "item" de tipo "DeduccionesItems"
+                totalDeducciones += item.getTotal(); //Obtenemos el "total" de cada elemento de la lista "items" y lo vamos sumando en la variable "totalDeducciones"
             }
 
-            lblTotal.setText("L. " + String.format("%.2f", totalDeducciones));
+            lblTotal.setText("L. " + String.format("%.2f", totalDeducciones)); //Asignamos el totalDeducciones al TextView "lblTotal" y formateamos la variable "totalDeducciones" para que se muestre con dos digitos después del punto decimal
 
-            adapter.setOnClickListener(new View.OnClickListener() {
+            adapter.setOnClickListener(new View.OnClickListener() { //Usando el objeto de "adapter" llamamos al método "setOnClickListener" de la clase DeduccionesAdapter
                 @Override
-                public void onClick(View view) {
-                    HashMap<String, Object> datosDeduccion = new HashMap<>();
+                public void onClick(View view) { //Al dar clic en una tarjeta del RecyclerView, se realizará lo siguiente
+                    HashMap<String, Object> datosDeduccion = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
 
                     //Agregamos las claves y datos al HashMap
                     datosDeduccion.put("ActivityREID", "EditarDeduccion");
@@ -375,13 +376,14 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
                     datosDeduccion.put("Usuario", deduccionesItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getUsuario());
                     datosDeduccion.put("Total", String.format("%.2f", deduccionesItems.get(rvIngrDeduc.getChildAdapterPosition(view)).getTotal()));
 
+                    //Llamamos el método "iniciarActivityConDatos" de la clase Utilidades y le mandamos el contexto, el activity siguiente y el HashMap con los datos a enviar
                     Utilidades.iniciarActivityConDatos(ListadoIngresosDeducciones.this, RegistrarEditarIngresoDeduccion.class, datosDeduccion);
                 }
             });
         }
     }
 
-    //Método Click del botón "Mes"
+    //Evento clic del botón "Mes"
     public void elegirMes(View view) {
         //Establecemos el color del fondo y de la fuente para los botones de Mes y Año
         btnMes.setBackground(getDrawable(R.drawable.clr_casilladegradadoazul_redonda));
@@ -392,7 +394,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
         tipoFecha = "Mes"; //Asignamos la palabra "Mes" a la variable global "tipoFecha"
     }
 
-    //Método Click del botón "Año"
+    //Evento clic del botón "Año"
     public void elegirAnio(View view) {
         //Establecemos el color del fondo y de la fuente para los botones de Mes y Año
         btnAnio.setBackground(getDrawable(R.drawable.clr_casilladegradadoazul_redonda));
@@ -403,6 +405,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
         tipoFecha = "Año"; //Asignamos la palabra "Año" a la variable global "tipoFecha"
     }
 
+    //Método que detecta cuando el lblFecha cambia su valor
     private void cambioFecha() {
         try {
             //Para detectar cuando el lblFecha cambia su valor, llamamos el método "addTextChangedListener"
@@ -415,7 +418,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
                 @Override //Durante el texto del lblFecha está cambiando
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     fechaSeleccionada = lblFecha.getText().toString();
-                    obtenerDatos(fechaSeleccionada, "Mostrar"); //Llamamos el método "obtenerIngresos" de arriba y le mandamos el contenido del lblFecha
+                    obtenerDatos(fechaSeleccionada, "Mostrar"); //Llamamos el método "obtenerDatos" de arriba y le mandamos el contenido del lblFecha
                 }
 
                 @Override //Después de que el texto del lblFecha cambie
@@ -425,12 +428,13 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
             });
         }
         catch (Exception e) {
-            Log.w("DetectarFecha", e);
+            Log.e("DetectarFecha", "Error al detectar la fecha", e);
         }
     }
 
-    //Evento Clic del LinearLayout de Fecha, al dar clic en el mismo, se abrirá un "Popup DatePicker" en el que se podrá seleccionar un mes y año y esto servirá para filtrar los gastos
+    //Evento clic del LinearLayout de Fecha, al dar clic en el mismo, se abrirá un "Popup DatePicker" en el que se podrá seleccionar un mes y año y esto servirá para filtrar los gastos
     public void mostrarMesesAnios(View view) {
+        //Si el "nombreActivity" es "ListadoIngresosAdmin" o "ListadoIngresosTodos", que al dar clic en el botón para desplegar meses o años, que se muestren todos
         if (nombreActivity.equalsIgnoreCase("ListadoIngresosAdmin") || nombreActivity.equalsIgnoreCase("ListadoIngresosTodos")) {
             if (tipoFecha.equalsIgnoreCase("Mes")) { //Si la variable global "tipoFecha" obtiene la palabra "Mes", significa que el usuario tiene seleccionado el botón de mes en la pantalla; por lo tanto, que entre al if
                 try {
@@ -455,33 +459,37 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
                     datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo mes y año
                 }
                 catch (Exception e) {
-                    Log.w("ObtenerMes", e);
+                    Log.e("ObtenerMes", "Error al obtener mes", e);
                 }
             }
             else if (tipoFecha.equalsIgnoreCase("Año")) { //En cambio, si la variable global "tipoFecha" obtiene la palabra "Año", significa que el usuario tiene seleccionado el botón de año en la pantalla; por lo tanto, que entre al else if
-                DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() { //Creamos una instancia de la interfaz "DatePickerDialog.OnDateSetListener" y esta define el método "onDateSet" que se llama cuando el usuario selecciona una fecha en el DatePickerDialog
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int year, int month, int day) { //Se ejecuta cuando el usuario ha seleccionado una fecha
-                        lblFecha.setText(String.valueOf(year)); //Asignamos el año ya convertido a String al lblFechaSeleccionada
-                    }
-                };
+                try {
+                    DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() { //Creamos una instancia de la interfaz "DatePickerDialog.OnDateSetListener" y esta define el método "onDateSet" que se llama cuando el usuario selecciona una fecha en el DatePickerDialog
+                        @Override
+                        public void onDateSet(DatePicker datePicker, int year, int month, int day) { //Se ejecuta cuando el usuario ha seleccionado una fecha
+                            lblFecha.setText(String.valueOf(year)); //Asignamos el año ya convertido a String al lblFechaSeleccionada
+                        }
+                    };
 
-                Calendar cal = Calendar.getInstance(); //Creamos un objeto de tipo Calendar que representa la fecha y hora actuales en el dispositivo donde se está ejecutando el código
-                int year = cal.get(Calendar.YEAR); //Obtenemos el año actual
-                int month = cal.get(Calendar.MONTH); //Obtenemos el mes actual
-                int day = cal.get(Calendar.DAY_OF_MONTH); //Obtenemos el día actual
-                int style = AlertDialog.THEME_HOLO_LIGHT; //En una variable entera guardamos el estilo que tendrá la ventana emergente
+                    Calendar cal = Calendar.getInstance(); //Creamos un objeto de tipo Calendar que representa la fecha y hora actuales en el dispositivo donde se está ejecutando el código
+                    int year = cal.get(Calendar.YEAR); //Obtenemos el año actual
+                    int month = cal.get(Calendar.MONTH); //Obtenemos el mes actual
+                    int day = cal.get(Calendar.DAY_OF_MONTH); //Obtenemos el día actual
+                    int style = AlertDialog.THEME_HOLO_LIGHT; //En una variable entera guardamos el estilo que tendrá la ventana emergente
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(ListadoIngresosDeducciones.this, style, dateSetListener, year, month, day); //Creamos un nuevo objeto de tipo DatePickerDialog y le mandamos como parámetros al constructor, un contexto, la variable "style" que guarda el estilo, el "dateSetListener", el año, mes y día, estos últimos para que al abrir el AlertDialog, se muestre el mes actual
-                datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("day", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de días asignando "GONE" en su visibilidad
-                datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("month", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de meses asignando "GONE" en su visibilidad
-                datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo años
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(ListadoIngresosDeducciones.this, style, dateSetListener, year, month, day); //Creamos un nuevo objeto de tipo DatePickerDialog y le mandamos como parámetros al constructor, un contexto, la variable "style" que guarda el estilo, el "dateSetListener", el año, mes y día, estos últimos para que al abrir el AlertDialog, se muestre el mes actual
+                    datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("day", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de días asignando "GONE" en su visibilidad
+                    datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("month", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de meses asignando "GONE" en su visibilidad
+                    datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo años
+                }
+                catch (Exception e) {
+                    Log.e("ObtenerYear", "Error al obtener año", e);
+                }
             }
         }
-        else if (nombreActivity.equalsIgnoreCase("ListadoIngresosEmpleado")) {
+        else if (nombreActivity.equalsIgnoreCase("ListadoIngresosEmpleado")) { //Pero si el "nombreActivity" es "ListadoIngresosEmpleado", que al dar clic en el botón para desplegar meses y años, que sólo se muestren el mes actual y el mes anterior, nada más
             try {
-                //Obtenemos los meses actual y anterior
-                Calendar calendar = Calendar.getInstance();
+                Calendar calendar = Calendar.getInstance(); //Instancia de la clase "Calendar"
 
                 //Configuramos el formato de fecha en español
                 SimpleDateFormat sdf = new SimpleDateFormat("MMMM - yyyy", new Locale("es", "ES"));
@@ -497,14 +505,14 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
                 popup.setOnMenuItemClickListener(this); //Indicamos que asigne el evento "OnMenuItemClick" para que haga algo cada vez que se dé click a una opción del menú
                 popup.inflate(R.menu.popupmenu_ultimosdosmeses); //Inflamos la vista del menú indicando la ruta de dicha vista gráfica
 
-                // Asignar los textos a los items del menú
+                //Asignamos los textos a los items del menú
                 popup.getMenu().findItem(R.id.menuMesActual).setTitle(mesActual);
                 popup.getMenu().findItem(R.id.menuMesAnterior).setTitle(mesAnterior);
 
                 popup.show(); //Mostramos el menú ya inflado
             }
             catch (Exception e) {
-                Log.w("ObtenerMes", e);
+                Log.e("ObtenerMes", "Error al obtener mes", e);
             }
         }
     }
@@ -517,7 +525,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
             case R.id.menuMesAnterior:
             case R.id.menuMesActual:
                 fechaSeleccionada = mesSeleccionado;
-                lblFecha.setText(mesSeleccionado); //Establecemos el mes y año seleccionado en el "lblFecha"
+                lblFecha.setText(mesSeleccionado); //Establecemos el mes y año, o sólo el año seleccionado en el "lblFecha"
                 return true;
 
             case R.id.menuExportarExcel:
@@ -545,11 +553,12 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
         }
     }
 
-    //Método para eliminar la selección del Mes - Año
+    //Método para eliminar la selección del Mes - Año, o Año
     public void eliminarMesIngresos(View view) {
         lblFecha.setText("Seleccionar...");
     }
 
+    //Evento clic del botón para exportar
     public void exportarIngresos(View view) {
         PopupMenu popup = new PopupMenu(this, view); //Objeto de tipo "PopupMenu"
         popup.setOnMenuItemClickListener(this); //Indicamos que asigne el evento "OnMenuItemClick" para que haga algo cada vez que se dé click a una opción del menú

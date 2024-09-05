@@ -26,34 +26,33 @@ public class GastoIngresoRegistrado extends AppCompatActivity {
 
     @Override
     public void onBackPressed() { //Este método se ejecuta cuando el usuario presiona el botón de retroceso
-        redireccionarUsuario(); //Llamamos el método "redireccionarUsuario"
+        redireccionarUsuario(); //Llamamos el método "redireccionarUsuario" de abajo
     }
 
     private void inicializarElementos() {
-        //Obtenemos el nombre del activity que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y le mandamos "this" para referenciar esta actividad y "Activity" como clave del putExtra
+        //Obtenemos el nombre del activity que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y le mandamos "this" para referenciar esta actividad y "ActivityGIR" como clave del putExtra
         nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityGIR");
 
+        //Enlazamos las variables globales con los elementos gráficos
         lblTitulo = findViewById(R.id.lblTituloGIR);
         lblExito = findViewById(R.id.lblExitoGIR);
         lblMensaje = findViewById(R.id.lblMensajeGIR);
     }
 
     private void establecerElementos() {
-        //Que entre al if si "nombreActivity" no es nulo
-        if (nombreActivity != null) {
-            //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
-            switch (nombreActivity) {
+        if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
+            switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
                 //Establecemos los elementos gráficos para cada uno de los tipos de pantallas
                 case "IngresoRegistrado":
                     lblTitulo.setText("Ingreso Registrado");
                     lblExito.setText("¡EL INGRESO HA SIDO REGISTRADO CON ÉXITO!");
-                    lblMensaje.setText("Puede revisar el Listado de Ingresos de la Cuadrilla para visualizar el Ingreso Registrado.");
+                    lblMensaje.setText("Puede revisar el Listado de Ingresos Generales o de la Cuadrilla para visualizar el Ingreso Registrado.");
                     break;
 
                 case "GastoRegistradoAdmin":
                     lblTitulo.setText("Gasto Registrado");
                     lblExito.setText("¡EL GASTO HA SIDO REGISTRADO CON ÉXITO!");
-                    lblMensaje.setText("Puede revisar el Listado de Gastos de la Cuadrilla para visualizar el Gasto Registrado.");
+                    lblMensaje.setText("Puede revisar el Listado de Gastos Generales o de la Cuadrilla para visualizar el Gasto Registrado.");
                     break;
 
                 case "GastoRegistradoEmpleado":
@@ -71,7 +70,7 @@ public class GastoIngresoRegistrado extends AppCompatActivity {
                 case "IngresoEditado":
                     lblTitulo.setText("Ingreso Modificado");
                     lblExito.setText("¡EL INGRESO HA SIDO MODIFICADO CON ÉXITO!");
-                    lblMensaje.setText("Puede revisar el Listado de Ingresos de la Cuadrilla para visualizar el Ingreso Modificado.");
+                    lblMensaje.setText("Puede revisar el Listado de Ingresos Generales o de la Cuadrilla para visualizar el Ingreso Modificado.");
                     break;
 
                 case "GastoEditado":
@@ -89,6 +88,7 @@ public class GastoIngresoRegistrado extends AppCompatActivity {
         }
     }
 
+    //Evento clic del botón de regresar al menú
     public void regresarAlMenu(View view) {
         redireccionarUsuario(); //Llamamos el método "redireccionarUsuario"
     }

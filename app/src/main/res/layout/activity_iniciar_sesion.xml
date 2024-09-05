@@ -188,7 +188,7 @@
             android:elevation="5sp"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center"
-            android:onClick="crearContrasena"
+            android:onClick="completarUsuario"
             android:paddingLeft="15sp"
             android:paddingTop="10sp"
             android:paddingRight="15sp"

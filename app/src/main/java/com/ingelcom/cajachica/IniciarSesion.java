@@ -31,7 +31,6 @@ import java.util.Map;
 
 public class IniciarSesion extends AppCompatActivity {
 
-    //Variables para los componentes gráficos
     private EditText txtCorreo, txtContra;
     private ImageView imgContra;
     private TextView btnReintentarConexion;
@@ -82,10 +81,12 @@ public class IniciarSesion extends AppCompatActivity {
         finishAffinity(); //Cierra toda la pila de retroceso para que al dar clic en el botón de retroceso, ya no hayan activities y salga de la app
     }
 
-    public void crearContrasena(View view) {
+    //Evento clic del botón de completar usuario
+    public void completarUsuario(View view) {
         Utilidades.iniciarActivity(this, CompletarUsuario.class, false);
     }
 
+    //Evento clic del botón para acceder al sistema
     public void acceder(View view) {
         pbAcceder.setVisibility(View.VISIBLE); //Ponemos visible la ProgressBar cuando se esté iniciando sesión
 
@@ -96,37 +97,36 @@ public class IniciarSesion extends AppCompatActivity {
         try {
             if (!correo.isEmpty() && !contra.isEmpty()) { //Si las cajas de texto no están vacías, que entre al if
                 mAuth.signInWithEmailAndPassword(correo, contra) //Mandamos el correo y la contraseña y usamos este método de FirebaseAuth
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                pbAcceder.setVisibility(View.GONE); //Cuando se inicie sesión, que se oculte la ProgressBar
-                                if (task.isSuccessful()) { //Si el inicio de sesión fue exitoso, entrará en este if
-                                    Utilidades.redireccionarUsuario(IniciarSesion.this, correo); //Llamamos al método "redireccionarUsuario" de la clase Utilidades y le mandamos un contexto y el correo
-                                    //FirebaseUser user = mAuth.getCurrentUser();
-                                }
-                                else {
-                                    String mensajeError = "CORREO O CONTRASEÑA INCORRECTA"; //Variable que servirá para almacenar el mensaje de error correspondiente
-                                    Exception exception = task.getException(); //Obtenemos la excepción lanzada tras que el proceso inicio de sesión ha fallado
-
-                                    //Varios condicionales que revisan el tipo de excepción, y tras ello, se guarda el mensaje de error correspondiente en la variable "mensajeError"
-                                    if (exception instanceof FirebaseAuthInvalidCredentialsException) {
-                                        mensajeError = "CORREO O CONTRASEÑA INCORRECTA";
-                                    }
-                                    else if (exception instanceof FirebaseAuthInvalidUserException) {
-                                        mensajeError = "EL USUARIO NO EXISTE O HA SIDO DESHABILITADO";
-                                    }
-                                    else if (exception instanceof FirebaseNetworkException) {
-                                        mensajeError = "ERROR DE RED, VERIFIQUE SU CONEXIÓN A INTERNET";
-                                    }
-                                    else if (exception instanceof FirebaseTooManyRequestsException) {
-                                        mensajeError = "DEMASIADOS INTENTOS FALLIDOS, INTENTE DE NUEVO MÁS TARDE";
-                                    }
-
-                                    Log.e("IniciarSesion", "Error al iniciar sesión: " + exception.getMessage()); //Mostramos el mensaje de error en el Logcat
-                                    Toast.makeText(IniciarSesion.this, mensajeError, Toast.LENGTH_SHORT).show(); //Mostramos el mensaje de error con un Toast
-                                }
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            pbAcceder.setVisibility(View.GONE); //Cuando se inicie sesión, que se oculte la ProgressBar
+                            if (task.isSuccessful()) { //Si el inicio de sesión fue exitoso, entrará en este if
+                                Utilidades.redireccionarUsuario(IniciarSesion.this, correo); //Llamamos al método "redireccionarUsuario" de la clase Utilidades y le mandamos un contexto y el correo
                             }
-                        });
+                            else {
+                                String mensajeError = "CORREO O CONTRASEÑA INCORRECTA"; //Variable que servirá para almacenar el mensaje de error correspondiente
+                                Exception exception = task.getException(); //Obtenemos la excepción lanzada tras que el proceso inicio de sesión ha fallado
+
+                                //Varios condicionales que revisan el tipo de excepción, y tras ello, se guarda el mensaje de error correspondiente en la variable "mensajeError"
+                                if (exception instanceof FirebaseAuthInvalidCredentialsException) {
+                                    mensajeError = "CORREO O CONTRASEÑA INCORRECTA";
+                                }
+                                else if (exception instanceof FirebaseAuthInvalidUserException) {
+                                    mensajeError = "EL USUARIO NO EXISTE O HA SIDO DESHABILITADO";
+                                }
+                                else if (exception instanceof FirebaseNetworkException) {
+                                    mensajeError = "ERROR DE RED, VERIFIQUE SU CONEXIÓN A INTERNET";
+                                }
+                                else if (exception instanceof FirebaseTooManyRequestsException) {
+                                    mensajeError = "DEMASIADOS INTENTOS FALLIDOS, INTENTE DE NUEVO MÁS TARDE";
+                                }
+
+                                Log.e("IniciarSesion", "Error al iniciar sesión: " + exception.getMessage()); //Mostramos el mensaje de error en el Logcat
+                                Toast.makeText(IniciarSesion.this, mensajeError, Toast.LENGTH_SHORT).show(); //Mostramos el mensaje de error con un Toast
+                            }
+                        }
+                    });
             }
             else { //Si alguna caja de texto está vacía, que entre aquí y muestre un mensaje emergente de advertencia
                 pbAcceder.setVisibility(View.GONE);
@@ -134,10 +134,11 @@ public class IniciarSesion extends AppCompatActivity {
             }
         }
         catch (Exception e) {
-            Log.w("IniciarSesion", e);
+            Log.e("IniciarSesion", "Error al iniciar sesión", e);
         }
     }
 
+    //Evento clic del botón para mostrar y ocultar la contraseña
     public void mostrarOcultarContra(View view) {
         clicks = Utilidades.mostrarOcultarContrasena(clicks, txtContra, imgContra); //Llamamos el método "mostrarOcultarContrasena" de la clase Utilidades que nos ayudará a mostrar y ocultar la contraseña
     }

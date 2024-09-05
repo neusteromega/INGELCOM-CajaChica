@@ -74,6 +74,7 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
     }
 
     private void inicializarElementos() {
+        //Enlazamos las variables globales con los elementos gráficos
         lblTitulo = findViewById(R.id.lblTituloDGI);
         lblTotalGastIngr = findViewById(R.id.lblTituloTotalDGI);
         lblDinero = findViewById(R.id.lblTotalDGI);
@@ -110,30 +111,22 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
     }
 
     private void obtenerDatos() {
+        //Obtenemos el nombre del activity que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y le mandamos "this" para referenciar esta actividad y "ActivityDGI" como clave del putExtra
         nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityDGI");
 
         if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
             switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
-                case "DetalleGastoCuadrilla": //Obtener los datos y guardarlos en las variables globales si la pantalla es "DetalleGastoCuadrilla" o "DetalleGastoSupervisores"
-
+                case "DetalleGastoCuadrilla":
                 case "DetalleGastoSupervisores":
                     id = Utilidades.obtenerStringExtra(this, "ID");
-                    /*fecha = Utilidades.obtenerStringExtra(this, "FechaHora");
-                    cuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
-                    usuario = Utilidades.obtenerStringExtra(this, "Usuario");
-                    rol = Utilidades.obtenerStringExtra(this, "Rol");
-                    lugarCompra = Utilidades.obtenerStringExtra(this, "LugarCompra");
-                    tipoCompra = Utilidades.obtenerStringExtra(this, "TipoCompra");
-                    descripcion = Utilidades.obtenerStringExtra(this, "Descripcion");
-                    factura = Utilidades.obtenerStringExtra(this, "NumeroFactura");
-                    imagen = Utilidades.obtenerStringExtra(this, "Imagen");
-                    total = Utilidades.obtenerStringExtra(this, "Total");*/
 
                     try {
+                        //Llamamos el método "obtenerUnGasto" de la clase "Gasto" donde mandamos el "id" recibido del Activity anterior
                         gast.obtenerUnGasto(id, new FirestoreCallbacks.FirestoreDocumentCallback() {
                             @Override
                             public void onCallback(Map<String, Object> documento) {
-                                if (documento != null) {
+                                if (documento != null) { //Si "documento" no es nulo, significa que si encontró el gasto por su ID
+                                    //Guardamos los datos del gasto extraídos de Firestore en las variables globales
                                     fecha = Utilidades.convertirTimestampAString((Timestamp) documento.get("Fecha"), "dd/MM/yyyy - HH:mm"); //En este campo, al ser un Timestamp y no un String, llamamos al método utilitario "convertirTimestampAString" que convierte un objeto Timestamp y retorna un string. Aquí mandamos el formato "dd/MM/yyyy - HH:mm" para que nos retorne la fecha y hora de esa forma
                                     cuadrilla = (String) documento.get("Cuadrilla");
                                     usuario = (String) documento.get("Usuario");
@@ -150,30 +143,26 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
                             }
 
                             @Override
-                            public void onFailure(Exception e) {
-                                Log.e("ObtenerGasto", "Error al obtener el Gasto: ", e);
+                            public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                                Log.e("ObtenerGasto", "Error al obtener el Gasto", e);
                             }
                         });
                     }
                     catch (Exception e) {
-                        Log.e("ObtenerGasto", "Error al obtener el Gasto: ", e);
+                        Log.e("ObtenerGasto", "Error al obtener el Gasto", e);
                     }
                     break;
 
-                case "DetalleIngreso": //Obtener los datos y guardarlos en las variables globales si la pantalla es "DetalleIngreso"
+                case "DetalleIngreso":
                     id = Utilidades.obtenerStringExtra(this, "ID");
-                    /*fecha = Utilidades.obtenerStringExtra(this, "FechaHora");
-                    cuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
-                    usuario = Utilidades.obtenerStringExtra(this, "Usuario");
-                    transferencia = Utilidades.obtenerStringExtra(this, "Transferencia");
-                    imagen = Utilidades.obtenerStringExtra(this, "Imagen");
-                    total = Utilidades.obtenerStringExtra(this, "Total");*/
 
                     try {
+                        //Llamamos el método "obtenerUnIngreso" de la clase "Ingreso" donde mandamos el "id" recibido del Activity anterior
                         ingr.obtenerUnIngreso(id, new FirestoreCallbacks.FirestoreDocumentCallback() {
                             @Override
-                            public void onCallback(Map<String, Object> documento) {
+                            public void onCallback(Map<String, Object> documento) { //Si "documento" no es nulo, significa que si encontró el ingreso por su ID
                                 if (documento != null) {
+                                    //Guardamos los datos del ingreso extraídos de Firestore en las variables globales
                                     fecha = Utilidades.convertirTimestampAString((Timestamp) documento.get("Fecha"), "dd/MM/yyyy - HH:mm"); //En este campo, al ser un Timestamp y no un String, llamamos al método utilitario "convertirTimestampAString" que convierte un objeto Timestamp y retorna un string. Aquí mandamos el formato "dd/MM/yyyy - HH:mm" para que nos retorne la fecha y hora de esa forma
                                     cuadrilla = (String) documento.get("Cuadrilla");
                                     usuario = (String) documento.get("Usuario");
@@ -186,13 +175,13 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
                             }
 
                             @Override
-                            public void onFailure(Exception e) {
-                                Log.e("ObtenerIngreso", "Error al obtener el Ingreso: ", e);
+                            public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                                Log.e("ObtenerIngreso", "Error al obtener el Ingreso", e);
                             }
                         });
                     }
                     catch (Exception e) {
-                        Log.e("ObtenerIngreso", "Error al obtener el Ingreso: ", e);
+                        Log.e("ObtenerIngreso", "Error al obtener el Ingreso", e);
                     }
                     break;
             }
@@ -238,7 +227,7 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
                     asignarDatos("Gasto"); //Llamamos al método "asignarDatos" de abajo y le mandamos "Gasto" para indicar que asigne los datos al gasto
                     break;
 
-                case "DetalleIngreso": //Establecemos los elementos gráficos si la pantalla es "DetalleGasto"
+                case "DetalleIngreso":
 
                     //Asignamos los titulos, el Dinero y el color del Dinero
                     lblTitulo.setText("Detalle de Ingreso");
@@ -290,21 +279,23 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
                         if (uri != null) {
                             imageUri = uri; //Como la imagen ya se cargó, asignamos el URI de la imagen obtenido a la variable global "imageUri"
                             Glide.with(DetalleGastoIngreso.this).load(uri).into(imgFoto); //Asignamos el URI de la imagen obtenida al "imgFoto", pero usando la biblioteca "Glide" para evitar errores
-                            pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen se ha cargado
                         }
                         else {
                             Toast.makeText(DetalleGastoIngreso.this, "ERROR AL CARGAR LA IMAGEN", Toast.LENGTH_SHORT).show();
                         }
+
+                        pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar
                     }
 
                     @Override
-                    public void onFailure(Exception e) {
-                        Log.w("ObtenerImagen", "Error al obtener el URI de la imagen: " + e);
+                    public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                        Log.e("ObtenerImagenStorage", "Error al obtener el URI de la imagen" + e);
+                        pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen haya fallado
                     }
                 });
             }
             catch (Exception e) {
-                Log.w("ObtenerImagenStorage", e);
+                Log.e("ObtenerImagenStorage", "Error al obtener el URI de la imagen" + e);
             }
         }
         else if (tipo.contentEquals("Ingreso")) {
@@ -324,21 +315,23 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
                         if (uri != null) {
                             imageUri = uri; //Como la imagen ya se cargó, asignamos el URI de la imagen obtenido a la variable global "imageUri"
                             Glide.with(DetalleGastoIngreso.this).load(uri).into(imgFoto); //Asignamos el URI de la imagen obtenida al "imgFoto", pero usando la biblioteca "Glide" para evitar errores
-                            pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen se ha cargado
                         }
                         else {
                             Toast.makeText(DetalleGastoIngreso.this, "ERROR AL CARGAR LA IMAGEN", Toast.LENGTH_SHORT).show();
                         }
+
+                        pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar
                     }
 
                     @Override
-                    public void onFailure(Exception e) {
-                        Log.w("ObtenerImagen", "Error al obtener el URI de la imagen: " + e);
+                    public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                        Log.e("ObtenerImagenStorage", "Error al obtener el URI de la imagen" + e);
+                        pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen haya fallado
                     }
                 });
             }
             catch (Exception e) {
-                Log.w("ObtenerImagenStorage", e);
+                Log.e("ObtenerImagenStorage", "Error al obtener el URI de la imagen" + e);
             }
         }
     }
@@ -351,11 +344,11 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
                 @Override
                 public void onCallback(Map<String, Object> documento) {
                     if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró la cuadrilla
-                        Object valor = documento.get("Dinero"); //Lo obtenemos como Object ya que Firestore puede almacenar números en varios formatos (por ejemplo, Long y Double) y esto puede causar problemas con el casting del contenido del campo
+                        Object valor = documento.get("Dinero"); //El dinero disponible de la cuadrilla encontrado lo obtenemos como Object ya que Firestore puede almacenar números en varios formatos (por ejemplo, Long y Double) y esto puede causar problemas con el casting del contenido del campo
                         double dinero = Utilidades.convertirObjectADouble(valor); //Llamamos el método utilitario "convertirObjectADouble" y le mandamos el objeto "valor", y nos retorna este objeto ya convertido a double y lo guardamos en "dinero"
                         HashMap<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
 
-                        if (rol != null && rol.equalsIgnoreCase("Empleado")) {//Si el rol tiene como texto "Empleado", que entre al if, con esto sabemos que es un gasto hecho por un empleado
+                        if (rol != null && rol.equalsIgnoreCase("Empleado")) { //Si el rol tiene como texto "Empleado", que entre al if, con esto sabemos que es un gasto hecho por un empleado
                             //Agregamos las claves y datos al HashMap
                             datos.put("ActivityREG", "EditarGastoEmpleado");
                             datos.put("DineroDisponible", String.format("%.2f", dinero));
@@ -373,7 +366,7 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
 
                             Utilidades.iniciarActivityConDatos(DetalleGastoIngreso.this, RegistrarEditarGasto.class, datos); //Abrimos el activity "RegistrarEditarGasto" y le mandamos el HashMap "datos" con los parámetros
                         }
-                        else if (rol != null && rol.equalsIgnoreCase("Administrador")) {//Si el rol tiene como texto "Administrador", que entre al else if, con esto sabemos que es un gasto hecho por un Administrador
+                        else if (rol != null && rol.equalsIgnoreCase("Administrador")) { //Si el rol tiene como texto "Administrador", que entre al else if, con esto sabemos que es un gasto hecho por un Administrador
                             //Agregamos las claves y datos al HashMap
                             datos.put("ActivityREG", "EditarGastoAdmin");
                             datos.put("DineroDisponible", String.format("%.2f", dinero));
@@ -391,7 +384,7 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
 
                             Utilidades.iniciarActivityConDatos(DetalleGastoIngreso.this, RegistrarEditarGasto.class, datos); //Abrimos el activity "RegistrarEditarGasto" y le mandamos el HashMap "datos" con los parámetros
                         }
-                        else if (nombreActivity.equalsIgnoreCase("DetalleIngreso")) {//En cambio, si el "nombreActivity" tiene el texto "DetalleIngreso", que entre al else if
+                        else if (nombreActivity.equalsIgnoreCase("DetalleIngreso")) { //En cambio, si el "nombreActivity" tiene el texto "DetalleIngreso", que entre al else if
                             //Agregamos las claves y datos al HashMap
                             datos.put("ActivityREID", "EditarIngreso");
                             datos.put("ID", id);
@@ -408,23 +401,19 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
                 }
 
                 @Override
-                public void onFailure(Exception e) {
-                    Log.w("ObtenerCuadrilla", e);
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerCuadrilla", "Error al obtener la cuadrilla", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerCuadrilla", e);
+            Log.e("ObtenerCuadrilla", "Error al obtener la cuadrilla", e);
         }
     }
 
-    //Método Click que al dar clic en la imagen cargada, nos manda al Activity "ImagenCompleta" donde también envía el URI de la imagen cargada para mostrarla en pantalla completa
+    //Método Click que al dar clic en la imagen cargada, nos manda al Activity "ImagenCompleta" donde también se envía el URI de la imagen cargada para mostrarla en pantalla completa
     public void mostrarImagenCompleta(View view) {
         HashMap<String, Object> datosImagen = new HashMap<>();
-
-        //Intent intent = new Intent(DetalleGastoIngreso.this, ImagenCompleta.class);
-        //intent.putExtra("imageUri", imageUri); //Enviamos el URI de la imagen
-        //startActivity(intent); //Iniciamos el activity
 
         datosImagen.put("imageUri", imageUri); //Enviamos el URI de la imagen
         datosImagen.put("nombreImagen", imagen); //Mandamos el nombre de la imagen que está guardado en la variable global "imagen"
@@ -441,7 +430,7 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
     //Método que ocultar el botón de Editar cuando el rol del Usuario es "Empleado"
     private void ocultarBotonEditar(String tipo) {
         try {
-            //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" y creamos una invocación a la interfaz "FirestoreDocumentCallback"
+            //Llamamos el método "obtenerUsuarioActual" de la clase "Usuario" y creamos una invocación a la interfaz "FirestoreDocumentCallback"
             usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
                 public void onCallback(Map<String, Object> documento) {
@@ -454,21 +443,21 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
                                 btnEditar.setVisibility(View.GONE); //Ocultamos el botón de Editar
                         }
                         else if (tipo.equalsIgnoreCase("Supervisores")) { //Pero, si "tipo" es "Supervisores", significa que se está visualizando un gasto hecho por un supervisor a una cuadrilla
-                            //Si el método utilitario "verificarMonthYearActual" no retorna un true, que entre al if y oculte el botón de editar ya que eso significa que el mes de la fecha del gasto/ingreso no coincide con el mes actual, por lo tanto, no puede editar
-                            if (rol.equalsIgnoreCase("Empleado") || !Utilidades.verificarMonthYearActual(fecha)) //Si el rol es "Empleado", que entre al if
+                            //Si el rol es "Empleado", o si el método utilitario "verificarMonthYearActual" no retorna un true, que entre al if y oculte el botón de editar ya que eso significa que el mes de la fecha del gasto/ingreso no coincide con el mes actual, por lo tanto, no puede editar
+                            if (rol.equalsIgnoreCase("Empleado") || !Utilidades.verificarMonthYearActual(fecha))
                                 btnEditar.setVisibility(View.GONE); //Ocultamos el botón de Editar
                         }
                     }
                 }
 
                 @Override
-                public void onFailure(Exception e) {
-                    Log.w("BuscarUsuario", "Error al obtener el usuario", e);
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerUsuario", "Error al obtener el usuario actual", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerUsuario", e);
+            Log.e("ObtenerUsuario", "Error al obtener el usuario actual", e);
         }
     }
 
@@ -486,6 +475,7 @@ public class DetalleGastoIngreso extends AppCompatActivity implements SwipeRefre
         }, 1000);
     }
 
+    //Método que permite retroceder a la pantalla anterior
     public void retroceder(View view) {
         onBackPressed();
     }

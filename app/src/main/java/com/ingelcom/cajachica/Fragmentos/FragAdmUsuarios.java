@@ -42,7 +42,7 @@ public class FragAdmUsuarios extends Fragment {
     private FirebaseUser user; //Objeto que obtiene el usuario actual
 
     public FragAdmUsuarios() {
-        // Required empty public constructor
+
     }
 
     public static FragAdmUsuarios newInstance(String param1, String param2) {
@@ -64,13 +64,10 @@ public class FragAdmUsuarios extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_adm_usuarios, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_adm_usuarios, container, false); //Guardamos la vista inflada del fragment en una variable tipo "view"
 
-        //Inicializamos la autenticación con Firebase
-        auth = FirebaseAuth.getInstance();
+        auth = FirebaseAuth.getInstance(); //Inicializamos la autenticación con Firebase
 
         //Enlazamos las variables globales con los elementos gráficos
         btnMiPerfil = view.findViewById(R.id.LLMiPerfilUsu);
@@ -88,9 +85,9 @@ public class FragAdmUsuarios extends Fragment {
     }
 
     private void establecerBotones() {
-        //Eventos Clic de botones
+        //Eventos clic de botones
         btnMiPerfil.setOnClickListener(v -> {
-            //Redireccionamos al usuario al activity de "Perfil"
+            //Redireccionamos al usuario al activity de "Perfil" y le indicamos que deberá reflejar el contenido de "PerfilAdmin"
             Utilidades.iniciarActivityConString(getActivity(), Perfil.class, "ActivityPerfil", "PerfilAdmin", false);
         });
 
@@ -107,18 +104,18 @@ public class FragAdmUsuarios extends Fragment {
         btnCerrarSesion.setOnClickListener(v -> {
             //Creamos un nuevo "AlertDialog" que nos pregunte si deseamos cerrar sesión
             new AlertDialog.Builder(getActivity()).setTitle("CERRAR SESIÓN").setMessage("¿Está seguro que desea cerrar sesión?")
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Aquí se ejecutará una acción si el usuario seleccionó la opción de "Confirmar"
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            FirebaseAuth.getInstance().signOut(); //Método de firebase que permite cerrar sesión
-                            Utilidades.iniciarActivity(getActivity(), IniciarSesion.class, true); //Al confirmar el cierre de la sesión, mandamos al usuario a la pantalla de Login y finalizamos el activity actual
-                        }
-                    }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Aquí se ejecutará una acción si el usuario seleccionó la opción de "Cancelar"
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            Log.d("Mensaje", "Se canceló la acción"); //Como se canceló el cierre de la sesión, se muestra un mensaje en el Logcat indicando que se canceló la acción
-                        }
-                    }).show();
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Aquí se ejecutará una acción si el usuario seleccionó la opción de "Confirmar"
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        FirebaseAuth.getInstance().signOut(); //Método de firebase que permite cerrar sesión
+                        Utilidades.iniciarActivity(getActivity(), IniciarSesion.class, true); //Al confirmar el cierre de la sesión, mandamos al usuario a la pantalla de Login y finalizamos el activity actual
+                    }
+                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Aquí se ejecutará una acción si el usuario seleccionó la opción de "Cancelar"
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.d("Mensaje", "Se canceló la acción"); //Como se canceló el cierre de la sesión, se muestra un mensaje en el Logcat indicando que se canceló la acción
+                    }
+                }).show();
         });
 
         //Evento Click del botón "Reintentar" de la vista "viewNoInternet"

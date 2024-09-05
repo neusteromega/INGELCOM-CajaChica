@@ -49,9 +49,9 @@ import java.util.Map;
 
 public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, PopupMenu.OnMenuItemClickListener {
 
-    private TextView btnReintentarConexion, lblTitulo, btnMes, btnAnio, lblFecha, lblUserCompra, lblLineaCuadrilla, lblLineaSupervisores;
+    private TextView btnReintentarConexion, lblTitulo, btnMes, btnAnio, lblFecha, lblLineaCuadrilla, lblLineaSupervisores;
     private Spinner spUserCompra;
-    private LinearLayout llUserCompra, llAbrirUserCompra;
+    private LinearLayout llUserCompra;
     private ImageView imgUserCompra;
     private NestedScrollView nsvListadoGastos;
     private ViewPager2 vpGastos;
@@ -104,16 +104,15 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityLG");
         nombreCuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
 
+        //Enlazamos las variables globales con los elementos gráficos
         lblTitulo = findViewById(R.id.lblTituloLG);
         btnMes = findViewById(R.id.lblMesLG);
         btnAnio = findViewById(R.id.lblAnioLG);
         lblFecha = findViewById(R.id.lblFechaLG);
-        lblUserCompra = findViewById(R.id.lblAbrirUsuarioCompraLG);
         lblLineaCuadrilla = findViewById(R.id.lblCuadrillaLineaLG);
         lblLineaSupervisores = findViewById(R.id.lblSupervisoresLineaLG);
         spUserCompra = findViewById(R.id.spUsuarioCompraLG);
         llUserCompra = findViewById(R.id.LLUsuarioCompraLG);
-        llAbrirUserCompra = findViewById(R.id.LLAbrirUsuarioCompraLG);
         imgUserCompra = findViewById(R.id.imgUsuarioCompraLG);
         nsvListadoGastos = findViewById(R.id.nsvListadoGastos);
         vpGastos = findViewById(R.id.vpListadoGastos); //Relacionamos la variable "vpGastos" con el ViewPager
@@ -135,23 +134,19 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
             case "ListadoGastosEmpleado":
                 lblTitulo.setText("Listado de Gastos");
                 imgUserCompra.setImageResource(R.mipmap.ico_azul_tipocompra); //Asignamos el icono de tipoCompra ya que en "ListadoGastosEmpleado" se filtrarán los gastos por tipo de compra
-                lblUserCompra.setText("Seleccionar Categoría");
-                inicializarSpinners("TipoCompra");
-                //llUserCompra.setVisibility(View.GONE);
+                inicializarSpinners("TipoCompra"); //Llamamos el método "inicializarSpinners" e indicamos que debe establecer los tipos de compras en el Spinner
                 break;
 
             case "ListadoGastosAdmin":
                 lblTitulo.setText(nombreCuadrilla); //Establecemos el nombre de la cuadrilla en el titulo
-                lblUserCompra.setText("Seleccionar Categoría");
                 imgUserCompra.setImageResource(R.mipmap.ico_azul_tipocompra); //Asignamos el icono de tipoCompra ya que en "ListadoGastosAdmin" se filtrarán los gastos por tipo de compra
-                inicializarSpinners("TipoCompra");
+                inicializarSpinners("TipoCompra"); //Llamamos el método "inicializarSpinners" e indicamos que debe establecer los tipos de compras en el Spinner
                 break;
 
             case "ListadoGastosTodos":
                 lblTitulo.setText("Todos los Gastos");
-                lblUserCompra.setText("Seleccionar Usuario");
                 imgUserCompra.setImageResource(R.mipmap.ico_azul_nombreapellido); //Asignamos el icono de nombreApellido (o de Usuario) ya que en "ListadoGastosTodos" se filtrarán los gastos por usuario
-                inicializarSpinners("Usuario");
+                inicializarSpinners("Usuario"); //Llamamos el método "inicializarSpinners" e indicamos que debe establecer los usuarios en el Spinner
                 break;
         }
 
@@ -162,18 +157,19 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
     }
 
     private void inicializarSpinners(String tipo) {
-        if (tipo.equalsIgnoreCase("TipoCompra")) {
+        if (tipo.equalsIgnoreCase("TipoCompra")) { //Si "tipo" es "TipoCompra", procedemos a establecer los tipos de compras en el Spinner "spUserCompra"
             try {
+                //Llamamos al método "obtenerRegistros" de la clase "FirestoreOperaciones" a la cual le mandamos el nombre de la colección y el nombre del campo de Firestore de los cuales queremos obtener los registros. También invocamos los métodos "onCallback" y "onFailure" de la interfaz FirestoreListCallback
                 oper.obtenerRegistrosCampo("tipoCompras", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
                     @Override
                     public void onCallback(List<String> lista) {
-                        //Ordenamos la "lista" alfabéticamente llamando al método utilitario "ordenarListaPorAlfabetico" donde enviamos la lista, un String vacío ("") y el orden ascendente. El String vacío es para indicar que el "nombreCampo" por el cual se desea realizar el orden de la lista, en este caso no existe ya que es una lista sencilla y no de una clase
-                        lista = Utilidades.ordenarListaPorAlfabetico(lista, "", "Ascendente");
-                        List<String> listaNueva = new ArrayList<>();
-                        listaNueva.add("Seleccionar Categoría");
-                        listaNueva.addAll(lista);
+                        lista = Utilidades.ordenarListaPorAlfabetico(lista, "", "Ascendente"); //Ordenamos la "lista" alfabéticamente llamando al método utilitario "ordenarListaPorAlfabetico" donde enviamos la lista, un String vacío ("") y el orden ascendente. El String vacío es para indicar que el "nombreCampo" por el cual se desea realizar el orden de la lista, en este caso no existe ya que es una lista sencilla y no de una clase
 
-                        //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
+                        List<String> listaNueva = new ArrayList<>();
+                        listaNueva.add("Seleccionar Categoría"); //Establecemos el primer elemento a mostrarse en el Spinner
+                        listaNueva.addAll(lista); //Agregamos los elementos de "lista" a "listaNueva"
+
+                        //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_usercompraitems), y la lista de valores "listaNueva"
                         ArrayAdapter<String> adapter = new ArrayAdapter<String>(ListadoGastos.this, R.layout.spinner_usercompraitems, listaNueva) {
                             @Override //Este método se usa para personalizar cómo se ve cada elemento en la lista desplegable del Spinner
                             public View getDropDownView(int position, View convertView, ViewGroup parent) {
@@ -200,27 +196,28 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                     }
 
                     @Override
-                    public void onFailure(Exception e) {
-                        Log.w("Activity", "Error al obtener los tipos de compras.", e);
+                    public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                        Log.e("ObtenerTipoCompras", "Error al obtener los tipos de compras", e);
                     }
                 });
             }
             catch (Exception e) {
-                Log.w("ObtenerTipoCompras", e);
+                Log.e("ObtenerTipoCompras", "Error al obtener los tipos de compras", e);
             }
         }
-        else if (tipo.equalsIgnoreCase("Usuario")) {
+        else if (tipo.equalsIgnoreCase("Usuario")) { //Si "tipo" es "Usuario", procedemos a establecer los usuarios en el Spinner "spUserCompra"
             try {
+                //Llamamos al método "obtenerRegistros" de la clase "FirestoreOperaciones" a la cual le mandamos el nombre de la colección y el nombre del campo de Firestore de los cuales queremos obtener los registros. También invocamos los métodos "onCallback" y "onFailure" de la interfaz FirestoreListCallback
                 oper.obtenerRegistrosCampo("usuarios", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
                     @Override
                     public void onCallback(List<String> lista) {
-                        //Ordenamos la "lista" alfabéticamente llamando al método utilitario "ordenarListaPorAlfabetico" donde enviamos la lista, un String vacío ("") y el orden ascendente. El String vacío es para indicar que el "nombreCampo" por el cual se desea realizar el orden de la lista, en este caso no existe ya que es una lista sencilla y no de una clase
-                        lista = Utilidades.ordenarListaPorAlfabetico(lista, "", "Ascendente");
-                        List<String> listaNueva = new ArrayList<>();
-                        listaNueva.add("Seleccionar Usuario");
-                        listaNueva.addAll(lista);
+                        lista = Utilidades.ordenarListaPorAlfabetico(lista, "", "Ascendente"); //Ordenamos la "lista" alfabéticamente llamando al método utilitario "ordenarListaPorAlfabetico" donde enviamos la lista, un String vacío ("") y el orden ascendente. El String vacío es para indicar que el "nombreCampo" por el cual se desea realizar el orden de la lista, en este caso no existe ya que es una lista sencilla y no de una clase
 
-                        //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
+                        List<String> listaNueva = new ArrayList<>();
+                        listaNueva.add("Seleccionar Usuario"); //Establecemos el primer elemento a mostrarse en el Spinner
+                        listaNueva.addAll(lista); //Agregamos los elementos de "lista" a "listaNueva"
+
+                        //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_usercompraitems), y la lista de valores "listaNueva"
                         ArrayAdapter<String> adapter = new ArrayAdapter<String>(ListadoGastos.this, R.layout.spinner_usercompraitems, listaNueva) {
                             @Override //Este método se usa para personalizar cómo se ve cada elemento en la lista desplegable del Spinner
                             public View getDropDownView(int position, View convertView, ViewGroup parent) {
@@ -243,21 +240,17 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                             }
                         };
 
-                        /*//Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(ListadoGastos.this, R.layout.spinner_usercompraitems, lista);
-                        spUserCompra.setAdapter(adapter); //Asignamos el adapter al Spinner "spUserCompra"*/
-
                         spUserCompra.setAdapter(adapter); //Configuramos el adaptador personalizado
                     }
 
                     @Override
-                    public void onFailure(Exception e) {
-                        Log.w("Activity", "Error al obtener los usuarios.", e);
+                    public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                        Log.e("ObtenerUsuarios", "Error al obtener los usuarios.", e);
                     }
                 });
             }
             catch (Exception e) {
-                Log.w("ObtenerUsuarios", e);
+                Log.e("ObtenerUsuarios", "Error al obtener los usuarios.", e);
             }
         }
     }
@@ -266,18 +259,18 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         try {
             switch (nombreActivity) { //Dependiendo del "nombreActivity" que se recibe de la pantalla anterior, obtenemos los gastos para exportar de diferentes maneras
                 case "ListadoGastosEmpleado":
-                    //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" que obtiene el usuario actual
+                    //Llamamos el método "obtenerUsuarioActual" de la clase "Usuario" que obtiene el usuario actual
                     usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
                         @Override
                         public void onCallback(Map<String, Object> documento) {
-                            if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                            if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario actual
                                 String cuadrilla = (String) documento.get("Cuadrilla"); //Obtenemos la cuadrilla de "documento"
 
-                                //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla del usuario actual, el rol vacío ya que no queremos filtrar por rol y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de la cuadrilla y por los supervisores a la cuadrilla
+                                //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla del usuario actual, el rol vacío ya que no queremos filtrar por rol, el "datoUsuario" vacío, la variable "userCompra" donde va el "datoCompra" (porque el "ListadoGastosEmpleado" puede filtrar por tipo de compra) y el "mesAnio". Con esto se podrán obtener todos los gastos hechos por los empleados de la cuadrilla y por los supervisores a la cuadrilla
                                 gast.obtenerGastos(cuadrilla, "", "", userCompra, mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                                     @Override
-                                    public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por cuadrilla
-                                        if (items != null) {//Si "items" no es null, que entre al if
+                                    public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados
+                                        if (items != null) {
                                             //Creamos un "ProgressDialog" por mientras se está realizando la exportación del archivo
                                             progressDialog = new ProgressDialog(ListadoGastos.this);
                                             progressDialog.setTitle("Exportando Gastos...");
@@ -291,28 +284,28 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                                             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
                                                 @Override
                                                 public void run() {
-                                                    if (userCompra.isEmpty()) {
-                                                        if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                                    if (userCompra.isEmpty()) { //Si el "userCompra" está vacío, significa que no se está filtrando por usuario o tipo de compra
+                                                        if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si "mesAnio" que se recibe como parámetro está vacío o tiene el texto "Seleccionar..." significa que no se hará algún filtrado al momento de exportar los datos
                                                             if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                                 exp.exportarGastosExcel(finalItems, "_" + cuadrilla); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                                             else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
                                                                 exp.exportarGastosPDF(finalItems, "_" + cuadrilla); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                                         }
-                                                        else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
+                                                        else { //En cambio, si "mesAnio" contiene un texto diferente a "Seleccionar...", eso quiere decir que si se hizo un filtrado en los datos
                                                             if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                                 exp.exportarGastosExcel(finalItems, "_" + cuadrilla + "_" + mesAnio); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                                             else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
                                                                 exp.exportarGastosPDF(finalItems, "_" + cuadrilla + "_" + mesAnio); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                                         }
                                                     }
-                                                    else {
-                                                        if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                                    else { //Pero si el "userCompra" está vacío, significa que si se está filtrando por usuario o tipo de compra
+                                                        if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si "mesAnio" que se recibe como parámetro está vacío o tiene el texto "Seleccionar..." significa que no se hará algún filtrado al momento de exportar los datos
                                                             if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                                 exp.exportarGastosExcel(finalItems, "_" + cuadrilla + "_" + userCompra); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                                             else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
                                                                 exp.exportarGastosPDF(finalItems, "_" + cuadrilla + "_" + userCompra); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                                         }
-                                                        else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
+                                                        else { //En cambio, si "mesAnio" contiene un texto diferente a "Seleccionar...", eso quiere decir que si se hizo un filtrado en los datos
                                                             if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                                 exp.exportarGastosExcel(finalItems, "_" + cuadrilla + "_" + mesAnio + "_" + userCompra); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                                             else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
@@ -321,33 +314,33 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                                                     }
 
                                                     if (progressDialog.isShowing()) //Si "progressDialog" se está mostrando, que entre al if
-                                                        progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de exportación
+                                                        progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de exportación ha finalizado
                                                 }
                                             }, 1000);
                                         }
                                     }
 
                                     @Override
-                                    public void onFailure(Exception e) {
-                                        Log.w("ObtenerGastos", e);
+                                    public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                                        Log.e("ObtenerGastos", "Error al obtener los gastos", e);
                                     }
                                 });
                             }
                         }
 
                         @Override
-                        public void onFailure(Exception e) {
-                            Log.w("ObtenerUsuario", e);
+                        public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                            Log.e("ObtenerUsuario", "Error al obtener el usuario actual", e);
                         }
                     });
                     break;
 
                 case "ListadoGastosAdmin":
-                    //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla recibida del activity anterior, el rol vacío ya que no queremos filtrar por rol y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de la cuadrilla y por los supervisores a la cuadrilla
+                    //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla recibida del activity anterior, el rol vacío ya que no queremos filtrar por rol, el "datoUsuario" vacío, la variable "userCompra" donde va el "datoCompra" (porque el "ListadoGastosAdmin" puede filtrar por tipo de compra) y el "mesAnio". Con esto se podrán obtener todos los gastos hechos por los empleados de la cuadrilla y por los supervisores a la cuadrilla
                     gast.obtenerGastos(nombreCuadrilla, "", "", userCompra, mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                         @Override
-                        public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por cuadrilla
-                            if (items != null) {//Si "items" no es null, que entre al if
+                        public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados
+                            if (items != null) {
                                 //Creamos un "ProgressDialog" por mientras se está realizando la exportación del archivo
                                 progressDialog = new ProgressDialog(ListadoGastos.this);
                                 progressDialog.setTitle("Exportando Gastos...");
@@ -361,28 +354,28 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
                                     @Override
                                     public void run() {
-                                        if (userCompra.isEmpty()) {
-                                            if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                        if (userCompra.isEmpty()) { //Si el "userCompra" está vacío, significa que no se está filtrando por usuario o tipo de compra
+                                            if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si "mesAnio" que se recibe como parámetro está vacío o tiene el texto "Seleccionar..." significa que no se hará algún filtrado al momento de exportar los datos
                                                 if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                     exp.exportarGastosExcel(finalItems, "_" + nombreCuadrilla); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                                 else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
                                                     exp.exportarGastosPDF(finalItems, "_" + nombreCuadrilla); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             }
-                                            else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
+                                            else { //En cambio, si "mesAnio" contiene un texto diferente a "Seleccionar...", eso quiere decir que si se hizo un filtrado en los datos
                                                 if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                     exp.exportarGastosExcel(finalItems, "_" + nombreCuadrilla + "_" + mesAnio); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                                 else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
                                                     exp.exportarGastosPDF(finalItems, "_" + nombreCuadrilla + "_" + mesAnio); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             }
                                         }
-                                        else {
-                                            if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                        else { //Pero si el "userCompra" está vacío, significa que si se está filtrando por usuario o tipo de compra
+                                            if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si "mesAnio" que se recibe como parámetro está vacío o tiene el texto "Seleccionar..." significa que no se hará algún filtrado al momento de exportar los datos
                                                 if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                     exp.exportarGastosExcel(finalItems, "_" + nombreCuadrilla + "_" + userCompra); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                                 else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
                                                     exp.exportarGastosPDF(finalItems, "_" + nombreCuadrilla + "_" + userCompra); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             }
-                                            else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
+                                            else { //En cambio, si "mesAnio" contiene un texto diferente a "Seleccionar...", eso quiere decir que si se hizo un filtrado en los datos
                                                 if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                     exp.exportarGastosExcel(finalItems, "_" + nombreCuadrilla + "_" + mesAnio + "_" + userCompra); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                                 else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
@@ -398,53 +391,53 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                         }
 
                         @Override
-                        public void onFailure(Exception e) {
-                            Log.w("ObtenerGastos", e);
+                        public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                            Log.e("ObtenerGastos", "Error al obtener los gastos", e);
                         }
                     });
                     break;
 
                 case "ListadoGastosTodos":
-                    //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla vacía porque queremos obtener todos los gastos, el rol vacío ya que no queremos filtrar por rol y el "mes". Con esto se podrán obtener todos los gastos hechos en todas las cuadrillas por los empleados y supervisores
+                    //Llamamos el método "obtenerGastos" de la clase "Gastos", le mandamos la cuadrilla vacía porque queremos obtener todos los gastos, el rol vacío ya que no queremos filtrar por rol, la variable global "userCompra" donde va el "datoUsuario" (porque el "ListadoGastosTodos" puede filtrar por usuario), el "datoCompra" vacío y el "mes". Con esto se podrán obtener todos los gastos hechos en todas las cuadrillas por los empleados y supervisores
                     gast.obtenerGastos("", "", userCompra, "", mesAnio, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                         @Override
-                        public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos sin filtro
-                            if (items != null) {//Si "items" no es null, que entre al if
+                        public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos
+                            if (items != null) {
                                 //Creamos un "ProgressDialog" por mientras se está realizando la exportación del archivo
                                 progressDialog = new ProgressDialog(ListadoGastos.this);
                                 progressDialog.setTitle("Exportando Gastos...");
                                 progressDialog.setCancelable(false);
                                 progressDialog.show();
 
-                                items = Utilidades.ordenarListaPorFechaHora(items, "fechaHora", "Descendente"); //Llamamos el método utilitario "ordenarListaPorFechaHora". Le mandamos la lista "items", el nombre del campo double "fechaHora", y el tipo de orden "Descendente". Este método retorna la lista ya ordenada y la guardamos en "items"
+                                items = Utilidades.ordenarListaPorAlfabetico(items, "cuadrilla", "Ascendente"); //Llamamos el método utilitario "ordenarListaPorAlfabetico". Le mandamos la lista "items", el nombre del campo String "cuadrilla", y el tipo de orden "Ascendente". Este método retorna la lista ya ordenada y la guardamos en "items"
                                 List<GastosItems> finalItems = items;
 
                                 //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
                                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1000 milisegundos, es decir, 1 segundo)
                                     @Override
                                     public void run() {
-                                        if (userCompra.isEmpty()) {
-                                            if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                        if (userCompra.isEmpty()) { //Si el "userCompra" está vacío, significa que no se está filtrando por usuario o tipo de compra
+                                            if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si "mesAnio" que se recibe como parámetro está vacío o tiene el texto "Seleccionar..." significa que no se hará algún filtrado al momento de exportar los datos
                                                 if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                     exp.exportarGastosExcel(finalItems, "Generales"); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                                 else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
                                                     exp.exportarGastosPDF(finalItems, "Generales"); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             }
-                                            else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
+                                            else { //En cambio, si "mesAnio" contiene un texto diferente a "Seleccionar...", eso quiere decir que si se hizo un filtrado en los datos
                                                 if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                     exp.exportarGastosExcel(finalItems, "Generales_" + mesAnio); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                                 else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
                                                     exp.exportarGastosPDF(finalItems, "Generales_" + mesAnio); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             }
                                         }
-                                        else {
-                                            if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si "mes" que se recibe como parámetro está vacío o tiene el texto "Seleccionar Mes" significa que no se hará algún filtrado al momento de exportar los datos
+                                        else { //Pero si el "userCompra" está vacío, significa que si se está filtrando por usuario o tipo de compra
+                                            if (mesAnio.isEmpty() || mesAnio.equalsIgnoreCase("Seleccionar...")) { //Si "mesAnio" que se recibe como parámetro está vacío o tiene el texto "Seleccionar..." significa que no se hará algún filtrado al momento de exportar los datos
                                                 if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                     exp.exportarGastosExcel(finalItems, "Generales" + "_" + userCompra); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                                 else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
                                                     exp.exportarGastosPDF(finalItems, "Generales" + "_" + userCompra); //Llamamos el método "exportarGastosPDF" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                             }
-                                            else { //En cambio, si "mes" contiene un texto diferente a "Seleccionar Mes", eso quiere decir que si se hizo un filtrado en los datos
+                                            else { //En cambio, si "mesAnio" contiene un texto diferente a "Seleccionar...", eso quiere decir que si se hizo un filtrado en los datos
                                                 if (tipoExportar.equalsIgnoreCase("EXCEL")) //Si la variable global "tipoExportar" tiene el texto "EXCEL", significa que se quieren exportar los datos a excel, que entre al if
                                                     exp.exportarGastosExcel(finalItems, "Generales_" + mesAnio + "_" + userCompra); //Llamamos el método "exportarGastosExcel" de la clase "Exportaciones" donde mandamos la lista "items" y un texto que servirá para el nombre del archivo al crearlo
                                                 else if (tipoExportar.equalsIgnoreCase("PDF")) //En cambio, si la variable global "tipoExportar" tiene el texto "PDF", significa que se quieren exportar los datos a pdf, que entre al else if
@@ -460,19 +453,19 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                         }
 
                         @Override
-                        public void onFailure(Exception e) {
-                            Log.w("ObtenerGastos", e);
+                        public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                            Log.e("ObtenerGastos", "Error al obtener los gastos", e);
                         }
                     });
                     break;
             }
         }
         catch (Exception e) {
-            Log.w("ObtenerGastos", e);
+            Log.e("ObtenerGastos", "Error al obtener los gastos", e);
         }
     }
 
-    //Método Click del botón "Mes"
+    //Evento clic del botón "Mes"
     public void elegirMes(View view) {
         //Establecemos el color del fondo y de la fuente para los botones de Mes y Año
         btnMes.setBackground(getDrawable(R.drawable.clr_casilladegradadoazul_redonda));
@@ -483,7 +476,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         tipoFecha = "Mes"; //Asignamos la palabra "Mes" a la variable global "tipoFecha"
     }
 
-    //Método Click del botón "Año"
+    //Evento clic del botón "Año"
     public void elegirAnio(View view) {
         //Establecemos el color del fondo y de la fuente para los botones de Mes y Año
         btnAnio.setBackground(getDrawable(R.drawable.clr_casilladegradadoazul_redonda));
@@ -517,7 +510,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
             });
         }
         catch (Exception e) {
-            Log.w("DetectarFecha", e);
+            Log.e("DetectarFecha", "Error al detectar la fecha", e);
         }
     }
 
@@ -534,18 +527,18 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                     }
                     else { //En cambio, si no es la posición 0, guardamos el texto del elemento seleccionado en "userCompra" y lo mandamos con el "svmGastos"
                         userCompra = adapterView.getItemAtPosition(i).toString(); //Obtenemos la selección del "spUserCompra" en la variable global "userCompra"
-                        svmGastos.setUserCompra(userCompra); //Llamamos el método "setFecha" de la clase "SharedViewGastosModel" y le mandamos el contenido selecciondo del Spinner guardado en "userCompra"
+                        svmGastos.setUserCompra(userCompra); //Llamamos el método "setUserCompra" de la clase "SharedViewGastosModel" y le mandamos el contenido selecciondo del Spinner guardado en "userCompra"
                     }
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> adapterView) {
-                    //Este método se ejecuta cuando no se selecciona ningún elemento
+                    //Detecta cuando ningún elemento ha sido seleccionado. Queda vacío
                 }
             });
         }
         catch (Exception e) {
-            Log.w("DetectarUserCompra", e);
+            Log.e("DetectarUserCompra", "Error al detectar el UserCompra", e);
         }
     }
 
@@ -570,23 +563,25 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         });
     }
 
-    //Evento Clic del LinearLayout "LLCuadrillaLG"
+    //Evento clic del LinearLayout "LLCuadrillaLG"
     public void gastosCuadrilla(View view) {
         vpGastos.setCurrentItem(0); //Si damos clic en la palabra "Cuadrilla", que se muestre el fragment de la posición 0 en el ViewPager (El "FragGastosCuadrilla()")
+
         //Ocultamos y mostramos las lineas bajo las palabras "Cuadrilla" y "Supervisores" dependiendo el fragment que se esté mostrando
         lblLineaCuadrilla.setVisibility(View.VISIBLE);
         lblLineaSupervisores.setVisibility(View.INVISIBLE);
     }
 
-    //Evento Clic del LinearLayout "LLSupervisoresLG"
+    //Evento clic del LinearLayout "LLSupervisoresLG"
     public void gastosSupervisores(View view) {
         vpGastos.setCurrentItem(1); //Si damos clic en la palabra "Supervisores", que se muestre el fragment de la posición 1 en el ViewPager (El "FragGastosSupervisores()")
+
         //Ocultamos y mostramos las lineas bajo las palabras "Cuadrilla" y "Supervisores" dependiendo el fragment que se esté mostrando
         lblLineaSupervisores.setVisibility(View.VISIBLE);
         lblLineaCuadrilla.setVisibility(View.INVISIBLE);
     }
 
-    //Evento Clic del LinearLayout de Fecha, al dar clic en el mismo, se abrirá un "Popup DatePicker" en el que se podrá seleccionar un mes y año y esto servirá para filtrar los gastos
+    //Evento clic del LinearLayout de Fecha, al dar clic en el mismo, se abrirá un "Popup DatePicker" en el que se podrá seleccionar un mes y año, o sólo un año y esto servirá para filtrar los gastos
     public void mostrarMesesAnios(View view) {
         if (tipoFecha.equalsIgnoreCase("Mes")) { //Si la variable global "tipoFecha" obtiene la palabra "Mes", significa que el usuario tiene seleccionado el botón de mes en la pantalla; por lo tanto, que entre al if
             try {
@@ -611,63 +606,54 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
                 datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo mes y año
             }
             catch (Exception e) {
-                Log.w("ObtenerMes", e);
+                Log.e("ObtenerMes", "Error al obtener mes", e);
             }
         }
         else if (tipoFecha.equalsIgnoreCase("Año")) { //En cambio, si la variable global "tipoFecha" obtiene la palabra "Año", significa que el usuario tiene seleccionado el botón de año en la pantalla; por lo tanto, que entre al else if
-            DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() { //Creamos una instancia de la interfaz "DatePickerDialog.OnDateSetListener" y esta define el método "onDateSet" que se llama cuando el usuario selecciona una fecha en el DatePickerDialog
-                @Override
-                public void onDateSet(DatePicker datePicker, int year, int month, int day) { //Se ejecuta cuando el usuario ha seleccionado una fecha
-                    lblFecha.setText(String.valueOf(year)); //Asignamos el año ya convertido a String al lblFechaSeleccionada
-                }
-            };
+            try {
+                DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() { //Creamos una instancia de la interfaz "DatePickerDialog.OnDateSetListener" y esta define el método "onDateSet" que se llama cuando el usuario selecciona una fecha en el DatePickerDialog
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int month, int day) { //Se ejecuta cuando el usuario ha seleccionado una fecha
+                        lblFecha.setText(String.valueOf(year)); //Asignamos el año ya convertido a String al lblFechaSeleccionada
+                    }
+                };
 
-            Calendar cal = Calendar.getInstance(); //Creamos un objeto de tipo Calendar que representa la fecha y hora actuales en el dispositivo donde se está ejecutando el código
-            int year = cal.get(Calendar.YEAR); //Obtenemos el año actual
-            int month = cal.get(Calendar.MONTH); //Obtenemos el mes actual
-            int day = cal.get(Calendar.DAY_OF_MONTH); //Obtenemos el día actual
-            int style = AlertDialog.THEME_HOLO_LIGHT; //En una variable entera guardamos el estilo que tendrá la ventana emergente
+                Calendar cal = Calendar.getInstance(); //Creamos un objeto de tipo Calendar que representa la fecha y hora actuales en el dispositivo donde se está ejecutando el código
+                int year = cal.get(Calendar.YEAR); //Obtenemos el año actual
+                int month = cal.get(Calendar.MONTH); //Obtenemos el mes actual
+                int day = cal.get(Calendar.DAY_OF_MONTH); //Obtenemos el día actual
+                int style = AlertDialog.THEME_HOLO_LIGHT; //En una variable entera guardamos el estilo que tendrá la ventana emergente
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(ListadoGastos.this, style, dateSetListener, year, month, day); //Creamos un nuevo objeto de tipo DatePickerDialog y le mandamos como parámetros al constructor, un contexto, la variable "style" que guarda el estilo, el "dateSetListener", el año, mes y día, estos últimos para que al abrir el AlertDialog, se muestre el mes actual
-            datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("day", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de días asignando "GONE" en su visibilidad
-            datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("month", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de meses asignando "GONE" en su visibilidad
-            datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo años
+                DatePickerDialog datePickerDialog = new DatePickerDialog(ListadoGastos.this, style, dateSetListener, year, month, day); //Creamos un nuevo objeto de tipo DatePickerDialog y le mandamos como parámetros al constructor, un contexto, la variable "style" que guarda el estilo, el "dateSetListener", el año, mes y día, estos últimos para que al abrir el AlertDialog, se muestre el mes actual
+                datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("day", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de días asignando "GONE" en su visibilidad
+                datePickerDialog.getDatePicker().findViewById(getResources().getIdentifier("month", "id", "android")).setVisibility(View.GONE); //Ocultamos el spinner de meses asignando "GONE" en su visibilidad
+                datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo años
+            }
+            catch (Exception e) {
+                Log.e("ObtenerYear", "Error al obtener año", e);
+            }
         }
     }
 
-    //Método clic que oculta el texto "Seleccionar Usuario" o "Seleccionar Categoría" y muestra el "spUserCompra"
-    public void mostrarSpinner(View view) {
-        /*llAbrirUserCompra.setVisibility(View.GONE);
-        spUserCompra.setVisibility(View.VISIBLE);
-        spUserCompra.performClick(); //Evento que abre el Spinner y muestra sus opciones
-
-        userCompraSelectVisible = false; //Guardamos un false en la variable global "userCompraSelectVisible" para indicar que el texto "Seleccionar Usuario" o "Seleccionar Categoría" está oculto
-        svmGastos.setUserCompra(spUserCompra.getSelectedItem().toString());*/
-    }
-
-    //Método para eliminar la selección del Mes - Año
+    //Método para eliminar la selección del Mes - Año o Año
     public void eliminarMesGastos(View view) {
         lblFecha.setText("Seleccionar...");
     }
 
-    //Método que permita mostrar el texto "Seleccionar Usuario" o "Seleccionar Categoría" y ocultar el "spUserCompra"
+    //Método que permita mostrar el texto "Seleccionar Usuario" o "Seleccionar Categoría" (establecido en la posición 0) en el Spinner "spUserCompra"
     public void eliminarSeleccionSpinner(View view) {
-        /*llAbrirUserCompra.setVisibility(View.VISIBLE);
-        spUserCompra.setVisibility(View.GONE);
-
-        userCompraSelectVisible = true; //Guardamos un true en la variable global "userCompraSelectVisible" para indicar que el texto "Seleccionar Usuario" o "Seleccionar Categoría" está visible
-        */;
-
-        spUserCompra.setSelection(0);
-        svmGastos.setUserCompra("");
+        spUserCompra.setSelection(0); //Asignamos la posición 0 en el "spUserCompra"
+        svmGastos.setUserCompra(""); //Mandamos un texto vacío al "setUserCompra" de "svmGastos"
     }
 
+    //Método que desactiva el SwipeRefreshLayout mientras se arrastra el ViewPager2
     private void desactivarSwipeEnViewPager() {
         //Desactivamos el SwipeRefreshLayout mientras se arrastra el ViewPager2
         vpGastos.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageScrollStateChanged(int state) {
                 super.onPageScrollStateChanged(state);
+
                 //Desactivar SwipeRefreshLayout cuando se arrastra el ViewPager
                 if (state == ViewPager2.SCROLL_STATE_DRAGGING) {
                     swlRecargar.setEnabled(false);
@@ -679,24 +665,27 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         });
     }
 
+    //Método que desactiva el evento "Scroll" del ScrollView cuando se arrastra el ViewPager2
     private void desactivarScrollEnViewPager() {
-        // Desactivamos el ScrollView mientras se arrastra el ViewPager2
+        //Desactivamos el ScrollView mientras se arrastra el ViewPager2
         vpGastos.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageScrollStateChanged(int state) {
                 super.onPageScrollStateChanged(state);
+
                 if (state == ViewPager2.SCROLL_STATE_DRAGGING) {
-                    // Desactivar el desplazamiento del ScrollView
-                    nsvListadoGastos.requestDisallowInterceptTouchEvent(true);
-                } else {
-                    // Volver a habilitar el desplazamiento del ScrollView
-                    nsvListadoGastos.requestDisallowInterceptTouchEvent(false);
+                    nsvListadoGastos.requestDisallowInterceptTouchEvent(true); //Desactivamos el desplazamiento del ScrollView
+                }
+                else {
+                    nsvListadoGastos.requestDisallowInterceptTouchEvent(false); //Volvemos a habilitar el desplazamiento del ScrollView
                 }
             }
         });
     }
 
+    //Método que desactiva el SwipeRefreshLayout cuando se está haciendo "Scroll" en el ScrollView
     private void desactivarSwipeEnScroll() {
+        //Evento que detecta cuando se está haciendo "scroll" en el scrollView
         nsvListadoGastos.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
@@ -710,6 +699,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
         });
     }
 
+    //Evento clic del botón para exportar
     public void exportarGastos(View view) {
         PopupMenu popup = new PopupMenu(this, view); //Objeto de tipo "PopupMenu"
         popup.setOnMenuItemClickListener(this); //Indicamos que asigne el evento "OnMenuItemClick" para que haga algo cada vez que se dé click a una opción del menú
@@ -726,7 +716,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
 
                 //Llamamos el método utilitario "verificarPermisosAlmacenamiento" donde mandamos el contexto de esta clase. Si este método devuelve un "true" significa que los permisos de almacenamiento externo ya han sido otorgados, en ese caso que entre al if
                 if (Utilidades.verificarPermisosAlmacenamiento(this)) {
-                    obtenerDatosExportar(fechaSeleccionada); //Como los permisos han sido otorgados, llamamos el método "obtenerDatosExportar" de arriba y le mandamos la variable global "nombreMes"
+                    obtenerDatosExportar(fechaSeleccionada); //Como los permisos han sido otorgados, llamamos el método "obtenerDatosExportar" de arriba y le mandamos la variable global "fechaSeleccionada"
                 }
 
                 return true;
@@ -736,7 +726,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
 
                 //Llamamos el método utilitario "verificarPermisosAlmacenamiento" donde mandamos el contexto de esta clase. Si este método devuelve un "true" significa que los permisos de almacenamiento externo ya han sido otorgados, en ese caso que entre al if
                 if (Utilidades.verificarPermisosAlmacenamiento(this)) {
-                    obtenerDatosExportar(fechaSeleccionada); //Como los permisos han sido otorgados, llamamos el método "obtenerDatosExportar" de arriba y le mandamos la variable global "nombreMes"
+                    obtenerDatosExportar(fechaSeleccionada); //Como los permisos han sido otorgados, llamamos el método "obtenerDatosExportar" de arriba y le mandamos la variable global "fechaSeleccionada"
                 }
 
                 return true;

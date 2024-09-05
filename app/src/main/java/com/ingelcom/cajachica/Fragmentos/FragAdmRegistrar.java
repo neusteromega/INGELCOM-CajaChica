@@ -14,11 +14,6 @@ import com.ingelcom.cajachica.R;
 import com.ingelcom.cajachica.RegistrarEditarGasto;
 import com.ingelcom.cajachica.RegistrarEditarIngresoDeduccion;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragAdmRegistrar#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class FragAdmRegistrar extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
@@ -30,7 +25,7 @@ public class FragAdmRegistrar extends Fragment {
     private LinearLayout btnIngreso, btnGasto, btnDeduccion;
 
     public FragAdmRegistrar() {
-        // Required empty public constructor
+
     }
 
     public static FragAdmRegistrar newInstance(String param1, String param2) {
@@ -52,16 +47,14 @@ public class FragAdmRegistrar extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_adm_registrar, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_adm_registrar, container, false); //Guardamos la vista inflada del fragment en una variable tipo "view"
 
         btnIngreso = view.findViewById(R.id.LLIngresoReg);
         btnGasto = view.findViewById(R.id.LLGastoReg);
         btnDeduccion = view.findViewById(R.id.LLDeduccionReg);
 
-        //Eventos Clic de botones
+        //Eventos clic de botones
         btnIngreso.setOnClickListener(v -> {
             //Redireccionamos al usuario al activity de "RegistrarEditarIngresoDeduccion" llamando el método utilitario "iniciarActivityConString" donde indicamos que el activity a mostrar será "RegistrarIngreso"
             Utilidades.iniciarActivityConString(getActivity(), RegistrarEditarIngresoDeduccion.class, "ActivityREID", "RegistrarIngreso", false);

@@ -53,7 +53,7 @@ public class FragAdmCuadrillas extends Fragment implements SwipeRefreshLayout.On
     private String tipoOrden = "";
 
     public FragAdmCuadrillas() {
-        // Required empty public constructor
+
     }
 
     public static FragAdmCuadrillas newInstance(String param1, String param2) {
@@ -75,11 +75,10 @@ public class FragAdmCuadrillas extends Fragment implements SwipeRefreshLayout.On
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_adm_cuadrillas, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_adm_cuadrillas, container, false); //Guardamos la vista inflada del fragment en una variable tipo "view"
 
+        //Enlazamos las variables globales con los elementos gráficos
         gvCuadrillas = view.findViewById(R.id.gvCuadrillas);
         btnOrdenar = view.findViewById(R.id.imgOrdenarCua);
         swlRecargar = view.findViewById(R.id.swipeRefreshLayoutCua);
@@ -94,8 +93,9 @@ public class FragAdmCuadrillas extends Fragment implements SwipeRefreshLayout.On
 
         Utilidades.mostrarMensajePorInternetCaido(getContext(), viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
         desactivarSwipeGridView();
-        obtenerCuadrillas(); //Llamamos el método "obtenerCuadrillas" de abajo y le mandamos el objeto "cuad"
+        obtenerCuadrillas();
 
+        //Evento clic del botón "Ordenar"
         btnOrdenar.setOnClickListener(v -> {
             try {
                 PopupMenu popup = new PopupMenu(getActivity(), v); //Objeto de tipo "PopupMenu"
@@ -109,7 +109,7 @@ public class FragAdmCuadrillas extends Fragment implements SwipeRefreshLayout.On
             }
         });
 
-        //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
+        //Evento clic del botón "Reintentar" de la vista "viewNoInternet"
         btnReintentarConexion.setOnClickListener(v -> {
             pbReintentarConexion.setVisibility(View.VISIBLE); //Mostramos el ProgressBar
 
@@ -133,10 +133,10 @@ public class FragAdmCuadrillas extends Fragment implements SwipeRefreshLayout.On
             //Llamamos el método "obtenerCuadrillas" de la clase "Cuadrilla" donde se obtienen todas las cuadrillas, e invocamos a la interfaz "FirestoreAllSpecialDocumentsCallback" y le decimos que debe recibir un "CuadrillasItems"
             cuad.obtenerCuadrillas(new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<CuadrillasItems>() {
                 @Override
-                public void onCallback(List<CuadrillasItems> lista) { //En esta lista "items" están todos las cuadrillas y sus datos (Nombre y Dinero)
-                    if (lista != null) { //Si "lista" no es null, que entre al if
+                public void onCallback(List<CuadrillasItems> lista) { //En esta lista "items" están todas las cuadrillas y sus datos (Nombre y Dinero)
+                    if (lista != null) {
                         items = lista; //Inicializamos la lista global "items" con la "lista" de cuadrillas extraída de Firestore
-                        items = Utilidades.ordenarListaPorAlfabetico(items, "cuadrilla", "Ascendente"); //Siempre al inicio que se carguen las cuadrillas, que siempre se muestren en orden alfabético. Llamamos el método utilitario "ordenarListaPorAlfabetico". Le mandamos la lista "items", el nombre del campo String "cuadrilla", y el tipo de orden "Ascendente". Este método retorna la lista ya ordenada y la guardamos en "items"
+                        items = Utilidades.ordenarListaPorAlfabetico(items, "cuadrilla", "Ascendente"); //Siempre al inicio que se carguen las cuadrillas, que se muestren en orden alfabético. Llamamos el método utilitario "ordenarListaPorAlfabetico". Le mandamos la lista "items", el nombre del campo String "cuadrilla", y el tipo de orden "Ascendente". Este método retorna la lista ya ordenada y la guardamos en "items"
 
                         //Estos if ordenan la lista "items" dependiendo del contenido de la variable global "tipoOrden" que su contenido solo cambia cuando el usuario da clic en una opción del PopupMenu para ordenar cuadrillas
                         if (tipoOrden.equalsIgnoreCase("Alfabetico")) {
@@ -154,19 +154,19 @@ public class FragAdmCuadrillas extends Fragment implements SwipeRefreshLayout.On
                 }
 
                 @Override
-                public void onFailure(Exception e) {
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
                     Toast.makeText(getContext(), "ERROR AL CARGAR LAS CUADRILLAS", Toast.LENGTH_SHORT).show();
-                    Log.w("ObtenerCuadrillas", e);
+                    Log.e("ObtenerCuadrillas", "Error al obtener las cuadrillas", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerCuadrillas", e);
+            Log.e("ObtenerCuadrillas", "Error al obtener las cuadrillas", e);
         }
     }
 
     private void inicializarGridView(List<CuadrillasItems> items) {
-        customAdapter = new CuadrillasAdapter(items, getContext()); //Creamos una nueva instancia de la clase "CuadrillasAdapter" en donde mandamos la lista "items" y un contexto, y esta instancia la igualamos al objeto "customAdapter"
+        customAdapter = new CuadrillasAdapter(items, getContext()); //Creamos una nueva instancia de la clase "CuadrillasAdapter" en donde mandamos la lista "items" y un contexto; y esta instancia la igualamos al objeto "customAdapter"
         gvCuadrillas.setAdapter(customAdapter); //Asignamos el customAdapter al gridView de cuadrillas
 
         gvCuadrillas.setOnItemClickListener(new AdapterView.OnItemClickListener() { //Al GridView "gvCuadrillas" le creamos un evento "setOnItemClickListener" que detecta cuando se la da clic en un item del GridView
@@ -213,8 +213,7 @@ public class FragAdmCuadrillas extends Fragment implements SwipeRefreshLayout.On
 
     //Método que desactiva el SwipeRefreshLayout mientras se está desplazando hacia arriba el GridView de Cuadrillas
     private void desactivarSwipeGridView() {
-        //Detectamos los cambios en el desplazamiento vertical del gridView "gvCuadrillas"
-        gvCuadrillas.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+        gvCuadrillas.setOnScrollChangeListener(new View.OnScrollChangeListener() { //Detectamos los cambios en el desplazamiento vertical del gridView "gvCuadrillas"
             @Override
             public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) { //Este método que se ejecuta cada vez que ocurre un cambio en el desplazamiento del gridView
                 //El "canScrollVertically(-1)" del "gvCuadrillas" devuelve un true si el gridView puede seguir desplazándose hacia arriba (si aún no llegamos al limite superior del gridView). Usamos "canScrollVertically" para verificar si la vista "gvCuadrillas" puede seguir desplazándose verticalmente en una dirección específica; y el "-1" indica la dirección "hacia arriba". Si regresa un true, que entre al if

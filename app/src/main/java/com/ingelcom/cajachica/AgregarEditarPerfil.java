@@ -76,6 +76,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
     }
 
     private void inicializarElementos() {
+        //Enlazamos las variables globales con los elementos gráficos
         llCorreo = findViewById(R.id.LLCorreoAEP);
         llRol = findViewById(R.id.LLRolAEP);
         llCuadrilla = findViewById(R.id.LLCuadrillaAEP);
@@ -97,11 +98,11 @@ public class AgregarEditarPerfil extends AppCompatActivity {
     }
 
     private void obtenerDatos() {
-        //Obtenemos el nombre del activity que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y le mandamos "this" para referenciar esta actividad y "Activity" como clave del putExtra
+        //Obtenemos el nombre del activity que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y le mandamos "this" para referenciar esta actividad y "ActivityAEP" como clave del putExtra
         nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityAEP");
 
         switch (nombreActivity) {
-            case "EditarEmpleadoAdmin":
+            case "EditarEmpleadoAdmin": //Sólo ponemos esta opción ya que desde el activity Perfil, sólo se reciben datos cuando es "EditarEmpleadoAdmin"
                 nombre = Utilidades.obtenerStringExtra(this, "Nombre");
                 identidadVieja = Utilidades.obtenerStringExtra(this, "Identidad");
                 correo = Utilidades.obtenerStringExtra(this, "Correo");
@@ -113,25 +114,23 @@ public class AgregarEditarPerfil extends AppCompatActivity {
     }
 
     private void establecerElementos() {
-        //Que entre al if si "nombreActivity" no es nulo
-        if (nombreActivity != null) {
-            //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
-            switch (nombreActivity) {
+        if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
+            switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
                 //Establecemos los elementos gráficos si la pantalla es "AgregarUsuario"
                 case "AgregarUsuario":
-                    //Asignamos el título
-                    lblTitulo.setText("Agregar Usuario");
+                    lblTitulo.setText("Agregar Usuario"); //Asignamos el título
                     break;
 
-                //Establecemos los elementos gráficos si la pantalla es "EditarAdmin"
+                //Establecemos los elementos gráficos si la pantalla es "EditarAdmin" o "EditarEmpleado"
                 case "EditarAdmin":
-                //Establecemos los elementos gráficos si la pantalla es "EditarEmpleado"
                 case "EditarEmpleado":
                     try {
+                        //Llamamos el método "obtenerUsuarioActual" de la clase Usuario para obtener los datos del usuario actual
                         usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
                             @Override
                             public void onCallback(Map<String, Object> documento) {
-                                if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                                if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario actual
+                                    //Asignamos los datos del usuario actual a los EditTexts de la pantalla
                                     txtNombreApellido.setText((String) documento.get("Nombre"));
                                     txtIdentidad.setText((String) documento.get("Identidad"));
                                     txtTelefono.setText((String) documento.get("Telefono"));
@@ -139,15 +138,16 @@ public class AgregarEditarPerfil extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onFailure(Exception e) {
-                                Log.w("BuscarDocumento", "Error al obtener el documento", e);
+                            public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                                Log.e("ObtenerUsuario", "Error al obtener el usuario actual", e);
                             }
                         });
                     }
                     catch (Exception e) {
-                        Log.w("ObtenerUsuario", e);
+                        Log.e("ObtenerUsuario", "Error al obtener el usuario actual", e);
                     }
 
+                    //Ocultamos estos tres LinearLayouts que no son necesarios en esta pantalla
                     llCorreo.setVisibility(View.GONE);
                     llCuadrilla.setVisibility(View.GONE);
                     llRol.setVisibility(View.GONE);
@@ -155,15 +155,13 @@ public class AgregarEditarPerfil extends AppCompatActivity {
 
                 //Establecemos los elementos gráficos si la pantalla es "EditarEmpleadoAdmin"
                 case "EditarEmpleadoAdmin":
-                    /*txtNombreApellido.setText(nombre);
-                    txtIdentidad.setText(identidadVieja);
-                    txtTelefono.setText(telefono);*/
-
                     try {
+                        //Llamamos el método "obtenerUnUsuario" de la clase Usuario, donde le mandamos la "identidadVieja" que se recibe de la pantalla anterior (PerfilEmpleadoAdmin)
                         usu.obtenerUnUsuario(identidadVieja, new FirestoreCallbacks.FirestoreDocumentCallback() {
                             @Override
                             public void onCallback(Map<String, Object> documento) {
                                 if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante la identidad
+                                    //Asignamos los datos del usuario encontrado en Firestore a los EditTexts de la pantalla
                                     txtNombreApellido.setText((String) documento.get("Nombre"));
                                     txtIdentidad.setText((String) documento.get("Identidad"));
                                     txtTelefono.setText((String) documento.get("Telefono"));
@@ -171,13 +169,13 @@ public class AgregarEditarPerfil extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onFailure(Exception e) {
-                                Log.w("BuscarDocumento", "Error al obtener el documento", e);
+                            public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                                Log.e("ObtenerUsuario", "Error al obtener el usuario", e);
                             }
                         });
                     }
                     catch (Exception e) {
-                        Log.w("ObtenerUsuario", e);
+                        Log.e("ObtenerUsuario", "Error al obtener el usuario", e);
                     }
                     break;
             }
@@ -185,11 +183,11 @@ public class AgregarEditarPerfil extends AppCompatActivity {
     }
 
     private void inicializarSpinners() {
-        //Para inicializar los spinners, llamamos al método "obtenerRegistros" de la clase "FirestoreOperaciones" a la cual le mandamos el nombre de la colección y el nombre del campo de Firestore de los cuales queremos obtener los registros. También invocamos los métodos "onCallback" y "onFailure" de la interfaz FirestoreCallback
+        //Para inicializar los spinners, llamamos al método "obtenerRegistros" de la clase "FirestoreOperaciones" a la cual le mandamos el nombre de la colección y el nombre del campo de Firestore de los cuales queremos obtener los registros. También invocamos los métodos "onCallback" y "onFailure" de la interfaz FirestoreListCallback
         //ROLES
         oper.obtenerRegistrosCampo("roles", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
             @Override
-            public void onCallback(List<String> lista) {
+            public void onCallback(List<String> lista) { //Aquí está la lista con el nombre de los roles
                 //Creamos un adapter de tipo ArrayAdapter el cual le pasamos el contexto de este Activity, la vista layout de las opciones del Spinner (R.layout.spinner_items), y la lista de valores que se recibe en "lista" al llamar a la interfaz FirestoreCallback
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(AgregarEditarPerfil.this, R.layout.spinner_items, lista);
                 spRoles.setAdapter(adapter); //Asignamos el adapter al Spinner "spRoles"
@@ -201,15 +199,15 @@ public class AgregarEditarPerfil extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Exception e) {
-                Log.w("Activity", "Error al obtener los roles.", e);
+            public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                Log.e("ObtenerRoles", "Error al obtener los roles", e);
             }
         });
 
         //CUADRILLAS
         oper.obtenerRegistrosCampo("cuadrillas", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
             @Override
-            public void onCallback(List<String> lista) {
+            public void onCallback(List<String> lista) { //Aquí está la lista con el nombre de las cuadrillas
                 //Ordenamos la "lista" alfabéticamente llamando al método utilitario "ordenarListaPorAlfabetico" donde enviamos la lista, un String vacío ("") y el orden ascendente. El String vacío es para indicar que el "nombreCampo" por el cual se desea realizar el orden de la lista, en este caso no existe ya que es una lista sencilla y no de una clase
                 lista = Utilidades.ordenarListaPorAlfabetico(lista, "", "Ascendente");
 
@@ -224,12 +222,13 @@ public class AgregarEditarPerfil extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Exception e) {
-                Log.w("Activity", "Error al obtener las cuadrillas.", e);
+            public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                Log.e("ObtenerCuadrillas", "Error al obtener las cuadrillas", e);
             }
         });
     }
 
+    //Evento clic del botón de confirmar
     public void confirmar(View view) {
         //Llamamos el método utilitario "mostrarMensajePorInternetCaidoBoolean" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya. Este retorna un booleano indicando si hay internet o no
         boolean internetDisponible = Utilidades.mostrarMensajePorInternetCaidoBoolean(this, viewNoInternet);
@@ -237,7 +236,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         if (internetDisponible) { //Si el booleano guardado en "internetDisponible" es true, significa que si hay internet, entonces que entre al if para hacer las operaciones de confirmación. Pero si es un false, significa que no hay internet, entonces que no entre al if y muestre la vista "view_nointernet" (esto se muestra en el método utilitario)
             if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
                 switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
-                    case "AgregarUsuario": //Si estamos en la pantalla de "Agregar Usuario", al dar clic en el botón "Confirmar" que realice las operaciones de este case
+                    case "AgregarUsuario":
 
                         //Creamos un alertDialog que pregunte si se desea agregar el usuario
                         new AlertDialog.Builder(this).setTitle("AGREGAR USUARIO").setMessage("¿Está seguro que desea agregar el usuario?")
@@ -309,6 +308,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         }
     }
 
+    //Método que permite a un administrador poder agregar un usuario
     private void agregarUsuario() {
         //Enlazamos los EditText con las siguientes variables String
         String nombre = txtNombreApellido.getText().toString();
@@ -318,8 +318,8 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         //Obtenemos la selección hecha en los Spinners de Roles y Cuadrillas
         String rol = spRoles.getSelectedItem().toString();
 
-        if (Validaciones.validarNombre(nombre)) {
-            if (Validaciones.validarIdentidad(identidad)) {
+        if (Validaciones.validarNombre(nombre)) { //Entrará al if si "validarNombre" retorna true (ese método valida que se registre un nombre correcto)
+            if (Validaciones.validarIdentidad(identidad)) { //Entrará al if si "validarIdentidad" retorna true (ese método valida que se registre una identidad correcta)
                 if (rol.equalsIgnoreCase("Empleado")) { //Si el rol seleccionado fue "Empleado", que agarre la cuadrilla del "spCuadrillas"
                     String cuadrilla = spCuadrillas.getSelectedItem().toString();
                     usu.insertarUsuario(nombre, identidad, telefono, rol, cuadrilla); //Llamamos el método "insertarUsuario" de la clase "Usuario" donde se hará el proceso de inserción a Firestore y le mandamos los textboxes y selecciones de los spinners de esta pantalla
@@ -328,25 +328,27 @@ public class AgregarEditarPerfil extends AppCompatActivity {
                     usu.insertarUsuario(nombre, identidad, telefono, rol, ""); //Llamamos el método "insertarUsuario" de la clase "Usuario" donde se hará el proceso de inserción a Firestore y le mandamos los textboxes y selecciones de los spinners de esta pantalla
             }
             else
-                Toast.makeText(this, "LA IDENTIDAD DEBE TENER 13 NÚMEROS", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "INGRESE UNA IDENTIDAD VÁLIDA", Toast.LENGTH_SHORT).show();
         }
         else
             Toast.makeText(this, "INGRESE UN NOMBRE VÁLIDO", Toast.LENGTH_SHORT).show();
     }
 
+    //Método que permite a un administrador o empleado actualizar los datos de su perfil
     private void editarPerfilAdminEmpleado(String tipo) {
         //Enlazamos los EditText con las siguientes variables String
         String nombre = txtNombreApellido.getText().toString();
         String identidadNueva = txtIdentidad.getText().toString();
         String telefono = txtTelefono.getText().toString();
 
-        if (Validaciones.validarNombre(nombre)) {
-            if (Validaciones.validarIdentidad(identidadNueva)) {
+        if (Validaciones.validarNombre(nombre)) { //Entrará al if si "validarNombre" retorna true (ese método valida que se registre un nombre correcto)
+            if (Validaciones.validarIdentidad(identidadNueva)) { //Entrará al if si "validarIdentidad" retorna true (ese método valida que se registre una identidad correcta)
                 try {
+                    //Llamamos el método "obtenerUsuarioActual" de la clase Usuario para obtener los datos del usuario actual
                     usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
                         @Override
                         public void onCallback(Map<String, Object> documento) {
-                            if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                            if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario actual
                                 String identidadVieja = (String) documento.get("Identidad");
                                 String correoActual = (String) documento.get("Correo");
 
@@ -362,22 +364,23 @@ public class AgregarEditarPerfil extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Exception e) {
-                            Log.w("BuscarDocumento", "Error al obtener el documento", e);
+                        public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                            Log.e("ObtenerUsuario", "Error al obtener el usuario actual", e);
                         }
                     });
                 }
                 catch (Exception e) {
-                    Log.w("ObtenerUsuario", e);
+                    Log.e("ObtenerUsuario", "Error al obtener el usuario actual", e);
                 }
             }
             else
-                Toast.makeText(this, "LA IDENTIDAD DEBE TENER 13 NÚMEROS", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "INGRESE UNA IDENTIDAD VÁLIDA", Toast.LENGTH_SHORT).show();
         }
         else
             Toast.makeText(this, "INGRESE UN NOMBRE VÁLIDO", Toast.LENGTH_SHORT).show();
     }
 
+    //Método que permite a un administrador poder editar los datos del perfil de un empleado
     private void editarPerfilEmpleadoPorAdmin() {
         //Enlazamos los EditText y Spinners con las siguientes variables String
         String nombre = txtNombreApellido.getText().toString();
@@ -386,17 +389,18 @@ public class AgregarEditarPerfil extends AppCompatActivity {
         String cuadrilla = spCuadrillas.getSelectedItem().toString();
         String rol = spRoles.getSelectedItem().toString();
 
-        if (Validaciones.validarNombre(nombre)) {
-            if (Validaciones.validarIdentidad(identidadNueva)) {
+        if (Validaciones.validarNombre(nombre)) { //Entrará al if si "validarNombre" retorna true (ese método valida que se registre un nombre correcto)
+            if (Validaciones.validarIdentidad(identidadNueva)) { //Entrará al if si "validarIdentidad" retorna true (ese método valida que se registre una identidad correcta)
                 usu.editarUsuario("", nombre, correo, identidadVieja, identidadNueva, telefono, cuadrilla, rol);
             }
             else
-                Toast.makeText(this, "LA IDENTIDAD DEBE TENER 13 NÚMEROS", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "INGRESE UNA IDENTIDAD VÁLIDA", Toast.LENGTH_SHORT).show();
         }
         else
             Toast.makeText(this, "INGRESE UN NOMBRE VÁLIDO", Toast.LENGTH_SHORT).show();
     }
 
+    //Método que permite ocultar el spinner de cuadrillas cuando el rol seleccionado es "Administrador" (los administradores no pueden pertenecer a una cuadrilla)
     private void ocultarCuadrillas() {
         try {
             //Evento que detecta la selección hecha en el "spRoles"
@@ -413,12 +417,12 @@ public class AgregarEditarPerfil extends AppCompatActivity {
 
                 @Override
                 public void onNothingSelected(AdapterView<?> adapterView) {
-
+                    //Detecta cuando ningún elemento ha sido seleccionado. Queda vacío
                 }
             });
         }
         catch (Exception e) {
-            Log.w("DetectarRol", e);
+            Log.e("DetectarRol", "Error al detectar el rol", e);
         }
     }
 

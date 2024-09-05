@@ -11,7 +11,7 @@ public class StorageCallbacks {
     }
 
     public interface StorageURICallback {
-        void onCallback(Uri uri);
+        void onCallback(Uri uri); //Se invoca cuando la operación de obtener una fotografía de Firebase Storage ha sido exitoso, y devuelve un URI con la imagen obtenida
         void onFailure(Exception e);
     }
 }

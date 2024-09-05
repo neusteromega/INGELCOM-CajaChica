@@ -42,6 +42,7 @@ public class EmpMenuPrincipal extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emp_menu_principal);
 
+        //Enlazamos las variables globales con los elementos gráficos
         lblDinero = findViewById(R.id.lblCantDineroMenuEMP);
         btnCerrarSesion = findViewById(R.id.LLCerrarSesionMenuEMP);
         viewNoInternet = findViewById(R.id.viewNoInternetMenuEMP);
@@ -54,11 +55,10 @@ public class EmpMenuPrincipal extends AppCompatActivity {
         user = auth.getCurrentUser(); //Obtenemos el usuario actual usando "auth"
 
         if (user == null) { //Si el usuario es null, que entre al if
-            //Mandamos al usuario a la pantalla de Login si su usuario ha sido nulo, y finalizamos el activity actual
-            Utilidades.iniciarActivity(this, IniciarSesion.class, true);
+            Utilidades.iniciarActivity(this, IniciarSesion.class, true); //Mandamos al usuario a la pantalla de Login si su usuario ha sido nulo, y finalizamos el activity actual
         }
 
-        obtenerCuadrillaUsuario(); //Llamamos el método obtenerCuadrillaUsuario de abajo
+        obtenerCuadrillaUsuario();
 
         //Evento Click del botón "Reintentar" de la vista "viewNoInternet"
         btnReintentarConexion.setOnClickListener(v -> {
@@ -84,28 +84,25 @@ public class EmpMenuPrincipal extends AppCompatActivity {
     //Método que nos ayuda a obtener la cuadrilla del usuario actual
     private void obtenerCuadrillaUsuario() {
         try {
-            //Llamamos el método "obtenerUnUsuario" de la clase "Usuario" y creamos una invocación a la interfaz "FirestoreDocumentCallback"
+            //Llamamos el método "obtenerUsuarioActual" de la clase "Usuario" y creamos una invocación a la interfaz "FirestoreDocumentCallback"
             usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
                 public void onCallback(Map<String, Object> documento) {
-                    if (documento != null) { //Si "documento" no es nulo, quiere decir que si encontró el usuario
+                    if (documento != null) { //Si "documento" no es nulo, quiere decir que si encontró el usuario actual
                         String cuadrilla = (String) documento.get("Cuadrilla"); //Obtenemos la cuadrilla del documento y la guardamos en "cuadrilla"
 
                         obtenerDineroCuadrilla(cuadrilla); //Llamamos el método "obtenerDineroCuadrilla" que está abajo y le mandamos el nombre de la cuadrilla
                     }
-                    else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
-                        Log.w("ObtenerUsuario", "Usuario no encontrado");
-                    }
                 }
 
                 @Override
-                public void onFailure(Exception e) {
-                    Log.w("BuscarUsuario", "Error al obtener el usuario", e);
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerUsuario", "Error al obtener el usuario actual");
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerUsuario", e);
+            Log.e("ObtenerUsuario", "Error al obtener el usuario actual");
         }
     }
 
@@ -124,23 +121,20 @@ public class EmpMenuPrincipal extends AppCompatActivity {
 
                         lblDinero.setText("L. " + dineroDisponible); //Asignamos el String "dineroDisponible" al TextView "lblDinero"
                     }
-                    else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
-                        Log.w("ObtenerCuadrilla", "Cuadrilla no encontrada");
-                    }
                 }
 
                 @Override
-                public void onFailure(Exception e) {
-                    Log.w("BuscarCuadrilla", "Error al obtener la cuadrilla", e);
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerCuadrilla", "Error al obtener la cuadrilla", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerUsuario", e);
+            Log.e("ObtenerCuadrilla", "Error al obtener la cuadrilla", e);
         }
     }
 
-    //Eventos Click de los botones del menú
+    //Eventos clic de los botones del menú
     public void registrarGasto(View view) {
         HashMap<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
 
@@ -164,6 +158,7 @@ public class EmpMenuPrincipal extends AppCompatActivity {
         Utilidades.iniciarActivityConString(this, Perfil.class, "ActivityPerfil", "PerfilEmpleado", false); //Enviamos el texto "PerfilEmpleado" que ayudará a saber que el Activity "Perfil" debe mostrar los datos del Empleado actual
     }
 
+    //Evento clic del botón de cerrar sesión
     public void cerrarSesion(View view) {
         //Creamos un nuevo "AlertDialog" que nos pregunte si deseamos cerrar sesión
         new AlertDialog.Builder(this).setTitle("CERRAR SESIÓN").setMessage("¿Está seguro que desea cerrar sesión?")
@@ -181,6 +176,7 @@ public class EmpMenuPrincipal extends AppCompatActivity {
             }).show();
     }
 
+    //Método que permite ocultar el botón de cerrar sesión cuando no hay internet
     private void ocultarBotonLogoutNoInternet() {
         //Llamamos el método utilitario "mostrarMensajePorInternetCaidoBoolean" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya. Este retorna un booleano indicando si hay internet o no
         boolean internetDisponible = Utilidades.mostrarMensajePorInternetCaidoBoolean(this, viewNoInternet);

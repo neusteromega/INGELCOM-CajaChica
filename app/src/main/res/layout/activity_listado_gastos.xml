@@ -210,41 +210,6 @@
                         android:gravity="center|right"
                         android:orientation="horizontal">
 
-                        <LinearLayout
-                            android:id="@+id/LLAbrirUsuarioCompraLG"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:onClick="mostrarSpinner"
-                            android:orientation="horizontal"
-                            android:visibility="gone">
-
-                            <TextView
-                                android:id="@+id/lblAbrirUsuarioCompraLG"
-                                android:layout_width="match_parent"
-                                android:layout_height="50sp"
-                                android:layout_weight="1"
-                                android:background="@android:color/transparent"
-                                android:ellipsize="end"
-                                android:fontFamily="@font/montserrat_bold"
-                                android:gravity="center|left"
-                                android:maxLines="1"
-                                android:paddingLeft="15sp"
-                                android:paddingRight="10sp"
-                                android:text="Seleccionar..."
-                                android:textColor="@color/clr_fuente_secundario"
-                                android:textSize="16sp" />
-
-                            <ImageView
-                                android:id="@+id/imgAbrirUsuarioCompraLG"
-                                android:layout_width="11sp"
-                                android:layout_height="19sp"
-                                android:layout_marginRight="19sp"
-                                android:contentDescription="@string/descripcion"
-                                app:srcCompat="@mipmap/ico_gris_expandirabajo" />
-                        </LinearLayout>
-
                         <Spinner
                             android:id="@+id/spUsuarioCompraLG"
                             android:layout_width="match_parent"

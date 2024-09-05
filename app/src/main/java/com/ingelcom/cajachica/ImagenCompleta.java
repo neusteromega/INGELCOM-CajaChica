@@ -24,6 +24,7 @@ public class ImagenCompleta extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_imagen_completa);
 
+        //Enlazamos las variables globales con los elementos gráficos
         imgCompleta = findViewById(R.id.imgCompleta);
         btnDescargar = findViewById(R.id.imgDescargarImg);
 
@@ -38,7 +39,7 @@ public class ImagenCompleta extends AppCompatActivity {
             nombreImagen = getIntent().getStringExtra("nombreImagen"); //Obtenemos el nombre de la imagen el cual es el mismo nombre que tiene en Firebase Storage (el String guardado en nombreImagen es como este ejemplo: "Imagenes/Gastos/00-00-0000 - 00:00")
 
             nombreImagen = nombreImagen.replaceAll(".*?(\\d{2}-\\d{2}-\\d{4} - \\d{2}:\\d{2}).*", "$1"); //Del "nombreImagen" extraemos sólo la fecha y hora (00-00-0000 - 00:00)
-            nombreImagen = nombreImagen.replaceAll("[-:]", "_").replaceAll("[ ]", ""); //Ahora, de la fecha y hora eliminamos los guiones y espacios para evitar conflictos al crear el archivo de la imagen, nos quedaría con este formato: "00_00_0000_00_00"
+            nombreImagen = nombreImagen.replaceAll("[-:]", "_").replaceAll("[ ]", ""); //Ahora, de la fecha y hora eliminamos los guiones, dos puntos y espacios para evitar conflictos al crear el archivo de la imagen, nos quedaría con este formato: "00_00_0000_00_00"
         }
 
         if (imageUri != null) { //Si el URI obtenido no es nulo, que entre al if
@@ -46,6 +47,7 @@ public class ImagenCompleta extends AppCompatActivity {
         }
     }
 
+    //Evento clic del botón para descargar la imagen
     public void descargarImagen(View view) {
         //Llamamos el método utilitario "verificarPermisosAlmacenamiento" donde mandamos el contexto de esta clase. Si este método devuelve un "true" significa que los permisos de almacenamiento externo ya han sido otorgados, en ese caso que entre al if
         if (Utilidades.verificarPermisosAlmacenamiento(this)) {
@@ -63,6 +65,7 @@ public class ImagenCompleta extends AppCompatActivity {
         }
     }
 
+    //Método que permite retroceder a la pantalla anterior
     public void retroceder(View view) {
         onBackPressed();
     }

@@ -24,15 +24,15 @@ import java.util.List;
 import java.util.Map;
 
 public class Usuario {
-    public Context contexto; //Nos ayuda a obtener el contexto del Activity donde se llame a esta clase, este contexto lo mandamos al crear un objeto de esta clase (Usuario usu = new Usuario(this)) y se inicializa en el método constructor
-    private FirestoreOperaciones oper = new FirestoreOperaciones();; //Objeto de la clase "FirestoreOperaciones"
+    public Context contexto;
+    private FirestoreOperaciones oper = new FirestoreOperaciones();
 
     public Usuario(Context contexto) {
         this.contexto = contexto;
     }
 
-    //Método que nos permitirá obtener los empleados, pero sólo los que tengan el rol "Empleado"
-    public void obtenerUsuarios(String tipo, FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<EmpleadosItems> callback) { //Llamamos la interfaz "FirestoreAllSpecialDocumentsCallback" y le indicamos que debe ser de tipo "EmpleadosItems"
+    //Método que nos permitirá obtener los usuarios, pero sólo los que tengan el rol "Empleado"
+    public void obtenerUsuarios(String tipo, FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<EmpleadosItems> callback) { //Recibe un "tipo" para saber si queremos todos los usuarios o sólo los empleados, y llamamos la interfaz "FirestoreAllSpecialDocumentsCallback" y le indicamos que debe ser de tipo "EmpleadosItems"
         try {
             //Llamamos el método "obtenerRegistros" de "FirestoreOperaciones", le mandamos el nombre de la colección, e invocamos la interfaz "FirestoreAllDocumentsCallback"
             oper.obtenerRegistros("usuarios", new FirestoreCallbacks.FirestoreAllDocumentsCallback() {
@@ -66,19 +66,20 @@ public class Usuario {
                             listaEmpleados.add(empleado); //El objeto de tipo "EmpleadosItems" lo guardamos en la lista "listaEmpleados"
                         }
                     }
+
                     //Cuando salga del "for", ya tendremos todos los empleados con rol "Empleado" en la "listaEmpleados", y esta lista es la que mandamos al método "onCallback" de la interfaz
                     callback.onCallback(listaEmpleados);
                 }
 
                 @Override
                 public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
-                    Log.e("FirestoreError", "Error al obtener los documentos", e);
+                    Log.e("ObtenerUsuarios", "Error al obtener los usuarios", e);
                     callback.onFailure(e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerEmpleados", e);
+            Log.e("ObtenerUsuarios", "Error al obtener los usuarios", e);
         }
     }
 
@@ -88,62 +89,63 @@ public class Usuario {
             FirebaseUser user = Utilidades.obtenerUsuario(); //Obtenemos el usuario actual llamando el método utilitario "obtenerUsuario"
             String correoActual = user.getEmail(); //Obtenemos el correo del usuario actual
 
+            //Llamamos el método "obtenerUnRegistro" de la clase FirestoreOperaciones y le mamdamos el nombre de la colección, el campo, y el dato a buscar, e invocamos el "FirestoreDocumentCallback"
             oper.obtenerUnRegistro("usuarios", "Correo", correoActual, new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
                 public void onCallback(Map<String, Object> documento) {
-                    if (documento != null)
-                        callback.onCallback(documento);
-                    else
+                    if (documento != null) //Si "documento" no es nulo, quiere decir que encontró el usuario
+                        callback.onCallback(documento); //Guardamos el "documento" con los datos del usuario en el "onCallback"
+                    else //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
                         Log.w("ObtenerUsuario", "Usuario no encontrado");
                 }
 
                 @Override
-                public void onFailure(Exception e) {
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerUsuario", "Error al obtener el usuario", e);
                     callback.onFailure(e);
-                    Log.w("BuscarUsuario", "Error al obtener el usuario", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerUsuario", e);
+            Log.e("ObtenerUsuario", "Error al obtener el usuario", e);
         }
     }
 
     //Método que permite obtener el documento de Firestore de un usuario buscándolo mediante su identidad
     public void obtenerUnUsuario(String identidad, FirestoreCallbacks.FirestoreDocumentCallback callback) {
         try {
+            //Llamamos el método "obtenerUnRegistro" de la clase FirestoreOperaciones y le mamdamos el nombre de la colección, el campo, y el dato a buscar, e invocamos el "FirestoreDocumentCallback"
             oper.obtenerUnRegistro("usuarios", "Identidad", identidad, new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
                 public void onCallback(Map<String, Object> documento) {
-                    if (documento != null)
-                        callback.onCallback(documento);
-                    else
+                    if (documento != null) //Si "documento" no es nulo, quiere decir que encontró el usuario
+                        callback.onCallback(documento); //Guardamos el "documento" con los datos del usuario en el "onCallback"
+                    else //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
                         Log.w("ObtenerUsuario", "Usuario no encontrado");
                 }
 
                 @Override
-                public void onFailure(Exception e) {
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerUsuario", "Error al obtener el usuario", e);
                     callback.onFailure(e);
-                    Log.w("BuscarUsuario", "Error al obtener el usuario", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerUsuario", e);
+            Log.e("ObtenerUsuario", "Error al obtener el usuario", e);
         }
     }
 
     //Método que nos permite insertar un nuevo usuario
     public void insertarUsuario(String nombre, String identidad, String telefono, String rol, String cuadrilla) {
         try {
-            //Si estas tres variables que contienen el contenido de las cajas de texto de "Agregar Usuario" no están vacías, que entre al if
-            if (!nombre.isEmpty() && !identidad.isEmpty() && !telefono.isEmpty()) {
-                validarIdentidadOriginal(identidad, new FirestoreCallbacks.FirestoreValidationCallback() {
+            if (!nombre.isEmpty() && !identidad.isEmpty() && !telefono.isEmpty()) { //Si estas tres variables que contienen el contenido de las cajas de texto de "Agregar Usuario" no están vacías, que entre al if
+                validarIdentidadOriginal(identidad, new FirestoreCallbacks.FirestoreValidationCallback() { //Llamámos el método "validarIdentidadOriginal" de abajo donde le mandamos la identidad recibida por parámetro
                     @Override
                     public void onResultado(boolean esValido) {
                         if (!esValido) { //Si "esValido" es true, quiere decir que se encontró la identidad y ya pertenece a otro usuario
                             Toast.makeText(contexto, "LA IDENTIDAD YA PERTENECE A OTRO USUARIO", Toast.LENGTH_SHORT).show();
-                            return;
+                            return; //Finalizamos el método
                         }
 
                         Map<String, Object> datos = new HashMap<>(); //HashMap que nos ayudará a almacenar los nombres de los campos de la colección y los datos a ser insertados en cada campo
@@ -162,35 +164,36 @@ public class Usuario {
                             @Override
                             public void onSuccess(String idDocumento) { //Si la inserción fue exitosa, entrará aquí
                                 Toast.makeText(contexto, "USUARIO AGREGADO EXITOSAMENTE", Toast.LENGTH_SHORT).show();
-                                Utilidades.iniciarActivity(contexto, AdmPantallas.class, true);
+                                Utilidades.iniciarActivity(contexto, AdmPantallas.class, true); //Iniciamos el activity "AdmPantallas" y mandamos un true para que cierre el activity actual
                             }
 
                             @Override
-                            public void onFailure(Exception e) {
+                            public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
                                 Toast.makeText(contexto, "ERROR AL AGREGAR EL USUARIO", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
                 });
-            } else {
+            }
+            else {
                 Toast.makeText(contexto, "TODOS LOS CAMPOS DEBEN LLENARSE", Toast.LENGTH_SHORT).show();
             }
         }
         catch (Exception e) {
-            Log.w("InsertarUsuario", e);
+            Log.e("InsertarUsuario", "Error al insertar el usuario", e);
         }
     }
 
     //Método que nos permite editar los datos de un usuario
     public void editarUsuario(String activityPerfil, String nombre, String correo, String identidadVieja, String identidadNueva, String telefono, String cuadrilla, String rol) {
         try {
-            if (!nombre.isEmpty() && !identidadNueva.isEmpty() && !telefono.isEmpty()) {
-                validarIndentidadAlEditar(identidadNueva, correo, new FirestoreCallbacks.FirestoreValidationCallback() {
+            if (!nombre.isEmpty() && !identidadNueva.isEmpty() && !telefono.isEmpty()) { //Si estas tres variables que contienen el contenido de las cajas de texto de "Editar Perfil" no están vacías, que entre al if
+                validarIdentidadAlEditar(identidadNueva, correo, new FirestoreCallbacks.FirestoreValidationCallback() { //Llamámos el método "validarIdentidadAlEditar" de abajo donde le mandamos la identidadNueva y el correo recibidos por parámetro
                     @Override
                     public void onResultado(boolean esValido) {
                         if (!esValido) { //Si "esValido" es false, quiere decir que se encontró la identidad y ya pertenece a otro usuario
                             Toast.makeText(contexto, "LA IDENTIDAD YA PERTENECE A OTRO USUARIO", Toast.LENGTH_SHORT).show();
-                            return;
+                            return; //Finalizamos el método
                         }
 
                         Map<String, Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los nombres de los campos y los datos
@@ -214,11 +217,11 @@ public class Usuario {
                                 if (activityPerfil.isEmpty())
                                     Utilidades.iniciarActivity(contexto, ListadoEmpleados.class, true); //Cuando el "activityPerfil" esté vacío, significa que es un admin quien está modificando los datos de un empleado, cuando es así, mandamos al usuario al "ListadoEmpleados" y no a la pantalla Perfil del empleado ya que este última, debe recibir una "identidad" para buscar los datos del empleado, pero si lo redireccionamos desde aquí, no recibiría esa identidad
                                 else
-                                    Utilidades.iniciarActivityConString(contexto, Perfil.class, "ActivityPerfil", activityPerfil, true); //Redireccionamos al usuario al activity "Perfil" y mandamos el contenido de la variable "activityPerfil" que indica el tipo de usuario que está en la sesión actual (Empleado o administrador)
+                                    Utilidades.iniciarActivityConString(contexto, Perfil.class, "ActivityPerfil", activityPerfil, true); //Y cuando "activityPerfil" no esté vacío, redireccionamos al usuario al activity "Perfil" y mandamos el contenido de la variable "activityPerfil" que indica el tipo de usuario que está en la sesión actual (Empleado o administrador)
                             }
 
                             @Override
-                            public void onFailure(Exception e) {
+                            public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
                                 Toast.makeText(contexto, "ERROR AL MODIFICAR EL USUARIO", Toast.LENGTH_SHORT).show(); //Mostramos un mensaje de error en un Toast si la actualización de los datos del usuario fue errónea
                             }
                         });
@@ -226,34 +229,13 @@ public class Usuario {
                 });
             }
             else {
-                    Toast.makeText(contexto, "TODOS LOS CAMPOS DEBEN ESTAR LLENOS", Toast.LENGTH_SHORT).show();
+                Toast.makeText(contexto, "TODOS LOS CAMPOS DEBEN ESTAR LLENOS", Toast.LENGTH_SHORT).show();
             }
         }
         catch (Exception e) {
-            Log.w("ActualizarUsuario", e);
+            Log.e("ActualizarUsuario", "Error al actualizar el usuario", e);
         }
     }
-
-    /*public void actualizarCorreoAuthentication(String correoNuevo) {
-        FirebaseUser user = Utilidades.obtenerUsuario(); //Obtenemos el usuario actual llamando el método utilitario "obtenerUsuario"
-        String correoActual = user.getEmail(); //Obtenemos el correo del usuario actual
-
-        if (user != null) {
-            user.verifyBeforeUpdateEmail(correoNuevo)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Log.d("ActualizarCorreo", "Correo de verificación enviado al nuevo correo.");
-                                Toast.makeText(contexto, "Por favor, verifica tu nuevo correo para completar la actualización.", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Log.e("ActualizarCorreo", "Error al enviar el correo de verificación.", task.getException());
-                                Toast.makeText(contexto, "Error al enviar el correo de verificación", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-        }
-    }*/
 
     //Método que permite validar si la identidad del usuario a ingresar ya está usada por otro usuario o si está disponible
     public void validarIdentidadOriginal(String identidad, FirestoreCallbacks.FirestoreValidationCallback callback) { //Recibe la identidad e invoca la interfaz "FirestoreValidationCallback"
@@ -271,19 +253,19 @@ public class Usuario {
                 }
 
                 @Override
-                public void onFailure(Exception e) {
-                    Log.w("VerificarIdentidad", "Error al obtener la identidad: ", e);
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("BuscarIdentidad", "Error al obtener la identidad", e);
                     callback.onResultado(false); //Devolvemos false por cualquier error
                 }
             });
         }
         catch (Exception e) {
-            Log.w("BuscarIdentidad", e);
+            Log.e("BuscarIdentidad", "Error al obtener la identidad", e);
         }
     }
 
     //Método que permite validar si la identidad del usuario a editar ya está usada por otro usuario o si está disponible
-    public void validarIndentidadAlEditar(String identidad, String correo, FirestoreCallbacks.FirestoreValidationCallback callback) { //Recibe la identidad, el correo del usuario a editar, e invoca la interfaz "FirestoreValidationCallback"
+    public void validarIdentidadAlEditar(String identidad, String correo, FirestoreCallbacks.FirestoreValidationCallback callback) { //Recibe la identidad, el correo del usuario a editar, e invoca la interfaz "FirestoreValidationCallback"
         try {
             //Llamamos el método "obtenerUnRegistro" de la clase FirestoreOperaciones, le indicamos que debe buscar en la colección "usuarios", el campo "Identidad" que coincida con el contenido de la variable "identidad" que se recibe como parámetro
             oper.obtenerUnRegistro("usuarios", "Identidad", identidad, new FirestoreCallbacks.FirestoreDocumentCallback() {
@@ -305,14 +287,14 @@ public class Usuario {
                 }
 
                 @Override
-                public void onFailure(Exception e) {
-                    Log.w("VerificarIdentidadCorreo", "Error al obtener la identidad: ", e);
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("VerificarIdentidadCorreo", "Error al obtener la identidad", e);
                     callback.onResultado(false); //Devolvemos false por cualquier error
                 }
             });
         }
         catch (Exception e) {
-            Log.w("BuscarIdentidadYCorreo", e);
+            Log.e("VerificarIdentidadCorreo", "Error al obtener la identidad", e);
         }
     }
 }

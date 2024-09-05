@@ -133,6 +133,7 @@ public class FirestoreOperaciones {
                                     .update(nuevosCampos)
                                     .addOnSuccessListener(aVoid -> callback.onSuccess("DOCUMENTO ACTUALIZADO CON ÉXITO")) //Manejamos el éxito de la actualización llamando el "onSuccess" de la interfaz y le mandamos un mensaje que nos servirá para saber que si se realizó la actualización o inserción de los datos
                                     .addOnFailureListener(e -> callback.onFailure(e)); //Manejamos el error de la operación llamando el "onFailure" del callback
+
                                 return; //Retornamos para que termine la ejecución del método
                             }
                         }

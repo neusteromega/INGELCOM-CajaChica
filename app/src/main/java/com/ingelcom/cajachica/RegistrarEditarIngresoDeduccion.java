@@ -107,6 +107,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
     }
 
     private void inicializarElementos() {
+        //Enlazamos las variables globales con los elementos gráficos
         llFecha = findViewById(R.id.LLFechaRI);
         llDinero = findViewById(R.id.LLDineroRI);
         llTransferencia = findViewById(R.id.LLTransferenciaRI);
@@ -116,10 +117,8 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         txtTransferencia = findViewById(R.id.txtTransferenciaRI);
         txtTotal = findViewById(R.id.txtTotalRI);
         spCuadrillas = findViewById(R.id.spCuadrillaRI);
-        //swlRecargar = findViewById(R.id.swipeRefreshLayoutRI);
 
         imgFoto = findViewById(R.id.imgFotoEvidenciaRI);
-
         pbCargar = findViewById(R.id.pbCargarRI);
         btnEliminarFoto = findViewById(R.id.imgEliminarFotoRI);
         btnSubirCambiarFoto = findViewById(R.id.btnSubirCambiarFotoRI);
@@ -134,6 +133,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         //Obtenemos el nombre del activity que se envía desde el activity anterior, lo hacemos llamando a la función "obtenerStringExtra" de la clase "Utilidades", y le mandamos "this" para referenciar esta actividad y "Activity" como clave del putExtra
         nombreActivity = Utilidades.obtenerStringExtra(this, "ActivityREID");
 
+        //En este switch obtenemos los datos de la pantalla anterior sólo si "nombreActivity" es "EditarIngreso" o "EditarDeduccion"; en el primer caso, la pantalla anterior será "DetalleGastoIngreso", en el segundo caso será "ListadoIngresosDeducciones"
         switch (nombreActivity) {
             case "EditarIngreso":
                 id = Utilidades.obtenerStringExtra(this, "ID");
@@ -159,11 +159,11 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
 
     private void inicializarSpinner() {
         try {
-            //Para inicializar el spinner, llamamos al método "obtenerRegistros" de la clase "FirestoreOperaciones" a la cual le mandamos el nombre de la colección y el nombre del campo de Firestore de los cuales queremos obtener los registros. También invocamos los métodos "onCallback" y "onFailure" de la interfaz FirestoreCallback
+            //Para inicializar el spinner, llamamos al método "obtenerRegistros" de la clase "FirestoreOperaciones" a la cual le mandamos el nombre de la colección y el nombre del campo de Firestore de los cuales queremos obtener los registros. También invocamos los métodos "onCallback" y "onFailure" de la interfaz FirestoreListCallback
             //CUADRILLAS
             oper.obtenerRegistrosCampo("cuadrillas", "Nombre", new FirestoreCallbacks.FirestoreListCallback() {
                 @Override
-                public void onCallback(List<String> lista) {
+                public void onCallback(List<String> lista) { //Aquí está la lista con el nombre de las cuadrillas
                     //Ordenamos la "lista" alfabéticamente llamando al método utilitario "ordenarListaPorAlfabetico" donde enviamos la lista, un String vacío ("") y el orden ascendente. El String vacío es para indicar que el "nombreCampo" por el cual se desea realizar el orden de la lista, en este caso no existe ya que es una lista sencilla y no de una clase
                     lista = Utilidades.ordenarListaPorAlfabetico(lista, "", "Ascendente");
 
@@ -178,19 +178,17 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Exception e) {
-                    Log.w("Activity", "Error al obtener las cuadrillas.", e);
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerCuadrillas", "Error al obtener las cuadrillas", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("InicializarCuadrillas", e);
+            Log.e("ObtenerCuadrillas", "Error al obtener las cuadrillas", e);
         }
     }
 
     private void establecerElementos() {
-        //swlRecargar.setColorSchemeResources(R.color.clr_fuente_primario); //Color del SwipeRefreshLayout
-
         if (nombreActivity != null) { //Que entre al if si "nombreActivity" no es nulo
             switch (nombreActivity) { //El "nombreActivity" nos sirve para saber la pantalla con la que trabajaremos
                 //Establecemos los elementos gráficos dependiendo de la pantalla
@@ -218,7 +216,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                         timestamp = Utilidades.convertirFechaHoraATimestamp(fechaHora);
                     }
                     catch (Exception e) {
-                        Log.w("ObtenerIngreso", e);
+                        Log.e("EstablecerIngreso", "Error al establecer los datos del ingreso", e);
                     }
 
                     imgFoto.setVisibility(View.VISIBLE);
@@ -238,13 +236,14 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onFailure(Exception e) {
-                                Log.w("ObtenerImagen", "Error al obtener el URI de la imagen: " + e);
+                            public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                                Log.e("ObtenerImagen", "Error al obtener el URI de la imagen", e);
+                                pbCargar.setVisibility(View.GONE); //Ocultamos el progressBar ya cuando la imagen se ha cargado
                             }
                         });
                     }
                     catch (Exception e) {
-                        Log.w("ObtenerImagenStorage", e);
+                        Log.e("ObtenerImagen", "Error al obtener el URI de la imagen", e);
                     }
                     break;
 
@@ -278,17 +277,17 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                     }
                 }
                 @Override
-                public void onFailure(Exception e) {
-                    Log.w("ObtenerCuadrilla", "Error al obtener la cuadrilla", e);
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerCuadrilla", "Error al obtener la cuadrilla", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerCuadrilla", e);
+            Log.e("ObtenerCuadrilla", "Error al obtener la cuadrilla", e);
         }
     }
 
-    //Método Click del LinearLayout de Fecha, el cual al dar clic en él, se mostrará un calendario emergente para seleccionar una fecha, y luego un reloj para seleccionar la hora
+    //Evento clic del LinearLayout de Fecha, el cual al dar clic en él, se mostrará un calendario emergente para seleccionar una fecha, y luego un reloj para seleccionar la hora
     public void seleccionarFecha(View view) {
         final Calendar calendar = Calendar.getInstance(); //Creamos una instancia de Calendar que representa la fecha y hora actuales. Y en ella se irán almacenando las selecciones de fecha y hora que haga el usuario en el calendario y reloj
 
@@ -326,18 +325,22 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         datePickerDialog.show(); //Mostramos el DatePickerDialog
     }
 
+    //Evento clic del botón de subir fotografía
     public void subirFoto(View view) {
         mostrarDialogBottomSheet();
     }
 
+    //Método que permite mostrar el "DialogBottomSheet" (la ventana emergente que permite seleccionar entre tomar una foto o seleccionar imagen de la galería)
     private void mostrarDialogBottomSheet() {
         final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); //Establecemos que el DialogBottomSheet no tenga un titulo
         dialog.setContentView(R.layout.bottomsheet_foto); //Asignamos la vista que tendrá el bottomSheet, en este caso, es el elemento layout "bottomsheet_foto"
 
+        //Enlazamos estas variables con los LinearLayouts de la vista "R.layout.bottomsheet_foto"
         LinearLayout tomarFoto = dialog.findViewById(R.id.LLTomarFotoBSFoto);
         LinearLayout seleccionarFoto = dialog.findViewById(R.id.LLSeleccionarFotoBSFoto);
 
+        //Eventos clic de los LinearLayouts
         tomarFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -345,7 +348,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
 
                 //Llamamos el método utilitario "verificarPermisosAlmacenamiento" donde mandamos el contexto de esta clase. Si este método devuelve un "true" significa que los permisos de almacenamiento externo ya han sido otorgados, en ese caso que entre al if
                 if (Utilidades.verificarPermisosAlmacenamiento(RegistrarEditarIngresoDeduccion.this)) {
-                    dialog.dismiss();
+                    dialog.dismiss(); //Ocultamos el dialog cuando se seleccione la opción de "Tomar Foto"
                     abrirCamara();
                 }
             }
@@ -358,7 +361,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
 
                 //Llamamos el método utilitario "verificarPermisosAlmacenamiento" donde mandamos el contexto de esta clase. Si este método devuelve un "true" significa que los permisos de almacenamiento externo ya han sido otorgados, en ese caso que entre al if
                 if (Utilidades.verificarPermisosAlmacenamiento(RegistrarEditarIngresoDeduccion.this)) {
-                    dialog.dismiss();
+                    dialog.dismiss(); //Ocultamos el dialog cuando se seleccione la opción de "Seleccionar Imagen"
                     seleccionarImagen();
                 }
             }
@@ -386,6 +389,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         }
     }
 
+    //Método que permite abrir la cámara para tomar una foto
     private void abrirCamara() {
         try {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); //Creamos un nuevo intent con la acción de "Capturar Imagen" (Image Capture) de "MediaStore"
@@ -405,10 +409,11 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
             }
         }
         catch (Exception e) {
-            Log.e("AbrirCamara", "Error al abrir la cámara: ", e);
+            Log.e("AbrirCamara", "Error al abrir la cámara", e);
         }
     }
 
+    //Método que permite abrir la galería para seleccionar una imagen
     private void seleccionarImagen() {
         try {
             Intent intent = new Intent();
@@ -417,7 +422,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
             startActivityForResult(intent, 100);
         }
         catch (Exception e) {
-            Log.e("ElegirImagen", "Error al abrir la galería: ", e);
+            Log.e("ElegirImagen", "Error al abrir la galería", e);
         }
     }
 
@@ -453,17 +458,13 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
             }
         }
         catch (Exception e) {
-            Log.w("SeleccionarImagen", e);
+            Log.e("CargarImagen", "Error al cargar la imagen en el ImageView", e);
         }
     }
 
-    //Método Click que al dar clic en la imagen cargada, nos manda al Activity "ImagenCompleta" donde también envía el URI de la imagen cargada para mostrarla en pantalla completa
+    //Evento clic que al dar clic en la imagen cargada, nos manda al Activity "ImagenCompleta" donde también envía el URI de la imagen cargada para mostrarla en pantalla completa
     public void mostrarImagenCompleta(View view) {
         HashMap<String, Object> datosImagen = new HashMap<>();
-
-        /*Intent intent = new Intent(this, ImagenCompleta.class);
-        intent.putExtra("imageUri", imageUri); //Enviamos el URI de la imagen
-        startActivity(intent); //Iniciamos el activity*/
 
         if (imageUri != null) //Si "imageUri" no es nulo, que muestre en pantalla completa la foto recién cargada
             datosImagen.put("imageUri", imageUri); //Enviamos el URI de la imagen
@@ -475,6 +476,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
         Utilidades.iniciarActivityConDatos(RegistrarEditarIngresoDeduccion.this, ImagenCompleta.class, datosImagen);
     }
 
+    //Evento clic del botón de eliminar foto
     public void eliminarFoto(View view) {
         //Creamos un alertDialog que pregunte si se desea eliminar la imagen seleccionada
         new AlertDialog.Builder(this).setTitle("ELIMINAR IMAGEN").setMessage("¿Está seguro que desea eliminar la imagen?")
@@ -491,14 +493,14 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                     btnSubirCambiarFoto.setText("Subir Fotografía");
                 }
             }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
-                    }
-                }).show();
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                }
+            }).show();
     }
 
-    //Evento Clic del botón "Confirmar"
+    //Evento clic del botón de confirmar
     public void confirmar(View view) {
         //Llamamos el método utilitario "mostrarMensajePorInternetCaidoBoolean" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya. Este retorna un booleano indicando si hay internet o no
         boolean internetDisponible = Utilidades.mostrarMensajePorInternetCaidoBoolean(this, viewNoInternet);
@@ -510,68 +512,68 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
 
                         //Creamos un alertDialog que pregunte si se desea registrar el ingreso de dinero a la cuadrilla seleccionada
                         new AlertDialog.Builder(this).setTitle("REGISTRAR INGRESO").setMessage("¿Está seguro que desea registrar el ingreso de dinero a la cuadrilla seleccionada?")
-                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "agregarIngresoDeduccion()"
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        agregarIngresoDeduccion("Ingreso"); //Llamamos el método "agregarIngresoDeduccion" de abajo para que se complete la inserción de los datos
-                                    }
-                                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
-                                    }
-                                }).show();
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "agregarIngresoDeduccion()"
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    agregarIngresoDeduccion("Ingreso"); //Llamamos el método "agregarIngresoDeduccion" de abajo para que se complete la inserción de los datos
+                                }
+                            }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                }
+                            }).show();
                         break;
 
                     case "RegistrarDeduccion":
 
                         //Creamos un alertDialog que pregunte si se desea registrar la deducción por planilla a la cuadrilla seleccionada
                         new AlertDialog.Builder(this).setTitle("REGISTRAR DEDUCCIÓN").setMessage("¿Está seguro que desea registrar la deducción por planilla a la cuadrilla seleccionada?")
-                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "agregarIngresoDeduccion()"
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        agregarIngresoDeduccion("Deduccion"); //Llamamos el método "agregarIngresoDeduccion" de abajo para que se complete la inserción de los datos
-                                    }
-                                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
-                                    }
-                                }).show();
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "agregarIngresoDeduccion()"
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    agregarIngresoDeduccion("Deduccion"); //Llamamos el método "agregarIngresoDeduccion" de abajo para que se complete la inserción de los datos
+                                }
+                            }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                }
+                            }).show();
                         break;
 
                     case "EditarIngreso":
 
                         //Creamos un alertDialog que pregunte si se desea editar el ingreso de dinero a la cuadrilla seleccionada
                         new AlertDialog.Builder(this).setTitle("EDITAR INGRESO").setMessage("¿Está seguro que desea modificar los datos del ingreso?")
-                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarIngresoDeduccion()"
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        editarIngresoDeduccion("Ingreso"); //Llamamos el método "editarIngresoDeduccion" de abajo para que se complete la modificación de los datos, y le mandamos la palabra "Ingreso" para que sepa que modificará un ingreso
-                                    }
-                                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
-                                    }
-                                }).show();
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarIngresoDeduccion()"
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    editarIngresoDeduccion("Ingreso"); //Llamamos el método "editarIngresoDeduccion" de abajo para que se complete la modificación de los datos, y le mandamos la palabra "Ingreso" para que sepa que modificará un ingreso
+                                }
+                            }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                }
+                            }).show();
                         break;
 
                     case "EditarDeduccion":
 
                         //Creamos un alertDialog que pregunte si se desea editar la deducción por planilla a la cuadrilla seleccionada
                         new AlertDialog.Builder(this).setTitle("EDITAR DEDUCCIÓN").setMessage("¿Está seguro que desea modificar los datos de la deducción por planilla?")
-                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarIngresoDeduccion()"
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        editarIngresoDeduccion("Deduccion"); //Llamamos el método "editarIngresoDeduccion" de abajo para que se complete la modificación de los datos, y le mandamos la palabra "Deduccion" para que sepa que modificará una deducción por planilla
-                                    }
-                                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
-                                    }
-                                }).show();
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarIngresoDeduccion()"
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    editarIngresoDeduccion("Deduccion"); //Llamamos el método "editarIngresoDeduccion" de abajo para que se complete la modificación de los datos, y le mandamos la palabra "Deduccion" para que sepa que modificará una deducción por planilla
+                                }
+                            }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                                }
+                            }).show();
                         break;
                 }
             }
@@ -590,7 +592,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
             usu.obtenerUsuarioActual(new FirestoreCallbacks.FirestoreDocumentCallback() {
                 @Override
                 public void onCallback(Map<String, Object> documento) { //Los datos del usuario están guardados en el HashMap "documento"
-                    if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario mediante el correo
+                    if (documento != null) { //Si "documento" no es nulo, quiere decir que encontró el usuario actual
                         String nombre = (String) documento.get("Nombre"); //Obtenemos el nombre del usuario actual
 
                         if (tipo.equalsIgnoreCase("Ingreso")) //Si "tipo" es "Ingreso" que registre el ingreso en Firestore
@@ -598,22 +600,20 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
                         else if (tipo.equalsIgnoreCase("Deduccion")) //En cambio, si "tipo" es "Deduccion" que registra la deducción en Firestore
                             deduc.registrarDeduccion(nombre, timestamp, cuadrilla, total); //Llamamos el método "registrarDeduccion" donde se hará el proceso de inserción a Firestore y le mandamos el nombre del usuario actual (el usuario que está registrando la deducción por planilla), la fecha y hora seleccionada, los textboxes y selecciones de los spinners de esta pantalla
                     }
-                    else { //Si "documento" es nulo, no se encontró el usuario en la colección, y entrará en este else
-                        Log.w("ObtenerUsuario", "Usuario no encontrado");
-                    }
                 }
 
                 @Override
-                public void onFailure(Exception e) {
-                    Log.w("ObtenerUsuario", "Error al obtener el usuario", e);
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerUsuario", "Error al obtener el usuario actual");
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerUsuario", e);
+            Log.e("ObtenerUsuario", "Error al obtener el usuario actual");
         }
     }
 
+    //Método que permite editar un ingreso y/o deducción por planilla
     private void editarIngresoDeduccion(String tipo) {
         //Enlazamos los EditText y Spinners con las siguientes variables String
         String cuadrilla = spCuadrillas.getSelectedItem().toString();
@@ -626,6 +626,7 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
             deduc.editarDeduccion(id, timestamp, cuadrillaVieja, cuadrilla, total, totalNuevo); //Llamamos el método "editarDeduccion" de la clase Deduccion donde se hará el proceso de modificación de los datos de la deducción, para ello le mandamos el id, la fecha y hora guardada en "timestamp", la cuadrilla vieja, la cuadrilla nueva, el total anterior guardado en la variable global "total" y el total nuevo que se extrae del EditText
     }
 
+    //Método donde se detecta cuando cambia la selección del Spinner "spCuadrillas" y tras ello, poder mostrar en pantalla el dinero disponible de la cuadrilla seleccionada
     private void cambioCuadrilla() {
         try {
             //Evento que detecta la selección hecha en el "spCuadrillas"
@@ -638,26 +639,14 @@ public class RegistrarEditarIngresoDeduccion extends AppCompatActivity {
 
                 @Override
                 public void onNothingSelected(AdapterView<?> adapterView) {
-
+                    //Detecta cuando ningún elemento ha sido seleccionado. Queda vacío
                 }
             });
         }
         catch (Exception e) {
-            Log.w("DetectarCuadrilla", e);
+            Log.e("DetectarCuadrilla", "Error al detectar la cuadrilla", e);
         }
     }
-
-    /*@Override
-    public void onRefresh() { //Método que detecta cuando se recarga la pantalla con SwipeRefreshLayout
-        //Creamos una nueva instancia de "Handler", que está vinculada al Looper principal (el hilo principal de la aplicación). Esto asegura que cualquier operación realizada dentro de este Handler se ejecute en el hilo principal
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { //El "Handler" utiliza el método "postDelayed" para ejecutar el "Runnable" que contiene las acciones a realizar después de un retraso especificado (en este caso, 1500 milisegundos, es decir, 1.5 segundos)
-            @Override
-            public void run() {
-                obtenerDineroCuadrilla();
-                swlRecargar.setRefreshing(false); //Llamamos a este método para detener la animación de refresco
-            }
-        }, 1500);
-    }*/
 
     //Método que permite retroceder a la pantalla anterior
     public void retroceder(View view) {

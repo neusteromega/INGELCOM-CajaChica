@@ -70,6 +70,7 @@ public class AdmDatosCuadrilla extends AppCompatActivity implements SwipeRefresh
         nombreCuadrilla = Utilidades.obtenerStringExtra(this, "Cuadrilla");
         dineroDisponible = Utilidades.obtenerStringExtra(this, "DineroDisponible");
 
+        //Enlazamos las variables globales con los elementos gráficos
         lblCuadrilla = findViewById(R.id.lblNombreCuadrillaDC);
         lblDinero = findViewById(R.id.lblCantDineroDC);
         lblFecha = findViewById(R.id.lblFechaDC);
@@ -101,44 +102,44 @@ public class AdmDatosCuadrilla extends AppCompatActivity implements SwipeRefresh
     //Método que obtiene los gastos de la cuadrilla y permite obtenerlos por mes
     private void obtenerGastos(String mes) {
         try {
-            //Llamamos el método "obtenerGastos" de la clase "Gasto", le mandamos la cuadrilla recibida en "nombreCuadrilla", el rol "Empleado" (ya que queremos ver los gastos hechos por la cuadrilla y en la cuadrilla todos los usuarios tienen rol "Empleado") y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de la cuadrilla
+            //Llamamos el método "obtenerGastos" de la clase "Gasto", le mandamos la cuadrilla recibida en "nombreCuadrilla", el rol "Empleado" (ya que queremos ver los gastos hechos por la cuadrilla y en la cuadrilla todos los usuarios tienen rol "Empleado"), el usuario vacío, el tipo de compra vacío y el "mes". Con esto se podrán obtener todos los gastos hechos por los empleados de la cuadrilla
             gast.obtenerGastos(nombreCuadrilla, "Empleado", "", "", mes, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<GastosItems>() {
                 @Override
                 public void onCallback(List<GastosItems> items) { //En esta lista "items" están todos los gastos ya filtrados por cuadrilla y rol
-                    if (items != null) //Si "items" no es null, que entre al if
-                        calcularTotalGastos(items); //Llamamos el método "calculaTotalGastos" y le mandamos la lista "items"
+                    if (items != null)
+                        calcularTotalGastos(items); //Llamamos el método "calcularTotalGastos" y le mandamos la lista "items"
                 }
 
                 @Override
-                public void onFailure(Exception e) {
-                    Log.w("ObtenerGastos", e);
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerGastos", "Error al obtener los gastos", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerGastos", e);
+            Log.e("ObtenerGastos", "Error al obtener los gastos", e);
         }
     }
 
     //Método que obtiene los ingresos de la cuadrilla y permite obtenerlos por mes
     private void obtenerIngresos(String mes) {
         try {
-            //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla recibida en "nombreCuadrilla" y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores
+            //Llamamos el método "obtenerIngresos" de la clase "Ingreso", le mandamos la cuadrilla recibida en "nombreCuadrilla", un false para "datosEmpleado" (ya que no queremos reducir la lista de ingresos para el mes actual y anterior) y el "mes". Con esto se podrán obtener todos los ingresos hechos por los administradores
             ingr.obtenerIngresos(nombreCuadrilla, mes, false, new FirestoreCallbacks.FirestoreAllSpecialDocumentsCallback<IngresosItems>() {
                 @Override
                 public void onCallback(List<IngresosItems> items) { //En esta lista "items" están todos los ingresos ya filtrados por cuadrilla
-                    if (items != null) //Si "items" no es null, que entre al if
-                        calcularTotalIngresos(items); //Llamamos el método "calculaTotalIngresos" y le mandamos la lista "items"
+                    if (items != null)
+                        calcularTotalIngresos(items); //Llamamos el método "calcularTotalIngresos" y le mandamos la lista "items"
                 }
 
                 @Override
-                public void onFailure(Exception e) {
-                    Log.w("ObtenerIngresos", e);
+                public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                    Log.e("ObtenerIngresos", "Error al obtener los ingresos", e);
                 }
             });
         }
         catch (Exception e) {
-            Log.w("ObtenerIngresos", e);
+            Log.e("ObtenerIngresos", "Error al obtener los ingresos", e);
         }
     }
 
@@ -192,7 +193,7 @@ public class AdmDatosCuadrilla extends AppCompatActivity implements SwipeRefresh
             });
         }
         catch (Exception e) {
-            Log.w("DetectarFecha", e);
+            Log.e("DetectarFecha", "Error al detectar la fecha", e);
         }
     }
 
@@ -220,15 +221,16 @@ public class AdmDatosCuadrilla extends AppCompatActivity implements SwipeRefresh
             datePickerDialog.show(); //Mostramos el AlertDialog o Popup DatePicker de solo mes y año
         }
         catch (Exception e) {
-            Log.w("ObtenerMes", e);
+            Log.e("ObtenerMes", "Error al obtener mes", e);
         }
     }
 
     //Método para eliminar la selección del Mes - Año
     public void eliminarMesTotales(View view) {
-        lblFecha.setText("Seleccionar...");
+        lblFecha.setText("Seleccionar..."); //Aquí sólo asignamos el texto "Seleccionar..." al "lblFecha"
     }
 
+    //Evento clic del botón para ver ingresos
     public void verIngresos(View view) {
         HashMap<String,Object> datos = new HashMap<>(); //Creamos un HashMap que nos servirá para guardar los datos que deseamos enviar al próximo activity
 
@@ -239,6 +241,7 @@ public class AdmDatosCuadrilla extends AppCompatActivity implements SwipeRefresh
         Utilidades.iniciarActivityConDatos(AdmDatosCuadrilla.this, ListadoIngresosDeducciones.class, datos); //Mandamos el hashMap con los datos a la clase "ListadoIngresosDeducciones"
     }
 
+    //Evento clic del botón para ver gastos
     public void verGastos(View view) {
         HashMap<String,Object> datos = new HashMap<>(); //Creamos un HashMap para guardar los datos que se enviarán al siguiente Activity
 
@@ -249,6 +252,7 @@ public class AdmDatosCuadrilla extends AppCompatActivity implements SwipeRefresh
         Utilidades.iniciarActivityConDatos(AdmDatosCuadrilla.this, ListadoGastos.class, datos); //Mandamos el hashMap con los datos a la clase "ListadoGastos"
     }
 
+    //Evento clic del botón para ver deducciones por planilla
     public void verDeducciones(View view) {
         HashMap<String,Object> datos = new HashMap<>(); //Creamos un HashMap que nos servirá para guardar los datos que deseamos enviar al próximo activity
 
@@ -272,6 +276,7 @@ public class AdmDatosCuadrilla extends AppCompatActivity implements SwipeRefresh
         }, 1000);
     }
 
+    //Método que permite retroceder a la pantalla anterior
     public void retroceder(View view) {
         onBackPressed();
     }

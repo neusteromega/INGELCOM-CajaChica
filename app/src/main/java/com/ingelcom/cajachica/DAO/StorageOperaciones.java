@@ -28,9 +28,9 @@ public class StorageOperaciones {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) { //Si la subida de la imagen fue exitosa, entrará a este método
                     if (tipo.equalsIgnoreCase("Agregar"))
-                        callback.onCallback("IMAGEN SUBIDA EXITOSAMENTE EN FIREBASE STORAGE"); //Invocamos el callback "onCallback" de la interfaz "StorageCallback" y le mandamos un mensaje exitoso
+                        callback.onCallback("IMAGEN SUBIDA EXITOSAMENTE EN FIREBASE STORAGE"); //Invocamos el "onCallback" de la interfaz "StorageCallback" y le mandamos un mensaje exitoso
                     else if (tipo.equalsIgnoreCase("Actualizar"))
-                        callback.onCallback("IMAGEN ACTUALIZADA EXITOSAMENTE EN FIREBASE STORAGE");
+                        callback.onCallback("IMAGEN ACTUALIZADA EXITOSAMENTE EN FIREBASE STORAGE"); //Aquí también invocamos el "onCallback" de la interfaz "StorageCallback" y le mandamos un mensaje exitoso
                 }
             })
             .addOnFailureListener(new OnFailureListener() { //Si el proceso falló, entrará aquí
@@ -46,38 +46,18 @@ public class StorageOperaciones {
         storageReference = FirebaseStorage.getInstance().getReference(); //Creamos una instancia de Firebase Storage
         StorageReference imagenRef = storageReference.child(rutaImagen); //Creamos un objeto de tipo StorageReference, y a este la asignamos "storageReference.child(rutaImagen)" donde se encuentra la ruta de la imagen en Firebase Storage
 
+        //Utilizando el método "getDownloadUrl" del "StorageReference", obtenemos la imagen desde Firebase Storage
         imagenRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                callback.onCallback(uri);
+                callback.onCallback(uri); //Invocamos el "onCallback" de la interfaz "StorageURICallback" y le mandamos el URI de la imagen recibida
             }
         })
         .addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                callback.onFailure(e);
+                callback.onFailure(e); //Invocamos el callback "onFailure" de la interfaz "StorageCallback" donde mandamos la excepción obtenida por si fallo el proceso de obtención de la imagen
             }
         });
     }
-
-    /*public void actualizarImagen(Uri imagenUri, String rutaImagen, final StorageCallbacks.StorageCallback callback) {
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference(rutaImagen);
-
-        // Utilizamos el método "putFile" para subir la nueva imagen, que sobrescribirá la imagen existente en Firebase Storage
-        storageReference.putFile(imagenUri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // Si la subida de la nueva imagen fue exitosa, invocamos el callback "onCallback" con un mensaje de éxito
-                        callback.onCallback("IMAGEN ACTUALIZADA EXITOSAMENTE EN FIREBASE STORAGE");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Si la subida falla, invocamos el callback "onFailure" con la excepción obtenida
-                        callback.onFailure(e);
-                    }
-                });
-    }*/
 }

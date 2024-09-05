@@ -43,7 +43,6 @@ public class FragCrearCorreoContrasena extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    //Variables para los componentes gráficos
     private EditText txtCorreo, txtContra, txtConfContra;
     private TextView btnConfirmar;
     private ImageView btnContra, btnConfContra;
@@ -55,7 +54,7 @@ public class FragCrearCorreoContrasena extends Fragment {
     public static String identidadUsuario;
 
     public FragCrearCorreoContrasena() {
-        // Required empty public constructor
+
     }
 
     public static FragCrearCorreoContrasena newInstance(String param1, String param2) {
@@ -78,13 +77,10 @@ public class FragCrearCorreoContrasena extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_crear_correocontrasena, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_crear_correocontrasena, container, false); //Guardamos la vista inflada del fragment en una variable tipo "view"
 
-        //Inicializamos la autenticación con Firebase
-        mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance(); //Inicializamos la autenticación con Firebase
 
         //Enlazamos las variables globales con los elementos gráficos
         txtCorreo = view.findViewById(R.id.txtCorreoCCC);
@@ -127,13 +123,13 @@ public class FragCrearCorreoContrasena extends Fragment {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser(); //Obtiene el usuario actual
 
-        //CAMBIAR CUANDO SE ESTABLEZCAN LOS ROLES. Verificamos que el usuario no sea null, si no lo es, que mande a la pantalla inicial
+        //Verificamos que el usuario no sea null, si no lo es, que mande a la pantalla inicial
         if (currentUser != null) {
             Utilidades.iniciarActivity(getActivity(), EmpMenuPrincipal.class, false);
         }
     }
 
-    //Función en la que se creará el usuario con Firebase Auth
+    //Método en el que se creará el usuario con "Firebase Auth"
     private void registrarUsuario() {
         pbConfirmar.setVisibility(View.VISIBLE); //Ponemos visible la ProgressBar cuando se esté haciendo el registro del usuario al dar clic en "Confirmar"
 
@@ -150,12 +146,14 @@ public class FragCrearCorreoContrasena extends Fragment {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 pbConfirmar.setVisibility(View.GONE); //Cuando el registro se haga, que se oculte la ProgressBar
+
                                 if (task.isSuccessful()) { //Si el registro fue exitoso, entrará aquí
-                                    //FirebaseUser user = mAuth.getCurrentUser();
                                     Toast.makeText(getActivity(), "USUARIO REGISTRADO", Toast.LENGTH_SHORT).show();
+
                                     agregarCorreoUsuario(correo); //Llamamos la función "agregarCorreoUsuario" de abajo y le mandamos el correo como parámetro
-                                    mAuth.signOut(); //Cerramos la sesión ya que cuando se registra el usuario, automáticamente se inicia sesión, pero queremos que él se loguee manualmente
-                                    Utilidades.iniciarActivity(getActivity(), IniciarSesion.class, true); //Redireccionamos al usuario a la pantalla de Login y finalizamos esta actividad
+                                    mAuth.signOut(); //Cerramos la sesión ya que cuando se registra el usuario, automáticamente se inicia sesión, pero queremos que él inicie sesión manualmente
+
+                                    Utilidades.iniciarActivity(getActivity(), IniciarSesion.class, true); //Redireccionamos al usuario a la pantalla de IniciarSesión y finalizamos esta actividad
                                 }
                                 else { //Si el registro falló, entrará aquí
                                     String mensajeError = "ERROR DESCONOCIDO"; //Variable que servirá para almacenar el mensaje de error correspondiente
@@ -200,20 +198,19 @@ public class FragCrearCorreoContrasena extends Fragment {
         Map<String,Object> nuevosCampos = new HashMap<>(); //Creamos un HashMap
         nuevosCampos.put("Correo", correo); //Asignamos el nombre del campo "Correo" y el dato a guardar que está en la variable "correo"
 
-        //Llamamos al método "agregarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar, el HashMap con los nuevos campos y datos (o los campos existentes para actualizar su contenido) e invocamos la interfaz "FirestoreInsertCallback"
+        //Llamamos al método "agregarRegistrosColeccion" de la clase FirestoreOperaciones. Le mandamos el nombre de la colección, el campo a buscar, el dato a buscar (la variable global estática "identidadUsuario" que recibe la identidad del "FragBuscarUsuario"), el HashMap con los nuevos campos y datos (o los campos existentes para actualizar su contenido) e invocamos la interfaz "FirestoreTextCallback"
         oper.agregarActualizarRegistrosColeccion("usuarios", "Identidad", identidadUsuario, nuevosCampos, new FirestoreCallbacks.FirestoreTextCallback() {
             @Override
             public void onSuccess(String texto) {
-                //Si "texto" no es null, quiere decir que si agregó el correo al usuario, además, si entró a este "onSuccess" también quiere decir que lo realizó
-                if (texto != null)
-                    Log.w("Agregar Correo", "Correo agregado al usuario");
+                if (texto != null) //Si "texto" no es null, quiere decir que si agregó el correo al usuario, además, si entró a este "onSuccess" también quiere decir que lo realizó
+                    Log.w("AgregarCorreo", "Correo agregado al usuario");
                 else
-                    Log.w("Agregar Correo", "No se encontró el usuario para agregarle el correo");
+                    Log.w("AgregarCorreo", "No se encontró el usuario para agregarle el correo");
             }
 
             @Override
-            public void onFailure(Exception e) {
-                Log.w("Agregar Correo", "Error al agregar el correo: ", e);
+            public void onFailure(Exception e) { //Por último, manejamos el error con una excepción "e" y esta la mandamos al método "onFailure"
+                Log.e("AgregarCorreo", "Error al agregar el correo al usuario", e);
             }
         });
     }

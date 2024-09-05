@@ -26,7 +26,7 @@ public class FragAdmEstadisticas extends Fragment {
     private LinearLayout btnIngreso, btnGasto;
 
     public FragAdmEstadisticas() {
-        // Required empty public constructor
+
     }
 
     public static FragAdmEstadisticas newInstance(String param1, String param2) {
@@ -48,22 +48,21 @@ public class FragAdmEstadisticas extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_adm_estadisticas, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view =  inflater.inflate(R.layout.fragment_adm_estadisticas, container, false); //Guardamos la vista inflada del fragment en una variable tipo "view"
 
+        //Enlazamos las variables con los elementos gráficos
         btnIngreso = view.findViewById(R.id.LLIngresosEst);
         btnGasto = view.findViewById(R.id.LLGastosEst);
 
-        //Eventos Clic de botones
+        //Eventos clic de botones
         btnIngreso.setOnClickListener(v -> {
-            //Redireccionamos al usuario al activity de "RegistrarEditarIngresoDeduccion" llamando el método utilitario "iniciarActivityConString" donde indicamos que el activity a mostrar será "RegistrarIngreso"
+            //Redireccionamos al usuario al activity de "EstadisticasGastosIngresos" llamando el método utilitario "iniciarActivityConString" donde indicamos que las estadísticas a mostrar serán los "Ingresos"
             Utilidades.iniciarActivityConString(getActivity(), EstadisticasGastosIngresos.class, "ActivityEGI", "Ingresos", false);
         });
 
         btnGasto.setOnClickListener(v -> {
-            //Redireccionamos al usuario al activity de "RegistrarEditarGasto" llamando el método utilitario "iniciarActivityConString" donde indicamos que el activity a mostrar será "RegistrarGastoAdmin"
+            //Redireccionamos al usuario al activity de "EstadisticasGastosIngresos" llamando el método utilitario "iniciarActivityConString" donde indicamos que las estadísticas a mostrar serán los "Gastos"
             Utilidades.iniciarActivityConString(getActivity(), EstadisticasGastosIngresos.class, "ActivityEGI", "Gastos", false);
         });
 
