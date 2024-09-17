@@ -273,6 +273,7 @@ public class Gasto {
                                             progressDialog.dismiss(); //Eliminamos el "progressDialog" ya cuando el proceso de inserción de la imagen a Storage haya fallado
 
                                         Log.e("SubirFotoStorage", "Error al subir la foto a Storage", e);
+                                        Toast.makeText(contexto, "ERROR AL REGISTRAR LA FOTO DEL GASTO", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }
