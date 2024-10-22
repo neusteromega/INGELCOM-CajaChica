@@ -13,7 +13,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 

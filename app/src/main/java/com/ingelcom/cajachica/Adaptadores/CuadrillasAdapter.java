@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.ingelcom.cajachica.Modelos.CuadrillasItems;
 import com.ingelcom.cajachica.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CuadrillasAdapter extends BaseAdapter {

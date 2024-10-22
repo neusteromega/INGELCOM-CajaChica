@@ -7,7 +7,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,13 +21,11 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -41,8 +38,6 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.ingelcom.cajachica.DAO.Gasto;
 import com.ingelcom.cajachica.DAO.Ingreso;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
@@ -52,7 +47,6 @@ import com.ingelcom.cajachica.Modelos.GastosItems;
 import com.ingelcom.cajachica.Modelos.IngresosItems;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 

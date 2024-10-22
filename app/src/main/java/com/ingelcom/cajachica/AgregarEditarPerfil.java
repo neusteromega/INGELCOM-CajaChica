@@ -3,10 +3,7 @@ package com.ingelcom.cajachica;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,15 +19,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseUser;
 import com.ingelcom.cajachica.DAO.FirestoreOperaciones;
 import com.ingelcom.cajachica.DAO.Usuario;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.Validaciones;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -256,7 +250,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
                     case "EditarAdmin":
 
                         //Creamos un alertDialog que pregunte si se desea editar el perfil del Administrador
-                        new AlertDialog.Builder(this).setTitle("EDITAR PERFIL").setMessage("¿Está seguro que desea modificar los datos de su perfil")
+                        new AlertDialog.Builder(this).setTitle("EDITAR PERFIL").setMessage("¿Está seguro que desea modificar los datos de su perfil?")
                                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarPerfilAdmin()"
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -273,7 +267,7 @@ public class AgregarEditarPerfil extends AppCompatActivity {
                     case "EditarEmpleado":
 
                         //Creamos un alertDialog que pregunte si se desea editar el perfil del Empleado
-                        new AlertDialog.Builder(this).setTitle("EDITAR PERFIL").setMessage("¿Está seguro que desea modificar los datos de su perfil")
+                        new AlertDialog.Builder(this).setTitle("EDITAR PERFIL").setMessage("¿Está seguro que desea modificar los datos de su perfil?")
                                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí y al método "editarPerfilAdmin()"
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {

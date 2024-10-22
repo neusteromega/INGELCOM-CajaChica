@@ -11,7 +11,6 @@ import com.ingelcom.cajachica.GastoIngresoRegistrado;
 import com.ingelcom.cajachica.Herramientas.FirestoreCallbacks;
 import com.ingelcom.cajachica.Herramientas.StorageCallbacks;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
-import com.ingelcom.cajachica.Modelos.GastosItems;
 import com.ingelcom.cajachica.Modelos.IngresosItems;
 
 import java.text.SimpleDateFormat;

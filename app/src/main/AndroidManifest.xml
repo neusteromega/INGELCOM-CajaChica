@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -29,71 +30,71 @@
         </provider>
 
         <activity
-            android:name=".EstadisticasGastosIngresos"
+            android:name="com.ingelcom.cajachica.EstadisticasGastosIngresos"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".ImagenCompleta"
+            android:name="com.ingelcom.cajachica.ImagenCompleta"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".ListadoEmpleados"
+            android:name="com.ingelcom.cajachica.ListadoEmpleados"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".ListadoIngresosDeducciones"
+            android:name="com.ingelcom.cajachica.ListadoIngresosDeducciones"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".AdmDatosCuadrilla"
+            android:name="com.ingelcom.cajachica.AdmDatosCuadrilla"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".RegistrarEditarIngresoDeduccion"
+            android:name="com.ingelcom.cajachica.RegistrarEditarIngresoDeduccion"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".AdmPantallas"
+            android:name="com.ingelcom.cajachica.AdmPantallas"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".AgregarEditarPerfil"
+            android:name="com.ingelcom.cajachica.AgregarEditarPerfil"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".Perfil"
+            android:name="com.ingelcom.cajachica.Perfil"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".DetalleGastoIngreso"
+            android:name="com.ingelcom.cajachica.DetalleGastoIngreso"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".ListadoGastos"
+            android:name="com.ingelcom.cajachica.ListadoGastos"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".RegistrarEditarGasto"
+            android:name="com.ingelcom.cajachica.RegistrarEditarGasto"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".GastoIngresoRegistrado"
+            android:name="com.ingelcom.cajachica.GastoIngresoRegistrado"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".EmpMenuPrincipal"
+            android:name="com.ingelcom.cajachica.EmpMenuPrincipal"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".CompletarUsuario"
+            android:name="com.ingelcom.cajachica.CompletarUsuario"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".IniciarSesion"
+            android:name="com.ingelcom.cajachica.IniciarSesion"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.ingelcom.cajachica.MainActivity"
             android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>

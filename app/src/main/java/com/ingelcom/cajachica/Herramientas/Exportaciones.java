@@ -1,9 +1,9 @@
 package com.ingelcom.cajachica.Herramientas;
 
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -29,14 +29,6 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -51,9 +43,11 @@ import java.util.List;
 public class Exportaciones {
 
     private Context contexto;
+    private Activity activity;
 
-    public Exportaciones(Context contexto) {
+    public Exportaciones(Context contexto, Activity activity) {
         this.contexto = contexto;
+        this.activity = activity;
     }
 
     //Método que permite descargar una imagen de un gasto o ingreso
@@ -94,7 +88,10 @@ public class Exportaciones {
             fileOutputStream = new FileOutputStream(nuevoArchivo); //Con "fileOutputStream" inicializamos el flujo de salida para escribir datos en el "nuevoArchivo"
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream); //Comprimimos el Bitmap y lo escribimos en el archivo especificado por "fileOutputStream". Recibe el formato de compresión (Bitmap.CompressFormat.JPEG en este caso), y la calidad de la compresión, que varía de 0 a 100 (donde 100 significa calidad máxima sin pérdida)
 
-            crearNotificacionImagen(nuevoArchivo, nombre); //Llamamos el método de abajo para crear la notificación de la descarga
+            if (Utilidades.verificarPermisoNotificaciones(activity)) {
+                crearNotificacionImagen(nuevoArchivo, nombre); //Llamamos el método de abajo para crear la notificación de la descarga
+            }
+
             Toast.makeText(contexto, "IMAGEN GUARDADA EN LA CARPETA DE IMÁGENES", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
 
             fileOutputStream.flush(); //Garantizamos que todos los datos en el buffer del "FileOutputStream" se escriban físicamente en el archivo
@@ -177,7 +174,10 @@ public class Exportaciones {
             fileOut.flush(); //Garantizamos que todos los datos en el buffer del "FileOutputStream" se escriban físicamente en el archivo
             fileOut.close(); //Cerramos el flujo de salida
 
-            crearNotificacionExcel(nuevoArchivo, nombreXlsx); //Llamamos el método de abajo para crear la notificación de la descarga
+            if (Utilidades.verificarPermisoNotificaciones(activity)) {
+                crearNotificacionExcel(nuevoArchivo, nombreXlsx); //Llamamos el método de abajo para crear la notificación de la descarga
+            }
+
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
         catch (Exception e) {
@@ -266,7 +266,10 @@ public class Exportaciones {
             document.close(); //Cerramos el documento PDF finalizando la escritura del archivo
             fos.close(); //Cerramos el flujo de salida
 
-            crearNotificacionPDF(nuevoArchivo, nombrePdf); //Llamamos el método de abajo para crear la notificación de la descarga
+            if (Utilidades.verificarPermisoNotificaciones(activity)) {
+                crearNotificacionPDF(nuevoArchivo, nombrePdf); //Llamamos el método de abajo para crear la notificación de la descarga
+            }
+
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
         catch (Exception e) {
@@ -335,7 +338,10 @@ public class Exportaciones {
             fileOut.flush(); //Garantizamos que todos los datos en el buffer del "FileOutputStream" se escriban físicamente en el archivo
             fileOut.close(); //Cerramos el flujo de salida
 
-            crearNotificacionExcel(nuevoArchivo, nombreXlsx); //Llamamos el método de abajo para crear la notificación de la descarga
+            if (Utilidades.verificarPermisoNotificaciones(activity)) {
+                crearNotificacionExcel(nuevoArchivo, nombreXlsx); //Llamamos el método de abajo para crear la notificación de la descarga
+            }
+
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
         catch (Exception e) {
@@ -421,7 +427,10 @@ public class Exportaciones {
             document.close(); //Cerramos el documento PDF finalizando la escritura del archivo
             fos.close(); //Cerramos el flujo de salida
 
-            crearNotificacionPDF(nuevoArchivo, nombrePdf); //Llamamos el método de abajo para crear la notificación de la descarga
+            if (Utilidades.verificarPermisoNotificaciones(activity)) {
+                crearNotificacionPDF(nuevoArchivo, nombrePdf); //Llamamos el método de abajo para crear la notificación de la descarga
+            }
+
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
         catch (Exception e) {

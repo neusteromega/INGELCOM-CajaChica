@@ -2,7 +2,6 @@ package com.ingelcom.cajachica;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -28,7 +27,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -66,7 +64,7 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
 
     private Gasto gast = new Gasto(ListadoGastos.this);
     private Usuario usu = new Usuario(ListadoGastos.this);
-    private Exportaciones exp = new Exportaciones(ListadoGastos.this);
+    private Exportaciones exp = new Exportaciones(ListadoGastos.this, this);
     private FirestoreOperaciones oper = new FirestoreOperaciones();
 
     @Override
@@ -742,11 +740,13 @@ public class ListadoGastos extends AppCompatActivity implements SwipeRefreshLayo
 
         //If que llama al método utilitario "manejarResultadoPermisos", y le manda los datos necesarios para verificar si los permisos han sido otorgados, si así lo fue, el método retornará un "true", por lo tanto, que entre al if
         if (Utilidades.manejarResultadoPermisos(requestCode, permissions, grantResults, this)) {
-            //Ya que los permisos de almacenamiento externo han sido otorgados, verificamos el contenido de la variable global "tipoExportar" para llamar al método "obtenerDatosExportar"
-            if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                obtenerDatosExportar(fechaSeleccionada);
-            else if (tipoExportar.equalsIgnoreCase("PDF"))
-                obtenerDatosExportar(fechaSeleccionada);
+            if (requestCode == 112) {
+                //Ya que los permisos de almacenamiento externo han sido otorgados, verificamos el contenido de la variable global "tipoExportar" para llamar al método "obtenerDatosExportar"
+                if (tipoExportar.equalsIgnoreCase("EXCEL"))
+                    obtenerDatosExportar(fechaSeleccionada);
+                else if (tipoExportar.equalsIgnoreCase("PDF"))
+                    obtenerDatosExportar(fechaSeleccionada);
+            }
         }
     }
 

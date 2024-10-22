@@ -12,8 +12,6 @@ import android.widget.LinearLayout;
 import com.ingelcom.cajachica.EstadisticasGastosIngresos;
 import com.ingelcom.cajachica.Herramientas.Utilidades;
 import com.ingelcom.cajachica.R;
-import com.ingelcom.cajachica.RegistrarEditarGasto;
-import com.ingelcom.cajachica.RegistrarEditarIngresoDeduccion;
 
 public class FragAdmEstadisticas extends Fragment {
 

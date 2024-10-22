@@ -9,7 +9,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.Bundle;
+import android.os.Build;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.method.PasswordTransformationMethod;
@@ -22,7 +22,6 @@ import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -638,13 +637,30 @@ public class Utilidades {
 
     //Método que verifica si los permisos de almacenamiento externo ya han sido otorgados por el usuario
     public static boolean verificarPermisosAlmacenamiento(Activity activity) {
-        //If que comprueba si los permisos de almacenamiento externo (Manifest.permission.WRITE_EXTERNAL_STORAGE) ya han sido otorgados, sino han sido otorgados, entrará al if
-        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 112); //Si el permiso no está concedido, se solicita al usuario mediante ActivityCompat.requestPermissions. Se le pasa la actividad actual, una lista de permisos que se están solicitando (en este caso solo uno), y el código de solicitud (112). Prácticamente estamos llamando al método "onRequestPermissionsResult" del activity que se recibe como parámetro en este método
-            return false; //Retornamos "false" para indicar que no están autorizados los permisos y que finalice este método
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // A partir de Android 10 (API 29), no se necesita WRITE_EXTERNAL_STORAGE
+            return true;
         }
 
-        return true; //No entrará al if si los permisos ya han sido otorgados, en ese caso, retornamos un "true"
+        //If que comprueba si los permisos de almacenamiento externo (Manifest.permission.WRITE_EXTERNAL_STORAGE) ya han sido otorgados, sino han sido otorgados, entrará al if
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 112);
+            return false;
+        }
+
+        return true; //No entrará al segundo if si los permisos ya han sido otorgados, en ese caso, retornamos un "true"
+    }
+
+    public static boolean verificarPermisoNotificaciones(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                //Toast.makeText(activity, "MOSTRAR VENTANA", Toast.LENGTH_SHORT).show();
+                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1001);
+                return false;
+            }
+        }
+
+        return true; //No entrará al if anidado si los permisos ya han sido otorgados, en ese caso, retornamos un "true"
     }
 
     //Método que maneja la respuesta del usuario a la solicitud de permisos y determina si el permiso fue concedido o no
@@ -655,7 +671,18 @@ public class Utilidades {
                 return true; //Si el permiso fue concedido, devuelve un "true" indicando que se puede proceder con las operaciones que requieren el permiso específico
             }
             else {
-                Toast.makeText(context, "PERMISO DENEGADO", Toast.LENGTH_SHORT).show(); //Si el permiso fue denegado, se muestra un mensaje al usuario indicando que no tiene permiso para escribir en el almacenamiento
+                Toast.makeText(context, "PERMISO DE ALMACENAMIENTO DENEGADO", Toast.LENGTH_SHORT).show(); //Si el permiso fue denegado, se muestra un mensaje al usuario indicando que no tiene permiso para escribir en el almacenamiento
+                return false; //Devolvemos un "false" si el permiso ha sido denegado
+            }
+        }
+
+        if (requestCode == 1001) { //Verifica si el "requestCode" es el 1001
+            //Verifica si el usuario ha concedido el permiso. "grantResults.length > 0" asegura que hay al menos un resultado de permiso, y "grantResults[0] == PackageManager.PERMISSION_GRANTED" verifica si el primer permiso en la lista fue concedido
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                return true; //Si el permiso fue concedido, devuelve un "true" indicando que se puede proceder con las operaciones que requieren el permiso específico
+            }
+            else {
+                Toast.makeText(context, "PERMISO DE NOTIFICACIÓN DENEGADO", Toast.LENGTH_SHORT).show(); //Si el permiso fue denegado, se muestra un mensaje al usuario indicando que no tiene permiso para escribir en el almacenamiento
                 return false; //Devolvemos un "false" si el permiso ha sido denegado
             }
         }

@@ -17,7 +17,7 @@ public class ImagenCompleta extends AppCompatActivity {
 
     private ImageView imgCompleta, btnDescargar;
     private String tipo, nombreImagen = "";
-    private Exportaciones exp = new Exportaciones(ImagenCompleta.this);
+    private Exportaciones exp = new Exportaciones(ImagenCompleta.this, this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,9 @@ public class ImagenCompleta extends AppCompatActivity {
 
         //If que llama al método utilitario "manejarResultadoPermisos", y le manda los datos necesarios para verificar si los permisos han sido otorgados, si así lo fue, el método retornará un "true", por lo tanto, que entre al if
         if (Utilidades.manejarResultadoPermisos(requestCode, permissions, grantResults, this)) {
-            exp.guardarImagen(imgCompleta, tipo, "Factura"); //Llamamos al método "guardarImagen" de la clase Exportaciones donde mandamos el ImageView "imgCompleta", el tipo (será "Gasto" o "Ingreso"), y el "nombreImagen"
+            if (requestCode == 112) {
+                exp.guardarImagen(imgCompleta, tipo, "Factura"); //Llamamos al método "guardarImagen" de la clase Exportaciones donde mandamos el ImageView "imgCompleta", el tipo (será "Gasto" o "Ingreso"), y el "nombreImagen"
+            }
         }
     }
 

@@ -59,7 +59,7 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
     private Ingreso ingr = new Ingreso(ListadoIngresosDeducciones.this);
     private Deduccion deduc = new Deduccion(ListadoIngresosDeducciones.this);
     private Usuario usu = new Usuario(ListadoIngresosDeducciones.this);
-    private Exportaciones exp = new Exportaciones(ListadoIngresosDeducciones.this);
+    private Exportaciones exp = new Exportaciones(ListadoIngresosDeducciones.this, this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -573,11 +573,13 @@ public class ListadoIngresosDeducciones extends AppCompatActivity implements Swi
 
         //If que llama al método utilitario "manejarResultadoPermisos", y le manda los datos necesarios para verificar si los permisos han sido otorgados, si así lo fue, el método retornará un "true", por lo tanto, que entre al if
         if (Utilidades.manejarResultadoPermisos(requestCode, permissions, grantResults, this)) {
-            //Ya que los permisos de almacenamiento externo han sido otorgados, verificamos el contenido de la variable global "tipoExportar" para llamar al método "obtenerDatos"
-            if (tipoExportar.equalsIgnoreCase("EXCEL"))
-                obtenerDatos(fechaSeleccionada, "Exportar");
-            else if (tipoExportar.equalsIgnoreCase("PDF"))
-                obtenerDatos(fechaSeleccionada, "Exportar");
+            if (requestCode == 112) {
+                //Ya que los permisos de almacenamiento externo han sido otorgados, verificamos el contenido de la variable global "tipoExportar" para llamar al método "obtenerDatos"
+                if (tipoExportar.equalsIgnoreCase("EXCEL"))
+                    obtenerDatos(fechaSeleccionada, "Exportar");
+                else if (tipoExportar.equalsIgnoreCase("PDF"))
+                    obtenerDatos(fechaSeleccionada, "Exportar");
+            }
         }
     }
 

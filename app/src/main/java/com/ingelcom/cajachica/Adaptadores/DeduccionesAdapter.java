@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ingelcom.cajachica.Modelos.DeduccionesItems;
-import com.ingelcom.cajachica.Modelos.IngresosItems;
 import com.ingelcom.cajachica.R;
 
 import java.util.List;
