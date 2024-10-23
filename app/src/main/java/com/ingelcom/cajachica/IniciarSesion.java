@@ -69,6 +69,15 @@ public class IniciarSesion extends AppCompatActivity {
 
             Utilidades.mostrarMensajePorInternetCaido(this, viewNoInternet); //Llamamos el método utilitario "mostrarMensajePorInternetCaido" donde mandamos la vista "viewNoInternet" donde se hará visible cuando no haya conexión a internet y se ocultará cuando si haya
         });
+
+        Utilidades.verificarPermisoNotificacionesInicio(this);
+    }
+
+    @Override //Método Override que solicita los permisos de almacenamiento externo al usuario
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        Utilidades.manejarResultadoPermisos(requestCode, permissions, grantResults, this);
     }
 
     @Override

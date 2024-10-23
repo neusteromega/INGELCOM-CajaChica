@@ -88,9 +88,10 @@ public class Exportaciones {
             fileOutputStream = new FileOutputStream(nuevoArchivo); //Con "fileOutputStream" inicializamos el flujo de salida para escribir datos en el "nuevoArchivo"
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream); //Comprimimos el Bitmap y lo escribimos en el archivo especificado por "fileOutputStream". Recibe el formato de compresión (Bitmap.CompressFormat.JPEG en este caso), y la calidad de la compresión, que varía de 0 a 100 (donde 100 significa calidad máxima sin pérdida)
 
-            if (Utilidades.verificarPermisoNotificaciones(activity)) {
+            if (!Utilidades.validarPermisoNotificaciones(contexto))
+                Utilidades.activarPermisoNotificaciones(contexto);
+            else
                 crearNotificacionImagen(nuevoArchivo, nombre); //Llamamos el método de abajo para crear la notificación de la descarga
-            }
 
             Toast.makeText(contexto, "IMAGEN GUARDADA EN LA CARPETA DE IMÁGENES", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
 
@@ -174,9 +175,10 @@ public class Exportaciones {
             fileOut.flush(); //Garantizamos que todos los datos en el buffer del "FileOutputStream" se escriban físicamente en el archivo
             fileOut.close(); //Cerramos el flujo de salida
 
-            if (Utilidades.verificarPermisoNotificaciones(activity)) {
+            if (!Utilidades.validarPermisoNotificaciones(contexto))
+                Utilidades.activarPermisoNotificaciones(contexto);
+            else
                 crearNotificacionExcel(nuevoArchivo, nombreXlsx); //Llamamos el método de abajo para crear la notificación de la descarga
-            }
 
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
@@ -266,9 +268,10 @@ public class Exportaciones {
             document.close(); //Cerramos el documento PDF finalizando la escritura del archivo
             fos.close(); //Cerramos el flujo de salida
 
-            if (Utilidades.verificarPermisoNotificaciones(activity)) {
+            if (!Utilidades.validarPermisoNotificaciones(contexto))
+                Utilidades.activarPermisoNotificaciones(contexto);
+            else
                 crearNotificacionPDF(nuevoArchivo, nombrePdf); //Llamamos el método de abajo para crear la notificación de la descarga
-            }
 
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
@@ -338,9 +341,10 @@ public class Exportaciones {
             fileOut.flush(); //Garantizamos que todos los datos en el buffer del "FileOutputStream" se escriban físicamente en el archivo
             fileOut.close(); //Cerramos el flujo de salida
 
-            if (Utilidades.verificarPermisoNotificaciones(activity)) {
+            if (!Utilidades.validarPermisoNotificaciones(contexto))
+                Utilidades.activarPermisoNotificaciones(contexto);
+            else
                 crearNotificacionExcel(nuevoArchivo, nombreXlsx); //Llamamos el método de abajo para crear la notificación de la descarga
-            }
 
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }
@@ -427,9 +431,10 @@ public class Exportaciones {
             document.close(); //Cerramos el documento PDF finalizando la escritura del archivo
             fos.close(); //Cerramos el flujo de salida
 
-            if (Utilidades.verificarPermisoNotificaciones(activity)) {
+            if (!Utilidades.validarPermisoNotificaciones(contexto))
+                Utilidades.activarPermisoNotificaciones(contexto);
+            else
                 crearNotificacionPDF(nuevoArchivo, nombrePdf); //Llamamos el método de abajo para crear la notificación de la descarga
-            }
 
             Toast.makeText(contexto, "ARCHIVO GUARDADO EN LA CARPETA DE DOCUMENTOS", Toast.LENGTH_LONG).show(); //Mostramos mensaje de éxito
         }

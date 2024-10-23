@@ -3,6 +3,7 @@ package com.ingelcom.cajachica.Herramientas;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.method.PasswordTransformationMethod;
@@ -20,7 +22,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.firebase.Timestamp;
@@ -638,8 +642,7 @@ public class Utilidades {
     //Método que verifica si los permisos de almacenamiento externo ya han sido otorgados por el usuario
     public static boolean verificarPermisosAlmacenamiento(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            // A partir de Android 10 (API 29), no se necesita WRITE_EXTERNAL_STORAGE
-            return true;
+            return true; //A partir de Android 10 (API 29), no se necesita WRITE_EXTERNAL_STORAGE
         }
 
         //If que comprueba si los permisos de almacenamiento externo (Manifest.permission.WRITE_EXTERNAL_STORAGE) ya han sido otorgados, sino han sido otorgados, entrará al if
@@ -651,7 +654,7 @@ public class Utilidades {
         return true; //No entrará al segundo if si los permisos ya han sido otorgados, en ese caso, retornamos un "true"
     }
 
-    public static boolean verificarPermisoNotificaciones(Activity activity) {
+    public static boolean verificarPermisoNotificacionesInicio(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(activity, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 //Toast.makeText(activity, "MOSTRAR VENTANA", Toast.LENGTH_SHORT).show();
@@ -688,6 +691,29 @@ public class Utilidades {
         }
 
         return false; //Si el código de solicitud no es 112, se devuelve un "false" que indica que la solicitud de permisos no ha sido reconocida
+    }
+
+    //Método que solicita activar las notificaciones desde los ajustes del celular
+    public static void activarPermisoNotificaciones(Context context) {
+        //Creamos un alertDialog que pregunte si se desea activar las notificaciones
+        new AlertDialog.Builder(context).setTitle("ACTIVAR NOTIFICACIONES").setMessage("¿Quieres activarlas para abrir los archivos descargados desde la barra de notificaciones?")
+            .setPositiveButton("Ir a Ajustes", new DialogInterface.OnClickListener() { //Si se selecciona la opción positiva, entrará aquí
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    //Abrir la configuración de la aplicación
+                    Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, context.getPackageName());
+                    context.startActivity(intent);
+                }
+            }).setNegativeButton("Cancelar", new DialogInterface.OnClickListener() { //Si se seleccionó la opción negativa, entrará aquí y solamente mostrará un mensaje en el Logcat
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Log.d("Mensaje", "Se canceló la acción"); //Se muestra un mensaje en el Logcat indicando que se canceló la acción
+                }
+            }).show();
+    }
+
+    public static boolean validarPermisoNotificaciones(Context context) {
+        return NotificationManagerCompat.from(context).areNotificationsEnabled();
     }
 
     //Método que devuelve una lista de 25 colores que nos servirán para establecer los colores en los gráficos del apartado de estadísticas
